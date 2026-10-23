@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { App } from '@capacitor/app';
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, registerPlugin } from '@capacitor/core';
+const haptics=registerPlugin<{impact(options:{strong:boolean}):Promise<void>}>('FeelHaptics');
 import './style.css';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
@@ -11,6 +12,7 @@ import type { Result } from './core/solver';
 const $ = <T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
 const status=$('status'), dialog=$<HTMLDialogElement>('dialog'), content=$('dialog-content');
 const audio=new Sound(),store=new SaveStore(localStorage);
+void audio.load();
 const loaded=store.load();let state=loaded.state,locked=loaded.corrupt;
 const scene=new WaterScene('water');
 let worker:Worker|undefined,requestId=0,queued:Move|null=null,lastMove:Move|null=null;
@@ -18,7 +20,9 @@ let hintCache:{revision:number;move:Move}|null=null;
 const blockers=new Set<string>();
 const game=new Phaser.Game({type:Phaser.AUTO,parent:'board',backgroundColor:'rgba(0,0,0,0)',transparent:true,antialias:true,scale:{mode:Phaser.Scale.RESIZE,width:$('board').clientWidth,height:$('board').clientHeight},scene:[scene],audio:{noAudio:true}});
 function cancelSearch(){worker?.terminate();worker=undefined;requestId++;$('hint').removeAttribute('disabled');}
-function interrupt(){scene.skip();queued=null;cancelSearch();audio.stop();scene.selected=null;scene.hintMove=null;scene.setBoard(attempt(state).board);}
+let winTimer:ReturnType<typeof setTimeout>|undefined;
+function haptic(strong=false){if(Capacitor.isNativePlatform()&&state.settings.haptics!==false)void haptics.impact({strong}).catch(()=>{});}
+function interrupt(){clearTimeout(winTimer);scene.skip();queued=null;cancelSearch();audio.stop();scene.selected=null;scene.hintMove=null;scene.setBoard(attempt(state).board);}
 function block(reason:string,on:boolean){if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(reason=>reason!=='dialog'));}
 function commit(next:Save){try{store.write(next);state=next;return true;}catch{status.textContent='Не удалось сохранить. Ход не принят — попробуй ещё раз.';return false;}}
 function paint(){
@@ -31,12 +35,12 @@ function paint(){
 function message(text:string){status.textContent=text;}
 function close(){dialog.close();block('dialog',false);paint();}
 function modal(title:string,body:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
-  block('dialog',true);content.replaceChildren();const h=document.createElement('h2');h.textContent=title;content.append(h);
+  block('dialog',true);dialog.classList.remove('victory');content.replaceChildren();const h=document.createElement('h2');h.textContent=title;content.append(h);
   if(body){const p=document.createElement('p');p.textContent=body;content.append(p);}
   for(const b of buttons){const el=document.createElement('button');el.textContent=b.label;el.className=b.primary?'primary':'';el.onclick=()=>{audio.prime();b.action();};content.append(el);}
   if(!dialog.open)dialog.showModal();
 }
-function switchLevel(index:number){interrupt();const n=structuredClone(state);n.current=index;n.revision++;if(commit(n)){hintCache=null;close();paint();message(index<2?'Выбери колбу, затем перелей в пустую.':'Собери каждый цвет в отдельную колбу.');if(won(attempt(state).board))victory();}}
+function switchLevel(index:number){scene.resetEffects();interrupt();const n=structuredClone(state);n.current=index;n.revision++;if(commit(n)){hintCache=null;close();paint();message(index<2?'Выбери колбу, затем перелей в пустую.':'Собери каждый цвет в отдельную колбу.');if(won(attempt(state).board))victory();}}
 function victory(){
   const last=state.current===levels.length-1;
   modal(last?'Набор пройден':'Готово!',`Все цвета на своих местах. Ходов: ${attempt(state).history.length}.`,[
@@ -44,6 +48,7 @@ function victory(){
     {label:'Повторить',action:()=>{const n=restarted(state);if(commit(n)){close();paint();}}},
     {label:'Посмотреть поле',action:close}
   ]);
+  dialog.classList.add('victory');
 }
 function accept(m:Move){
   if(locked||blockers.size)return;
@@ -61,18 +66,23 @@ scene.onTap=(i)=>{
   if(scene.selected!==null){const m=moveFor(attempt(state).board,scene.selected,i);if(m){
     if(scene.busy){queued=m;scene.hintMove=m;message('Следующий ход выбран');}else accept(m);return;
   }scene.reject(i);audio.reject();message('Нужен такой же верхний цвет и свободное место.');}
-  if(attempt(state).board[i].length){scene.selected=i;audio.tap();}
+  if(attempt(state).board[i].length){scene.selected=i;audio.tap();haptic();}
 };
-scene.onPour=()=>{if(lastMove)audio.pour(state.settings.fast?138:249,lastMove.amount);};
+scene.onPour=()=>{if(lastMove)audio.pour(state.settings.fast?154:269,lastMove.amount);};
 scene.onComplete=()=>{
   const board=attempt(state).board;
-  if(won(board)){victory();audio.finish(true);return;}
-  if(lastMove&&completeTube(board[lastMove.to]))audio.finish(false);
+  if(won(board)){
+    const revision=state.revision;
+    board.forEach((tube,index)=>{if(completeTube(tube))scene.celebrate(index,true);});
+    haptic(true);
+    winTimer=setTimeout(()=>{if(state.revision===revision&&!dialog.open&&!blockers.size){victory();audio.finish(true);}},120);return;
+  }
+  if(lastMove&&completeTube(board[lastMove.to])){scene.celebrate(lastMove.to);audio.finish(false);haptic(true);}else{audio.land();haptic();}
   message('Собери каждый цвет в отдельную колбу.');
   if(queued){const q=queued;queued=null;scene.hintMove=null;const valid=moveFor(board,q.from,q.to);if(valid)accept(valid);}
 };
 $('undo').onclick=()=>{interrupt();if(commit(undone(state))){hintCache=null;paint();audio.tap();message('Ход отменён');}};
-$('restart').onclick=()=>modal('Начать заново?','Вернётся та же раскладка. Текущие ходы будут сброшены.',[{label:'Начать заново',primary:true,action:()=>{if(commit(restarted(state))){hintCache=null;close();paint();message('Та же задача — новая попытка.');}}},{label:'Продолжить',action:close}]);
+$('restart').onclick=()=>modal('Начать заново?','Вернётся та же раскладка. Текущие ходы будут сброшены.',[{label:'Начать заново',primary:true,action:()=>{if(commit(restarted(state))){scene.resetEffects();hintCache=null;close();paint();message('Та же задача — новая попытка.');}}},{label:'Продолжить',action:close}]);
 $('symbols').onclick=()=>{const n=structuredClone(state);n.settings.symbols=!n.settings.symbols;if(commit(n))paint();};
 $('hint').onclick=()=>{
   if(scene.busy||blockers.size||locked)return;audio.prime();
@@ -97,8 +107,8 @@ function menu(){
 $('menu').onclick=menu;
 $('settings').onclick=()=>{
   modal('Настройки','',[{label:'Готово',primary:true,action:close}]);
-  for(const [key,label] of Object.entries({sound:'Звуки',fast:'Быстрое переливание',symbols:'Символы на цветах',light:'Светлая тема'})){
-    const row=document.createElement('label');row.className='setting';row.textContent=label;const input=document.createElement('input');input.type='checkbox';input.checked=state.settings[key as keyof typeof state.settings];input.onchange=()=>{const n=structuredClone(state);n.settings[key as keyof typeof state.settings]=input.checked;if(commit(n))paint();else input.checked=!input.checked;};row.append(input);content.insertBefore(row,content.lastChild);
+  for(const [key,label] of Object.entries({sound:'Звуки',haptics:'Вибрация',fast:'Быстрое переливание',symbols:'Символы на цветах',light:'Светлая тема'})){
+    const row=document.createElement('label');row.className='setting';row.textContent=label;const input=document.createElement('input');input.type='checkbox';input.checked=state.settings[key as keyof typeof state.settings]!==false;input.onchange=()=>{const n=structuredClone(state);n.settings[key as keyof typeof state.settings]=input.checked;if(commit(n))paint();else input.checked=!input.checked;};row.append(input);content.insertBefore(row,content.lastChild);
   }
 };
 dialog.addEventListener('cancel',e=>{e.preventDefault();if(!locked)close();});

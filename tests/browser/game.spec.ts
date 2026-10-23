@@ -14,3 +14,14 @@ test('hint, symbols, fast mode, themes and layouts',async({page})=>{
  await page.locator('#settings').click();await page.getByLabel('Быстрое переливание').check();await page.getByLabel('Светлая тема').check();await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('body')).toHaveClass('light');
  for(const [width,height]of [[320,568],[844,390],[768,1024]]){await page.setViewportSize({width,height});await page.waitForTimeout(150);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);for(const id of ['undo','restart','hint','symbols','board','banner-slot']){const b=(await page.locator('#'+id).boundingBox())!;expect(b.x).toBeGreaterThanOrEqual(0);expect(b.x+b.width).toBeLessThanOrEqual(width+1);expect(b.y+b.height).toBeLessThanOrEqual(height+1);}}
 });
+
+test('all revised foley assets decode and stay within audio headroom',async({page})=>{
+ await page.goto('/');
+ const results=await page.evaluate(async()=>{
+  const context=new AudioContext();const names=['select','land','reject','hint','complete','victory','pour-1','pour-2','pour-3'];
+  const results=[];
+  for(const name of names){const response=await fetch('/audio/'+name+'.ogg');const buffer=await context.decodeAudioData(await response.arrayBuffer());const samples=buffer.getChannelData(0);let peak=0,energy=0;for(const v of samples){peak=Math.max(peak,Math.abs(v));energy+=v*v;}results.push({name,peak,rms:Math.sqrt(energy/samples.length),duration:buffer.duration});}
+  await context.close();return results;
+ });
+ expect(results).toHaveLength(9);for(const cue of results){expect(cue.peak).toBeLessThan(.85);expect(cue.rms).toBeGreaterThan(.025);expect(cue.duration).toBeLessThan(1);}
+});

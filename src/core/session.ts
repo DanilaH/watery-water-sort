@@ -2,7 +2,7 @@ import levels from './levels.json';
 import { apply, clone, reverse, validBoard, type Board, type Move } from './rules';
 export { levels };
 export type Attempt = { board: Board; history: Move[]; extra: boolean };
-export type Settings = { sound: boolean; fast: boolean; symbols: boolean; light: boolean };
+export type Settings = { sound: boolean; fast: boolean; symbols: boolean; light: boolean; haptics?: boolean };
 export type Save = { schema: 1; current: number; revision: number; completed: string[]; attempts: Record<string,Attempt>; settings: Settings };
 export function fresh(): Save { return { schema:1,current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false} }; }
 export const levelKey = (i: number) => `${levels[i].id}@${levels[i].version}`;
@@ -12,6 +12,7 @@ export function validSave(value: unknown): value is Save {
     const s=value as Save;
     if(s.schema!==1 || !Number.isInteger(s.current) || s.current<0 || s.current>=levels.length || !Number.isSafeInteger(s.revision) || s.revision<0) return false;
     if(!Array.isArray(s.completed) || !s.completed.every(id=>levels.some(l=>l.id===id)))return false;
+    if(s.settings?.haptics!==undefined&&typeof s.settings.haptics!=='boolean')return false;
     if(!s.settings || !['sound','fast','symbols','light'].every(k=>typeof s.settings[k as keyof Settings]==='boolean'))return false;
     if(!s.attempts || typeof s.attempts!=='object')return false;
     for(const [key,a] of Object.entries(s.attempts)) {

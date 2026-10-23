@@ -1,0 +1,65 @@
+[
+  {
+    "name": "pour-1",
+    "duration": 0.36,
+    "peak": 0.5482,
+    "rms": 0.1112,
+    "bytes": 9311
+  },
+  {
+    "name": "pour-2",
+    "duration": 0.36,
+    "peak": 0.5028,
+    "rms": 0.118,
+    "bytes": 8001
+  },
+  {
+    "name": "pour-3",
+    "duration": 0.36,
+    "peak": 0.5005,
+    "rms": 0.1241,
+    "bytes": 7635
+  },
+  {
+    "name": "select",
+    "duration": 0.17,
+    "peak": 0.5497,
+    "rms": 0.0998,
+    "bytes": 5664
+  },
+  {
+    "name": "land",
+    "duration": 0.19,
+    "peak": 0.5431,
+    "rms": 0.1051,
+    "bytes": 6148
+  },
+  {
+    "name": "reject",
+    "duration": 0.061,
+    "peak": 0.5235,
+    "rms": 0.0691,
+    "bytes": 5067
+  },
+  {
+    "name": "hint",
+    "duration": 0.45,
+    "peak": 0.5403,
+    "rms": 0.1036,
+    "bytes": 6677
+  },
+  {
+    "name": "complete",
+    "duration": 0.48,
+    "peak": 0.5382,
+    "rms": 0.1062,
+    "bytes": 6820
+  },
+  {
+    "name": "victory",
+    "duration": 0.85,
+    "peak": 0.5381,
+    "rms": 0.106,
+    "bytes": 8680
+  }
+]
