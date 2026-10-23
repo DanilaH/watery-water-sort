@@ -1,0 +1,843 @@
+{
+  "auditedCommit": "14f208d7d443fb61280036b0c82b3806bdf1833a",
+  "captureNote": "Report images are scaled for reading. Native canvas density is recorded numerically; the source capture used DPR 2 or 3. Fixtures for later levels select their real initial states without simulating full campaign progression.",
+  "main": {
+    "screens": [
+      "01-start-dark",
+      "02-menu-dark",
+      "03-settings-dark",
+      "04-source-and-targets",
+      "05-invalid-selected-other",
+      "06-three-colors",
+      "07-pour-same-column-clipped",
+      "08-hint",
+      "09-hint-after-manual-selection",
+      "10-victory",
+      "11-solved-board-no-next",
+      "12-reload-solved-board",
+      "13-undo-with-color-effect",
+      "field-320x568-dark",
+      "settings-320x568-dark",
+      "menu-320x568-dark",
+      "field-320x568-light-symbols",
+      "field-360x640-dark",
+      "settings-360x640-dark",
+      "menu-360x640-dark",
+      "field-360x640-light-symbols",
+      "field-390x844-dark",
+      "settings-390x844-dark",
+      "menu-390x844-dark",
+      "field-390x844-light-symbols",
+      "field-568x320-dark",
+      "settings-568x320-dark",
+      "menu-568x320-dark",
+      "field-568x320-light-symbols",
+      "field-640x360-dark",
+      "settings-640x360-dark",
+      "menu-640x360-dark",
+      "field-640x360-light-symbols",
+      "field-844x390-dark",
+      "settings-844x390-dark",
+      "menu-844x390-dark",
+      "field-844x390-light-symbols",
+      "field-768x1024-dark",
+      "settings-768x1024-dark",
+      "menu-768x1024-dark",
+      "field-768x1024-light-symbols",
+      "field-1024x768-dark",
+      "settings-1024x768-dark",
+      "menu-1024x768-dark",
+      "field-1024x768-light-symbols",
+      "field-320x480-dark",
+      "settings-320x480-dark",
+      "menu-320x480-dark",
+      "field-320x480-light-symbols",
+      "14-restart-confirm-light",
+      "15-extra-unavailable-light",
+      "16-bank-finish"
+    ],
+    "observations": [
+      {
+        "name": "hint-status-after-manual-selection",
+        "text": "Перелей из выделенной колбы в отмеченную."
+      },
+      {
+        "name": "solved-reload",
+        "dialog": false,
+        "text": "Выбери колбу, затем перелей в пустую.",
+        "moves": "Ходов: 3"
+      }
+    ],
+    "errors": [],
+    "assets": [],
+    "layout": [
+      {
+        "size": [
+          320,
+          568
+        ],
+        "gap": 52.952380952380935,
+        "tubeWidth": 32.83047619047619,
+        "tubeHeight": 71.48571428571428,
+        "dom": {
+          "width": 320,
+          "scrollWidth": 320,
+          "screenHeight": 568,
+          "rects": [
+            {
+              "id": "menu",
+              "x": 14,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "settings",
+              "x": 259.984375,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "board",
+              "x": 14,
+              "y": 111,
+              "w": 292,
+              "h": 286
+            },
+            {
+              "id": "status",
+              "x": 14,
+              "y": 409.5,
+              "w": 292,
+              "h": 18
+            },
+            {
+              "id": "undo",
+              "x": 14,
+              "y": 442,
+              "w": 66.25,
+              "h": 66
+            },
+            {
+              "id": "restart",
+              "x": 89.25,
+              "y": 442,
+              "w": 66.25,
+              "h": 66
+            },
+            {
+              "id": "hint",
+              "x": 164.5,
+              "y": 442,
+              "w": 66.25,
+              "h": 66
+            },
+            {
+              "id": "symbols",
+              "x": 239.75,
+              "y": 442,
+              "w": 66.25,
+              "h": 66
+            },
+            {
+              "id": "banner-slot",
+              "x": 14,
+              "y": 516,
+              "w": 292,
+              "h": 52
+            }
+          ]
+        }
+      },
+      {
+        "size": [
+          360,
+          640
+        ],
+        "gap": 66.66666666666666,
+        "tubeWidth": 41.333333333333336,
+        "tubeHeight": 90.00000000000001,
+        "dom": {
+          "width": 360,
+          "scrollWidth": 360,
+          "screenHeight": 640,
+          "rects": [
+            {
+              "id": "menu",
+              "x": 14,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "settings",
+              "x": 299.984375,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "board",
+              "x": 14,
+              "y": 111,
+              "w": 332,
+              "h": 358
+            },
+            {
+              "id": "status",
+              "x": 14,
+              "y": 481.5,
+              "w": 332,
+              "h": 18
+            },
+            {
+              "id": "undo",
+              "x": 14,
+              "y": 514,
+              "w": 76.25,
+              "h": 66
+            },
+            {
+              "id": "restart",
+              "x": 99.25,
+              "y": 514,
+              "w": 76.25,
+              "h": 66
+            },
+            {
+              "id": "hint",
+              "x": 184.5,
+              "y": 514,
+              "w": 76.25,
+              "h": 66
+            },
+            {
+              "id": "symbols",
+              "x": 269.75,
+              "y": 514,
+              "w": 76.25,
+              "h": 66
+            },
+            {
+              "id": "banner-slot",
+              "x": 14,
+              "y": 588,
+              "w": 332,
+              "h": 52
+            }
+          ]
+        }
+      },
+      {
+        "size": [
+          390,
+          844
+        ],
+        "gap": 80.28985507246375,
+        "tubeWidth": 49.77971014492754,
+        "tubeHeight": 144.5217391304348,
+        "dom": {
+          "width": 390,
+          "scrollWidth": 390,
+          "screenHeight": 844,
+          "rects": [
+            {
+              "id": "menu",
+              "x": 14,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "settings",
+              "x": 329.984375,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "board",
+              "x": 14,
+              "y": 111,
+              "w": 362,
+              "h": 562
+            },
+            {
+              "id": "status",
+              "x": 14,
+              "y": 685.5,
+              "w": 362,
+              "h": 18
+            },
+            {
+              "id": "undo",
+              "x": 14,
+              "y": 718,
+              "w": 83.75,
+              "h": 66
+            },
+            {
+              "id": "restart",
+              "x": 106.75,
+              "y": 718,
+              "w": 83.75,
+              "h": 66
+            },
+            {
+              "id": "hint",
+              "x": 199.5,
+              "y": 718,
+              "w": 83.75,
+              "h": 66
+            },
+            {
+              "id": "symbols",
+              "x": 292.25,
+              "y": 718,
+              "w": 83.75,
+              "h": 66
+            },
+            {
+              "id": "banner-slot",
+              "x": 14,
+              "y": 792,
+              "w": 362,
+              "h": 52
+            }
+          ]
+        }
+      },
+      {
+        "size": [
+          568,
+          320
+        ],
+        "gap": 44.85714285714283,
+        "tubeWidth": 27.811428571428568,
+        "tubeHeight": 60.55714285714286,
+        "dom": {
+          "width": 568,
+          "scrollWidth": 568,
+          "screenHeight": 320,
+          "rects": [
+            {
+              "id": "menu",
+              "x": 14,
+              "y": 8.5,
+              "w": 42,
+              "h": 42
+            },
+            {
+              "id": "settings",
+              "x": 512,
+              "y": 8.5,
+              "w": 42,
+              "h": 42
+            },
+            {
+              "id": "board",
+              "x": 14,
+              "y": 79,
+              "w": 444,
+              "h": 165
+            },
+            {
+              "id": "status",
+              "x": 14,
+              "y": 249.5,
+              "w": 444,
+              "h": 15
+            },
+            {
+              "id": "undo",
+              "x": 467.5,
+              "y": 64,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "restart",
+              "x": 467.5,
+              "y": 114,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "hint",
+              "x": 467.5,
+              "y": 164,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "symbols",
+              "x": 467.5,
+              "y": 214,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "banner-slot",
+              "x": 14,
+              "y": 270,
+              "w": 540,
+              "h": 50
+            }
+          ]
+        }
+      },
+      {
+        "size": [
+          640,
+          360
+        ],
+        "gap": 56.28571428571428,
+        "tubeWidth": 34.89714285714285,
+        "tubeHeight": 75.9857142857143,
+        "dom": {
+          "width": 640,
+          "scrollWidth": 640,
+          "screenHeight": 360,
+          "rects": [
+            {
+              "id": "menu",
+              "x": 14,
+              "y": 8.5,
+              "w": 42,
+              "h": 42
+            },
+            {
+              "id": "settings",
+              "x": 584,
+              "y": 8.5,
+              "w": 42,
+              "h": 42
+            },
+            {
+              "id": "board",
+              "x": 14,
+              "y": 79,
+              "w": 516,
+              "h": 205
+            },
+            {
+              "id": "status",
+              "x": 14,
+              "y": 289.5,
+              "w": 516,
+              "h": 15
+            },
+            {
+              "id": "undo",
+              "x": 539.5,
+              "y": 84,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "restart",
+              "x": 539.5,
+              "y": 134,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "hint",
+              "x": 539.5,
+              "y": 184,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "symbols",
+              "x": 539.5,
+              "y": 234,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "banner-slot",
+              "x": 14,
+              "y": 310,
+              "w": 612,
+              "h": 50
+            }
+          ]
+        }
+      },
+      {
+        "size": [
+          844,
+          390
+        ],
+        "gap": 64.85714285714283,
+        "tubeWidth": 40.21142857142858,
+        "tubeHeight": 87.55714285714286,
+        "dom": {
+          "width": 844,
+          "scrollWidth": 844,
+          "screenHeight": 390,
+          "rects": [
+            {
+              "id": "menu",
+              "x": 14,
+              "y": 8.5,
+              "w": 42,
+              "h": 42
+            },
+            {
+              "id": "settings",
+              "x": 788,
+              "y": 8.5,
+              "w": 42,
+              "h": 42
+            },
+            {
+              "id": "board",
+              "x": 14,
+              "y": 79,
+              "w": 720,
+              "h": 235
+            },
+            {
+              "id": "status",
+              "x": 14,
+              "y": 319.5,
+              "w": 720,
+              "h": 15
+            },
+            {
+              "id": "undo",
+              "x": 743.5,
+              "y": 99,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "restart",
+              "x": 743.5,
+              "y": 149,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "hint",
+              "x": 743.5,
+              "y": 199,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "symbols",
+              "x": 743.5,
+              "y": 249,
+              "w": 77,
+              "h": 45
+            },
+            {
+              "id": "banner-slot",
+              "x": 14,
+              "y": 340,
+              "w": 816,
+              "h": 50
+            }
+          ]
+        }
+      },
+      {
+        "size": [
+          768,
+          1024
+        ],
+        "gap": 100,
+        "tubeWidth": 62,
+        "tubeHeight": 135,
+        "dom": {
+          "width": 768,
+          "scrollWidth": 768,
+          "screenHeight": 1024,
+          "rects": [
+            {
+              "id": "menu",
+              "x": 14,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "settings",
+              "x": 707.984375,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "board",
+              "x": 14,
+              "y": 111,
+              "w": 740,
+              "h": 742
+            },
+            {
+              "id": "status",
+              "x": 14,
+              "y": 865.5,
+              "w": 740,
+              "h": 18
+            },
+            {
+              "id": "undo",
+              "x": 198.5,
+              "y": 898,
+              "w": 86,
+              "h": 66
+            },
+            {
+              "id": "restart",
+              "x": 293.5,
+              "y": 898,
+              "w": 86,
+              "h": 66
+            },
+            {
+              "id": "hint",
+              "x": 388.5,
+              "y": 898,
+              "w": 86,
+              "h": 66
+            },
+            {
+              "id": "symbols",
+              "x": 483.5,
+              "y": 898,
+              "w": 86,
+              "h": 66
+            },
+            {
+              "id": "banner-slot",
+              "x": 14,
+              "y": 972,
+              "w": 740,
+              "h": 52
+            }
+          ]
+        }
+      },
+      {
+        "size": [
+          1024,
+          768
+        ],
+        "gap": 100,
+        "tubeWidth": 62,
+        "tubeHeight": 135,
+        "dom": {
+          "width": 1024,
+          "scrollWidth": 1024,
+          "screenHeight": 768,
+          "rects": [
+            {
+              "id": "menu",
+              "x": 46,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "settings",
+              "x": 931.984375,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "board",
+              "x": 46,
+              "y": 111,
+              "w": 932,
+              "h": 486
+            },
+            {
+              "id": "status",
+              "x": 46,
+              "y": 609.5,
+              "w": 932,
+              "h": 18
+            },
+            {
+              "id": "undo",
+              "x": 326.5,
+              "y": 642,
+              "w": 86,
+              "h": 66
+            },
+            {
+              "id": "restart",
+              "x": 421.5,
+              "y": 642,
+              "w": 86,
+              "h": 66
+            },
+            {
+              "id": "hint",
+              "x": 516.5,
+              "y": 642,
+              "w": 86,
+              "h": 66
+            },
+            {
+              "id": "symbols",
+              "x": 611.5,
+              "y": 642,
+              "w": 86,
+              "h": 66
+            },
+            {
+              "id": "banner-slot",
+              "x": 46,
+              "y": 716,
+              "w": 932,
+              "h": 52
+            }
+          ]
+        }
+      },
+      {
+        "size": [
+          320,
+          480
+        ],
+        "gap": 47.333333333333314,
+        "tubeWidth": 29.346666666666668,
+        "tubeHeight": 63.900000000000006,
+        "dom": {
+          "width": 320,
+          "scrollWidth": 320,
+          "screenHeight": 480,
+          "rects": [
+            {
+              "id": "menu",
+              "x": 14,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "settings",
+              "x": 259.984375,
+              "y": 20,
+              "w": 46,
+              "h": 46
+            },
+            {
+              "id": "board",
+              "x": 14,
+              "y": 111,
+              "w": 292,
+              "h": 198
+            },
+            {
+              "id": "status",
+              "x": 14,
+              "y": 321.5,
+              "w": 292,
+              "h": 18
+            },
+            {
+              "id": "undo",
+              "x": 14,
+              "y": 354,
+              "w": 66.25,
+              "h": 66
+            },
+            {
+              "id": "restart",
+              "x": 89.25,
+              "y": 354,
+              "w": 66.25,
+              "h": 66
+            },
+            {
+              "id": "hint",
+              "x": 164.5,
+              "y": 354,
+              "w": 66.25,
+              "h": 66
+            },
+            {
+              "id": "symbols",
+              "x": 239.75,
+              "y": 354,
+              "w": 66.25,
+              "h": 66
+            },
+            {
+              "id": "banner-slot",
+              "x": 14,
+              "y": 428,
+              "w": 292,
+              "h": 52
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "followup": {
+    "density": {
+      "dpr": 3,
+      "width": 362,
+      "height": 562,
+      "cssWidth": 362,
+      "cssHeight": 562
+    },
+    "tapHintTargetOnly": "Ходов: 0",
+    "queuedAfterBlankTap": "Ходов: 2",
+    "landscapeSettings": {
+      "scrollHeight": 411,
+      "clientHeight": 270,
+      "dialogY": 29.249954223632812,
+      "dialogBottom": 298.37098693847656,
+      "doneY": 360.7041015625,
+      "doneBottom": 406.21722412109375
+    },
+    "lightActive": {
+      "color": "rgb(212, 234, 255)",
+      "background": "linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(238, 240, 249, 0.5))",
+      "box": "rgba(0, 0, 0, 0)"
+    },
+    "hintStatusRect": {
+      "height": 36,
+      "top": 400.5,
+      "bottom": 436.5,
+      "text": "Перелей из выделенной колбы в отмеченную."
+    },
+    "lastMoveResize": {
+      "moves": "Ходов: 3",
+      "dialog": false,
+      "status": ""
+    }
+  },
+  "production": {
+    "errors": [],
+    "productionAssets": [
+      "index-hRS0jR8n.js",
+      "phaser-Czz4FBZH.js",
+      "solver.worker-BMZ9b8qr.js"
+    ],
+    "hintTargetMoves": "Ходов: 0",
+    "beforeBlank": "Ходов: 1",
+    "afterBlank": "Ходов: 2",
+    "solvedReload": {
+      "dialog": false,
+      "status": "Выбери колбу, затем перелей в пустую."
+    },
+    "settings": {
+      "client": 270,
+      "scroll": 411,
+      "buttonTop": 359,
+      "height": 320
+    }
+  }
+}
