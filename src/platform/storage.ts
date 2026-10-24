@@ -7,7 +7,11 @@ export class SaveStore {
     let hadData=false;
     for(const key of [PRIMARY,BACKUP]) {
       const raw=this.storage.getItem(key); if(raw===null)continue;hadData=true;
-      try {const state:unknown=JSON.parse(raw);if(validSave(state))return {state,recovered:key===BACKUP,corrupt:false};}catch{/* Try backup, never accept an invalid snapshot. */}
+      try {const state:unknown=JSON.parse(raw);if(validSave(state)){
+        // Enter the new art direction once; subsequent explicit theme choices survive.
+        if(state.artVersion===undefined){state.artVersion=4;state.settings.light=false;}
+        return {state,recovered:key===BACKUP,corrupt:false};
+      }}catch{/* Try backup, never accept an invalid snapshot. */}
     }
     return {state:fresh(),recovered:false,corrupt:hadData};
   }

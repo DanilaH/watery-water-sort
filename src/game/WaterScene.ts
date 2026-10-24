@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { type Board, type Move, completeTube, moveFor } from '../core/rules';
 import { area, clip, layout, surface, planPour, pourPose, type PourPlan, type Point } from './geometry';
-export const COLORS=[0x29d8ee,0xffb631,0xb583ff,0x43df99,0xff648e,0x528cff,0xe4eb49,0xe8985c];
+export const COLORS=[0x22d9eb,0xffb51b,0xb75bfa,0x3ce590,0xff496d,0x397bff,0xe9ef30,0xf08037];
 const SIGNS=['●','▲','◆','✚','♥','★','■','✦'];
 type Pose={x:number;y:number;w:number;h:number};
 type Layer={color:number;amount:number};
@@ -75,15 +75,15 @@ export class WaterScene extends Phaser.Scene {
     const shake=rejectAge<200?Math.sin(rejectAge/13)*4*Math.exp(-rejectAge/85):0;
     const c=Math.cos(angle),s=Math.sin(angle);
     const transform=(x:number,y:number)=>({x:r.x+shake+x*c*squash-y*s/squash,y:r.y+x*s*squash+y*c/squash});
-    const radius=Math.min(w,18),local:Point[]=[{x:-w,y:0},{x:w,y:0},{x:w,y:h-radius}];
+    const radius=w,local:Point[]=[{x:-w,y:0},{x:w,y:0},{x:w,y:h-radius}];
     for(let n=1;n<=8;n++){const a=n*Math.PI/16;local.push({x:w-radius+Math.cos(a)*radius,y:h-radius+Math.sin(a)*radius});}
     local.push({x:-w+radius,y:h});
     for(let n=1;n<=8;n++){const a=Math.PI/2+n*Math.PI/16;local.push({x:-w+radius+Math.cos(a)*radius,y:h-radius+Math.sin(a)*radius});}
     const poly=local.map(p=>transform(p.x,p.y));
     // A soft elliptical contact shadow anchors the bottle while the lifted one floats.
     const resting=this.positions()[index];const shadowY=resting.y+resting.h+9;const lift=Math.min(1,Math.abs(r.y-resting.y)/50);for(let n=3;n>=1;n--){g.fillStyle(this.light?0x746c50:0x030c0a,.055*(1-lift*.8));g.fillEllipse(resting.x,shadowY,r.w*(1+n*.20)*(1-lift*.25),4+n*2);}
-    if(selected||target){const glow=selected?0xf0bf58:0x70b6a3;for(let n=3;n>=1;n--){g.lineStyle(n*5,glow,.025);g.strokePoints(poly,true);}g.fillStyle(glow,.12);g.fillEllipse(r.x,shadowY,r.w*1.25,12);}
-    this.polygon(poly,this.light?0x99b9b0:0xa0c5bb,this.light?.12:.07);
+    if(selected||target){const glow=selected?0xb9e3ff:0x68d9e9;for(let n=3;n>=1;n--){g.lineStyle(n*5,glow,.025);g.strokePoints(poly,true);}g.fillStyle(glow,.12);g.fillEllipse(r.x,shadowY,r.w*1.25,12);}
+    this.polygon(poly,this.light?0x8bbbe4:0xb8e4ff,this.light?.13:.045);
     const total=layers.reduce((v,l)=>v+l.amount,0);let sum=0;
     const bounds={lo:Math.min(...poly.map(p=>p.x)),hi:Math.max(...poly.map(p=>p.x))};
     for(let n=0;n<layers.length;n++){
@@ -113,19 +113,27 @@ export class WaterScene extends Phaser.Scene {
       if(this.symbols&&layer.amount>.35&&Math.abs(angle)<.1){const label=this.labels.pop()??this.add.text(0,0,'',{fontFamily:'sans-serif',fontSize:'13px',color:'#18294a',fontStyle:'bold'}).setOrigin(.5).setDepth(3).setResolution(this.density);if(label.parentContainer!==this.root){this.root.add(label);this.root.sort('depth');}const fontSize=Math.floor(Math.max(8,Math.min(14,(low-high)*.62,r.w*.38)));if(parseFloat(String(label.style.fontSize))!==fontSize)label.setFontSize(fontSize);label.setPosition(r.x,(low+high)/2).setText(SIGNS[layer.color]).setVisible(true);this.activeLabels.push(label);}
       sum+=layer.amount;
     }
-    // Thick glass edges, a rim ellipse and asymmetric specular reflections.
-    g.lineStyle(4.5,this.light?0x8da9a0:0xc1d5ca,this.light?.22:.14);g.strokePoints(poly,true);
-    g.lineStyle(1.15,this.light?0x657c71:0xb9d1c7,.64);g.strokePoints(poly,true);
-    const rimA=transform(-w-1,0),rimB=transform(w+1,0);
-    g.lineStyle(5,this.light?0xd3ded7:0x718e83,.72);g.lineBetween(rimA.x,rimA.y,rimB.x,rimB.y);
-    g.lineStyle(1.3,0xf7fbff,.95);g.lineBetween(rimA.x,rimA.y-1,rimB.x,rimB.y-1);
-    for(const [x,alpha,thick,y1,y2]of [[-w+4,.50,2,9,h*.4],[-w+4,.16,1,h*.56,h-15],[w-3,.18,1,8,h-17]] as number[][]){const a=transform(x,y1),b=transform(x,y2);g.lineStyle(thick,0xffffff,alpha);g.lineBetween(a.x,a.y,b.x,b.y);}
-    const bottomA=transform(-w+radius*.6,h-3),bottomB=transform(w-radius*.6,h-3);g.lineStyle(2,0xe2ecff,.38);g.lineBetween(bottomA.x,bottomA.y,bottomB.x,bottomB.y);
-    if(Math.abs(angle)<.05){for(let unit=1;unit<=4;unit++){const y=surface(poly,unit/4*.87);g.lineStyle(1,this.light?0x3b6253:0xf2eddb,.22);g.lineBetween(r.x+w-6,y,r.x+w-2,y);}}
+    // A clean rounded glass silhouette: bright lip, thick base, one broad reflection.
+    g.lineStyle(4,this.light?0x5785ad:0x9bc8ee,this.light?.20:.14);g.strokePoints(poly,true);
+    g.lineStyle(1.5,this.light?0x4e7696:0xc9e5ff,.72);g.strokePoints(poly,true);
+    const rimA=transform(-w,0),rimB=transform(w,0);
+    g.lineStyle(5,0xa6cbea,.5);g.lineBetween(rimA.x,rimA.y,rimB.x,rimB.y);
+    g.lineStyle(1.4,0xf3fbff,.96);g.lineBetween(rimA.x,rimA.y-1,rimB.x,rimB.y-1);
+    if(Math.abs(angle)<.05){g.lineStyle(1,0xe2f2ff,.7);g.strokeEllipse(r.x,r.y,r.w,Math.max(4,r.w*.13));}
+    for(const [x,alpha,thick,y1,y2]of [[-w+4,.52,2.4,9,h*.68],[-w+4,.17,1.2,h*.75,h-18],[w-3,.20,1.2,9,h-20]] as number[][]){const a=transform(x,y1),b=transform(x,y2);g.lineStyle(thick,0xffffff,alpha);g.lineBetween(a.x,a.y,b.x,b.y);}
+    const bottomA=transform(-w*.5,h-4),bottomB=transform(w*.5,h-4);g.lineStyle(3,0xe2ecff,.48);g.lineBetween(bottomA.x,bottomA.y,bottomB.x,bottomB.y);
     const uniform=total===4&&layers.every(l=>l.color===layers[0].color);
-    if(uniform&&!angle){
-      const base=COLORS[layers[0].color];g.fillStyle(base,.12);g.fillEllipse(r.x,shadowY+2,r.w*1.4,13);
-      g.lineStyle(2,base,.8);g.strokeEllipse(r.x,r.y+h+22,22,18);g.lineStyle(2,this.light?0x273b58:0xf4f6ff,.95);g.beginPath();g.moveTo(r.x-4,r.y+h+22);g.lineTo(r.x-1,r.y+h+25);g.lineTo(r.x+5,r.y+h+19);g.strokePath();
+    if(uniform&&Math.abs(angle)<.01&&!selected&&!this.busyTube(index)){
+      const burst=[...this.bursts].reverse().find(b=>b.index===index),elapsed=burst?now-burst.start:10000;
+      // A newly completed tube gets a cork; reloaded completions retain their settled cork.
+      const drop=elapsed<360?-Math.exp(-elapsed/95)*Math.cos(elapsed/40)*25:0;
+      const cw=r.w*.88,ch=Math.max(10,r.w*.27),cy=r.y-ch*.72+drop;
+      g.fillStyle(0x081425,.30);g.fillEllipse(r.x,r.y+2,r.w*.92,5);
+      g.fillStyle(0x916039,1);g.fillRoundedRect(r.x-cw/2,cy,cw,ch,3);
+      g.fillStyle(0xce9a59,1);g.fillRoundedRect(r.x-cw/2,cy,cw,ch*.62,3);
+      g.fillStyle(0xe9bd7b,1);g.fillEllipse(r.x,cy+1,cw,Math.max(4,ch*.36));
+      g.lineStyle(1,0x734624,.5);g.lineBetween(r.x-cw*.33,cy+ch*.72,r.x+cw*.33,cy+ch*.72);
+      for(let k=0;k<4;k++){g.fillStyle(0x754528,.42);g.fillCircle(r.x-cw*.32+k*cw*.20,cy+ch*(k%2?.4:.65),.8);}
     }
     return {poly,transform};
   }
@@ -138,7 +146,7 @@ export class WaterScene extends Phaser.Scene {
     if(!this.flight&&!settling&&!shaking&&!activeSettle&&!this.bursts.length&&!this.particles.length&&now-this.entrance>260&&signature===this.previousSignature)return;
     this.previousSignature=signature;this.ink.clear();this.fx.clear();for(const l of this.activeLabels){l.setVisible(false);this.labels.push(l);}this.activeLabels=[];
     const poses=this.positions(),f=this.flight;
-    if(this.slots>this.board.length){const r=poses[this.board.length],g=this.ink;g.lineStyle(1,this.light?0x718e83:0x9bada3,.18);g.strokeRoundedRect(r.x-r.w/2,r.y+5,r.w,r.h-5,Math.min(14,r.w/2));g.fillStyle(this.light?0x718e83:0x9bada3,.32);g.fillCircle(r.x,r.y+r.h*.52,2);}
+    if(this.slots>this.board.length){const r=poses[this.board.length],g=this.ink;g.lineStyle(1,this.light?0x4b789b:0xb3d9f5,.23);g.strokeRoundedRect(r.x-r.w/2,r.y+5,r.w,r.h-5,Math.min(14,r.w/2));g.fillStyle(this.light?0x4b789b:0xb3d9f5,.4);g.fillCircle(r.x,r.y+r.h*.52,2);}
     const t=f?Math.min(1,(now-f.start)/f.duration):0,transfer=f?Phaser.Math.Clamp((t-.25)/.48,0,1):0;
     if(f&&t>=.25&&!this.startedSound){this.startedSound=true;this.onPour();}
     for(let i=0;i<this.board.length;i++){
@@ -151,7 +159,7 @@ export class WaterScene extends Phaser.Scene {
       let ls=grouped(f?f.before[i]:this.board[i]);
       if(f&&i===f.to){const last=ls.at(-1);if(last?.color===f.color)last.amount+=f.amount*transfer;else ls.push({color:f.color,amount:f.amount*transfer});this.settles.set(i,now);}
       this.tube(r,ls,angle,chosen,target,i,now);
-      if(target){const color=this.light?0x276955:0x9cdbc4;this.fx.lineStyle(2,color,.8);this.fx.strokeEllipse(r.x,r.y+r.h+10,r.w*1.25,9);if(this.hintMove?.to===i){const y=r.y-12;this.fx.lineStyle(2.5,color,1);this.fx.beginPath();this.fx.moveTo(r.x,y-9);this.fx.lineTo(r.x,y+2);this.fx.moveTo(r.x-4,y-2);this.fx.lineTo(r.x,y+2);this.fx.lineTo(r.x+4,y-2);this.fx.strokePath();}}
+      if(target){const color=this.light?0x23649b:0xa6e8ff;this.fx.lineStyle(2,color,.8);this.fx.strokeEllipse(r.x,r.y+r.h+10,r.w*1.25,9);if(this.hintMove?.to===i){const y=r.y-12;this.fx.lineStyle(2.5,color,1);this.fx.beginPath();this.fx.moveTo(r.x,y-9);this.fx.lineTo(r.x,y+2);this.fx.moveTo(r.x-4,y-2);this.fx.lineTo(r.x,y+2);this.fx.lineTo(r.x+4,y-2);this.fx.strokePath();}}
     }
     if(f){
       const origin=poses[f.from],dest=poses[f.to];

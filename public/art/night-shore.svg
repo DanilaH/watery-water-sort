@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" fill="none">
+<defs><radialGradient id="glow"><stop stop-color="#e0bc75" stop-opacity=".12"/><stop offset="1" stop-color="#e0bc75" stop-opacity="0"/></radialGradient></defs>
+<circle cx="690" cy="230" r="170" fill="url(#glow)"/><circle cx="690" cy="230" r="37" fill="#eacb91"/><circle cx="678" cy="218" r="4" fill="#d5b778" opacity=".6"/><circle cx="704" cy="236" r="7" fill="#d5b778" opacity=".5"/>
+<path d="M0 282 70 236 140 258 225 220 335 287 425 259 510 297 602 266 680 288 800 230V480H0Z" fill="#20364b"/>
+<path d="M0 338 94 310 170 337 278 295 365 344 480 321 570 345 700 296 800 325V480H0Z" fill="#192c41"/>
+<path d="M0 399Q170 355 317 389T610 374T800 367V480H0Z" fill="#142538"/>
+<path d="m42 367 14-39 14 39h-9l13 24H60v33H51v-33H38l13-24Zm71 23 10-30 11 30h-7l10 18h-10v25h-7v-25h-10l10-18Zm645-40 17-48 17 48h-11l16 29h-16v58h-11v-58h-16l16-29Z" fill="#0f2032"/>
+<path d="M0 457Q250 418 430 451T800 428V480H0Z" fill="#102034"/>
+<path d="M578 378h53m-82 8h105m-68 8h44" stroke="#e5c88d" stroke-opacity=".12" stroke-width="2" stroke-linecap="round"/>
+</svg>

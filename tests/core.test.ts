@@ -58,3 +58,12 @@ describe('polished field geometry',()=>{
   }
  });
 });
+
+describe('night art upgrade',()=>{
+ it('keeps old progress, enters the new theme once, and retains a subsequent theme choice',()=>{
+  const legacy=moved(fresh(),levels[0].witness[0]);delete legacy.artVersion;legacy.settings.light=true;
+  const data=new Map([['water-sort-v1',JSON.stringify(legacy)]]),store=new SaveStore({getItem:k=>data.get(k)??null,setItem:(k,v)=>{data.set(k,v);}});
+  const upgraded=store.load();expect(upgraded.corrupt).toBe(false);expect(upgraded.state.settings.light).toBe(false);expect(upgraded.state.artVersion).toBe(4);expect(attempt(upgraded.state)).toEqual(attempt(legacy));expect(upgraded.state.completed).toEqual(legacy.completed);
+  upgraded.state.settings.light=true;store.write(upgraded.state);expect(store.load().state.settings.light).toBe(true);
+ });
+});

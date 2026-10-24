@@ -21,8 +21,8 @@ export function layout(width:number,height:number,count:number):TubePose[]{
   for(let cols=2;cols<=maxCols;cols++){
     const rows=Math.ceil(count/cols),pitchX=usableW/cols,pitchY=usableH/rows;
     const verticalGap=height<230?14:height<420?24:32;
-    const h=Math.max(18,Math.min(206,pitchY-verticalGap,pitchX*1.48));
-    const w=Math.max(18,Math.min(74,pitchX*.60,h*.55));
+    const h=Math.max(18,Math.min(218,pitchY-verticalGap,pitchX*2.55));
+    const w=Math.max(18,Math.min(54,pitchX*.53,h*.285));
     const score=Math.sqrt(w*h)*(1+.17*Math.max(0,3-rows));
     if(score>best.score)best={cols,rows,pitchX,pitchY,w,h,score};
   }

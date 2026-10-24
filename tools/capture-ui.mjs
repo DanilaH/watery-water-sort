@@ -7,7 +7,7 @@ const output=process.env.UI_CAPTURE_DIR??'test-results/ui-capture';fs.mkdirSync(
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2});const errors=[];page.on('pageerror',e=>errors.push(e.message));let current=0;
 await page.goto(process.argv[2]??'http://127.0.0.1:4175');
-async function reset(index=0,light=false,symbols=false){current=index;await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),{schema:1,current:index,revision:0,completed:levels.slice(0,index).map(l=>l.id),attempts:{},settings:{sound:true,fast:false,symbols,light}});await page.reload();await page.locator('canvas').waitFor();await page.waitForTimeout(300);}
+async function reset(index=0,light=false,symbols=false){current=index;await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),{schema:1,artVersion:4,current:index,revision:0,completed:levels.slice(0,index).map(l=>l.id),attempts:{},settings:{sound:true,fast:false,symbols,light}});await page.reload();await page.locator('canvas').waitFor();await page.waitForTimeout(300);}
 async function tap(i){const r=await page.locator('#board').boundingBox(),p=layout(r.width,r.height,levels[current].initial.length+1)[i];await page.mouse.click(r.x+p.x,r.y+p.y+p.h/2);}
 async function shot(name){await page.screenshot({path:path.join(output,name+'.png')});}
 await reset();await shot('start-dark');await reset(0,true);await shot('start-light');

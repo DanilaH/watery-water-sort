@@ -95,7 +95,7 @@ scene.onComplete=()=>{
  const board=attempt(state).board;
  if(kind==='undo'){audio.land();paint();message(guidance());drainQueue();return;}
  if(won(board)){
-  board.forEach((t,i)=>{if(completeTube(t))scene.celebrate(i,true);});audio.finish(true);haptic(true);paint();return;
+  if(lastMove)scene.celebrate(lastMove.to,true);audio.finish(true);haptic(true);paint();return;
  }
  if(lastMove&&completeTube(board[lastMove.to])){scene.celebrate(lastMove.to);audio.finish(false,board.filter(completeTube).length-1);haptic(true);}else{audio.land();haptic();}
  paint();message(guidance());
