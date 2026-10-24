@@ -1,0 +1,535 @@
+{
+  "errors": [],
+  "results": [
+    {
+      "case": "chain-target-during-pour",
+      "phase": "input",
+      "selected": 1,
+      "hint": null,
+      "busy": true,
+      "history": {
+        "water-001@1": {
+          "board": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              1
+            ],
+            []
+          ],
+          "history": [
+            {
+              "from": 0,
+              "to": 2,
+              "color": 1,
+              "amount": 2
+            }
+          ],
+          "extra": false
+        }
+      },
+      "status": "Выбери пустую колбу или такой же верхний цвет",
+      "events": [
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 1248.2000000029802
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 1571.800000000745
+        },
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 1686.300000000745
+        }
+      ]
+    },
+    {
+      "case": "chain-target-during-pour",
+      "phase": "after",
+      "selected": 1,
+      "hint": null,
+      "busy": false,
+      "history": {
+        "water-001@1": {
+          "board": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              1
+            ],
+            []
+          ],
+          "history": [
+            {
+              "from": 0,
+              "to": 2,
+              "color": 1,
+              "amount": 2
+            }
+          ],
+          "extra": false
+        }
+      },
+      "status": "Выбери пустую колбу или такой же верхний цвет",
+      "events": [
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 1248.2000000029802
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 1571.800000000745
+        },
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 1686.300000000745
+        },
+        {
+          "cue": "land",
+          "args": [],
+          "time": 1987.6000000014901
+        }
+      ]
+    },
+    {
+      "case": "disjoint-queue",
+      "phase": "input",
+      "selected": 0,
+      "hint": {
+        "from": 0,
+        "to": 2,
+        "color": 1,
+        "amount": 2
+      },
+      "busy": true,
+      "history": {
+        "water-001@1": {
+          "board": [
+            [
+              0,
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [],
+            [
+              0,
+              0
+            ]
+          ],
+          "history": [
+            {
+              "from": 1,
+              "to": 3,
+              "color": 0,
+              "amount": 2
+            }
+          ],
+          "extra": false
+        }
+      },
+      "status": "Следующий ход выбран · тап по фону отменит его",
+      "events": [
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 923
+        },
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 1233.5999999977648
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 1257.2999999970198
+        }
+      ]
+    },
+    {
+      "case": "disjoint-queue",
+      "phase": "after",
+      "selected": null,
+      "hint": null,
+      "busy": false,
+      "history": {
+        "water-001@1": {
+          "board": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "history": [
+            {
+              "from": 1,
+              "to": 3,
+              "color": 0,
+              "amount": 2
+            },
+            {
+              "from": 0,
+              "to": 2,
+              "color": 1,
+              "amount": 2
+            }
+          ],
+          "extra": false
+        }
+      },
+      "status": "Переливается вся верхняя группа одного цвета",
+      "events": [
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 923
+        },
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 1233.5999999977648
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 1257.2999999970198
+        },
+        {
+          "cue": "land",
+          "args": [],
+          "time": 1681.8999999985099
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 1840.5999999977648
+        },
+        {
+          "cue": "land",
+          "args": [],
+          "time": 2247.39999999851
+        }
+      ]
+    },
+    {
+      "case": "incompatible-source-switch",
+      "selected": 1,
+      "hint": null,
+      "busy": false,
+      "history": {},
+      "status": "Эта колба полная · выбран новый источник",
+      "events": [
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 1040.5
+        },
+        {
+          "cue": "reject",
+          "args": [],
+          "time": 1220.1000000014901
+        },
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 1220.199999999255
+        }
+      ]
+    },
+    {
+      "case": "hint",
+      "selected": 2,
+      "hint": {
+        "from": 2,
+        "to": 4,
+        "color": 2,
+        "amount": 2
+      },
+      "busy": false,
+      "history": {},
+      "status": "Перелей в колбу со стрелкой",
+      "events": []
+    },
+    {
+      "case": "victory",
+      "selected": null,
+      "hint": null,
+      "busy": false,
+      "history": {
+        "water-001@1": {
+          "board": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [],
+            []
+          ],
+          "history": [
+            {
+              "from": 1,
+              "to": 3,
+              "color": 0,
+              "amount": 2
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "color": 1,
+              "amount": 2
+            },
+            {
+              "from": 3,
+              "to": 0,
+              "color": 0,
+              "amount": 2
+            }
+          ],
+          "extra": false
+        }
+      },
+      "status": "Все цвета собраны · ходов: 3",
+      "events": [
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 952.9000000022352
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 1274.300000000745
+        },
+        {
+          "cue": "land",
+          "args": [],
+          "time": 1684.9000000022352
+        },
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 1869.699999999255
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 2192.400000002235
+        },
+        {
+          "cue": "finish",
+          "args": [
+            false,
+            0
+          ],
+          "time": 2616
+        },
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 2835.199999999255
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 3220.60000000149
+        },
+        {
+          "cue": "finish",
+          "args": [
+            true
+          ],
+          "time": 3626.199999999255
+        }
+      ],
+      "continue": true
+    },
+    {
+      "case": "undo-victory",
+      "selected": null,
+      "hint": null,
+      "busy": false,
+      "history": {
+        "water-001@1": {
+          "board": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [],
+            [
+              0,
+              0
+            ]
+          ],
+          "history": [
+            {
+              "from": 1,
+              "to": 3,
+              "color": 0,
+              "amount": 2
+            },
+            {
+              "from": 0,
+              "to": 1,
+              "color": 1,
+              "amount": 2
+            }
+          ],
+          "extra": false
+        }
+      },
+      "status": "Переливается вся верхняя группа одного цвета",
+      "events": [
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 952.9000000022352
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 1274.300000000745
+        },
+        {
+          "cue": "land",
+          "args": [],
+          "time": 1684.9000000022352
+        },
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 1869.699999999255
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 2192.400000002235
+        },
+        {
+          "cue": "finish",
+          "args": [
+            false,
+            0
+          ],
+          "time": 2616
+        },
+        {
+          "cue": "tap",
+          "args": [],
+          "time": 2835.199999999255
+        },
+        {
+          "cue": "pour",
+          "args": [
+            269,
+            2
+          ],
+          "time": 3220.60000000149
+        },
+        {
+          "cue": "finish",
+          "args": [
+            true
+          ],
+          "time": 3626.199999999255
+        },
+        {
+          "cue": "land",
+          "args": [],
+          "time": 4721.60000000149
+        }
+      ],
+      "continue": false
+    },
+    {
+      "case": "restart-before-any-move",
+      "confirmation": true
+    }
+  ]
+}
