@@ -16,9 +16,19 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        publicPreview {
+            storeFile file("../debug-signing/public-test.p12")
+            storePassword "android"
+            keyAlias "water-preview"
+            keyPassword "android"
+            storeType "PKCS12"
+        }
+    }
     buildTypes {
         debug {
-            applicationIdSuffix ".preview"
+            applicationIdSuffix ".preview3"
+            signingConfig signingConfigs.publicPreview
         }
         release {
             minifyEnabled false

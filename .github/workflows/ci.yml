@@ -23,10 +23,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - uses: actions/cache@v4
-        with:
-          path: ~/.android/debug.keystore
-          key: water-sort-prototype-debug-signing-v1
       - run: npx cap sync android
       - run: chmod +x android/gradlew && cd android && ./gradlew assembleDebug --no-daemon
       - uses: actions/upload-artifact@v4

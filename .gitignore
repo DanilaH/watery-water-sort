@@ -8,3 +8,6 @@ android/**/build/
 *.keystore
 *.jks
 .env.local
+
+*.p12
+!android/debug-signing/public-test.p12
