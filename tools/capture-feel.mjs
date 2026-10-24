@@ -10,7 +10,7 @@ const context=await browser.newContext({viewport:{width:390,height:844},deviceSc
 await context.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),{schema:1,artVersion:4,current:2,revision:0,completed:levels.slice(0,2).map(l=>l.id),attempts:{},settings:{sound:true,fast:false,symbols:false,light:false}});
 const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
 await page.goto(process.argv[2]??'http://127.0.0.1:4175');await page.locator('canvas').waitFor();await page.waitForTimeout(700);
-async function tap(i){const r=await page.locator('#board').boundingBox(),p=layout(r.width,r.height,levels[2].initial.length+1)[i];await page.mouse.click(r.x+p.x,r.y+p.y+p.h/2);}
+async function tap(i){const r=await page.locator('#board').boundingBox(),p=layout(r.width,r.height,levels[2].initial.length)[i];await page.mouse.click(r.x+p.x,r.y+p.y+p.h/2);}
 async function shot(name){await page.screenshot({path:path.join(output,name+'.png')});}
 await shot('gameplay');
 for(const [i,m]of levels[2].witness.entries()){

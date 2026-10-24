@@ -2,7 +2,7 @@ import { test,expect } from '@playwright/test';
 import { layout } from '../../src/game/geometry';
 import {readFileSync} from 'node:fs';
 const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
-async function tap(page:import('@playwright/test').Page,index:number,count=5){const box=(await page.locator('#board').boundingBox())!;const p=layout(box.width,box.height,count)[index];await page.mouse.click(box.x+p.x,box.y+p.y+p.h/2);}
+async function tap(page:import('@playwright/test').Page,index:number,count=4){const box=(await page.locator('#board').boundingBox())!;const p=layout(box.width,box.height,count)[index];await page.mouse.click(box.x+p.x,box.y+p.y+p.h/2);}
 test('complete tutorial, retain move during animation, undo after reload',async({page})=>{
  await page.setViewportSize({width:390,height:844});const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');await expect(page.locator('canvas')).toBeVisible();await page.waitForTimeout(300);
  await tap(page,0);await tap(page,2);await expect(page.locator('#moves')).toHaveText('Ходов: 1');await page.reload();await expect(page.locator('#moves')).toHaveText('Ходов: 1');await page.locator('#undo').click();await expect(page.locator('#moves')).toHaveText('Ходов: 0');await page.waitForTimeout(350);

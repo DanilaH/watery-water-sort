@@ -3,7 +3,7 @@ import { apply, moveFor, moves, reverse, validBoard, won, type Board } from '../
 import { solve } from '../src/core/solver';
 import { levels, fresh, moved, undone, restarted, validSave, attempt, levelKey } from '../src/core/session';
 import { SaveStore } from '../src/platform/storage';
-import { area, clip, surface, layout, bounds, planPour, pourPose } from '../src/game/geometry';
+import { area, clip, surface, layout, bounds, planPour, pourPose, vesselPolygon, LIQUID_FILL, pourTransfer } from '../src/game/geometry';
 describe('rules',()=>{
  it('pours only the contiguous group or available space',()=>{
   expect(moveFor([[0,0,1,1],[1,1,1],[],[]],0,1)).toEqual({from:0,to:1,color:1,amount:1});
@@ -65,5 +65,24 @@ describe('night art upgrade',()=>{
   const data=new Map([['water-sort-v1',JSON.stringify(legacy)]]),store=new SaveStore({getItem:k=>data.get(k)??null,setItem:(k,v)=>{data.set(k,v);}});
   const upgraded=store.load();expect(upgraded.corrupt).toBe(false);expect(upgraded.state.settings.light).toBe(false);expect(upgraded.state.artVersion).toBe(4);expect(attempt(upgraded.state)).toEqual(attempt(legacy));expect(upgraded.state.completed).toEqual(legacy.completed);
   upgraded.state.settings.light=true;store.write(upgraded.state);expect(store.load().state.settings.light).toBe(true);
+ });
+});
+
+
+describe('connected pouring',()=>{
+ it('keeps the liquid at the outlet throughout legal pours, including the last partial unit',()=>{
+  for(const [width,height] of [[288,263],[358,582],[452,176],[736,762]])for(const level of levels){
+   let board:Board=level.initial;const ps=layout(width,height,board.length);
+   for(const m of level.witness){const before=board[m.from].length,plan=planPour(ps[m.from],ps[m.to],width,height,before,before-m.amount);
+    for(const t of [.25,.35,.5,.65,.729]){const r=pourPose(ps[m.from],ps[m.to],t,width,height,0,plan),c=Math.cos(r.angle),s=Math.sin(r.angle);
+     const poly=vesselPolygon(r.w,r.h).map(p=>({x:r.x+p.x*c-p.y*s,y:r.y+p.x*s+p.y*c})),units=before-m.amount*pourTransfer(t),lip=r.y+r.tipX*s;
+     expect(Math.abs(surface(poly,units/4*LIQUID_FILL)-lip)).toBeLessThan(.02);
+     const b=bounds(r,r.angle);expect(b.left).toBeGreaterThanOrEqual(4.99);expect(b.right).toBeLessThanOrEqual(width-4.99);expect(b.top).toBeGreaterThanOrEqual(4.99);expect(b.bottom).toBeLessThanOrEqual(height-4.99);
+    }board=apply(board,m);
+   }
+  }
+ });
+ it('keeps a dense small-phone field readable without a phantom slot',()=>{
+  const ps=layout(288,263,10);expect(new Set(ps.map(p=>p.y)).size).toBe(2);expect(ps[0].w).toBeGreaterThanOrEqual(26);expect(ps[0].h).toBeGreaterThanOrEqual(90);
  });
 });

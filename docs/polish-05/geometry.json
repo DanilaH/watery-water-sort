@@ -1,0 +1,10 @@
+{
+  "samples": 4960,
+  "maxOutletGapCssPx": 0.00024292986528706706,
+  "smallPortrait": {
+    "tubeWidth": 27.217499999999998,
+    "tubeHeight": 95.5,
+    "targetWidth": 48,
+    "targetHeight": 105.5
+  }
+}

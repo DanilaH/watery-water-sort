@@ -29,7 +29,7 @@ function guidance(){
  if(scene.selected!==null)return 'Выбери пустую колбу или такой же верхний цвет';
  if(state.current===0&&attempt(state).history.length===0)return 'Выбери цветную колбу, затем пустую';
  if(state.current<2)return 'Переливается вся верхняя группа одного цвета';
- return 'Собери каждый цвет в отдельную колбу';
+ return '';
 }
 function cancelSearch(){worker?.terminate();worker=undefined;requestId++;searching=false;}
 function clearIntent(){queued=null;scene.selected=null;scene.hintMove=null;}
@@ -38,7 +38,7 @@ function block(reason:string,on:boolean){if(on){blockers.add(reason);interrupt()
 function commit(next:Save){try{store.write(next);state=next;return true;}catch{message('Не удалось сохранить. Ход не принят — попробуй ещё раз.');return false;}}
 function paint(){
  const a=attempt(state),finished=won(a.board)&&!scene.busy;
- scene.slots=levels[state.current].initial.length+1;scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=state.settings.light;audio.setEnabled(state.settings.sound);
+ scene.slots=a.board.length;scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=state.settings.light;audio.setEnabled(state.settings.sound);
  document.body.classList.toggle('light',state.settings.light);document.body.classList.toggle('finished',finished);
  $('level-title').textContent=`Уровень ${state.current+1}`;$('moves').textContent=`Ходов: ${a.history.length}`;$('progress').textContent=`${state.current+1} / ${levels.length}`;
  ($('undo') as HTMLButtonElement).disabled=!a.history.length;
@@ -77,7 +77,7 @@ function accept(m:Move){
 scene.onTap=(i)=>{
  if(locked||blockers.size||won(attempt(state).board))return;if(searching){cancelSearch();paint();}audio.prime();
  if(i===null){clearIntent();message(guidance());return;}
- if(i>=attempt(state).board.length){message('Дополнительная колба пока недоступна · отмена бесплатна');return;}
+ if(i>=attempt(state).board.length)return;
  if(scene.busyTube(i))return;
  if(scene.selected===i){clearIntent();audio.tap();message(guidance());return;}
  let rejection='';
