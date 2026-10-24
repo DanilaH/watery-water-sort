@@ -4,7 +4,7 @@ export { levels };
 export type Attempt = { board: Board; history: Move[]; extra: boolean };
 export type Settings = { sound: boolean; fast: boolean; symbols: boolean; light: boolean; haptics?: boolean };
 export type Save = { schema: 1; current: number; revision: number; completed: string[]; attempts: Record<string,Attempt>; settings: Settings };
-export function fresh(): Save { return { schema:1,current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false} }; }
+export function fresh(): Save { return { schema:1,current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:true} }; }
 export const levelKey = (i: number) => `${levels[i].id}@${levels[i].version}`;
 export function attempt(s: Save): Attempt { return s.attempts[levelKey(s.current)] ?? {board:clone(levels[s.current].initial),history:[],extra:false}; }
 export function validSave(value: unknown): value is Save {

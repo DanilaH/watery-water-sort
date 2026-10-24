@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
 import { type Board, type Move, completeTube, moveFor } from '../core/rules';
-import { area, clip, layout, surface, type Point } from './geometry';
+import { area, clip, layout, surface, planPour, pourPose, type PourPlan, type Point } from './geometry';
 export const COLORS=[0x29d8ee,0xffb631,0xb583ff,0x43df99,0xff648e,0x528cff,0xe4eb49,0xe8985c];
 const SIGNS=['●','▲','◆','✚','♥','★','■','✦'];
 type Pose={x:number;y:number;w:number;h:number};
 type Layer={color:number;amount:number};
-type Flight=Move & {before:Board;start:number;duration:number;lifted:number};
+type Flight=Move & {before:Board;start:number;duration:number;lifted:number;plan:PourPlan};
 type Burst={index:number;start:number;color:number;final:boolean};
 type Particle={x:number;y:number;vx:number;vy:number;life:number;age:number;color:number;size:number;spin:number};
 const blend=(a:number,b:number,t:number)=>Phaser.Display.Color.GetColor(
@@ -13,6 +13,8 @@ const blend=(a:number,b:number,t:number)=>Phaser.Display.Color.GetColor(
 function clipX(poly:Point[],x:number,right:boolean):Point[]{return clip(poly.map(p=>({x:p.y,y:p.x})),x,right).map(p=>({x:p.y,y:p.x}));}
 function grouped(tube:number[]):Layer[]{const out:Layer[]=[];for(const color of tube){const prev=out.at(-1);if(prev?.color===color)prev.amount++;else out.push({color,amount:1});}return out;}
 export class WaterScene extends Phaser.Scene {
+  private root!:Phaser.GameObjects.Container;
+  private viewWidth=1;private viewHeight=1;private density=1;private entrance=0;
   private ink!:Phaser.GameObjects.Graphics;
   private fx!:Phaser.GameObjects.Graphics;
   private labels:Phaser.GameObjects.Text[]=[];
@@ -33,20 +35,23 @@ export class WaterScene extends Phaser.Scene {
   onPour:()=>void=()=>{};
   onComplete:()=>void=()=>{};
   create(){
-    this.ink=this.add.graphics();this.fx=this.add.graphics().setDepth(4);
+    this.root=this.add.container(0,0).setScale(this.density);
+    this.ink=this.add.graphics();this.fx=this.add.graphics().setDepth(4);this.root.add([this.ink,this.fx]);
     this.input.on('pointerdown',(p:Phaser.Input.Pointer)=>{
       if(!p.primaryDown)return;
-      const poses=this.positions();const i=poses.findIndex((r,n)=>n<this.slots&&Math.abs(p.x-r.x)<Math.max(24,r.w*.71)&&p.y>r.y-22&&p.y<r.y+r.h+15);
+      const poses=this.positions();const i=poses.findIndex((r,n)=>n<this.slots&&Math.abs(p.x/this.density-r.x)<r.hitW/2&&Math.abs(p.y/this.density-(r.y+r.h/2))<r.hitH/2);
       this.onTap(i<0?null:i);
     });
   }
-  positions(){return layout(this.scale.width,this.scale.height,this.slots);}
+  setViewport(width:number,height:number,density:number){this.viewWidth=Math.max(1,width);this.viewHeight=Math.max(1,height);this.density=density;this.root?.setScale(density);for(const label of [...this.labels,...this.activeLabels])label.setResolution(density);this.previousSignature='';}
+  positions(){return layout(this.viewWidth,this.viewHeight,this.slots);}
+  reveal(){this.entrance=performance.now();this.previousSignature='';}
   setBoard(b:Board){this.board=b;}
-  animate(before:Board,m:Move,fast:boolean){this.flight={...m,before,start:performance.now(),duration:fast?320:560,lifted:this.selectionY.get(m.from)??0};this.startedSound=false;this.selectionY.set(m.from,0);this.selectionV.set(m.from,0);}
+  animate(before:Board,m:Move,fast:boolean){this.flight={...m,before,start:performance.now(),duration:fast?320:560,lifted:(this.selectionY.get(m.from)??0)+12*Math.max(0,1-(performance.now()-this.entrance)/240)**2,plan:planPour(this.positions()[m.from],this.positions()[m.to],this.viewWidth,this.viewHeight)};this.startedSound=false;this.selectionY.set(m.from,0);this.selectionV.set(m.from,0);}
   get busy(){return !!this.flight;}
   busyTube(i:number){return this.flight?.from===i||this.flight?.to===i;}
   skip(){this.flight=undefined;this.startedSound=false;this.previousSignature='';}
-  resetEffects(){this.skip();this.bursts=[];this.particles=[];this.settles.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();for(const l of this.floatLabels)l.destroy();this.floatLabels=[];}
+  resetEffects(){this.skip();this.bursts=[];this.particles=[];this.settles.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
   reject(i:number){this.pulses.set(i,performance.now());}
   land(i:number){this.settles.set(i,performance.now());}
   celebrate(index:number,final=false){
@@ -57,7 +62,7 @@ export class WaterScene extends Phaser.Scene {
       this.particles.push({x:r.x,y:r.y+r.h*.43,vx:Math.cos(theta)*speed,vy:Math.sin(theta)*speed-60,age:0,life:.45+Math.random()*.4,color:n%3?color:0xfff0bc,size:2+Math.random()*2,spin:Math.random()*6});
     }
     this.particles=this.particles.slice(-100);
-    if(!final){const label=this.add.text(r.x,r.y-12,'Цвет собран',{fontFamily:'system-ui, sans-serif',fontSize:'12px',fontStyle:'bold',color:this.light?'#23526a':'#fff0cb',stroke:this.light?'#ffffff':'#171a3b',strokeThickness:3}).setOrigin(.5).setDepth(6);this.floatLabels.push(label);this.tweens.add({targets:label,y:r.y-35,alpha:0,duration:650,ease:'Cubic.Out',onComplete:()=>{this.floatLabels=this.floatLabels.filter(l=>l!==label);label.destroy();}});}
+
   }
   private polygon(points:Point[],color:number,alpha=1,g=this.ink){if(points.length<3||area(points)<.005)return;g.fillStyle(color,alpha);g.fillPoints(points,true);}
   private star(x:number,y:number,r:number,color:number,alpha:number,rotation=0){const g=this.fx;g.fillStyle(color,alpha);g.beginPath();for(let n=0;n<8;n++){const a=rotation+n*Math.PI/4,s=n%2?r*.26:r;const px=x+Math.cos(a)*s,py=y+Math.sin(a)*s;if(n===0)g.moveTo(px,py);else g.lineTo(px,py);}g.closePath();g.fillPath();}
@@ -76,40 +81,47 @@ export class WaterScene extends Phaser.Scene {
     for(let n=1;n<=8;n++){const a=Math.PI/2+n*Math.PI/16;local.push({x:-w+radius+Math.cos(a)*radius,y:h-radius+Math.sin(a)*radius});}
     const poly=local.map(p=>transform(p.x,p.y));
     // A soft elliptical contact shadow anchors the bottle while the lifted one floats.
-    const shadowY=r.y+h+12;for(let n=3;n>=1;n--){g.fillStyle(this.light?0x385d73:0x070a1f,.06);g.fillEllipse(r.x,shadowY,r.w*(1+n*.24),5+n*3);}
-    if(selected||target){const glow=selected?0x8de7ff:0x87bfe7;for(let n=3;n>=1;n--){g.lineStyle(n*5,glow,.025);g.strokePoints(poly,true);}g.fillStyle(glow,.12);g.fillEllipse(r.x,shadowY,r.w*1.25,12);}
-    this.polygon(poly,this.light?0xa0bddb:0x809dd1,this.light?.12:.07);
+    const resting=this.positions()[index];const shadowY=resting.y+resting.h+9;const lift=Math.min(1,Math.abs(r.y-resting.y)/50);for(let n=3;n>=1;n--){g.fillStyle(this.light?0x746c50:0x030c0a,.055*(1-lift*.8));g.fillEllipse(resting.x,shadowY,r.w*(1+n*.20)*(1-lift*.25),4+n*2);}
+    if(selected||target){const glow=selected?0xf0bf58:0x70b6a3;for(let n=3;n>=1;n--){g.lineStyle(n*5,glow,.025);g.strokePoints(poly,true);}g.fillStyle(glow,.12);g.fillEllipse(r.x,shadowY,r.w*1.25,12);}
+    this.polygon(poly,this.light?0x99b9b0:0xa0c5bb,this.light?.12:.07);
     const total=layers.reduce((v,l)=>v+l.amount,0);let sum=0;
     const bounds={lo:Math.min(...poly.map(p=>p.x)),hi:Math.max(...poly.map(p=>p.x))};
     for(let n=0;n<layers.length;n++){
       const layer=layers[n];if(layer.amount<.001)continue;
       const low=surface(poly,sum/4*.87),high=surface(poly,(sum+layer.amount)/4*.87),base=COLORS[layer.color];
-      const band=clip(clip(poly,high,true),low,false);
+      let band=clip(clip(poly,high,true),low,false);
+      const wave=age<550?Math.sin(now/43+index)*Math.min(2.2,h*.025)*Math.exp(-age/190):0;
+      if(Math.abs(angle)<.08&&n===layers.length-1&&Math.abs(wave)>.05){
+        const section=clip(poly,high,true),left=Math.min(...section.map(p=>p.x)),right=Math.max(...section.map(p=>p.x)),top=Array.from({length:17},(_,k)=>({x:left+(right-left)*k/16,y:high+Math.sin(k/16*Math.PI*2)*wave}));
+        band=clip(poly,low,false);band=clip(band,high-Math.abs(wave),true);
+        const lower=band.filter(p=>p.y>high+Math.abs(wave)+.1);band=[...top,...lower.sort((a,b)=>b.x-a.x)];
+      }
       // Cross-section shading is clipped to the actual liquid, including on a tilted vessel.
       for(let k=0;k<28;k++){
         const t=(k+.5)/28,x0=Phaser.Math.Linear(bounds.lo,bounds.hi,k/28),x1=Phaser.Math.Linear(bounds.lo,bounds.hi,(k+1)/28)+.8;
-        let col=blend(base,0x0b2353,.36*Math.pow(Math.abs(t-.4)*1.8,1.4));
-        col=blend(col,0xffffff,Math.exp(-Math.pow((t-.22)/.15,2))*.28);
+        let col=blend(base,0x0b2353,.20*Math.pow(Math.abs(t-.4)*1.8,1.4));
+        col=blend(col,0xffffff,Math.exp(-Math.pow((t-.22)/.22,2))*.13);
         this.polygon(clipX(clipX(band,x0,true),x1,false),col);
       }
       if(Math.abs(angle)<.09){
-        const wave=(age<650?Math.sin(now/43+index)*2.1*Math.exp(-age/210):0)+(selected?Math.sin(now/135)*.9:0);
+        
         const cap=clip(poly,high+3,true);const left=cap.length?Math.min(...cap.map(p=>p.x)):r.x-w,right=cap.length?Math.max(...cap.map(p=>p.x)):r.x+w;
         g.fillStyle(blend(base,0xffffff,.25),.82);g.fillEllipse((left+right)/2,high+.7,(right-left)-1,Math.max(3,r.w*.105));
         g.lineStyle(1.2,0xffffff,.28);g.beginPath();for(let k=0;k<=14;k++){const x=left+(right-left)*k/14,y=high+Math.sin(k/14*Math.PI*2)*wave;if(k===0)g.moveTo(x,y);else g.lineTo(x,y);}g.strokePath();
         if(n===layers.length-1&&age<280){const p=age/280;g.lineStyle(1.2,0xffffff,.55*(1-p));g.strokeEllipse(r.x,high+2,r.w*.8*p,4+3*p);}
       }
-      if(this.symbols&&layer.amount>.35&&Math.abs(angle)<.1){const label=this.labels.pop()??this.add.text(0,0,'',{fontFamily:'sans-serif',fontSize:'15px',color:'#18294a',fontStyle:'bold'}).setOrigin(.5).setDepth(3);label.setPosition(r.x,(low+high)/2).setText(SIGNS[layer.color]).setVisible(true);this.activeLabels.push(label);}
+      if(this.symbols&&layer.amount>.35&&Math.abs(angle)<.1){const label=this.labels.pop()??this.add.text(0,0,'',{fontFamily:'sans-serif',fontSize:'13px',color:'#18294a',fontStyle:'bold'}).setOrigin(.5).setDepth(3).setResolution(this.density);if(label.parentContainer!==this.root){this.root.add(label);this.root.sort('depth');}const fontSize=Math.floor(Math.max(8,Math.min(14,(low-high)*.62,r.w*.38)));if(parseFloat(String(label.style.fontSize))!==fontSize)label.setFontSize(fontSize);label.setPosition(r.x,(low+high)/2).setText(SIGNS[layer.color]).setVisible(true);this.activeLabels.push(label);}
       sum+=layer.amount;
     }
     // Thick glass edges, a rim ellipse and asymmetric specular reflections.
-    g.lineStyle(4.5,this.light?0x6f91ae:0xc4d7ff,this.light?.22:.14);g.strokePoints(poly,true);
-    g.lineStyle(1.15,this.light?0x607e9f:0xc9dcff,.64);g.strokePoints(poly,true);
+    g.lineStyle(4.5,this.light?0x8da9a0:0xc1d5ca,this.light?.22:.14);g.strokePoints(poly,true);
+    g.lineStyle(1.15,this.light?0x657c71:0xb9d1c7,.64);g.strokePoints(poly,true);
     const rimA=transform(-w-1,0),rimB=transform(w+1,0);
-    g.lineStyle(5,this.light?0xd6e7f4:0x6b82a9,.72);g.lineBetween(rimA.x,rimA.y,rimB.x,rimB.y);
+    g.lineStyle(5,this.light?0xd3ded7:0x718e83,.72);g.lineBetween(rimA.x,rimA.y,rimB.x,rimB.y);
     g.lineStyle(1.3,0xf7fbff,.95);g.lineBetween(rimA.x,rimA.y-1,rimB.x,rimB.y-1);
-    for(const [x,alpha,thick,y1,y2]of [[-w+5,.72,3,10,h*.54],[-w+5,.23,2,h*.61,h-15],[w-4,.21,2,9,h-18]] as number[][]){const a=transform(x,y1),b=transform(x,y2);g.lineStyle(thick,0xffffff,alpha);g.lineBetween(a.x,a.y,b.x,b.y);}
+    for(const [x,alpha,thick,y1,y2]of [[-w+4,.50,2,9,h*.4],[-w+4,.16,1,h*.56,h-15],[w-3,.18,1,8,h-17]] as number[][]){const a=transform(x,y1),b=transform(x,y2);g.lineStyle(thick,0xffffff,alpha);g.lineBetween(a.x,a.y,b.x,b.y);}
     const bottomA=transform(-w+radius*.6,h-3),bottomB=transform(w-radius*.6,h-3);g.lineStyle(2,0xe2ecff,.38);g.lineBetween(bottomA.x,bottomA.y,bottomB.x,bottomB.y);
+    if(Math.abs(angle)<.05){for(let unit=1;unit<=4;unit++){const y=surface(poly,unit/4*.87);g.lineStyle(1,this.light?0x3b6253:0xf2eddb,.22);g.lineBetween(r.x+w-6,y,r.x+w-2,y);}}
     const uniform=total===4&&layers.every(l=>l.color===layers[0].color);
     if(uniform&&!angle){
       const base=COLORS[layers[0].color];g.fillStyle(base,.12);g.fillEllipse(r.x,shadowY+2,r.w*1.4,13);
@@ -120,13 +132,13 @@ export class WaterScene extends Phaser.Scene {
   update(){
     if(!this.ink)return;
     const now=performance.now(),dt=Math.min(.035,(now-this.lastFrame)/1000||.016);this.lastFrame=now;
-    const signature=JSON.stringify([this.board,this.selected,this.hintMove,this.symbols,this.light,this.scale.width,this.scale.height]);
+    const signature=JSON.stringify([this.board,this.selected,this.hintMove,this.symbols,this.light,this.viewWidth,this.viewHeight]);
     const settling=[...this.selectionY].some(([i,y])=>Math.abs(y-(this.selected===i||this.hintMove?.from===i?-17:0))>.1);
     const activeSettle=[...this.settles.values()].some(t=>now-t<650),shaking=[...this.pulses.values()].some(t=>now-t<220);
-    if(!this.flight&&!settling&&!shaking&&!activeSettle&&!this.bursts.length&&!this.particles.length&&this.selected===null&&this.hintMove===null&&signature===this.previousSignature)return;
+    if(!this.flight&&!settling&&!shaking&&!activeSettle&&!this.bursts.length&&!this.particles.length&&now-this.entrance>260&&signature===this.previousSignature)return;
     this.previousSignature=signature;this.ink.clear();this.fx.clear();for(const l of this.activeLabels){l.setVisible(false);this.labels.push(l);}this.activeLabels=[];
     const poses=this.positions(),f=this.flight;
-    if(this.slots>this.board.length){const r=poses[this.board.length],g=this.ink;g.fillStyle(this.light?0x597597:0x90a8db,.025);g.fillRoundedRect(r.x-r.w/2,r.y+5,r.w,r.h-5,18);g.lineStyle(1,this.light?0x6787a3:0x879bc7,.22);g.strokeRoundedRect(r.x-r.w/2,r.y+5,r.w,r.h-5,18);g.lineStyle(2,this.light?0x6787a3:0x879bc7,.4);g.lineBetween(r.x-6,r.y+r.h*.52,r.x+6,r.y+r.h*.52);g.lineBetween(r.x,r.y+r.h*.52-6,r.x,r.y+r.h*.52+6);}
+    if(this.slots>this.board.length){const r=poses[this.board.length],g=this.ink;g.lineStyle(1,this.light?0x718e83:0x9bada3,.18);g.strokeRoundedRect(r.x-r.w/2,r.y+5,r.w,r.h-5,Math.min(14,r.w/2));g.fillStyle(this.light?0x718e83:0x9bada3,.32);g.fillCircle(r.x,r.y+r.h*.52,2);}
     const t=f?Math.min(1,(now-f.start)/f.duration):0,transfer=f?Phaser.Math.Clamp((t-.25)/.48,0,1):0;
     if(f&&t>=.25&&!this.startedSound){this.startedSound=true;this.onPour();}
     for(let i=0;i<this.board.length;i++){
@@ -134,26 +146,22 @@ export class WaterScene extends Phaser.Scene {
       const r={...poses[i]},chosen=this.selected===i||this.hintMove?.from===i;
       const target=this.selected!==null&&!!moveFor(this.board,this.selected,i)||this.hintMove?.to===i;
       const aim=chosen?-17:0,prev=this.selectionY.get(i)??0;let velocity=this.selectionV.get(i)??0;velocity+=((aim-prev)*520-velocity*28)*dt;let offset=prev+velocity*dt;if(Math.abs(offset-aim)<.04&&Math.abs(velocity)<.2){offset=aim;velocity=0;}this.selectionY.set(i,offset);this.selectionV.set(i,velocity);r.y+=offset;
-      const angle=chosen?Math.sin(now/190)*.018:0;
+      const angle=0;
+      if(now-this.entrance<240){const p=Math.max(0,1-(now-this.entrance)/240);r.y+=p*p*12;}
       let ls=grouped(f?f.before[i]:this.board[i]);
       if(f&&i===f.to){const last=ls.at(-1);if(last?.color===f.color)last.amount+=f.amount*transfer;else ls.push({color:f.color,amount:f.amount*transfer});this.settles.set(i,now);}
       this.tube(r,ls,angle,chosen,target,i,now);
-      if(target){const pulse=.6+.4*Math.sin(now/160);this.fx.lineStyle(1.4,0xacd9ff,.3+.3*pulse);this.fx.strokeEllipse(r.x,r.y+r.h+13,r.w*1.3,13);}
+      if(target){const color=this.light?0x276955:0x9cdbc4;this.fx.lineStyle(2,color,.8);this.fx.strokeEllipse(r.x,r.y+r.h+10,r.w*1.25,9);if(this.hintMove?.to===i){const y=r.y-12;this.fx.lineStyle(2.5,color,1);this.fx.beginPath();this.fx.moveTo(r.x,y-9);this.fx.lineTo(r.x,y+2);this.fx.moveTo(r.x-4,y-2);this.fx.lineTo(r.x,y+2);this.fx.lineTo(r.x+4,y-2);this.fx.strokePath();}}
     }
     if(f){
-      const origin=poses[f.from],dest=poses[f.to],dir=origin.x<=dest.x?1:-1;
-      const ease=(v:number)=>1-Math.pow(1-v,3);
-      const travel=t<.25?ease(t/.25):t>.73?1-ease((t-.73)/.27):1;
-      const angle=dir*1.16*travel,tipX=dir*origin.w*.5;
-      const targetX=dest.x-tipX*Math.cos(angle),targetY=dest.y-23-tipX*Math.sin(angle);
-      const arc=-Math.sin(Math.PI*travel)*Math.min(28,origin.h*.2);
-      const r={...origin,x:Phaser.Math.Linear(origin.x,targetX,travel),y:Phaser.Math.Linear(origin.y+f.lifted,targetY,travel)+arc};
+      const origin=poses[f.from],dest=poses[f.to];
+      const r=pourPose(origin,dest,t,this.viewWidth,this.viewHeight,f.lifted,f.plan),angle=r.angle,tipX=r.tipX;
       const ls=grouped(f.before[f.from]);let remaining=f.amount*transfer;for(let i=ls.length-1;i>=0&&remaining>0;i--){const q=Math.min(ls[i].amount,remaining);ls[i].amount-=q;remaining-=q;}
       const {transform}=this.tube(r,ls,angle,true,false,f.from,now);
       if(t>=.25&&t<.73){
         const lip=transform(tipX,0),endY=dest.y+dest.h*(1-(f.before[f.to].length+f.amount*transfer)*.87/4),color=COLORS[f.color];
         const stream:Point[]=[];for(let k=0;k<=18;k++){const v=k/18;stream.push({x:Phaser.Math.Linear(lip.x,dest.x,v)+Math.sin(v*Math.PI)*Math.sin(now/60)*1.1,y:Phaser.Math.Linear(lip.y,Math.max(dest.y+5,endY),v)});}
-        for(const [width,alpha,col]of [[12,.08,color],[7,.95,color],[2,.68,0xffffff]]){this.fx.lineStyle(width,col,alpha);this.fx.strokePoints(stream,false);}
+        for(const [width,alpha,col]of [[7+f.amount*1.3,.07,color],[3.6+f.amount*.8,.95,color],[1.2,.65,0xffffff]]){this.fx.lineStyle(width,col,alpha);this.fx.strokePoints(stream,false);}
         for(let n=0;n<5;n++){const phase=((now/260)+n*.2)%1;this.fx.fillStyle(blend(color,0xffffff,.3),1-phase);this.fx.fillEllipse(dest.x+Math.sin(n*2.4+now/120)*phase*14,endY-Math.sin(phase*Math.PI)*13,2.5*(1-phase)+1,4*(1-phase)+1);}
         this.fx.lineStyle(1.5,0xffffff,.45);this.fx.strokeEllipse(dest.x,endY+2,9+Math.sin(now/40)*4,3);
       }
@@ -164,9 +172,9 @@ export class WaterScene extends Phaser.Scene {
       for(let n=3;n>=1;n--){g.fillStyle(b.color,.035*fade);g.fillEllipse(r.x,r.y+r.h*.5,r.w*(1+n*.6),r.h*(1+n*.1));}
       g.lineStyle(2,b.color,.8*fade);g.strokeEllipse(r.x,r.y+r.h*.45,r.w*(.9+p*2.2),r.h*(.35+p*.6));
       const sweep=r.y+r.h*(1-p);g.lineStyle(3,0xffffff,.75*fade);g.lineBetween(r.x-r.w*.4,sweep,r.x+r.w*.4,sweep);
-      for(let n=0;n<4;n++){const a=n*Math.PI/2+p*.8;this.star(r.x+Math.cos(a)*r.w*(.6+p*.6),r.y+r.h*.35+Math.sin(a)*r.h*.35,5*fade,b.color,fade,a);}
+      for(let n=0;n<3;n++){const a=n*Math.PI*2/3+p*.8;this.star(r.x+Math.cos(a)*r.w*(.6+p*.35),r.y+r.h*.35+Math.sin(a)*r.h*.3,3*fade,0xfff5ce,fade,a);}
     }
     this.particles=this.particles.filter(p=>p.age<p.life);
-    for(const p of this.particles){p.age+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=165*dt;const fade=Math.max(0,1-p.age/p.life);this.star(p.x,p.y,p.size*fade,p.color,fade,p.spin+p.age*2);}
+    for(const p of this.particles){p.age+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=165*dt;const fade=Math.max(0,1-p.age/p.life);this.fx.fillStyle(p.color,fade*.8);this.fx.fillEllipse(p.x,p.y,p.size*fade,p.size*fade*1.5);}
   }
 }

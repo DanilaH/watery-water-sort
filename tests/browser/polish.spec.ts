@@ -1,0 +1,36 @@
+import {test,expect,type Page} from '@playwright/test';
+import {readFileSync} from 'node:fs';
+import {layout} from '../../src/game/geometry';
+const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
+const initial=(current=0)=>({schema:1,current,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false}});
+async function start(page:Page,index=0){await page.goto('/');await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),initial(index));await page.reload();await expect(page.locator('canvas')).toBeVisible();await page.waitForTimeout(120);}
+async function tap(page:Page,i:number,index=0){const b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,levels[index].initial.length+1)[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
+test('retina rendering preserves logical hit testing and real hint selection',async({browser})=>{
+ const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});const page=await context.newPage();await start(page,2);
+ const density=await page.locator('canvas').evaluate(c=>({backing:(c as HTMLCanvasElement).width,css:c.getBoundingClientRect().width}));expect(density.backing/density.css).toBeCloseTo(2,1);
+ await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');await tap(page,4,2);await expect(page.locator('#moves')).toHaveText('Ходов: 1');await page.waitForTimeout(610);
+ await start(page,2);await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');await tap(page,0,2);await tap(page,3,2);const from=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-003@1'].history.at(-1).from);expect(from).toBe(0);await context.close();
+});
+test('victory remains actionable after final-move rotation and reload',async({page})=>{
+ await page.setViewportSize({width:390,height:844});await start(page);
+ for(const m of levels[0].witness.slice(0,2)){await tap(page,m.from);await tap(page,m.to);await page.waitForTimeout(620);}
+ const m=levels[0].witness[2];await tap(page,m.from);await tap(page,m.to);await page.setViewportSize({width:844,height:390});await expect(page.locator('#continue')).toBeVisible();await page.reload();await expect(page.locator('#continue')).toBeVisible();await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 2');
+});
+test('blank tap cancels the queued move',async({page})=>{
+ await start(page);await tap(page,1);await tap(page,3);await tap(page,0);await tap(page,2);await expect(page.locator('#status')).toContainText('Следующий ход');
+ const b=(await page.locator('#board').boundingBox())!;await page.mouse.click(b.x+3,b.y+b.height-4);await page.waitForTimeout(700);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
+});
+test('small landscape dialog keeps close and confirmation visible',async({page})=>{
+ await page.setViewportSize({width:568,height:320});await start(page,11);await page.locator('#settings').click();
+ for(const button of [page.getByRole('button',{name:'Закрыть',exact:true}),page.getByRole('button',{name:'Готово',exact:true})]){const r=(await button.boundingBox())!;expect(r.y).toBeGreaterThanOrEqual(0);expect(r.y+r.height).toBeLessThanOrEqual(320);}
+ await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('dialog')).not.toBeVisible();
+});
+
+test('unavailable audio never delays accepting a move',async({page})=>{
+ await page.route('**/audio/*.ogg',route=>route.fulfill({status:404,body:''}));await start(page);await tap(page,0);await tap(page,2);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
+});
+
+test('manual selection cancels an in-flight hint without stealing input',async({page})=>{
+ await page.route('**/solver.worker*',async route=>{await new Promise(resolve=>setTimeout(resolve,500));await route.continue().catch(()=>{});});await start(page,2);await page.locator('#hint').click();await tap(page,0,2);await page.waitForTimeout(650);await tap(page,3,2);
+ const source=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-003@1'].history.at(-1).from);expect(source).toBe(0);
+});

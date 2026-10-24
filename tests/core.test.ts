@@ -3,7 +3,7 @@ import { apply, moveFor, moves, reverse, validBoard, won, type Board } from '../
 import { solve } from '../src/core/solver';
 import { levels, fresh, moved, undone, restarted, validSave, attempt, levelKey } from '../src/core/session';
 import { SaveStore } from '../src/platform/storage';
-import { area, clip, surface, layout } from '../src/game/geometry';
+import { area, clip, surface, layout, bounds, planPour, pourPose } from '../src/game/geometry';
 describe('rules',()=>{
  it('pours only the contiguous group or available space',()=>{
   expect(moveFor([[0,0,1,1],[1,1,1],[],[]],0,1)).toEqual({from:0,to:1,color:1,amount:1});
@@ -43,4 +43,18 @@ describe('durable state',()=>{
 describe('liquid geometry',()=>{
  it('conserves rendered volume when tilted',()=>{const poly=[{x:0,y:0},{x:40,y:20},{x:0,y:140},{x:-40,y:120}];for(const f of [.1,.25,.5,.87])expect(area(clip(poly,surface(poly,f),true))/area(poly)).toBeCloseTo(f,4);});
  it('fits 11 cells on small portrait and landscape boards without overlapping hit targets',()=>{for(const [w,h] of [[292,300],[526,180]]){const p=layout(w,h,11);for(const r of p){expect(r.y).toBeGreaterThanOrEqual(0);expect(r.y+r.h).toBeLessThanOrEqual(h);expect(Math.max(48,r.w*1.4)).toBeGreaterThanOrEqual(48);}}});
+});
+
+describe('polished field geometry',()=>{
+ it('gives every cell exclusive targets on the viewport matrix',()=>{
+  for(const [w,h]of [[296,294],[366,542],[456,161],[720,730],[1000,486],[296,219]])for(const count of [5,6,7,8,9,10,11]){
+   const p=layout(w,h,count);for(const a of p){expect(a.hitW).toBeGreaterThanOrEqual(48);expect(a.hitH).toBeGreaterThanOrEqual(48);}
+   for(let i=0;i<p.length;i++)for(let j=i+1;j<p.length;j++){const a=p[i],b=p[j];expect(Math.abs(a.x-b.x)>=(a.hitW+b.hitW)/2||Math.abs(a.y+a.h/2-b.y-b.h/2)>=(a.hitH+b.hitH)/2).toBe(true);}
+  }
+ });
+ it('keeps the moving silhouette inside the field on every source/target pair',()=>{
+  for(const [w,h]of [[296,294],[366,542],[456,161],[720,730]])for(const count of [5,6,7,8,9,10,11]){
+   const p=layout(w,h,count);for(let i=0;i<p.length;i++)for(let j=0;j<p.length;j++){if(i===j)continue;const plan=planPour(p[i],p[j],w,h);for(let n=0;n<=24;n++){const r=pourPose(p[i],p[j],n/24,w,h,-17,plan),b=bounds(r,r.angle);expect(b.left).toBeGreaterThanOrEqual(4.99);expect(b.top).toBeGreaterThanOrEqual(4.99);expect(b.right).toBeLessThanOrEqual(w-4.99);expect(b.bottom).toBeLessThanOrEqual(h-4.99);}}
+  }
+ });
 });
