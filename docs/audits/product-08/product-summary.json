@@ -1,0 +1,173 @@
+{
+  "bank": [
+    {
+      "id": "water-001",
+      "colors": 2,
+      "tubes": 4,
+      "witnessMoves": 3,
+      "partialTransfersInWitness": 0,
+      "valid": true
+    },
+    {
+      "id": "water-002",
+      "colors": 2,
+      "tubes": 4,
+      "witnessMoves": 9,
+      "partialTransfersInWitness": 0,
+      "valid": true
+    },
+    {
+      "id": "water-003",
+      "colors": 3,
+      "tubes": 5,
+      "witnessMoves": 12,
+      "partialTransfersInWitness": 2,
+      "valid": true
+    },
+    {
+      "id": "water-004",
+      "colors": 3,
+      "tubes": 5,
+      "witnessMoves": 12,
+      "partialTransfersInWitness": 1,
+      "valid": true
+    },
+    {
+      "id": "water-005",
+      "colors": 4,
+      "tubes": 6,
+      "witnessMoves": 16,
+      "partialTransfersInWitness": 2,
+      "valid": true
+    },
+    {
+      "id": "water-006",
+      "colors": 4,
+      "tubes": 6,
+      "witnessMoves": 23,
+      "partialTransfersInWitness": 6,
+      "valid": true
+    },
+    {
+      "id": "water-007",
+      "colors": 5,
+      "tubes": 7,
+      "witnessMoves": 21,
+      "partialTransfersInWitness": 4,
+      "valid": true
+    },
+    {
+      "id": "water-008",
+      "colors": 6,
+      "tubes": 8,
+      "witnessMoves": 27,
+      "partialTransfersInWitness": 6,
+      "valid": true
+    },
+    {
+      "id": "water-009",
+      "colors": 6,
+      "tubes": 8,
+      "witnessMoves": 31,
+      "partialTransfersInWitness": 9,
+      "valid": true
+    },
+    {
+      "id": "water-010",
+      "colors": 7,
+      "tubes": 9,
+      "witnessMoves": 27,
+      "partialTransfersInWitness": 6,
+      "valid": true
+    },
+    {
+      "id": "water-011",
+      "colors": 7,
+      "tubes": 9,
+      "witnessMoves": 32,
+      "partialTransfersInWitness": 7,
+      "valid": true
+    },
+    {
+      "id": "water-012",
+      "colors": 8,
+      "tubes": 10,
+      "witnessMoves": 35,
+      "partialTransfersInWitness": 6,
+      "valid": true
+    }
+  ],
+  "duplicates": [],
+  "smallBfs": [
+    {
+      "id": "water-001",
+      "status": "FOUND",
+      "depth": 3,
+      "nodes": 7
+    },
+    {
+      "id": "water-002",
+      "status": "FOUND",
+      "depth": 7,
+      "nodes": 67
+    },
+    {
+      "id": "water-003",
+      "status": "FOUND",
+      "depth": 9,
+      "nodes": 232
+    },
+    {
+      "id": "water-004",
+      "status": "FOUND",
+      "depth": 10,
+      "nodes": 120
+    },
+    {
+      "id": "water-005",
+      "status": "FOUND",
+      "depth": 12,
+      "nodes": 571
+    },
+    {
+      "id": "water-006",
+      "status": "FOUND",
+      "depth": 14,
+      "nodes": 996
+    }
+  ],
+  "corpus": {
+    "count": 240,
+    "colors": [
+      {
+        "id": "water-008",
+        "colors": 6
+      },
+      {
+        "id": "water-009",
+        "colors": 6
+      },
+      {
+        "id": "water-010",
+        "colors": 7
+      },
+      {
+        "id": "water-011",
+        "colors": 7
+      },
+      {
+        "id": "water-012",
+        "colors": 8
+      }
+    ],
+    "statusCounts": {
+      "FOUND": 128,
+      "UNSOLVABLE": 112
+    },
+    "unsolvableWithLegalMoves": 93,
+    "p50Ms": 0.05683600000003253,
+    "p95Ms": 0.5879860000000008,
+    "maxMs": 1.114280000000008
+  },
+  "note": "Node host; 240 unique exploratory forward states, avoiding immediate reversals. Not witness prefixes or observed human play. UNKNOWN remains unknown; no 95% solvable-corpus claim."
+}

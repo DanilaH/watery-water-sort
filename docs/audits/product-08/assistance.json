@@ -1,0 +1,15 @@
+{
+  "validSnapshots": 240,
+  "extra": {
+    "tested": 112,
+    "found": 112,
+    "unknown": 0,
+    "unsolvable": 0
+  },
+  "undoToSolvable": {
+    "samples": 112,
+    "p50": 3,
+    "max": 47
+  },
+  "note": "Algorithmic corpus only. Extra tube is hypothetical appended empty vessel, not an available UI action or tested ad reward. Undo values use solver classification, not human recovery difficulty."
+}
