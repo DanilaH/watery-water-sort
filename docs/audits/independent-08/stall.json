@@ -1,0 +1,25 @@
+{
+  "events": [
+    {
+      "event": "animate",
+      "time": 0
+    },
+    {
+      "event": "pour",
+      "time": 801.3999999985099,
+      "args": [
+        269,
+        2
+      ]
+    },
+    {
+      "event": "land",
+      "time": 802.7999999970198,
+      "args": []
+    }
+  ],
+  "moves": "Ходов: 1",
+  "hintEnabled": true,
+  "errors": [],
+  "note": "Injected 800ms main-thread long task after animate() starts. Normal pour duration is 560ms; timestamps are cue requests, not measured acoustic playback."
+}
