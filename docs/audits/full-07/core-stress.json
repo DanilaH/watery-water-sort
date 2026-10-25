@@ -1,0 +1,123 @@
+{
+  "transitions": 5779,
+  "roundtrips": 291,
+  "saveCost": [
+    {
+      "history": 20,
+      "bytes": 1006,
+      "p50Ms": 0.020970999999974538,
+      "p95Ms": 0.040541999999987866
+    },
+    {
+      "history": 100,
+      "bytes": 4126,
+      "p50Ms": 0.0710470000000214,
+      "p95Ms": 0.10041100000000824
+    },
+    {
+      "history": 500,
+      "bytes": 19726,
+      "p50Ms": 0.35045800000000327,
+      "p95Ms": 0.5272550000000251
+    },
+    {
+      "history": 1000,
+      "bytes": 39226,
+      "p50Ms": 0.7070059999999785,
+      "p95Ms": 0.8653639999999996
+    },
+    {
+      "history": 5000,
+      "bytes": 195226,
+      "p50Ms": 3.975724000000014,
+      "p95Ms": 4.891655000000014
+    }
+  ],
+  "solver": [
+    {
+      "id": "water-001",
+      "status": "FOUND",
+      "nodes": 4,
+      "ms": 0.43786999999997533,
+      "valid": true
+    },
+    {
+      "id": "water-002",
+      "status": "FOUND",
+      "nodes": 10,
+      "ms": 0.1580879999999638,
+      "valid": true
+    },
+    {
+      "id": "water-003",
+      "status": "FOUND",
+      "nodes": 13,
+      "ms": 0.19299100000000635,
+      "valid": true
+    },
+    {
+      "id": "water-004",
+      "status": "FOUND",
+      "nodes": 13,
+      "ms": 0.165429999999958,
+      "valid": true
+    },
+    {
+      "id": "water-005",
+      "status": "FOUND",
+      "nodes": 17,
+      "ms": 0.2245280000000207,
+      "valid": true
+    },
+    {
+      "id": "water-006",
+      "status": "FOUND",
+      "nodes": 24,
+      "ms": 0.3615350000000035,
+      "valid": true
+    },
+    {
+      "id": "water-007",
+      "status": "FOUND",
+      "nodes": 22,
+      "ms": 0.38465999999999667,
+      "valid": true
+    },
+    {
+      "id": "water-008",
+      "status": "FOUND",
+      "nodes": 28,
+      "ms": 0.4212150000000179,
+      "valid": true
+    },
+    {
+      "id": "water-009",
+      "status": "FOUND",
+      "nodes": 35,
+      "ms": 0.4888569999999959,
+      "valid": true
+    },
+    {
+      "id": "water-010",
+      "status": "FOUND",
+      "nodes": 36,
+      "ms": 0.5925530000000094,
+      "valid": true
+    },
+    {
+      "id": "water-011",
+      "status": "FOUND",
+      "nodes": 33,
+      "ms": 0.9393360000000257,
+      "valid": true
+    },
+    {
+      "id": "water-012",
+      "status": "FOUND",
+      "nodes": 36,
+      "ms": 0.801918999999998,
+      "valid": true
+    }
+  ],
+  "note": "Node host. In-memory StorageLike excludes localStorage I/O. 5000 moves is a stress case, not typical usage."
+}

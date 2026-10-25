@@ -1,0 +1,78 @@
+{
+  "results": [
+    {
+      "level": 1,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 2,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 3,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 4,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 5,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 6,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 7,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 8,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 9,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 10,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 11,
+      "victory": "Готово!",
+      "sameBoard": true,
+      "sameHistory": true
+    },
+    {
+      "level": 12,
+      "victory": "Набор пройден",
+      "sameBoard": true,
+      "sameHistory": true
+    }
+  ],
+  "errors": [],
+  "note": "UI replays final move from valid witness prefix, then Undo and reload on each of 12 levels. Not full human playthrough."
+}

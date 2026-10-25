@@ -1,0 +1,108 @@
+{
+  "results": [
+    {
+      "case": "undo-write-failure-then-recovery",
+      "failed": {
+        "status": "Не удалось сохранить. Ход не принят — попробуй ещё раз.",
+        "hintDisabled": false,
+        "history": 1
+      },
+      "recoveredHistory": 2
+    },
+    {
+      "case": "undo-write-failure-during-flight",
+      "hintDisabled": true,
+      "status": "Не удалось сохранить. Ход не принят — попробуй ещё раз.",
+      "history": 1
+    },
+    {
+      "case": "storage-read-unavailable",
+      "canvas": 0,
+      "error": [
+        "blocked"
+      ]
+    },
+    {
+      "case": "backup-recovery",
+      "recoveredMessage": "Одинаковые верхние слои льются вместе",
+      "history": 2,
+      "canvas": 1
+    },
+    {
+      "case": "won-layout",
+      "viewport": [
+        320,
+        480
+      ],
+      "height": 36.84375,
+      "statusFont": "11px",
+      "continueHeight": 35,
+      "textOverflow": false
+    },
+    {
+      "case": "won-layout",
+      "viewport": [
+        568,
+        320
+      ],
+      "height": 33.84375,
+      "statusFont": "11px",
+      "continueHeight": 30,
+      "textOverflow": false
+    },
+    {
+      "case": "won-layout",
+      "viewport": [
+        390,
+        844
+      ],
+      "height": 43,
+      "statusFont": "10px",
+      "continueHeight": 43,
+      "textOverflow": false
+    },
+    {
+      "case": "dense-render-cost",
+      "throttle": 1,
+      "idle": {
+        "frames": 77,
+        "redraws": 0,
+        "renders": 77,
+        "p50UpdateMs": 0,
+        "p95UpdateMs": 0.10000000055879354,
+        "maxUpdateMs": 0.20000000018626451
+      },
+      "active": {
+        "frames": 28,
+        "redraws": 27,
+        "renders": 28,
+        "p50UpdateMs": 2.2999999998137355,
+        "p95UpdateMs": 3.2999999998137355,
+        "maxUpdateMs": 3.7999999998137355
+      }
+    },
+    {
+      "case": "dense-render-cost",
+      "throttle": 4,
+      "idle": {
+        "frames": 55,
+        "redraws": 0,
+        "renders": 55,
+        "p50UpdateMs": 0,
+        "p95UpdateMs": 0.5,
+        "maxUpdateMs": 1.099999999627471
+      },
+      "active": {
+        "frames": 17,
+        "redraws": 16,
+        "renders": 17,
+        "p50UpdateMs": 11.400000000372529,
+        "p95UpdateMs": 17,
+        "maxUpdateMs": 17
+      }
+    }
+  ],
+  "errors": [
+    "blocked"
+  ]
+}
