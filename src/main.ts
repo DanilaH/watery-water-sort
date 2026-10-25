@@ -10,9 +10,10 @@ import { SaveStore } from './platform/storage';
 import type { Result } from './core/solver';
 const haptics=registerPlugin<{impact(options:{strong:boolean}):Promise<void>}>('FeelHaptics');
 const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
-const dialog=$<HTMLDialogElement>('dialog'),content=$('dialog-content'),audio=new Sound(),store=new SaveStore(localStorage);
+const dialog=$<HTMLDialogElement>('dialog'),content=$('dialog-content'),audio=new Sound(),store=new SaveStore(()=>localStorage);
 void audio.load();
-const loaded=store.load();let state=loaded.state,locked=loaded.corrupt;
+const loaded=store.load();let state=loaded.state,locked=loaded.corrupt||loaded.unavailable;
+let recoveryNotice=loaded.recovered?'Откат к резервной копии':'';
 const scene=new WaterScene('water');
 const density=Math.min(2,Math.max(1,devicePixelRatio));
 scene.setViewport($('board').clientWidth,$('board').clientHeight,density);
@@ -21,7 +22,7 @@ let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,la
 let hintCache:{revision:number;move:Move}|null=null;
 const blockers=new Set<string>();
 function haptic(strong=false){if(Capacitor.isNativePlatform()&&state.settings.haptics!==false)void haptics.impact({strong}).catch(()=>{});}
-function message(text:string){$('status').textContent=text;}
+function message(text:string,important=false){$('status').textContent=important?text:recoveryNotice||text;}
 function guidance(){
  if(won(attempt(state).board))return 'Все цвета собраны';
  if(queued)return 'Следующий ход выбран · фон — отмена';
@@ -36,7 +37,7 @@ function cancelSearch(){worker?.terminate();worker=undefined;requestId++;searchi
 function clearIntent(){queued=null;scene.queuedMove=null;scene.selected=null;scene.hintMove=null;}
 function interrupt(){scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
 function block(reason:string,on:boolean){if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'));paint();}
-function commit(next:Save){try{store.write(next);state=next;return true;}catch{message('Не удалось сохранить. Ход не принят — попробуй ещё раз.');return false;}}
+function commit(next:Save){try{store.write(next);state=next;recoveryNotice='';return true;}catch{paint();const error='Не удалось сохранить. Изменение не принято — попробуй ещё раз.';message(error,true);if(dialog.open){const body=content.querySelector('.dialog-body');let note=body?.querySelector<HTMLElement>('[role=alert]');if(body&&!note){note=document.createElement('p');note.setAttribute('role','alert');body.prepend(note);}if(note)note.textContent=error;if(body)body.scrollTop=0;}return false;}}
 function paint(){
  const a=attempt(state),finished=won(a.board)&&!scene.busy;
  scene.slots=a.board.length;scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=state.settings.light;audio.setEnabled(state.settings.sound);
@@ -77,6 +78,7 @@ function accept(m:Move){
 }
 scene.onTap=(i)=>{
  if(locked||blockers.size||won(attempt(state).board))return;
+ if(i!==null)recoveryNotice='';
  if(searching){cancelSearch();paint();}audio.prime();
  if(i===null){clearIntent();message(guidance());return;}
  const board=attempt(state).board;if(i>=board.length)return;
@@ -157,5 +159,17 @@ if(Capacitor.isNativePlatform()){
  void App.addListener('backButton',()=>dialog.open?close():menu());
 }
 paint();message(guidance());
-if(loaded.recovered)message('Прогресс восстановлен из резервной копии');
-if(loaded.corrupt)modal('Сохранение повреждено','Основная и резервная копии не читаются. Начать заново можно только после подтверждения.',[{label:'Начать заново',action:()=>{if(commit(state)){locked=false;close();}}}]);
+if(loaded.recovered)message(guidance());
+function startupIssue(){
+ if(locked&&loaded.unavailable){showReadFailure();return;}
+ if(loaded.corrupt)showCorrupt();
+}
+function showReadFailure(){modal('Прогресс недоступен','Не удалось прочитать сохранение. Прогресс не изменён. Проверь доступ к хранилищу и попробуй ещё раз.',[{label:'Повторить чтение',primary:true,action:()=>{
+ const retry=store.load();
+ if(retry.unavailable){showReadFailure();return;}
+ state=retry.state;locked=retry.corrupt;recoveryNotice=retry.recovered?'Откат к резервной копии':'';
+ if(retry.corrupt){showCorrupt();return;}
+ interrupt();close();scene.reveal();
+ }}]);}
+function showCorrupt(){modal('Сохранение повреждено','Основная и резервная копии не читаются. Начать заново можно только после подтверждения.',[{label:'Начать заново',action:()=>{if(commit(state)){locked=false;close();}}}]);}
+startupIssue();

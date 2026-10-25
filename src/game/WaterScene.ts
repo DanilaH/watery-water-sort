@@ -7,12 +7,17 @@ type Pose={x:number;y:number;w:number;h:number};
 type Layer={color:number;amount:number};
 type Flight=Move & {before:Board;start:number;duration:number;lifted:number;plan:PourPlan};
 type Burst={index:number;start:number;color:number;final:boolean};
+type SymbolMark={x:number;y:number;text:string;size:number};
+type TubeCache={key:string;commands:number[];poly:Point[];symbols:SymbolMark[]};
 type Particle={x:number;y:number;vx:number;vy:number;life:number;age:number;color:number;size:number;spin:number};
 const blend=(a:number,b:number,t:number)=>Phaser.Display.Color.GetColor(
   ((a>>16)&255)*(1-t)+((b>>16)&255)*t,((a>>8)&255)*(1-t)+((b>>8)&255)*t,(a&255)*(1-t)+(b&255)*t);
 function clipX(poly:Point[],x:number,right:boolean):Point[]{return clip(poly.map(p=>({x:p.y,y:p.x})),x,right).map(p=>({x:p.y,y:p.x}));}
 function grouped(tube:number[]):Layer[]{const out:Layer[]=[];for(const color of tube){const prev=out.at(-1);if(prev?.color===color)prev.amount++;else out.push({color,amount:1});}return out;}
 export class WaterScene extends Phaser.Scene {
+  private layoutKey='';
+  private layoutCache:ReturnType<typeof layout>=[];
+  private tubes=new Map<number,TubeCache>();
   private root!:Phaser.GameObjects.Container;
   private viewWidth=1;private viewHeight=1;private density=1;private entrance=0;
   private ink!:Phaser.GameObjects.Graphics;
@@ -64,15 +69,15 @@ export class WaterScene extends Phaser.Scene {
     }
     return null;
   }
-  setViewport(width:number,height:number,density:number){this.viewWidth=Math.max(1,width);this.viewHeight=Math.max(1,height);this.density=density;this.root?.setScale(density);for(const label of [...this.labels,...this.activeLabels,...this.queueLabels])label.setResolution(density);this.previousSignature='';}
-  positions(){return layout(this.viewWidth,this.viewHeight,this.slots);}
+  setViewport(width:number,height:number,density:number){this.viewWidth=Math.max(1,width);this.viewHeight=Math.max(1,height);this.density=density;this.root?.setScale(density);for(const label of [...this.labels,...this.activeLabels,...this.queueLabels])label.setResolution(density);this.previousSignature='';this.tubes.clear();}
+  positions(){const key=`${this.viewWidth}:${this.viewHeight}:${this.slots}`;if(key!==this.layoutKey){this.layoutKey=key;this.layoutCache=layout(this.viewWidth,this.viewHeight,this.slots);}return this.layoutCache;}
   reveal(){this.entrance=performance.now();this.previousSignature='';}
   setBoard(b:Board){this.board=b;}
   animate(before:Board,m:Move,fast:boolean){this.flight={...m,before,start:performance.now(),duration:fast?320:560,lifted:(this.selectionY.get(m.from)??0)+12*Math.max(0,1-(performance.now()-this.entrance)/240)**2,plan:planPour(this.positions()[m.from],this.positions()[m.to],this.viewWidth,this.viewHeight,before[m.from].length,before[m.from].length-m.amount)};this.startedSound=false;this.selectionY.set(m.from,0);this.selectionV.set(m.from,0);this.selectionY.set(m.to,0);this.selectionV.set(m.to,0);}
   get busy(){return !!this.flight;}
   busyTube(i:number){return this.flight?.from===i||this.flight?.to===i;}
   skip(){this.flight=undefined;this.startedSound=false;this.previousSignature='';}
-  resetEffects(){this.skip();this.hitPolygons.clear();this.corkOpen.clear();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
+  resetEffects(){this.skip();this.tubes.clear();this.hitPolygons.clear();this.corkOpen.clear();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
   reject(i:number){this.pulses.set(i,performance.now());}
   land(i:number){this.settles.set(i,performance.now());}
   celebrate(index:number,final=false){
@@ -87,6 +92,25 @@ export class WaterScene extends Phaser.Scene {
   }
   private polygon(points:Point[],color:number,alpha=1,g=this.ink){if(points.length<3||area(points)<.005)return;g.fillStyle(color,alpha);g.fillPoints(points,true);}
   private star(x:number,y:number,r:number,color:number,alpha:number,rotation=0){const g=this.fx;g.fillStyle(color,alpha);g.beginPath();for(let n=0;n<8;n++){const a=rotation+n*Math.PI/4,s=n%2?r*.26:r;const px=x+Math.cos(a)*s,py=y+Math.sin(a)*s;if(n===0)g.moveTo(px,py);else g.lineTo(px,py);}g.closePath();g.fillPath();}
+  private symbol(mark:SymbolMark){
+    const label=this.labels.pop()??this.add.text(0,0,'',{fontFamily:'sans-serif',fontSize:'13px',color:'#18294a',fontStyle:'bold'}).setOrigin(.5).setDepth(3).setResolution(this.density);
+    if(label.parentContainer!==this.root){this.root.add(label);this.root.sort('depth');}
+    if(parseFloat(String(label.style.fontSize))!==mark.size)label.setFontSize(mark.size);
+    label.setPosition(mark.x,mark.y).setText(mark.text).setVisible(true);this.activeLabels.push(label);
+  }
+  private restingTube(r:Pose,layers:Layer[],selected:boolean,target:boolean,index:number,now:number){
+    const age=now-(this.settles.get(index)??-10000),shake=now-(this.pulses.get(index)??-10000),opening=this.corkOpen.get(index)??0;
+    // Cache only settled, unselected vessels. Moving liquid, ripples, corks and glows stay live.
+    const stable=!selected&&!target&&!this.busyTube(index)&&age>=650&&shake>=220&&opening===0&&(this.selectionY.get(index)??0)===0&&now-this.entrance>=260;
+    const key=stable?JSON.stringify([r,layers,this.light,this.symbols]):'',cached=this.tubes.get(index);
+    if(stable&&cached?.key===key){
+      for(const command of cached.commands)this.ink.commandBuffer.push(command);
+      this.hitPolygons.set(index,cached.poly);for(const mark of cached.symbols)this.symbol(mark);return;
+    }
+    const start=this.ink.commandBuffer.length,labelStart=this.activeLabels.length;
+    const {poly}=this.tube(r,layers,0,selected,target,index,now);
+    if(stable)this.tubes.set(index,{key,commands:this.ink.commandBuffer.slice(start),poly,symbols:this.activeLabels.slice(labelStart).map(l=>({x:l.x,y:l.y,text:l.text,size:parseFloat(String(l.style.fontSize))}))});
+  }
   private tube(r:Pose,layers:Layer[],angle:number,selected:boolean,target:boolean,index:number,now:number){
     const g=this.ink,w=r.w*.5,h=r.h;
     const settle=this.settles.get(index),age=settle===undefined?10000:now-settle;
@@ -128,7 +152,7 @@ export class WaterScene extends Phaser.Scene {
         g.lineStyle(1.2,0xffffff,.28);g.beginPath();for(let k=0;k<=14;k++){const x=left+(right-left)*k/14,y=high+Math.sin(k/14*Math.PI*2)*wave;if(k===0)g.moveTo(x,y);else g.lineTo(x,y);}g.strokePath();
         if(n===layers.length-1&&age<280){const p=age/280;g.lineStyle(1.2,0xffffff,.55*(1-p));g.strokeEllipse(r.x,high+2,r.w*.8*p,4+3*p);}
       }
-      if(this.symbols&&layer.amount>.35&&Math.abs(angle)<.1){const label=this.labels.pop()??this.add.text(0,0,'',{fontFamily:'sans-serif',fontSize:'13px',color:'#18294a',fontStyle:'bold'}).setOrigin(.5).setDepth(3).setResolution(this.density);if(label.parentContainer!==this.root){this.root.add(label);this.root.sort('depth');}const fontSize=Math.floor(Math.max(8,Math.min(14,(low-high)*.62,r.w*.38)));if(parseFloat(String(label.style.fontSize))!==fontSize)label.setFontSize(fontSize);label.setPosition(r.x,(low+high)/2).setText(SIGNS[layer.color]).setVisible(true);this.activeLabels.push(label);}
+      if(this.symbols&&layer.amount>.35&&Math.abs(angle)<.1){const fontSize=Math.floor(Math.max(8,Math.min(14,(low-high)*.62,r.w*.38)));this.symbol({x:r.x,y:(low+high)/2,text:SIGNS[layer.color],size:fontSize});}
       sum+=layer.amount;
     }
     // A clean rounded glass silhouette: bright lip, thick base, one broad reflection.
@@ -175,11 +199,10 @@ export class WaterScene extends Phaser.Scene {
       const r={...poses[i]},chosen=this.selected===i||this.hintMove?.from===i;
       const target=!this.queuedMove&&(this.selected!==null&&!!moveFor(this.board,this.selected,i)||this.hintMove?.to===i);
       const aim=chosen&&!this.busyTube(i)?-17:0,prev=this.selectionY.get(i)??0;let velocity=this.selectionV.get(i)??0;velocity+=((aim-prev)*520-velocity*28)*dt;let offset=prev+velocity*dt;if(Math.abs(offset-aim)<.04&&Math.abs(velocity)<.2){offset=aim;velocity=0;}this.selectionY.set(i,offset);this.selectionV.set(i,velocity);r.y+=offset;
-      const angle=0;
       if(now-this.entrance<240){const p=Math.max(0,1-(now-this.entrance)/240);r.y+=p*p*12;}
       let ls=grouped(f?f.before[i]:this.board[i]);
       if(f&&i===f.to){const last=ls.at(-1);if(last?.color===f.color)last.amount+=f.amount*transfer;else ls.push({color:f.color,amount:f.amount*transfer});this.settles.set(i,now);}
-      this.tube(r,ls,angle,chosen,target,i,now);
+      this.restingTube(r,ls,chosen,target,i,now);
       if(target){const color=this.light?0x23649b:0xa6e8ff;this.fx.lineStyle(2,color,.8);this.fx.strokeEllipse(r.x,r.y+r.h+10,r.w*1.25,9);if(this.hintMove?.to===i){const y=r.y-12;this.fx.lineStyle(2.5,color,1);this.fx.beginPath();this.fx.moveTo(r.x,y-9);this.fx.lineTo(r.x,y+2);this.fx.moveTo(r.x-4,y-2);this.fx.lineTo(r.x,y+2);this.fx.lineTo(r.x+4,y-2);this.fx.strokePath();}}
     }
     if(f){

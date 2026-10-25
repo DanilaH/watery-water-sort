@@ -1,0 +1,10 @@
+{
+  "errors": [],
+  "metadata": {
+    "restoredMoves": "Ходов: 1",
+    "hintEnabledAfterFailure": true,
+    "recoveryNotice": "Откат к резервной копии"
+  },
+  "videoAudio": false,
+  "clock": "real"
+}

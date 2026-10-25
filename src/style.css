@@ -24,3 +24,10 @@ nav button span{font-size:12px}
 .dialog-actions button{min-height:48px}
 @media(orientation:landscape) and (max-height:550px){#status{font-size:12px}nav button span{font-size:10px}.finished #status{font-size:11px}.dialog-actions{padding:6px 20px 10px;gap:8px}.dialog-actions button{min-height:48px}}
 @media(orientation:portrait) and (max-height:600px){#status{font-size:12px}nav button span{font-size:11px}.finished #status{font-size:11px}}
+
+/* Stable victory row: full touch target in every orientation. */
+#app{grid-template-rows:48px 30px minmax(0,1fr) 60px 78px 32px}
+#continue{min-height:48px}
+.finished #status{font-size:12px}
+@media(orientation:landscape) and (max-height:550px){#app{grid-template-rows:48px 26px minmax(0,1fr) 56px 10px}#continue{min-height:48px}.finished #status{font-size:12px}}
+@media(orientation:portrait) and (max-height:600px){#app{grid-template-rows:48px 27px minmax(0,1fr) 60px 72px 6px}#continue{min-height:48px}.finished #status{font-size:12px}}

@@ -86,3 +86,20 @@ describe('connected pouring',()=>{
   const ps=layout(288,263,10);expect(new Set(ps.map(p=>p.y)).size).toBe(2);expect(ps[0].w).toBeGreaterThanOrEqual(26);expect(ps[0].h).toBeGreaterThanOrEqual(90);
  });
 });
+
+
+describe('unavailable storage',()=>{
+ it('handles an inaccessible storage getter without writing a new save',()=>{
+  const store=new SaveStore(()=>{throw new DOMException('blocked','SecurityError');});
+  expect(store.load()).toMatchObject({unavailable:true,corrupt:false,recovered:false});
+ });
+ it('does not mistake a failed read and an absent backup for an empty store',()=>{
+  const store=new SaveStore({getItem:k=>{if(k==='water-sort-v1')throw Error('blocked');return null;},setItem:()=>{throw Error('must not write');}});
+  expect(store.load()).toMatchObject({unavailable:true,corrupt:false});
+ });
+});
+
+it('does not unlock an older backup when the primary snapshot could not be read',()=>{
+ const store=new SaveStore({getItem:k=>{if(k==='water-sort-v1')throw Error('blocked');return JSON.stringify(fresh());},setItem:()=>{throw Error('must not write');}});
+ expect(store.load()).toMatchObject({unavailable:true,recovered:false,corrupt:false});
+});
