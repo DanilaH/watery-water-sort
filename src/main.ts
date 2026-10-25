@@ -24,12 +24,12 @@ function haptic(strong=false){if(Capacitor.isNativePlatform()&&state.settings.ha
 function message(text:string){$('status').textContent=text;}
 function guidance(){
  if(won(attempt(state).board))return 'Все цвета собраны';
- if(queued)return 'Следующий ход выбран · тап по фону отменит его';
+ if(queued)return 'Следующий ход выбран · фон — отмена';
  if(!scene.busy&&!moves(attempt(state).board).length)return 'Нет доступных ходов · можно отменить ход';
  if(scene.hintMove)return 'Перелей в колбу со стрелкой';
- if(scene.selected!==null)return scene.busy?'Следующий ход: выбери колбу назначения':'Выбери пустую колбу или такой же верхний цвет';
+ if(scene.selected!==null)return scene.busy?'Следующий ход: выбери цель':'Выбери пустую или с тем же цветом сверху';
  if(state.current===0&&attempt(state).history.length===0)return 'Выбери цветную колбу, затем пустую';
- if(state.current<2)return 'Переливается вся верхняя группа одного цвета';
+ if(state.current<2)return 'Одинаковые верхние слои льются вместе';
  return '';
 }
 function cancelSearch(){worker?.terminate();worker=undefined;requestId++;searching=false;}

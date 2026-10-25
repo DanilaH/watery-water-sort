@@ -14,3 +14,13 @@ body.light{--text:#243e5a;--muted:#4a6784;--panel:#e4f0f9;--line:#7e9dbc;--butto
 .dialog-close{width:48px;height:48px;min-width:48px;position:relative;background:none;border:0;box-shadow:none;isolation:isolate}.dialog-close:before{content:"";position:absolute;inset:7px;border:1px solid #f4a79c;border-radius:9px;background:linear-gradient(#ef9f8f,#ca695e);box-shadow:0 3px 0 #833d38;z-index:-1}.dialog-close:active:not(:disabled){box-shadow:none}
 @media(orientation:landscape) and (max-height:550px){#app{grid-template-rows:48px 26px minmax(0,1fr) 36px 30px}nav{gap:17px}nav button{flex-basis:48px;height:48px;min-height:48px}nav button span{top:54px}.game-header button svg{width:23px;height:23px}}
 @media(orientation:portrait) and (max-height:600px){#app{grid-template-rows:48px 27px minmax(0,1fr) 42px 72px 24px}nav button{height:48px;min-height:48px}nav button span{top:55px}}
+
+/* 0.7: quiet assistance, readable feedback, complete modal touch targets. */
+#hint{background:linear-gradient(#c3e2f4,#8bbbdc);color:var(--control-ink);border-color:#cce7f8;box-shadow:0 4px 0 #487596,0 7px 0 #08142477}
+#status{font-size:13px;line-height:1.35}
+nav button span{font-size:12px}
+#symbols span{font-size:11px}
+#symbols[aria-pressed=true]:before{outline:none;background:#a6d0ed14}
+.dialog-actions button{min-height:48px}
+@media(orientation:landscape) and (max-height:550px){#status{font-size:12px}nav button span{font-size:10px}.finished #status{font-size:11px}.dialog-actions{padding:6px 20px 10px;gap:8px}.dialog-actions button{min-height:48px}}
+@media(orientation:portrait) and (max-height:600px){#status{font-size:12px}nav button span{font-size:11px}.finished #status{font-size:11px}}

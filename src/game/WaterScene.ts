@@ -24,6 +24,8 @@ export class WaterScene extends Phaser.Scene {
   slots=5;board:Board=[];selected:number|null=null;hintMove:Move|null=null;queuedMove:Move|null=null;symbols=false;light=false;
   private flight?:Flight;
   private selectionY=new Map<number,number>();
+  private hitPolygons=new Map<number,Point[]>();
+  private corkOpen=new Map<number,number>();
   private selectionV=new Map<number,number>();
   private pulses=new Map<number,number>();
   private settles=new Map<number,number>();
@@ -31,7 +33,7 @@ export class WaterScene extends Phaser.Scene {
   private particles:Particle[]=[];
   private startedSound=false;
   private previousSignature='';
-  private lastFrame=0;
+  private lastFrame=0;private frameStep=.016;
   onTap:(i:number|null)=>void=()=>{};
   onPour:()=>void=()=>{};
   onComplete:()=>void=()=>{};
@@ -41,9 +43,26 @@ export class WaterScene extends Phaser.Scene {
     this.queueLabels=['2','↓'].map(text=>{const label=this.add.text(0,0,text,{fontFamily:'sans-serif',fontSize:'13px',fontStyle:'bold',color:'#402d19'}).setOrigin(.5).setDepth(6).setResolution(this.density).setVisible(false);this.root.add(label);return label;});this.root.sort('depth');
     this.input.on('pointerdown',(p:Phaser.Input.Pointer)=>{
       if(!p.primaryDown)return;
-      const poses=this.positions();const i=poses.findIndex((r,n)=>n<this.slots&&Math.abs(p.x/this.density-r.x)<r.hitW/2&&Math.abs(p.y/this.density-(r.y+r.h/2))<r.hitH/2);
-      this.onTap(i<0?null:i);
+      this.onTap(this.hitTube(p.x/this.density,p.y/this.density));
     });
+  }
+  private hitTube(x:number,y:number):number|null{
+    // Marks belong to their slots. Keep resting slots usable during a flight.
+    const poses=this.positions(),source=this.queuedMove?.from??(this.flight?this.selected:null);
+    for(const index of [source,this.queuedMove?.to??null]){
+      if(index!==null&&poses[index]&&Math.hypot(x-poses[index].x,y-(poses[index].y-15))<=14)return index;
+    }
+    const slot=poses.findIndex(r=>Math.abs(x-r.x)<r.hitW/2&&Math.abs(y-(r.y+r.h/2))<r.hitH/2);
+    if(slot>=0)return slot;
+    for(const [index,poly]of [...this.hitPolygons].reverse()){
+      let inside=false;
+      for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+        const a=poly[i],b=poly[j];
+        if((a.y>y)!==(b.y>y)&&x<(b.x-a.x)*(y-a.y)/(b.y-a.y)+a.x)inside=!inside;
+      }
+      if(inside)return index;
+    }
+    return null;
   }
   setViewport(width:number,height:number,density:number){this.viewWidth=Math.max(1,width);this.viewHeight=Math.max(1,height);this.density=density;this.root?.setScale(density);for(const label of [...this.labels,...this.activeLabels,...this.queueLabels])label.setResolution(density);this.previousSignature='';}
   positions(){return layout(this.viewWidth,this.viewHeight,this.slots);}
@@ -53,7 +72,7 @@ export class WaterScene extends Phaser.Scene {
   get busy(){return !!this.flight;}
   busyTube(i:number){return this.flight?.from===i||this.flight?.to===i;}
   skip(){this.flight=undefined;this.startedSound=false;this.previousSignature='';}
-  resetEffects(){this.skip();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
+  resetEffects(){this.skip();this.hitPolygons.clear();this.corkOpen.clear();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
   reject(i:number){this.pulses.set(i,performance.now());}
   land(i:number){this.settles.set(i,performance.now());}
   celebrate(index:number,final=false){
@@ -78,7 +97,7 @@ export class WaterScene extends Phaser.Scene {
     const c=Math.cos(angle),s=Math.sin(angle);
     const transform=(x:number,y:number)=>({x:r.x+shake+x*c*squash-y*s/squash,y:r.y+x*s*squash+y*c/squash});
     const local=vesselPolygon(r.w,h);
-    const poly=local.map(p=>transform(p.x,p.y));
+    const poly=local.map(p=>transform(p.x,p.y));this.hitPolygons.set(index,poly);
     // A soft elliptical contact shadow anchors the bottle while the lifted one floats.
     const resting=this.positions()[index];const shadowY=resting.y+resting.h+9;const lift=Math.min(1,Math.abs(r.y-resting.y)/50);for(let n=3;n>=1;n--){g.fillStyle(this.light?0x746c50:0x030c0a,.055*(1-lift*.8));g.fillEllipse(resting.x,shadowY,r.w*(1+n*.20)*(1-lift*.25),4+n*2);}
     if(selected||target){const glow=selected?0xb9e3ff:0x68d9e9;for(let n=3;n>=1;n--){g.lineStyle(n*5,glow,.025);g.strokePoints(poly,true);}g.fillStyle(glow,.12*(1-lift));g.fillEllipse(resting.x,shadowY,r.w*1.25,12);}
@@ -119,31 +138,35 @@ export class WaterScene extends Phaser.Scene {
     g.lineStyle(5,0xa6cbea,.5);g.lineBetween(rimA.x,rimA.y,rimB.x,rimB.y);
     g.lineStyle(1.4,0xf3fbff,.96);g.lineBetween(rimA.x,rimA.y-1,rimB.x,rimB.y-1);
     if(Math.abs(angle)<.05){g.lineStyle(1,0xe2f2ff,.7);g.strokeEllipse(r.x,r.y,r.w,Math.max(4,r.w*.13));}
-    for(const [x,alpha,thick,y1,y2]of [[-w+4,.52,2.4,9,h*.68],[-w+4,.17,1.2,h*.75,h-18],[w-3,.20,1.2,9,h-20]] as number[][]){const a=transform(x,y1),b=transform(x,y2);g.lineStyle(thick,0xffffff,alpha);g.lineBetween(a.x,a.y,b.x,b.y);}
-    const bottomA=transform(-w*.5,h-4),bottomB=transform(w*.5,h-4);g.lineStyle(3,0xe2ecff,.48);g.lineBetween(bottomA.x,bottomA.y,bottomB.x,bottomB.y);
+    for(const [x,alpha,thick,y1,y2]of [[-w+4,.42,2.1,9,h*.68],[w-3,.10,1,9,h-20]] as number[][]){const a=transform(x,y1),b=transform(x,y2);g.lineStyle(thick,0xffffff,alpha);g.lineBetween(a.x,a.y,b.x,b.y);}
+    const bottomA=transform(-w*.5,h-4),bottomB=transform(w*.5,h-4);g.lineStyle(2,0xe2ecff,.30);g.lineBetween(bottomA.x,bottomA.y,bottomB.x,bottomB.y);
     const uniform=total===4&&layers.every(l=>l.color===layers[0].color);
-    if(uniform&&Math.abs(angle)<.01&&!selected&&!this.busyTube(index)){
+    const corkTarget=selected||this.busyTube(index)?1:0,previous=this.corkOpen.get(index)??corkTarget;
+    let opening=previous+(corkTarget-previous)*(1-Math.exp(-this.frameStep/.045));if(Math.abs(opening-corkTarget)<.008)opening=corkTarget;
+    this.corkOpen.set(index,opening);
+    if(uniform&&Math.abs(angle)<.01&&opening<1&&!this.busyTube(index)){
       const burst=[...this.bursts].reverse().find(b=>b.index===index),elapsed=burst?now-burst.start:10000;
       // A newly completed tube gets a cork; reloaded completions retain their settled cork.
       const drop=elapsed<360?-Math.exp(-elapsed/95)*Math.cos(elapsed/40)*25:0;
-      const cw=r.w*.88,ch=Math.max(10,r.w*.27),cy=r.y-ch*.72+drop;
-      g.fillStyle(0x081425,.30);g.fillEllipse(r.x,r.y+2,r.w*.92,5);
-      g.fillStyle(0x916039,1);g.fillRoundedRect(r.x-cw/2,cy,cw,ch,3);
-      g.fillStyle(0xce9a59,1);g.fillRoundedRect(r.x-cw/2,cy,cw,ch*.62,3);
-      g.fillStyle(0xe9bd7b,1);g.fillEllipse(r.x,cy+1,cw,Math.max(4,ch*.36));
-      g.lineStyle(1,0x734624,.5);g.lineBetween(r.x-cw*.33,cy+ch*.72,r.x+cw*.33,cy+ch*.72);
-      for(let k=0;k<4;k++){g.fillStyle(0x754528,.42);g.fillCircle(r.x-cw*.32+k*cw*.20,cy+ch*(k%2?.4:.65),.8);}
+      const cw=r.w*.88,ch=Math.max(10,r.w*.27),cx=r.x+opening*10,cy=r.y-ch*.72+drop-opening*23,opacity=1-opening;
+      g.fillStyle(0x081425,.30*opacity);g.fillEllipse(cx,r.y+2,r.w*.92,5);
+      g.fillStyle(0x916039,opacity);g.fillRoundedRect(cx-cw/2,cy,cw,ch,3);
+      g.fillStyle(0xce9a59,opacity);g.fillRoundedRect(cx-cw/2,cy,cw,ch*.62,3);
+      g.fillStyle(0xe9bd7b,opacity);g.fillEllipse(cx,cy+1,cw,Math.max(4,ch*.36));
+      g.lineStyle(1,0x734624,.5*opacity);g.lineBetween(cx-cw*.33,cy+ch*.72,cx+cw*.33,cy+ch*.72);
+      for(let k=0;k<4;k++){g.fillStyle(0x754528,.42*opacity);g.fillCircle(cx-cw*.32+k*cw*.20,cy+ch*(k%2?.4:.65),.8);}
     }
     return {poly,transform};
   }
   update(){
     if(!this.ink)return;
-    const now=performance.now(),dt=Math.min(.035,(now-this.lastFrame)/1000||.016);this.lastFrame=now;
+    const now=performance.now(),dt=Math.min(.035,(now-this.lastFrame)/1000||.016);this.lastFrame=now;this.frameStep=dt;
     const signature=JSON.stringify([this.board,this.selected,this.hintMove,this.queuedMove,this.symbols,this.light,this.viewWidth,this.viewHeight]);
     const settling=[...this.selectionY].some(([i,y])=>Math.abs(y-((this.selected===i||this.hintMove?.from===i)&&!this.busyTube(i)?-17:0))>.1);
     const activeSettle=[...this.settles.values()].some(t=>now-t<650),shaking=[...this.pulses.values()].some(t=>now-t<220);
-    if(!this.flight&&!settling&&!shaking&&!activeSettle&&!this.bursts.length&&!this.particles.length&&now-this.entrance>260&&signature===this.previousSignature)return;
-    this.previousSignature=signature;this.ink.clear();this.fx.clear();for(const l of this.queueLabels)l.setVisible(false);for(const l of this.activeLabels){l.setVisible(false);this.labels.push(l);}this.activeLabels=[];
+    const corkAnimating=[...this.corkOpen.values()].some(v=>v>0&&v<1);
+    if(!this.flight&&!corkAnimating&&!settling&&!shaking&&!activeSettle&&!this.bursts.length&&!this.particles.length&&now-this.entrance>260&&signature===this.previousSignature)return;
+    this.previousSignature=signature;this.hitPolygons.clear();this.ink.clear();this.fx.clear();for(const l of this.queueLabels)l.setVisible(false);for(const l of this.activeLabels){l.setVisible(false);this.labels.push(l);}this.activeLabels=[];
     const poses=this.positions(),f=this.flight;
     const t=f?Math.min(1,(now-f.start)/f.duration):0,transfer=f?pourTransfer(t):0;
     if(f&&t>=.25&&!this.startedSound){this.startedSound=true;this.onPour();}
@@ -178,7 +201,10 @@ export class WaterScene extends Phaser.Scene {
     if(pendingSource!==null){
       for(const [n,index]of [pendingSource,this.queuedMove?.to??null].entries()){
         if(index===null)continue;const r=poses[index];if(!r)continue;
-        const x=r.x,y=r.y-15,g=this.fx;g.fillStyle(0xffce63,1);g.fillCircle(x,y,10);g.lineStyle(1,0xffe9a8,.9);g.strokeCircle(x,y,10);
+        const x=r.x,y=r.y-15,g=this.fx;
+        g.lineStyle(1.5,0xffce63,.65);g.lineBetween(x,y+10,x,r.y+5);
+        g.lineBetween(x-r.w*.35,r.y+5,x+r.w*.35,r.y+5);
+        g.fillStyle(0xffce63,1);g.fillCircle(x,y,10);g.lineStyle(1,0xffe9a8,.9);g.strokeCircle(x,y,10);
         this.queueLabels[n]?.setPosition(x,y-.5).setVisible(true);
         g.lineStyle(2,0xffce63,.95);g.strokeEllipse(r.x,r.y+r.h+10,r.w*1.18,8);
       }

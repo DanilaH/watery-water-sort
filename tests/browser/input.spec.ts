@@ -17,7 +17,7 @@ for(const fast of [false,true])test(`queues a next move into the source of the c
 });
 
 test('replacement can use the recipient of the current pour as its next source',async({page})=>{
- await open(page);await queueFirstChain(page);await tap(page,2);await expect(page.locator('#status')).toContainText('выбери колбу назначения');await tap(page,3);await expect.poll(async()=>(await history(page)).length).toBe(2);await expect(page.locator('#hint')).toBeEnabled();expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[0,2],[2,3]]);
+ await open(page);await queueFirstChain(page);await tap(page,2);await expect(page.locator('#status')).toContainText('выбери цель');await tap(page,3);await expect.poll(async()=>(await history(page)).length).toBe(2);await expect(page.locator('#hint')).toBeEnabled();expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[0,2],[2,3]]);
 });
 
 test('a half-selected next move survives the end of the current animation',async({page})=>{
@@ -53,4 +53,34 @@ test('restart is direct before the first move and confirmed when history would b
  await open(page);await tap(page,0);await page.locator('#restart').click({force:true});await expect(page.locator('dialog')).not.toBeVisible();expect(await history(page)).toHaveLength(0);
  await tap(page,0);await tap(page,2);await page.locator('#restart').click({force:true});await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Продолжить',exact:true}).click({force:true});expect(await history(page)).toHaveLength(1);
  await page.locator('#restart').click({force:true});await page.getByRole('button',{name:'Начать заново',exact:true}).click({force:true});await expect(page.locator('dialog')).not.toBeVisible();expect(await history(page)).toHaveLength(0);
+});
+
+for(const dense of [false,true])test(`queue badge belongs to its source (${dense?'dense small field':'tutorial'})`,async({page})=>{
+ const state=initial();state.current=dense?11:0;state.completed=dense?levels.slice(0,11).map((l:any)=>l.id):[];
+ if(dense)await page.setViewportSize({width:320,height:480});
+ await open(page,state);
+ const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,levels[state.current].initial.length);
+ const click=async(i:number)=>page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);
+ const [first,next]=levels[state.current].witness;
+ for(const m of [first,next]){await click(m.from);await click(m.to);}
+ await expect(page.locator('#status')).toContainText('Следующий ход выбран');
+ await page.mouse.click(b.x+ps[next.from].x,b.y+ps[next.from].y-15);
+ await expect(page.locator('#status')).toContainText('Следующий ход:');
+ await click(next.to);await expect.poll(async()=>(await history(page)).length).toBe(2);
+ expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[first.from,first.to],[next.from,next.to]]);
+});
+
+test('raised rim remains part of the selected tube',async({page})=>{
+ await open(page);const b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,4)[0];
+ await page.evaluate(async()=>{const path='/src/audio/sound.ts',m=await import(path),original=m.Sound.prototype.tap;(window as any).__taps=0;m.Sound.prototype.tap=function(){(window as any).__taps++;return original.call(this);};});
+ await tap(page,0);await page.waitForTimeout(400);
+ await page.mouse.click(b.x+p.x,b.y+p.y-13);
+ expect(await page.evaluate(()=>(window as any).__taps)).toBe(2);
+ await tap(page,2);await expect(page.locator('#status')).toContainText('Сначала выбери');
+});
+
+test('modal actions keep 48px targets and all settings stay reachable',async({page})=>{
+ await page.setViewportSize({width:568,height:320});await open(page);await page.locator('#settings').click();
+ const button=page.getByRole('button',{name:'Готово',exact:true});expect((await button.boundingBox())!.height).toBeGreaterThanOrEqual(48);
+ const theme=page.getByRole('switch',{name:'Светлая тема'});await theme.scrollIntoViewIfNeeded();await theme.check();await expect(page.locator('body')).toHaveClass(/light/);await button.click();await expect(page.locator('dialog')).not.toBeVisible();
 });

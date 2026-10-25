@@ -1,0 +1,134 @@
+{
+  "errors": [],
+  "queueBadge": {
+    "before": "Следующий ход выбран · тап по фону отменит его",
+    "after": "Переливается вся верхняя группа одного цвета",
+    "moves": "Ходов: 1",
+    "markerY": 193.19,
+    "hitTop": 198.19
+  },
+  "targets": [
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "buttons": [
+        {
+          "id": "menu",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "id": "settings",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "id": "symbols",
+          "width": 71.328125,
+          "height": 48
+        },
+        {
+          "id": "undo",
+          "width": 70,
+          "height": 48
+        },
+        {
+          "id": "hint",
+          "width": 70,
+          "height": 48
+        },
+        {
+          "id": "restart",
+          "width": 70,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "viewport": [
+        320,
+        480
+      ],
+      "buttons": [
+        {
+          "id": "menu",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "id": "settings",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "id": "symbols",
+          "width": 71.328125,
+          "height": 48
+        },
+        {
+          "id": "undo",
+          "width": 60,
+          "height": 48
+        },
+        {
+          "id": "hint",
+          "width": 60,
+          "height": 48
+        },
+        {
+          "id": "restart",
+          "width": 60,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "buttons": [
+        {
+          "id": "menu",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "id": "settings",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "id": "symbols",
+          "width": 71.328125,
+          "height": 48
+        },
+        {
+          "id": "undo",
+          "width": 54,
+          "height": 48
+        },
+        {
+          "id": "hint",
+          "width": 54,
+          "height": 48
+        },
+        {
+          "id": "restart",
+          "width": 54,
+          "height": 48
+        }
+      ]
+    },
+    {
+      "settings": [
+        {
+          "text": "Готово",
+          "height": 38
+        }
+      ]
+    }
+  ]
+}
