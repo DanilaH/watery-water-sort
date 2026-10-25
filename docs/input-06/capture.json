@@ -1,0 +1,10 @@
+{
+  "errors": [],
+  "metadata": {
+    "deadendMessage": "Нет доступных ходов · можно отменить ход",
+    "firstQueued": true,
+    "winningQueued": true
+  },
+  "videoAudio": false,
+  "screenshotClock": "Paused only for the three queue screenshots; video uses real time"
+}

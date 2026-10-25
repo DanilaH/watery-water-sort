@@ -20,7 +20,8 @@ export class WaterScene extends Phaser.Scene {
   private labels:Phaser.GameObjects.Text[]=[];
   private activeLabels:Phaser.GameObjects.Text[]=[];
   private floatLabels:Phaser.GameObjects.Text[]=[];
-  slots=5;board:Board=[];selected:number|null=null;hintMove:Move|null=null;symbols=false;light=false;
+  private queueLabels:Phaser.GameObjects.Text[]=[];
+  slots=5;board:Board=[];selected:number|null=null;hintMove:Move|null=null;queuedMove:Move|null=null;symbols=false;light=false;
   private flight?:Flight;
   private selectionY=new Map<number,number>();
   private selectionV=new Map<number,number>();
@@ -37,13 +38,14 @@ export class WaterScene extends Phaser.Scene {
   create(){
     this.root=this.add.container(0,0).setScale(this.density);
     this.ink=this.add.graphics();this.fx=this.add.graphics().setDepth(4);this.root.add([this.ink,this.fx]);
+    this.queueLabels=['2','↓'].map(text=>{const label=this.add.text(0,0,text,{fontFamily:'sans-serif',fontSize:'13px',fontStyle:'bold',color:'#402d19'}).setOrigin(.5).setDepth(6).setResolution(this.density).setVisible(false);this.root.add(label);return label;});this.root.sort('depth');
     this.input.on('pointerdown',(p:Phaser.Input.Pointer)=>{
       if(!p.primaryDown)return;
       const poses=this.positions();const i=poses.findIndex((r,n)=>n<this.slots&&Math.abs(p.x/this.density-r.x)<r.hitW/2&&Math.abs(p.y/this.density-(r.y+r.h/2))<r.hitH/2);
       this.onTap(i<0?null:i);
     });
   }
-  setViewport(width:number,height:number,density:number){this.viewWidth=Math.max(1,width);this.viewHeight=Math.max(1,height);this.density=density;this.root?.setScale(density);for(const label of [...this.labels,...this.activeLabels])label.setResolution(density);this.previousSignature='';}
+  setViewport(width:number,height:number,density:number){this.viewWidth=Math.max(1,width);this.viewHeight=Math.max(1,height);this.density=density;this.root?.setScale(density);for(const label of [...this.labels,...this.activeLabels,...this.queueLabels])label.setResolution(density);this.previousSignature='';}
   positions(){return layout(this.viewWidth,this.viewHeight,this.slots);}
   reveal(){this.entrance=performance.now();this.previousSignature='';}
   setBoard(b:Board){this.board=b;}
@@ -51,7 +53,7 @@ export class WaterScene extends Phaser.Scene {
   get busy(){return !!this.flight;}
   busyTube(i:number){return this.flight?.from===i||this.flight?.to===i;}
   skip(){this.flight=undefined;this.startedSound=false;this.previousSignature='';}
-  resetEffects(){this.skip();this.bursts=[];this.particles=[];this.settles.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
+  resetEffects(){this.skip();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
   reject(i:number){this.pulses.set(i,performance.now());}
   land(i:number){this.settles.set(i,performance.now());}
   celebrate(index:number,final=false){
@@ -137,19 +139,19 @@ export class WaterScene extends Phaser.Scene {
   update(){
     if(!this.ink)return;
     const now=performance.now(),dt=Math.min(.035,(now-this.lastFrame)/1000||.016);this.lastFrame=now;
-    const signature=JSON.stringify([this.board,this.selected,this.hintMove,this.symbols,this.light,this.viewWidth,this.viewHeight]);
-    const settling=[...this.selectionY].some(([i,y])=>Math.abs(y-(this.selected===i||this.hintMove?.from===i?-17:0))>.1);
+    const signature=JSON.stringify([this.board,this.selected,this.hintMove,this.queuedMove,this.symbols,this.light,this.viewWidth,this.viewHeight]);
+    const settling=[...this.selectionY].some(([i,y])=>Math.abs(y-((this.selected===i||this.hintMove?.from===i)&&!this.busyTube(i)?-17:0))>.1);
     const activeSettle=[...this.settles.values()].some(t=>now-t<650),shaking=[...this.pulses.values()].some(t=>now-t<220);
     if(!this.flight&&!settling&&!shaking&&!activeSettle&&!this.bursts.length&&!this.particles.length&&now-this.entrance>260&&signature===this.previousSignature)return;
-    this.previousSignature=signature;this.ink.clear();this.fx.clear();for(const l of this.activeLabels){l.setVisible(false);this.labels.push(l);}this.activeLabels=[];
+    this.previousSignature=signature;this.ink.clear();this.fx.clear();for(const l of this.queueLabels)l.setVisible(false);for(const l of this.activeLabels){l.setVisible(false);this.labels.push(l);}this.activeLabels=[];
     const poses=this.positions(),f=this.flight;
     const t=f?Math.min(1,(now-f.start)/f.duration):0,transfer=f?pourTransfer(t):0;
     if(f&&t>=.25&&!this.startedSound){this.startedSound=true;this.onPour();}
     for(let i=0;i<this.board.length;i++){
       if(f&&i===f.from)continue;
       const r={...poses[i]},chosen=this.selected===i||this.hintMove?.from===i;
-      const target=this.selected!==null&&!!moveFor(this.board,this.selected,i)||this.hintMove?.to===i;
-      const aim=chosen?-17:0,prev=this.selectionY.get(i)??0;let velocity=this.selectionV.get(i)??0;velocity+=((aim-prev)*520-velocity*28)*dt;let offset=prev+velocity*dt;if(Math.abs(offset-aim)<.04&&Math.abs(velocity)<.2){offset=aim;velocity=0;}this.selectionY.set(i,offset);this.selectionV.set(i,velocity);r.y+=offset;
+      const target=!this.queuedMove&&(this.selected!==null&&!!moveFor(this.board,this.selected,i)||this.hintMove?.to===i);
+      const aim=chosen&&!this.busyTube(i)?-17:0,prev=this.selectionY.get(i)??0;let velocity=this.selectionV.get(i)??0;velocity+=((aim-prev)*520-velocity*28)*dt;let offset=prev+velocity*dt;if(Math.abs(offset-aim)<.04&&Math.abs(velocity)<.2){offset=aim;velocity=0;}this.selectionY.set(i,offset);this.selectionV.set(i,velocity);r.y+=offset;
       const angle=0;
       if(now-this.entrance<240){const p=Math.max(0,1-(now-this.entrance)/240);r.y+=p*p*12;}
       let ls=grouped(f?f.before[i]:this.board[i]);
@@ -170,6 +172,16 @@ export class WaterScene extends Phaser.Scene {
         this.fx.lineStyle(1.5,0xffffff,.45);this.fx.strokeEllipse(dest.x,endY+2,9+Math.sin(now/40)*4,3);
       }
       if(t>=1){this.flight=undefined;this.land(f.from);this.land(f.to);this.onComplete();}
+    }
+    // A numbered source and destination arrow describe the single next move, not a solver hint.
+    const pendingSource=this.queuedMove?.from??(this.flight?this.selected:null);
+    if(pendingSource!==null){
+      for(const [n,index]of [pendingSource,this.queuedMove?.to??null].entries()){
+        if(index===null)continue;const r=poses[index];if(!r)continue;
+        const x=r.x,y=r.y-15,g=this.fx;g.fillStyle(0xffce63,1);g.fillCircle(x,y,10);g.lineStyle(1,0xffe9a8,.9);g.strokeCircle(x,y,10);
+        this.queueLabels[n]?.setPosition(x,y-.5).setVisible(true);
+        g.lineStyle(2,0xffce63,.95);g.strokeEllipse(r.x,r.y+r.h+10,r.w*1.18,8);
+      }
     }
     this.bursts=this.bursts.filter(b=>now-b.start<650);
     for(const b of this.bursts){const r=poses[b.index],p=(now-b.start)/650,fade=Math.pow(1-p,1.7),g=this.fx;

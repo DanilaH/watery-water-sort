@@ -4,7 +4,7 @@ import { Capacitor, registerPlugin } from '@capacitor/core';
 import './style.css';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
-import { moveFor, completeTube, won, type Move } from './core/rules';
+import { moveFor, completeTube, won, moves, type Move } from './core/rules';
 import { attempt, levels, moved, undone, restarted, type Save } from './core/session';
 import { SaveStore } from './platform/storage';
 import type { Result } from './core/solver';
@@ -25,14 +25,15 @@ function message(text:string){$('status').textContent=text;}
 function guidance(){
  if(won(attempt(state).board))return 'Все цвета собраны';
  if(queued)return 'Следующий ход выбран · тап по фону отменит его';
+ if(!scene.busy&&!moves(attempt(state).board).length)return 'Нет доступных ходов · можно отменить ход';
  if(scene.hintMove)return 'Перелей в колбу со стрелкой';
- if(scene.selected!==null)return 'Выбери пустую колбу или такой же верхний цвет';
+ if(scene.selected!==null)return scene.busy?'Следующий ход: выбери колбу назначения':'Выбери пустую колбу или такой же верхний цвет';
  if(state.current===0&&attempt(state).history.length===0)return 'Выбери цветную колбу, затем пустую';
  if(state.current<2)return 'Переливается вся верхняя группа одного цвета';
  return '';
 }
 function cancelSearch(){worker?.terminate();worker=undefined;requestId++;searching=false;}
-function clearIntent(){queued=null;scene.selected=null;scene.hintMove=null;}
+function clearIntent(){queued=null;scene.queuedMove=null;scene.selected=null;scene.hintMove=null;}
 function interrupt(){scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
 function block(reason:string,on:boolean){if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'));paint();}
 function commit(next:Save){try{store.write(next);state=next;return true;}catch{message('Не удалось сохранить. Ход не принят — попробуй ещё раз.');return false;}}
@@ -75,20 +76,23 @@ function accept(m:Move){
  hintCache=null;clearIntent();lastMove=m;kind='pour';scene.setBoard(attempt(state).board);scene.animate(before,m,state.settings.fast);paint();message('');
 }
 scene.onTap=(i)=>{
- if(locked||blockers.size||won(attempt(state).board))return;if(searching){cancelSearch();paint();}audio.prime();
+ if(locked||blockers.size||won(attempt(state).board))return;
+ if(searching){cancelSearch();paint();}audio.prime();
  if(i===null){clearIntent();message(guidance());return;}
- if(i>=attempt(state).board.length)return;
- if(scene.busyTube(i))return;
+ const board=attempt(state).board;if(i>=board.length)return;
+ // One future intention, based on the already committed board. Busy cells are valid inputs.
+ if(queued)clearIntent();
  if(scene.selected===i){clearIntent();audio.tap();message(guidance());return;}
- let rejection='';
- if(scene.selected!==null){const m=moveFor(attempt(state).board,scene.selected,i);
-  if(m){if(scene.busy){queued=m;scene.hintMove=m;message(guidance());}else accept(m);return;}
-  scene.reject(i);audio.reject();
-  const full=attempt(state).board[i].length===4;
-  rejection=full?'Эта колба полная · выбран новый источник':'Верхние цвета должны совпадать';
+ if(scene.selected!==null){const m=moveFor(board,scene.selected,i);
+  if(m){
+   if(scene.busy){queued=m;scene.queuedMove=m;scene.hintMove=null;audio.tap();haptic();message(guidance());}
+   else accept(m);
+   return;
+  }
  }
- queued=null;scene.hintMove=null;
- if(attempt(state).board[i].length){scene.selected=i;audio.tap();haptic();message(rejection||guidance());}
+ scene.hintMove=null;scene.queuedMove=null;
+ if(board[i].length){scene.selected=i;audio.tap();haptic();message(guidance());}
+ else{scene.selected=null;scene.reject(i);audio.reject();message('Сначала выбери цветную колбу');}
 };
 scene.onPour=()=>{if(lastMove&&kind==='pour')audio.pour(state.settings.fast?154:269,lastMove.amount);};
 scene.onComplete=()=>{
@@ -105,7 +109,7 @@ $('undo').onclick=()=>{
  const a=attempt(state),m=a.history.at(-1);if(!m)return;const before=a.board;
  interrupt();if(commit(undone(state))){hintCache=null;kind='undo';lastMove=null;scene.setBoard(attempt(state).board);scene.animate(before,{from:m.to,to:m.from,amount:m.amount,color:m.color},true);audio.undo();paint();message('Возвращаем предыдущий ход');}
 };
-$('restart').onclick=()=>{audio.ui();modal('Начать заново?','Вернётся та же раскладка. Текущие ходы будут сброшены.',[{label:'Начать заново',primary:true,action:restart},{label:'Продолжить',action:close}]);};
+$('restart').onclick=()=>{audio.ui();if(!attempt(state).history.length){restart();return;}modal('Начать заново?','Вернётся та же раскладка. Текущие ходы будут сброшены.',[{label:'Начать заново',primary:true,action:restart},{label:'Продолжить',action:close}]);};
 $('continue').onclick=()=>{audio.ui();if(state.current===levels.length-1)menu();else switchLevel(state.current+1);};
 $('symbols').onclick=()=>{const n=structuredClone(state);n.settings.symbols=!n.settings.symbols;if(commit(n)){paint();audio.ui();}};
 function showHint(m:Move){clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
