@@ -25,7 +25,25 @@ test('a half-selected next move survives the end of the current animation',async
 });
 
 for(const stage of ['current','queued'])test(`undo cancels all pending input during the ${stage} move`,async({page})=>{
- await open(page);await queueFirstChain(page);if(stage==='queued'){await expect.poll(async()=>(await history(page)).length).toBe(2);await expect(page.locator('#hint')).toBeDisabled();}await page.locator('#undo').click({force:true});await expect(page.locator('#hint')).toBeEnabled();expect(await history(page)).toHaveLength(stage==='queued'?1:0);await expect(page.locator('#continue')).not.toBeVisible();
+ await open(page);
+ // Trigger in the same event-loop turn as the target state. A remote click may arrive
+ // after the first flight has ended, especially with the shorter material rhythm.
+ await page.evaluate(stage=>{
+  (window as any).autoUndo=null;
+  const target=document.getElementById(stage==='current'?'status':'moves')!;
+  const observer=new MutationObserver(()=>{
+   const ready=stage==='current'?target.textContent!.includes('Следующий ход выбран'):target.textContent==='Ходов: 2';
+   if(!ready)return;observer.disconnect();
+   const save=JSON.parse(localStorage.getItem('water-sort-v1')!);
+   (window as any).autoUndo={before:Object.values(save.attempts).flatMap((a:any)=>a.history).length,busy:(document.getElementById('hint') as HTMLButtonElement).disabled};
+   document.getElementById('undo')!.click();
+  });observer.observe(target,{subtree:true,childList:true,characterData:true});
+ },stage);
+ await tap(page,0);await tap(page,2);await tap(page,1);await tap(page,0);
+ await expect.poll(()=>page.evaluate(()=>(window as any).autoUndo)).not.toBeNull();
+ expect(await page.evaluate(()=>(window as any).autoUndo)).toEqual({before:stage==='queued'?2:1,busy:true});
+ await expect(page.locator('#hint')).toBeEnabled();expect(await history(page)).toHaveLength(stage==='queued'?1:0);
+ await page.waitForTimeout(550);expect(await history(page)).toHaveLength(stage==='queued'?1:0);await expect(page.locator('#continue')).not.toBeVisible();
 });
 
 test('reload retains only accepted moves, never the pending intention',async({page})=>{
