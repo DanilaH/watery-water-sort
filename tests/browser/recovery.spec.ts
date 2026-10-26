@@ -37,3 +37,14 @@ test('cached vessels reproduce the same commands and symbols as a fresh render',
   const result=await page.evaluate(async({symbols,light})=>{const s=(window as any).cacheScene;s.symbols=symbols;s.light=light;const frame=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));await frame();s.previousSignature='';await frame();const snapshot=()=>JSON.stringify({commands:s.ink.commandBuffer,labels:s.activeLabels.map((l:any)=>[l.x,l.y,l.text,l.style.fontSize])});const cached=snapshot();s.tubes.clear();s.previousSignature='';await frame();return {same:cached===snapshot(),entries:s.tubes.size};},{symbols,light});expect(result.same).toBe(true);expect(result.entries).toBe(10);
  }
 });
+
+for(const sound of [true,false])test(`audio hardware failure leaves moves and settings usable (sound=${sound})`,async({page})=>{
+ const s=fresh();s.settings.sound=sound;await seed(page,s);
+ await page.addInitScript(()=>{(window as any).audioAttempts=0;(window as any).AudioContext=class{constructor(){(window as any).audioAttempts++;throw new DOMException('Audio hardware unavailable','NotSupportedError');}};});
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');const tap=await points(page);
+ if(!sound)expect(await page.evaluate(()=>(window as any).audioAttempts)).toBe(0);
+ await tap(0);await tap(2);await expect(page.locator('#hint')).toBeEnabled();await expect(page.locator('#moves')).toHaveText('Ходов: 1');
+ await page.locator('#settings').click();await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Закрыть',exact:true}).click();
+ await page.reload();await points(page);await expect(page.locator('#moves')).toHaveText('Ходов: 1');expect(errors).toEqual([]);
+ if(!sound)expect(await page.evaluate(()=>(window as any).audioAttempts)).toBe(0);
+});

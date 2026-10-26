@@ -11,8 +11,8 @@ import type { Result } from './core/solver';
 const haptics=registerPlugin<{impact(options:{strong:boolean}):Promise<void>}>('FeelHaptics');
 const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
 const dialog=$<HTMLDialogElement>('dialog'),content=$('dialog-content'),audio=new Sound(),store=new SaveStore(()=>localStorage);
-void audio.load();
 const loaded=store.load();let state=loaded.state,locked=loaded.corrupt||loaded.unavailable;
+audio.setEnabled(state.settings.sound);if(state.settings.sound)void audio.load();
 let recoveryNotice=loaded.recovered?'Откат к резервной копии':'';
 const scene=new WaterScene('water');
 const density=Math.min(2,Math.max(1,devicePixelRatio));
@@ -43,7 +43,7 @@ function commit(next:Save){try{store.write(next);state=next;recoveryNotice='';re
 function paint(){
  const a=attempt(state),finished=won(a.board)&&!scene.busy;
  scene.slots=a.board.length;scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=state.settings.light;audio.setEnabled(state.settings.sound);
- document.body.classList.toggle('light',state.settings.light);document.body.classList.toggle('finished',finished);
+ document.body.classList.toggle('dense-board',a.board.length>10);document.body.classList.toggle('light',state.settings.light);document.body.classList.toggle('finished',finished);
  $('level-title').textContent=`Уровень ${state.current+1}`;$('moves').textContent=`Ходов: ${a.history.length}`;$('progress').textContent=`${state.current+1} / ${levels.length}`;
  ($('undo') as HTMLButtonElement).disabled=!a.history.length;
  ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
@@ -149,7 +149,7 @@ function help(proven=deadRevision===state.revision){
  if(a.history.length)buttons.push({label:'Отменить ход',primary:a.extra,action:()=>{close();undo();}});
  buttons.push({label:'Заново',action:askRestart});
  modal(proven?'Решения нет':'Если застрял',
-  (proven?'Из этой раскладки цвета уже не собрать. ':'')+(a.extra?'Дополнительная колба уже добавлена. Она останется при перезапуске.':'Можно бесплатно добавить одну пустую колбу на уровень. Текущие ходы сохранятся.'),buttons);
+  (proven?'Из этой раскладки цвета уже не собрать. ':'')+(a.extra?'Дополнительная колба уже добавлена. Она останется при перезапуске.':'Одна бесплатная колба. Ходы сохранятся.'),buttons);
  message(guidance());
 }
 $('rescue').onclick=()=>{audio.ui();help();};

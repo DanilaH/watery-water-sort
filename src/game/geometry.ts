@@ -17,7 +17,8 @@ export function layout(width:number,height:number,count:number):TubePose[]{
   const padding=8,headroom=Math.min(62,Math.max(24,height*.09));
   const usableW=Math.max(1,width-padding*2),usableH=Math.max(1,height-headroom-padding*2);
   let best={cols:2,rows:Math.ceil(count/2),pitchX:0,pitchY:0,w:0,h:0,score:-1};
-  const maxCols=Math.min(6,count,Math.max(2,Math.floor(usableW/54)));
+  const hitGap=width<340&&count>10?2:6;
+  const maxCols=Math.min(6,count,Math.max(2,Math.floor(usableW/(48+hitGap))));
   for(let cols=2;cols<=maxCols;cols++){
     const rows=Math.ceil(count/cols),pitchX=usableW/cols,pitchY=usableH/rows;
     const verticalGap=height<320?16:height<420?24:32;
@@ -30,7 +31,7 @@ export function layout(width:number,height:number,count:number):TubePose[]{
     const row=Math.floor(i/best.cols),inRow=Math.min(best.cols,count-row*best.cols);
     return {x:width/2+(i%best.cols-(inRow-1)/2)*best.pitchX,
       y:padding+headroom+row*best.pitchY+(best.pitchY-best.h)/2,
-      w:best.w,h:best.h,hitW:Math.min(best.pitchX-6,Math.max(48,best.w*1.35)),hitH:Math.min(best.pitchY-6,Math.max(48,best.h+20))};
+      w:best.w,h:best.h,hitW:Math.min(best.pitchX-hitGap,Math.max(48,best.w*1.35)),hitH:Math.min(best.pitchY-6,Math.max(48,best.h+20))};
   });
 }
 /** Shared inner silhouette for both rendering and the outlet/volume calculation. */

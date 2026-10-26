@@ -13,14 +13,23 @@ export class Sound {
   enabled=true;
   load(){
     if(this.loading)return this.loading;
-    this.context??=new AudioContext();const c=this.context;
-    if(!this.master){this.master=c.createGain();this.master.gain.value=.8;const limiter=c.createDynamicsCompressor();limiter.threshold.value=-10;limiter.knee.value=12;limiter.ratio.value=5;this.master.connect(limiter);limiter.connect(c.destination);}
+    if(!this.enabled||this.blocked)return Promise.resolve();
+    try{
+      this.context??=new AudioContext();const c=this.context;
+      if(!this.master){const master=c.createGain(),limiter=c.createDynamicsCompressor();master.gain.value=.8;limiter.threshold.value=-10;limiter.knee.value=12;limiter.ratio.value=5;master.connect(limiter);limiter.connect(c.destination);this.master=master;}
+    }catch{
+      // Audio hardware can be unavailable. A later gesture may retry; gameplay still starts.
+      const failed=this.context;this.context=undefined;this.master=undefined;
+      try{void failed?.close().catch(()=>{});}catch{}
+      return Promise.resolve();
+    }
+    const c=this.context;
     this.loading=Promise.all(FILES.map(async name=>{try{const response=await fetch(`${import.meta.env.BASE_URL}audio/${name}.ogg`);if(!response.ok)throw Error('Audio unavailable');const buffer=await c.decodeAudioData(await response.arrayBuffer());this.buffers.set(name,buffer);}catch{/* Missing audio must never block a move. */}})).then(()=>{});
     return this.loading;
   }
   prime(){if(this.blocked||!this.enabled)return;void this.load();if(this.context?.state==='suspended')void this.context.resume().catch(()=>{});}
   setEnabled(on:boolean){this.enabled=on;if(!on)this.stop();}
-  block(on:boolean){this.blocked=on;if(on){this.stop();setTimeout(()=>{if(this.blocked)void this.context?.suspend();},18);}}
+  block(on:boolean){this.blocked=on;if(on){this.stop();setTimeout(()=>{if(this.blocked)void this.context?.suspend().catch(()=>{});},18);}}
   stop(){this.pending++;for(const v of [...this.voices])v.release();}
   private play(name:Cue,volume:number,priority:number,rate=1,durationMs?:number,fill?:{from:number;to:number}){
     if(!this.enabled||this.blocked)return;this.prime();const buffer=this.buffers.get(name),c=this.context;if(!c||!this.master)return;if(!buffer){const token=++this.pending,at=performance.now();void this.loading?.then(()=>{if(this.buffers.has(name)&&this.pending===token&&performance.now()-at<100){const remaining=durationMs===undefined?undefined:durationMs-(performance.now()-at);if(remaining===undefined||remaining>12)this.play(name,volume,priority,rate,remaining,fill);}});return;}

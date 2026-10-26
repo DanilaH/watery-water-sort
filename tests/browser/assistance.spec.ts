@@ -66,3 +66,17 @@ for(const count of [10,11])test(`landscape gives ${count} tubes more height with
  for(const id of ['menu','settings','symbols','undo','hint','restart']){const r=(await page.locator('#'+id).boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y).toBeGreaterThanOrEqual(0);expect(r.y+r.height).toBeLessThanOrEqual(320);}
  await help(page);for(const button of await page.locator('.dialog-actions button').all()){const r=(await button.boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y+r.height).toBeLessThanOrEqual(320);}
 });
+
+test('extra tube keeps two readable rows and exclusive targets on short portrait',async({page})=>{
+ const s=fresh();s.current=11;s.completed=levels.slice(0,11).map((l:any)=>l.id);await page.setViewportSize({width:320,height:480});await open(page,s);await help(page);await page.getByRole('button',{name:'Добавить колбу',exact:true}).click();
+ const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,11);expect(new Set(ps.map(p=>p.y)).size).toBe(2);expect(ps[0].h).toBeGreaterThan(90);
+ for(const p of ps){expect(p.hitW).toBeGreaterThanOrEqual(48);expect(p.hitH).toBeGreaterThanOrEqual(48);expect(p.x-p.hitW/2).toBeGreaterThanOrEqual(0);expect(p.x+p.hitW/2).toBeLessThanOrEqual(b.width);}
+ for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){const a=ps[i],b=ps[j];expect(Math.abs(a.x-b.x)>=(a.hitW+b.hitW)/2||Math.abs(a.y+a.h/2-b.y-b.h/2)>=(a.hitH+b.hitH)/2).toBe(true);}
+ const m=moves(attempt(await saved(page)).board).find(m=>m.to===10)!;expect(m).toBeTruthy();await tap(page,m.from);await tap(page,10);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(1);
+});
+
+test('small landscape rescue explanation is visible without scrolling',async({page})=>{
+ await page.setViewportSize({width:568,height:320});await open(page,dead);await page.locator('#rescue').click();
+ const body=await page.locator('.dialog-body').evaluate(e=>({client:e.clientHeight,scroll:e.scrollHeight}));expect(body.scroll).toBeLessThanOrEqual(body.client+1);
+ for(const button of await page.locator('.dialog-actions button').all()){const r=(await button.boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y+r.height).toBeLessThanOrEqual(320);}
+});

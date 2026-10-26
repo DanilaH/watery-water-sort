@@ -51,3 +51,15 @@ nav button span{font-size:12px}
 
 /* Keep the landscape toolbar clear of the moon's bright disk. */
 @media(orientation:landscape) and (max-height:550px){body:before{background-size:150vw auto;background-position:left bottom;opacity:.28}}
+
+/* Keep the rescue tube in two rows without shrinking touch targets. */
+@media(orientation:portrait) and (max-height:600px) and (max-width:340px){
+ body.dense-board #app{padding-left:max(2px,env(safe-area-inset-left));padding-right:max(2px,env(safe-area-inset-right))}
+ body.dense-board .game-header,body.dense-board #meta,body.dense-board #feedback{padding-left:14px;padding-right:14px}
+}
+/* Three rescue actions and the explanation must fit the 320px landscape. */
+@media(orientation:landscape) and (max-height:350px){
+ .dialog-header{padding-top:6px;padding-bottom:6px;margin-bottom:4px}
+ .dialog-body{padding-bottom:4px}.dialog-body p{margin-bottom:4px;font-size:12px}
+ .dialog-actions{padding-top:6px;padding-bottom:8px;gap:6px}
+}
