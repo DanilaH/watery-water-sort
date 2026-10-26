@@ -1,0 +1,8 @@
+{
+  "tested": 112,
+  "validExpanded": 112,
+  "found": 112,
+  "validPaths": 112,
+  "validUndoRestart": 112,
+  "note": "Actual expanded/undone/restarted model functions, not ad integration or human success rates."
+}

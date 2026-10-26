@@ -1,0 +1,89 @@
+{
+  "results": [
+    {
+      "throttle": 1,
+      "cached": false,
+      "active": {
+        "samples": 85,
+        "p50Ms": 2.599999999627471,
+        "p95Ms": 3.900000000372529,
+        "maxMs": 6.400000000372529
+      },
+      "idle": {
+        "samples": 85,
+        "p50Ms": 0,
+        "p95Ms": 0.10000000149011612,
+        "maxMs": 0.2000000011175871
+      },
+      "tubeCalls": [
+        280,
+        280,
+        260
+      ]
+    },
+    {
+      "throttle": 1,
+      "cached": true,
+      "active": {
+        "samples": 90,
+        "p50Ms": 1,
+        "p95Ms": 2,
+        "maxMs": 3.400000000372529
+      },
+      "idle": {
+        "samples": 84,
+        "p50Ms": 0,
+        "p95Ms": 0.10000000149011612,
+        "maxMs": 0.2000000011175871
+      },
+      "tubeCalls": [
+        61,
+        55,
+        61
+      ]
+    },
+    {
+      "throttle": 4,
+      "cached": false,
+      "active": {
+        "samples": 50,
+        "p50Ms": 13.5,
+        "p95Ms": 20.200000001117587,
+        "maxMs": 22.59999999962747
+      },
+      "idle": {
+        "samples": 63,
+        "p50Ms": 0.09999999962747097,
+        "p95Ms": 0.900000000372529,
+        "maxMs": 1.300000000745058
+      },
+      "tubeCalls": [
+        160,
+        150,
+        160
+      ]
+    },
+    {
+      "throttle": 4,
+      "cached": true,
+      "active": {
+        "samples": 61,
+        "p50Ms": 4.599999999627471,
+        "p95Ms": 8.5,
+        "maxMs": 13.5
+      },
+      "idle": {
+        "samples": 59,
+        "p50Ms": 0.09999999962747097,
+        "p95Ms": 0.7000000011175871,
+        "maxMs": 0.900000000372529
+      },
+      "tubeCalls": [
+        39,
+        39,
+        41
+      ]
+    }
+  ],
+  "note": "Headless Chromium dev server, three contexts per variant, same 390x844 dense field, real-time first pour. CPU update cost only, not phone FPS/GPU/battery. Control disables both new caches in diagnostic hooks."
+}

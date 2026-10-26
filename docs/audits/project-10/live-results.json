@@ -1,0 +1,68 @@
+{
+  "results": [
+    {
+      "case": "unreadable-newer-primary-readable-backup",
+      "moves": "Ходов: 2",
+      "retained": true,
+      "errors": []
+    },
+    {
+      "case": "worker-constructor-failure",
+      "failed": {
+        "status": "Подсказка недоступна. Можно продолжить или отменить ход.",
+        "disabled": false,
+        "errors": []
+      },
+      "recoversByPlaying": true
+    },
+    {
+      "case": "triple-undo-queue-rotation-reload",
+      "beforeRotation": {
+        "status": "",
+        "history": 4
+      },
+      "history": 4,
+      "historyAtResize": 4,
+      "sameAsAcceptedAtResize": true,
+      "errors": []
+    },
+    {
+      "case": "winning-flight-menu-next",
+      "current": 1,
+      "completed": [
+        "water-001"
+      ],
+      "continueVisible": false,
+      "errors": []
+    },
+    {
+      "case": "live-cache-and-session-churn",
+      "cacheAudit": {
+        "hits": 3972,
+        "mismatches": []
+      },
+      "cacheEntries": 10,
+      "slots": 10,
+      "rootChildren": 30,
+      "labels": 26,
+      "particles": 0,
+      "domBefore": {
+        "documents": 2,
+        "nodes": 118,
+        "jsEventListeners": 75
+      },
+      "domAfter": {
+        "documents": 2,
+        "nodes": 179,
+        "jsEventListeners": 82
+      },
+      "domAfterMoreDialogs": {
+        "documents": 2,
+        "nodes": 179,
+        "jsEventListeners": 83
+      },
+      "errors": []
+    }
+  ],
+  "note": "Adversarial browser diagnostics with real time. Live cache probes add overhead; not a performance/FPS benchmark. Synthetic Worker denial tests resilience, not failure prevalence."
+}

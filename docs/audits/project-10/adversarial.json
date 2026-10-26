@@ -1,0 +1,176 @@
+{
+  "results": [
+    {
+      "case": "audio-context-construction-denied",
+      "synthetic": true,
+      "savedSoundSetting": true,
+      "canvas": 0,
+      "settingsOpen": false,
+      "unchanged": true,
+      "errors": [
+        "Audio hardware unavailable"
+      ]
+    },
+    {
+      "case": "audio-context-construction-denied",
+      "synthetic": true,
+      "savedSoundSetting": false,
+      "canvas": 0,
+      "settingsOpen": false,
+      "unchanged": true,
+      "errors": [
+        "Audio hardware unavailable"
+      ]
+    },
+    {
+      "case": "symbols-during-hint",
+      "delayedWorkerMessage": false,
+      "inputNote": "Two actual DOM click handlers in one event-loop turn, before the asynchronous Worker reply. No fake clock.",
+      "failed": {
+        "status": "Перелей в колбу со стрелкой",
+        "hintDisabled": false,
+        "symbols": "true"
+      },
+      "recoveredByBoardSelection": true,
+      "errors": []
+    },
+    {
+      "case": "symbols-during-hint",
+      "delayedWorkerMessage": true,
+      "inputNote": "Two actual DOM click handlers in one event-loop turn, before the asynchronous Worker reply. No fake clock.",
+      "failed": {
+        "status": "Перелей в колбу со стрелкой",
+        "hintDisabled": false,
+        "symbols": "true"
+      },
+      "recoveredByBoardSelection": true,
+      "errors": []
+    },
+    {
+      "case": "muted-hint-extra-reload",
+      "savedSound": false,
+      "extra": true,
+      "tubes": 5,
+      "errors": []
+    },
+    {
+      "case": "help-small-landscape",
+      "sizes": {
+        "height": 32,
+        "scrollHeight": 63,
+        "text": "Можно бесплатно добавить одну пустую колбу на уровень. Текущие ходы сохранятся."
+      },
+      "buttons": [
+        {
+          "text": "Добавить колбу",
+          "x": 50.40625,
+          "y": 132,
+          "width": 467.1875,
+          "height": 48,
+          "bottom": 180
+        },
+        {
+          "text": "Отменить ход",
+          "x": 50.40625,
+          "y": 188,
+          "width": 467.1875,
+          "height": 48,
+          "bottom": 236
+        },
+        {
+          "text": "Заново",
+          "x": 50.40625,
+          "y": 244,
+          "width": 467.1875,
+          "height": 48,
+          "bottom": 292
+        }
+      ],
+      "errors": []
+    },
+    {
+      "case": "dense-extra-layout",
+      "viewport": [
+        320,
+        480
+      ],
+      "before": {
+        "x": 35.2,
+        "y": 40,
+        "w": 27.217499999999998,
+        "h": 95.5,
+        "hitW": 48,
+        "hitH": 105.5
+      },
+      "after": {
+        "x": 42,
+        "y": 40,
+        "w": 18,
+        "h": 58.33333333333333,
+        "hitW": 48,
+        "hitH": 68.33333333333333
+      },
+      "rowsBefore": 2,
+      "rowsAfter": 3,
+      "minHitWidth": 48,
+      "minHitHeight": 68.33333333333333,
+      "errors": []
+    },
+    {
+      "case": "dense-extra-layout",
+      "viewport": [
+        390,
+        844
+      ],
+      "before": {
+        "x": 42.19999999999999,
+        "y": 101.57499999999999,
+        "w": 36.252,
+        "h": 174.42000000000002,
+        "hitW": 48.940200000000004,
+        "hitH": 194.42000000000002
+      },
+      "after": {
+        "x": 36.5,
+        "y": 116.11,
+        "w": 30.21,
+        "h": 145.35,
+        "hitW": 48,
+        "hitH": 165.35
+      },
+      "rowsBefore": 2,
+      "rowsAfter": 2,
+      "minHitWidth": 48,
+      "minHitHeight": 165.35,
+      "errors": []
+    },
+    {
+      "case": "dense-extra-layout",
+      "viewport": [
+        568,
+        320
+      ],
+      "before": {
+        "x": 43.19999999999999,
+        "y": 40,
+        "w": 21.374999999999996,
+        "h": 75,
+        "hitW": 48,
+        "hitH": 85
+      },
+      "after": {
+        "x": 37.33333333333334,
+        "y": 40,
+        "w": 21.374999999999996,
+        "h": 75,
+        "hitW": 48,
+        "hitH": 85
+      },
+      "rowsBefore": 2,
+      "rowsAfter": 2,
+      "minHitWidth": 48,
+      "minHitHeight": 85,
+      "errors": []
+    }
+  ]
+}

@@ -54,3 +54,5 @@ Android: JDK 21 и SDK 36, `npm run android:sync`, затем `cd android && ./g
 - [Исследование feel и независимый разбор 0.9](docs/FEEL_RESEARCH_09.md).
 
 - [Ритм, вода, контакты и награда за цвет 0.10](docs/MATERIAL_FEEL_10.md).
+
+- [Независимый проход по всему проекту 0.10](docs/PROJECT_REVIEW_10.md).
