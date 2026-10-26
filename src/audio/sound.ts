@@ -45,9 +45,9 @@ export class Sound {
     let stopped=false;const voice={priority,release:()=>{if(stopped)return;const now=c.currentTime;gain.gain.cancelScheduledValues(now);gain.gain.setValueAtTime(gain.gain.value,now);gain.gain.linearRampToValueAtTime(0,now+.012);try{source.stop(now+.015);}catch{}},stop:()=>{if(stopped)return;stopped=true;try{source.stop();}catch{}source.disconnect();filter.disconnect();gain.disconnect();pan.disconnect();this.voices=this.voices.filter(v=>v!==voice);}};
     source.onended=voice.stop;this.voices.push(voice);source.start(now);source.stop(now+duration+.005);
   }
-  tap(){this.play('select',.55,0,.98+Math.random()*.04);}
-  accept(){this.play('accept',.38,0,1,65);}
-  land(){this.play('land',.28,0,1,115);}
+  tap(){this.play('select',.38,0,.98+Math.random()*.04);}
+  accept(){this.play('accept',.22,0,1,65);}
+  land(){this.play('land',.24,0,1,115);}
   reject(){this.play('reject',.25,0);}
   hint(){this.play('hint',.5,1);}
   finish(won:boolean,sequence=0){this.play('cork',won?.36:.30,2,1,105);this.play(won?'victory':'complete',won?.75:.6,3,won?1:2**(Math.min(3,sequence*.6)/12));}

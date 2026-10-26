@@ -29,7 +29,7 @@ const save=p=>p.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')));
  const cdp=await context.newCDPSession(page);await cdp.send('HeapProfiler.collectGarbage');const before=await cdp.send('Memory.getDOMCounters');
  for(let current=0;current<12;current++){
   await page.locator('#menu').click();await page.locator('.levels button').nth(current).click();await page.waitForTimeout(300);
-  await page.locator('#settings').click();if(current%2===0)await page.getByRole('switch',{name:'Символы на цветах'}).click();if(current%3===0)await page.getByRole('switch',{name:'Светлая тема'}).click();await page.getByRole('button',{name:'Готово',exact:true}).click();await page.waitForTimeout(750);
+  await page.locator('#settings').click();if(current%2===0)await page.getByRole('switch',{name:'Метки на цветах'}).click();if(current%3===0)await page.getByRole('switch',{name:'Светлая тема'}).click();await page.getByRole('button',{name:'Готово',exact:true}).click();await page.waitForTimeout(750);
   const tap=await tapper(page,levels[current].initial.length),m=levels[current].witness[0];await tap(m.from);await tap(m.to);await page.waitForTimeout(420);await page.locator('#undo').click();await page.waitForTimeout(750);
   if(current===6){await page.setViewportSize({width:568,height:320});await page.waitForTimeout(250);}if(current===9){await page.setViewportSize({width:390,height:844});await page.waitForTimeout(250);}
  }

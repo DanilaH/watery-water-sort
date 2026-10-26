@@ -84,6 +84,7 @@ export class WaterScene extends Phaser.Scene {
   celebrate(index:number,final=false){
     const r=this.positions()[index];if(!r)return;
     const color=COLORS[this.board[index]?.[0]??0],now=performance.now();this.corkOpen.set(index,0);this.bursts.push({index,start:now,color,final});
+    if(final)for(let i=0;i<this.board.length;i++){if(i!==index&&completeTube(this.board[i]))this.bursts.push({index:i,start:now+45*i,color:COLORS[this.board[i][0]],final:true});}
     for(let n=0;n<(final?28:18);n++){
       const theta=Math.PI*2*n/(final?28:18),speed=35+Math.random()*90;
       this.particles.push({x:r.x,y:r.y+r.h*.43,vx:Math.cos(theta)*speed,vy:Math.sin(theta)*speed-60,age:0,life:.45+Math.random()*.4,color:n%3?color:0xfff0bc,size:2+Math.random()*2,spin:Math.random()*6});
@@ -112,6 +113,13 @@ export class WaterScene extends Phaser.Scene {
     const {poly}=this.tube(r,layers,0,selected,target,index,now);
     if(stable)this.tubes.set(index,{key,commands:this.ink.commandBuffer.slice(start),poly,symbols:this.activeLabels.slice(labelStart).map(l=>({x:l.x,y:l.y,text:l.text,size:parseFloat(String(l.style.fontSize))}))});
   }
+  private surfaceWave(index:number,now:number,depth:number,height:number){
+    const f=this.flight,receiving=f?.to===index&&!f.received&&now>=f.start+f.timing.lift;
+    const amplitude=Math.min(2.5,height*.025,depth*.2);
+    if(receiving){const age=now-f!.start-f!.timing.lift;return Math.sin(age/38)*amplitude*Math.min(1,age/45);}
+    const age=now-(this.settles.get(index)??-10000);
+    return age<550?Math.sin(age/36)*amplitude*(this.impulses.get(index)??1)*Math.exp(-age/150):0;
+  }
   private tube(r:Pose,layers:Layer[],angle:number,selected:boolean,target:boolean,index:number,now:number){
     const g=this.ink,w=r.w*.5,h=r.h;
     const settle=this.settles.get(index),age=settle===undefined?10000:now-settle;
@@ -133,7 +141,9 @@ export class WaterScene extends Phaser.Scene {
       const layer=layers[n];if(layer.amount<.001)continue;
       const low=surface(poly,sum/4*LIQUID_FILL),high=surface(poly,(sum+layer.amount)/4*LIQUID_FILL),base=COLORS[layer.color];
       let band=clip(clip(poly,high,true),low,false);
-      const wave=age<550?Math.sin(age/36)*Math.min(2.2,h*.025)*(this.impulses.get(index)??1)*Math.exp(-age/150):0;
+      const receiving=this.flight?.to===index&&!this.flight.received&&now>=this.flight.start+this.flight.timing.lift;
+      const flowAge=receiving?now-this.flight!.start-this.flight!.timing.lift:0;
+      const wave=n===layers.length-1?this.surfaceWave(index,now,low-high,h):0;
       if(Math.abs(angle)<.08&&n===layers.length-1&&Math.abs(wave)>.05){
         const section=clip(poly,high,true),left=Math.min(...section.map(p=>p.x)),right=Math.max(...section.map(p=>p.x)),top=Array.from({length:17},(_,k)=>({x:left+(right-left)*k/16,y:high+Math.sin(k/16*Math.PI*2)*wave}));
         band=clip(poly,low,false);band=clip(band,high-Math.abs(wave),true);
@@ -149,16 +159,16 @@ export class WaterScene extends Phaser.Scene {
       if(Math.abs(angle)<.09){
         
         const cap=clip(poly,high+3,true);const left=cap.length?Math.min(...cap.map(p=>p.x)):r.x-w,right=cap.length?Math.max(...cap.map(p=>p.x)):r.x+w;
-        g.fillStyle(blend(base,0xffffff,.25),.82);g.fillEllipse((left+right)/2,high+.7,(right-left)-1,Math.max(3,r.w*.105));
+        if(Math.abs(wave)<.15){g.fillStyle(blend(base,0xffffff,.25),.82);g.fillEllipse((left+right)/2,high+.7,(right-left)-1,Math.max(3,r.w*.105));}
         g.lineStyle(1.2,0xffffff,.28);g.beginPath();for(let k=0;k<=14;k++){const x=left+(right-left)*k/14,y=high+Math.sin(k/14*Math.PI*2)*wave;if(k===0)g.moveTo(x,y);else g.lineTo(x,y);}g.strokePath();
-        if(n===layers.length-1&&age<280){const p=age/280;g.lineStyle(1.2,0xffffff,.55*(1-p));g.strokeEllipse(r.x,high+2,r.w*.8*p,4+3*p);}
+        if(n===layers.length-1&&(receiving||age<280)){const p=(receiving?flowAge%140:age)/280;g.lineStyle(1.2,0xffffff,.55*(1-p));g.strokeEllipse(r.x,high+2,r.w*.8*p,4+3*p);}
       }
       if(this.symbols&&layer.amount>.35&&Math.abs(angle)<.1){const fontSize=Math.floor(Math.max(8,Math.min(14,(low-high)*.62,r.w*.38)));this.symbol({x:r.x,y:(low+high)/2,text:SIGNS[layer.color],size:fontSize});}
       sum+=layer.amount;
     }
     // A clean rounded glass silhouette: bright lip, thick base, one broad reflection.
-    g.lineStyle(4,this.light?0x5785ad:0x9bc8ee,this.light?.20:.14);g.strokePoints(poly,true);
-    g.lineStyle(1.5,this.light?0x4e7696:0xc9e5ff,.72);g.strokePoints(poly,true);
+    g.lineStyle(4,this.light?0x456965:0x9bc8ee,this.light?.25:.14);g.strokePoints(poly,true);
+    g.lineStyle(1.5,this.light?0x456965:0xc9e5ff,this.light?.85:.72);g.strokePoints(poly,true);
     const rimA=transform(-w,0),rimB=transform(w,0);
     g.lineStyle(5,0xa6cbea,.5);g.lineBetween(rimA.x,rimA.y,rimB.x,rimB.y);
     g.lineStyle(1.4,0xf3fbff,.96);g.lineBetween(rimA.x,rimA.y-1,rimB.x,rimB.y-1);
@@ -203,7 +213,7 @@ export class WaterScene extends Phaser.Scene {
       const aim=chosen&&!this.busyTube(i)?-17:0,prev=this.selectionY.get(i)??0;let velocity=this.selectionV.get(i)??0;velocity+=((aim-prev)*520-velocity*28)*dt;let offset=prev+velocity*dt;if(Math.abs(offset-aim)<.04&&Math.abs(velocity)<.2){offset=aim;velocity=0;}this.selectionY.set(i,offset);this.selectionV.set(i,velocity);r.y+=offset;
       if(now-this.entrance<240){const p=Math.max(0,1-(now-this.entrance)/240);r.y+=p*p*12;}
       let ls=grouped(f?f.before[i]:this.board[i]);
-      if(f&&i===f.to){const last=ls.at(-1);if(last?.color===f.color)last.amount+=f.amount*transfer;else ls.push({color:f.color,amount:f.amount*transfer});if(t<.73){this.settles.set(i,now);this.impulses.set(i,.6+f.amount*.15);}}
+      if(f&&i===f.to){const last=ls.at(-1);if(last?.color===f.color)last.amount+=f.amount*transfer;else ls.push({color:f.color,amount:f.amount*transfer});if(t<.73)this.impulses.set(i,.6+f.amount*.15);}
       this.restingTube(r,ls,chosen,target,i,now);
       if(target){const color=this.light?0x23649b:0xa6e8ff;this.fx.lineStyle(2,color,.8);this.fx.strokeEllipse(r.x,r.y+r.h+10,r.w*1.25,9);if(this.hintMove?.to===i){const y=r.y-12;this.fx.lineStyle(2.5,color,1);this.fx.beginPath();this.fx.moveTo(r.x,y-9);this.fx.lineTo(r.x,y+2);this.fx.moveTo(r.x-4,y-2);this.fx.lineTo(r.x,y+2);this.fx.lineTo(r.x+4,y-2);this.fx.strokePath();}}
     }
@@ -240,10 +250,11 @@ export class WaterScene extends Phaser.Scene {
         g.lineStyle(2,0xffce63,.95);g.strokeEllipse(r.x,r.y+r.h+10,r.w*1.18,8);
       }
     }
-    this.bursts=this.bursts.filter(b=>now-b.start<650);
-    for(const b of this.bursts){const r=poses[b.index],p=(now-b.start)/650,fade=Math.pow(1-p,1.7),g=this.fx;
+    this.bursts=this.bursts.filter(b=>now-b.start<(b.final?900:650));
+    for(const b of this.bursts){if(now<b.start)continue;const r=poses[b.index],p=(now-b.start)/(b.final?900:650),fade=Math.pow(1-p,1.7),g=this.fx;
       for(let n=3;n>=1;n--){g.fillStyle(b.color,.035*fade);g.fillEllipse(r.x,r.y+r.h*.5,r.w*(1+n*.6),r.h*(1+n*.1));}
-      g.lineStyle(2,b.color,.8*fade);g.strokeEllipse(r.x,r.y+r.h*.45,r.w*(.9+p*2.2),r.h*(.35+p*.6));
+      if(b.final){g.lineStyle(2,0xffe7b8,.65*fade);g.strokeRoundedRect(r.x-r.w*.65,r.y-6,r.w*1.3,r.h+12,Math.min(12,r.w*.3));}
+      else{g.lineStyle(2,b.color,.8*fade);g.strokeEllipse(r.x,r.y+r.h*.45,r.w*(.9+p*2.2),r.h*(.35+p*.6));}
       const sweep=r.y+r.h*(1-p);g.lineStyle(3,0xffffff,.75*fade);g.lineBetween(r.x-r.w*.4,sweep,r.x+r.w*.4,sweep);
       for(let n=0;n<3;n++){const a=n*Math.PI*2/3+p*.8;this.star(r.x+Math.cos(a)*r.w*(.6+p*.35),r.y+r.h*.35+Math.sin(a)*r.h*.3,3*fade,0xfff5ce,fade,a);}
     }

@@ -33,3 +33,16 @@ for(const interrupt of ['undo','resize'])test(`${interrupt} cancels future water
 test('layered audio keeps its voice budget and stops every owned voice',async({page})=>{
  await open(page);const result=await page.evaluate(async()=>{const p='/src/audio/sound.ts',m=await import(p),s=new m.Sound();await s.load();await s.context.resume();let peak=0;for(let i=0;i<10;i++){s.accept();s.pour(180,2,0,.5);s.finish(i===9,i);peak=Math.max(peak,s.voices.length);}s.stop();await new Promise(r=>setTimeout(r,100));const active=s.voices.length;await s.context.close();return {peak,active};});expect(result.peak).toBeLessThanOrEqual(4);expect(result.active).toBe(0);
 });
+
+test('incoming liquid reacts during the real flow, without a flashing hint button',async({page})=>{
+ await open(page);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.surfaceWave;(window as any).waterWaves=[];m.WaterScene.prototype.surfaceWave=function(i:number,now:number,...rest:any[]){const value=fn.call(this,i,now,...rest),f=this.flight;if(f?.to===i&&!f.received&&now>=f.start+f.timing.lift)(window as any).waterWaves.push(value);return value;};});
+ await tap(page,0);await tap(page,2);await expect(page.locator('body')).toHaveClass(/pouring/);await expect(page.locator('#hint')).toBeDisabled();expect(Number(await page.locator('#hint').evaluate(e=>getComputedStyle(e).opacity))).toBeGreaterThan(.7);await expect(page.locator('#hint')).toBeEnabled();
+ const samples=await page.evaluate(()=>(window as any).waterWaves as number[]);expect(samples.some(x=>Math.abs(x)>.2)).toBe(true);await expect(page.locator('body')).not.toHaveClass(/pouring/);
+});
+
+test('victory accents every completed color and next level cancels the accent immediately',async({page})=>{
+ await open(page);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.celebrate;m.WaterScene.prototype.celebrate=function(...args:any[]){const r=fn.apply(this,args);(window as any).resultScene=this;return r;};});
+ for(const move of levels[0].witness){await tap(page,move.from);await tap(page,move.to);if(move!==levels[0].witness.at(-1))await expect(page.locator('#hint')).toBeEnabled();}
+ await expect(page.locator('#continue')).toBeVisible();const data=await page.evaluate(()=>{const s=(window as any).resultScene;return {busy:s.busy,colors:[...new Set(s.bursts.filter((b:any)=>b.final).map((b:any)=>b.index))],rise:Number(document.getElementById('app')!.style.getPropertyValue('--result-rise'))};});expect(data.busy).toBe(false);expect(data.colors).toHaveLength(2);expect(data.rise).toBeGreaterThan(40);
+ await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 2');expect(await page.evaluate(()=>(window as any).resultScene.bursts.length)).toBe(0);
+});

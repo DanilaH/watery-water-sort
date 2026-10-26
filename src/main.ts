@@ -43,11 +43,13 @@ function commit(next:Save){try{store.write(next);state=next;recoveryNotice='';re
 function paint(){
  const a=attempt(state),finished=won(a.board)&&!scene.busy;
  scene.slots=a.board.length;scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=state.settings.light;audio.setEnabled(state.settings.sound);
- document.body.classList.toggle('dense-board',a.board.length>10);document.body.classList.toggle('light',state.settings.light);document.body.classList.toggle('finished',finished);
- $('level-title').textContent=`Уровень ${state.current+1}`;$('moves').textContent=`Ходов: ${a.history.length}`;$('progress').textContent=`${state.current+1} / ${levels.length}`;
+ document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',a.board.length>10);document.body.classList.toggle('light',state.settings.light);document.body.classList.toggle('finished',finished);
+ $('level-title').innerHTML=`<span>Уровень</span> <strong>${state.current+1}</strong>`;$('moves').textContent=`Ходов: ${a.history.length}`;$('progress').textContent=`${levels.length} уровней`;
  ($('undo') as HTMLButtonElement).disabled=!a.history.length;
  ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
  $('symbols').setAttribute('aria-pressed',String(state.settings.symbols));
+ const bottom=Math.max(...scene.positions().map(p=>p.y+p.h));
+ $('app').style.setProperty('--result-rise',String(finished?Math.max(0,Math.min(140,$('board').clientHeight-bottom-20)):0));
  $('continue').hidden=!finished;
  $('rescue').hidden=finished||scene.busy||!(deadRevision===state.revision||!moves(a.board).length);
  $('continue').textContent=state.current===levels.length-1?'К уровням →':'Дальше →';
@@ -159,7 +161,7 @@ function menu(){
  levels.forEach((l,i)=>{const b=document.createElement('button'),done=state.completed.includes(l.id),available=i===0||i===state.current||state.completed.includes(levels[i-1].id);
   b.disabled=!available;b.textContent=String(i+1);b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
   b.setAttribute('aria-label',`Уровень ${i+1}${done?', пройден':!available?', закрыт':''}`);
-  const mark=document.createElement('small');mark.textContent=done?'✓':i===state.current?'Сейчас':!available?'Закрыт':'';b.append(mark);b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
+  const mark=document.createElement('small');mark.textContent=done?'✓':i===state.current?'Сейчас':'';b.append(mark);b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
  });body.append(grid);
  if(!won(attempt(state).board)){const helpButton=document.createElement('button');helpButton.className='help-button';helpButton.textContent='Если застрял';helpButton.onclick=()=>{audio.ui();help();};body.append(helpButton);}
  const note=document.createElement('p');note.className='build-note';note.textContent='Тестовый набор · подсказки без лимита';body.append(note);
@@ -167,7 +169,7 @@ function menu(){
 $('menu').onclick=menu;
 $('settings').onclick=()=>{
  audio.ui();const body=modal('Настройки','',[{label:'Готово',primary:true,action:close}]);
- for(const [key,label]of Object.entries({sound:'Звуки',haptics:'Вибрация',fast:'Быстрое переливание',symbols:'Символы на цветах',light:'Светлая тема'})){
+ for(const [key,label]of Object.entries({sound:'Звуки',haptics:'Вибрация',fast:'Быстрое переливание',symbols:'Метки на цветах',light:'Светлая тема'})){
   const row=document.createElement('label');row.className='setting';const text=document.createElement('span');text.textContent=label;const input=document.createElement('input');input.type='checkbox';input.setAttribute('role','switch');input.checked=state.settings[key as keyof typeof state.settings]!==false;
   input.onchange=()=>{const n=structuredClone(state);n.settings[key as keyof typeof state.settings]=input.checked;if(commit(n)){paint();audio.ui();}else input.checked=!input.checked;};row.append(text,input);body.append(row);
  }
