@@ -1,0 +1,7 @@
+{
+  "errors": [],
+  "frames": 343,
+  "audioOffset": 0.8534400463104248,
+  "videoAudio": true,
+  "note": "CDP frame timestamps and captured Web Audio bus, desktop Chromium production build. No microphone, Android device, subjective listening or speaker latency measurement."
+}

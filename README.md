@@ -58,3 +58,5 @@ Android: JDK 21 и SDK 36, `npm run android:sync`, затем `cd android && ./g
 - [Независимый проход по всему проекту 0.10](docs/PROJECT_REVIEW_10.md).
 
 - [Исправления после полного разбора: зависимости, аудио и плотное поле 0.11](docs/RELIABILITY_11.md).
+
+- [Независимый разбор видео, кадров и оформления 0.11](docs/PRESENTATION_REVIEW_11.md).
