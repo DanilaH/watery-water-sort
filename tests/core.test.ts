@@ -3,7 +3,7 @@ import { apply, moveFor, moves, reverse, validBoard, won, type Board } from '../
 import { solve } from '../src/core/solver';
 import { levels, fresh, moved, undone, restarted, expanded, validSave, attempt, levelKey } from '../src/core/session';
 import { SaveStore } from '../src/platform/storage';
-import { area, clip, surface, layout, bounds, planPour, pourPose, vesselPolygon, LIQUID_FILL, pourTransfer } from '../src/game/geometry';
+import { area, clip, surface, layout, bounds, planPour, pourPose, vesselPolygon, LIQUID_FILL, pourTransfer, pourTiming, pourFrame } from '../src/game/geometry';
 describe('rules',()=>{
  it('pours only the contiguous group or available space',()=>{
   expect(moveFor([[0,0,1,1],[1,1,1],[],[]],0,1)).toEqual({from:0,to:1,color:1,amount:1});
@@ -113,5 +113,22 @@ describe('additional tube',()=>{
   expect(expanded(after)).toBe(after);expect(validSave(undone(after))).toBe(true);expect(validSave(restarted(after))).toBe(true);
   const n=moved(after,{from:0,to:4,color:attempt(after).board[0].at(-1)!,amount:2});
   expect(validSave(n)).toBe(true);expect(attempt(undone(n)).board).toEqual(attempt(after).board);
+ });
+});
+
+
+describe('material pouring rhythm',()=>{
+ it('gives larger groups more flow time while preserving the lift, transfer and return boundaries',()=>{
+  for(const fast of [false,true]){let previous=0;for(let amount=1;amount<=4;amount++){
+   const timing=pourTiming(amount,fast);expect(timing.duration).toBeGreaterThan(previous);previous=timing.duration;
+   expect(pourFrame(timing.lift,timing).t).toBeCloseTo(.25);expect(pourFrame(timing.lift+timing.flow,timing).t).toBeCloseTo(.73);
+   expect(pourFrame(timing.duration+800,timing)).toMatchObject({t:1,remaining:0});
+   for(let ms=0;ms<=timing.duration;ms++){const f=pourFrame(ms,timing);expect(pourTransfer(f.t)).toBeGreaterThanOrEqual(0);expect(pourTransfer(f.t)).toBeLessThanOrEqual(1);}
+  }}
+ });
+ it('starts and ends the volume transfer smoothly without reversing it',()=>{
+  let prev=0;for(let n=0;n<=1000;n++){const v=pourTransfer(n/1000);expect(v).toBeGreaterThanOrEqual(prev);prev=v;}
+  expect(pourTransfer(.25)).toBe(0);expect(pourTransfer(.73)).toBe(1);
+  expect(pourTransfer(.251)).toBeLessThan(.00002);expect(1-pourTransfer(.729)).toBeLessThan(.00002);
  });
 });

@@ -29,3 +29,7 @@ CC0 terms: https://creativecommons.org/publicdomain/zero/1.0/
 `public/audio/mix-report.json` contains per-asset duration, peak, RMS and byte count. Decoded Vorbis output is checked separately in browser tests. Numerical checks do not establish pleasantness or listening fatigue. Physical speaker/headphone listening remains necessary; do not label this mix user-approved in advance.
 
 BMacZero bubble recordings were evaluated as candidates but are not included in the runtime mix. Freesound candidates were not downloaded or used. No competitor assets were copied.
+
+## Revision 0.10
+
+Added `accept.ogg` (75 ms) and `cork.ogg` (120 ms) from the same CC0 `vial-glass-close-01.wav`, using recording segments 25–100 ms and 95–215 ms. Existing nine recordings remain unchanged. Runtime acceptance is trimmed to 65 ms, landing to 115 ms, cork to 105 ms. A low-pass sweep maps water to the recipient's current/final fill, and the stream release follows the remaining flow phase. Color/victory combine a quiet glass closure and the existing sampled tonal accent; voice limit remains four. No generated oscillator/noise synthesis was introduced. Pleasantness remains subject to physical listening.

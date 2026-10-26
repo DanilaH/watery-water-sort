@@ -49,7 +49,17 @@ export function pourTilt(width:number,height:number,units:number):number{
  }
  return (lo+hi)/2;
 }
-export const pourTransfer=(t:number)=>Math.max(0,Math.min(1,(t-.25)/.48));
+export const pourTransfer=(t:number)=>{const u=Math.max(0,Math.min(1,(t-.25)/.48));return u*u*(3-2*u);};
+export function pourTiming(amount:number,fast=false){
+ const speed=fast ? .7 : 1,lift=110*speed,flow=(125+40*Math.max(1,Math.min(4,amount)))*speed,back=115*speed;
+ return {lift,flow,back,duration:lift+flow+back};
+}
+/** Preserve the geometry's phase boundaries while giving each phase its own real time. */
+export function pourFrame(elapsed:number,timing:ReturnType<typeof pourTiming>){
+ const {lift,flow,back}=timing;
+ const t=elapsed<lift ? .25*Math.max(0,elapsed)/lift : elapsed<lift+flow ? .25+.48*(elapsed-lift)/flow : Math.min(1,.73+.27*(elapsed-lift-flow)/back);
+ return {t,remaining:Math.max(0,lift+flow-elapsed),tail:elapsed-lift-flow};
+}
 export type PourPlan={dir:number;startUnits:number;endUnits:number};
 export function bounds(r:{x:number;y:number;w:number;h:number},angle:number){
  const c=Math.cos(angle),s=Math.sin(angle),points=[[-r.w/2,0],[r.w/2,0],[-r.w/2,r.h],[r.w/2,r.h]].map(([x,y])=>({x:r.x+x*c-y*s,y:r.y+x*s+y*c}));

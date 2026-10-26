@@ -48,3 +48,6 @@ nav button span{font-size:12px}
  nav{grid-column:3;grid-row:1/4}
  #banner-slot{grid-column:1/4;grid-row:4}
 }
+
+/* Keep the landscape toolbar clear of the moon's bright disk. */
+@media(orientation:landscape) and (max-height:550px){body:before{background-size:150vw auto;background-position:left bottom;opacity:.28}}

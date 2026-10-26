@@ -26,7 +26,7 @@ for(const failure of ['constructor','postMessage','async'])test(`hint recovers f
  await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Подсказка недоступна');await expect(page.locator('#hint')).toBeEnabled();
  await page.evaluate(()=>(window as any).restoreWorker());await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');expect(errors).toEqual([]);
 });
-for(const stall of [800,300])test(`pour cue respects remaining water phase after ${stall}ms stall`,async({page})=>{
+for(const stall of [800,220])test(`pour cue respects remaining water phase after ${stall}ms stall`,async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await open(page);
  await page.evaluate(async stall=>{const sp='/src/game/WaterScene.ts',ap='/src/audio/sound.ts',s=await import(sp),a=await import(ap);(window as any).cues=[];const animate=s.WaterScene.prototype.animate;
  s.WaterScene.prototype.animate=function(...args:any[]){const r=animate.apply(this,args);const until=performance.now()+stall;while(performance.now()<until){}return r;};

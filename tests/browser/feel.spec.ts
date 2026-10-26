@@ -1,0 +1,35 @@
+import {test,expect,type Page} from '@playwright/test';
+import {readFileSync} from 'node:fs';
+import {layout} from '../../src/game/geometry';
+const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
+const points=new WeakMap<Page,{x:number;y:number}[]>();
+async function open(page:Page,fast=false){
+ await page.addInitScript(fast=>{if(sessionStorage.feel10)return;sessionStorage.feel10='1';localStorage.setItem('water-sort-v1',JSON.stringify({schema:1,artVersion:4,current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast,symbols:false,light:false}}));},fast);
+ await page.goto('/');await page.locator('canvas').waitFor();await page.waitForTimeout(300);
+ const b=(await page.locator('#board').boundingBox())!;points.set(page,layout(b.width,b.height,4).map(p=>({x:b.x+p.x,y:b.y+p.y+p.h/2})));
+ await page.evaluate(async()=>{(window as any).hadQueue=false;new MutationObserver(()=>{if(document.getElementById('status')!.textContent!.includes('Следующий ход выбран'))(window as any).hadQueue=true;}).observe(document.getElementById('status')!,{subtree:true,childList:true,characterData:true});const p='/src/audio/sound.ts',m=await import(p);(window as any).cues=[];for(const key of ['tap','accept','pour','land','finish','stop']){const f=m.Sound.prototype[key];m.Sound.prototype[key]=function(...args:any[]){(window as any).cues.push({key,args,time:performance.now()});return f.apply(this,args);};}});
+}
+async function tap(page:Page,i:number){const p=points.get(page)![i];await page.mouse.click(p.x,p.y);}
+async function cues(page:Page){return page.evaluate(()=>(window as any).cues as {key:string;args:any[];time:number}[]);}
+for(const fast of [false,true])test(`ordinary and queued acceptance acknowledge once (${fast?'fast':'normal'})`,async({page})=>{
+ await open(page,fast);await tap(page,0);await tap(page,2);await tap(page,1);await tap(page,0);expect(await page.evaluate(()=>(window as any).hadQueue)).toBe(true);
+ expect((await cues(page)).filter(c=>c.key==='accept')).toHaveLength(2);await expect(page.locator('#moves')).toHaveText('Ходов: 2');await expect(page.locator('#hint')).toBeEnabled();
+ const log=await cues(page);expect(log.filter(c=>c.key==='accept')).toHaveLength(2);expect(log.filter(c=>c.key==='pour')).toHaveLength(2);expect(log.findIndex(c=>c.key==='accept')).toBeLessThan(log.findIndex(c=>c.key==='pour'));
+});
+test('new color rewards once, relocation only lands, victory has one final accent',async({page})=>{
+ await open(page);for(const m of levels[0].witness.slice(0,2)){await tap(page,m.from);await tap(page,m.to);await expect(page.locator('#hint')).toBeEnabled();}
+ expect((await cues(page)).filter(c=>c.key==='finish').map(c=>c.args[0])).toEqual([false]);
+ await page.evaluate(()=>(window as any).cues=[]);await tap(page,1);await tap(page,2);await expect(page.locator('#hint')).toBeEnabled();let log=await cues(page);expect(log.filter(c=>c.key==='finish')).toHaveLength(0);expect(log.filter(c=>c.key==='land')).toHaveLength(1);
+ await tap(page,3);await tap(page,0);await expect(page.locator('#continue')).toBeVisible();log=await cues(page);expect(log.filter(c=>c.key==='finish').map(c=>c.args[0])).toEqual([true]);
+});
+test('failed persistence does not play an acceptance cue',async({page})=>{
+ await open(page);await page.evaluate(()=>{const f=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k.startsWith('water-sort-v1'))throw Error('full');f.call(this,k,v);};});await tap(page,0);await tap(page,2);await expect(page.locator('#status')).toContainText('Изменение не принято');expect((await cues(page)).filter(c=>c.key==='accept'||c.key==='pour')).toHaveLength(0);
+});
+for(const interrupt of ['undo','resize'])test(`${interrupt} cancels future water and completion cues`,async({page})=>{
+ await open(page);await tap(page,0);await tap(page,2);if(interrupt==='undo')await page.locator('#undo').click();else await page.setViewportSize({width:568,height:320});
+ await page.waitForTimeout(650);const log=await cues(page);const stopped=log.filter(c=>c.key==='stop').at(-1)!;expect(stopped).toBeDefined();expect(log.filter(c=>c.time>=stopped.time&&(c.key==='pour'||c.key==='finish'))).toHaveLength(0);await expect(page.locator('#hint')).toBeEnabled();
+ const b=(await page.locator('#board').boundingBox())!;await page.mouse.click(b.x+1,b.y+1);
+});
+test('layered audio keeps its voice budget and stops every owned voice',async({page})=>{
+ await open(page);const result=await page.evaluate(async()=>{const p='/src/audio/sound.ts',m=await import(p),s=new m.Sound();await s.load();await s.context.resume();let peak=0;for(let i=0;i<10;i++){s.accept();s.pour(180,2,0,.5);s.finish(i===9,i);peak=Math.max(peak,s.voices.length);}s.stop();await new Promise(r=>setTimeout(r,100));const active=s.voices.length;await s.context.close();return {peak,active};});expect(result.peak).toBeLessThanOrEqual(4);expect(result.active).toBe(0);
+});

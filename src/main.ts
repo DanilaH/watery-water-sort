@@ -18,7 +18,7 @@ const scene=new WaterScene('water');
 const density=Math.min(2,Math.max(1,devicePixelRatio));
 scene.setViewport($('board').clientWidth,$('board').clientHeight,density);
 const game=new Phaser.Game({type:Phaser.AUTO,parent:'board',transparent:true,antialias:true,scale:{mode:Phaser.Scale.NONE,width:Math.round($('board').clientWidth*density),height:Math.round($('board').clientHeight*density)},scene:[scene],audio:{noAudio:true}});
-let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,lastMove:Move|null=null,kind:'pour'|'undo'='pour';
+let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,lastMove:Move|null=null,kind:'pour'|'undo'='pour',newColor=false;
 let deadRevision:number|null=null;
 let hintCache:{revision:number;move:Move}|null=null;
 const blockers=new Set<string>();
@@ -71,13 +71,13 @@ function switchLevel(index:number){
  if(commit(n)){hintCache=null;dialog.close();blockers.delete('dialog');audio.block(blockers.size>0);paint();scene.reveal();message(guidance());}
 }
 function restart(){const n=restarted(state);if(commit(n)){interrupt();hintCache=null;dialog.close();blockers.delete('dialog');audio.block(false);paint();scene.reveal();message('Та же задача — новая попытка');}}
-function drainQueue(){if(!queued)return;const q=queued;clearIntent();const m=moveFor(attempt(state).board,q.from,q.to);if(m)accept(m);}
-function accept(m:Move){
+function drainQueue(){if(!queued)return;const q=queued;clearIntent();const m=moveFor(attempt(state).board,q.from,q.to);if(m)accept(m,true);}
+function accept(m:Move,acknowledged=false){
  if(locked||blockers.size)return;
  cancelSearch();const before=attempt(state).board;const next=moved(state,m);
  if(won(attempt(next).board)&&!next.completed.includes(levels[next.current].id))next.completed.push(levels[next.current].id);
  if(!commit(next))return;
- hintCache=null;clearIntent();lastMove=m;kind='pour';scene.setBoard(attempt(state).board);scene.animate(before,m,state.settings.fast);paint();message('');
+ hintCache=null;clearIntent();lastMove=m;kind='pour';newColor=!completeTube(before[m.from])&&completeTube(attempt(next).board[m.to]);if(!acknowledged){audio.accept();haptic();}scene.setBoard(attempt(state).board);scene.animate(before,m,state.settings.fast);paint();message('');
 }
 scene.onTap=(i)=>{
  if(locked||blockers.size||won(attempt(state).board))return;
@@ -90,7 +90,7 @@ scene.onTap=(i)=>{
  if(scene.selected===i){clearIntent();audio.tap();message(guidance());return;}
  if(scene.selected!==null){const m=moveFor(board,scene.selected,i);
   if(m){
-   if(scene.busy){queued=m;scene.queuedMove=m;scene.hintMove=null;audio.tap();haptic();message(guidance());}
+   if(scene.busy){queued=m;scene.queuedMove=m;scene.hintMove=null;audio.accept();haptic();message(guidance());}
    else accept(m);
    return;
   }
@@ -99,14 +99,14 @@ scene.onTap=(i)=>{
  if(board[i].length){scene.selected=i;audio.tap();haptic();message(guidance());}
  else{scene.selected=null;scene.reject(i);audio.reject();message('Сначала выбери цветную колбу');}
 };
-scene.onPour=(remainingMs)=>{if(lastMove&&kind==='pour')audio.pour(remainingMs,lastMove.amount);};
+scene.onPour=(remainingMs,fill,endFill)=>{if(lastMove&&kind==='pour')audio.pour(remainingMs,lastMove.amount,fill,endFill);};
 scene.onComplete=()=>{
  const board=attempt(state).board;
  if(kind==='undo'){audio.land();paint();message(guidance());drainQueue();return;}
  if(won(board)){
   if(lastMove)scene.celebrate(lastMove.to,true);audio.finish(true);haptic(true);paint();return;
  }
- if(lastMove&&completeTube(board[lastMove.to])){scene.celebrate(lastMove.to);audio.finish(false,board.filter(completeTube).length-1);haptic(true);}else{audio.land();haptic();}
+ if(lastMove&&newColor){scene.celebrate(lastMove.to);audio.finish(false,board.filter(completeTube).length-1);haptic(true);}else{audio.land();}
  paint();message(guidance());
  drainQueue();
 };

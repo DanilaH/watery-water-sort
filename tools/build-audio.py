@@ -42,4 +42,7 @@ def chord(notes,length):
 report.append(save('hint',chord([(0,0,.8),(7,.08,.6)],.45)))
 report.append(save('complete',chord([(0,0,.75),(7,.055,.65),(12,.1,.35)],.48)))
 report.append(save('victory',chord([(0,0,.65),(4,.075,.65),(7,.15,.7),(12,.225,.75)],.85)))
+# Dry contacts share the glass recording rather than adding synthetic UI tones.
+report.append(save('accept',segment(glass,.025,.075)))
+report.append(save('cork',segment(glass,.095,.12)))
 (out/'mix-report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
