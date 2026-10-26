@@ -253,7 +253,7 @@ export class WaterScene extends Phaser.Scene {
     this.bursts=this.bursts.filter(b=>now-b.start<(b.final?900:650));
     for(const b of this.bursts){if(now<b.start)continue;const r=poses[b.index],p=(now-b.start)/(b.final?900:650),fade=Math.pow(1-p,1.7),g=this.fx;
       for(let n=3;n>=1;n--){g.fillStyle(b.color,.035*fade);g.fillEllipse(r.x,r.y+r.h*.5,r.w*(1+n*.6),r.h*(1+n*.1));}
-      if(b.final){g.lineStyle(2,0xffe7b8,.65*fade);g.strokeRoundedRect(r.x-r.w*.65,r.y-6,r.w*1.3,r.h+12,Math.min(12,r.w*.3));}
+      if(b.final){g.lineStyle(2,0xffe7b8,.65*fade);g.strokePoints(vesselPolygon(r.w+6,r.h+6).map(q=>({x:r.x+q.x,y:r.y-3+q.y})),true);}
       else{g.lineStyle(2,b.color,.8*fade);g.strokeEllipse(r.x,r.y+r.h*.45,r.w*(.9+p*2.2),r.h*(.35+p*.6));}
       const sweep=r.y+r.h*(1-p);g.lineStyle(3,0xffffff,.75*fade);g.lineBetween(r.x-r.w*.4,sweep,r.x+r.w*.4,sweep);
       for(let n=0;n<3;n++){const a=n*Math.PI*2/3+p*.8;this.star(r.x+Math.cos(a)*r.w*(.6+p*.35),r.y+r.h*.35+Math.sin(a)*r.h*.3,3*fade,0xfff5ce,fade,a);}
