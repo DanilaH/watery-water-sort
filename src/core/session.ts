@@ -27,3 +27,10 @@ export function validSave(value: unknown): value is Save {
 export function moved(s:Save,m:Move):Save {const n=structuredClone(s), a=attempt(n); a.board=apply(a.board,m);a.history.push(m);n.attempts[levelKey(n.current)]=a;n.revision++;return n;}
 export function undone(s:Save):Save {const n=structuredClone(s),a=attempt(n),m=a.history.pop();if(m){a.board=reverse(a.board,m);n.attempts[levelKey(n.current)]=a;n.revision++;}return n;}
 export function restarted(s:Save):Save {const n=structuredClone(s),extra=attempt(n).extra; const board=clone(levels[n.current].initial);if(extra)board.push([]);n.attempts[levelKey(n.current)]={board,history:[],extra};n.revision++;return n;}
+
+/** One free extra tube per level; old moves remain replayable with it appended. */
+export function expanded(s:Save):Save {
+ if(attempt(s).extra)return s;
+ const n=structuredClone(s),a=attempt(n);a.extra=true;a.board.push([]);
+ n.attempts[levelKey(n.current)]=a;n.revision++;return n;
+}

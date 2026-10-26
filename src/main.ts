@@ -5,7 +5,7 @@ import './style.css';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
 import { moveFor, completeTube, won, moves, type Move } from './core/rules';
-import { attempt, levels, moved, undone, restarted, type Save } from './core/session';
+import { attempt, levels, moved, undone, restarted, expanded, type Save } from './core/session';
 import { SaveStore } from './platform/storage';
 import type { Result } from './core/solver';
 const haptics=registerPlugin<{impact(options:{strong:boolean}):Promise<void>}>('FeelHaptics');
@@ -19,6 +19,7 @@ const density=Math.min(2,Math.max(1,devicePixelRatio));
 scene.setViewport($('board').clientWidth,$('board').clientHeight,density);
 const game=new Phaser.Game({type:Phaser.AUTO,parent:'board',transparent:true,antialias:true,scale:{mode:Phaser.Scale.NONE,width:Math.round($('board').clientWidth*density),height:Math.round($('board').clientHeight*density)},scene:[scene],audio:{noAudio:true}});
 let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,lastMove:Move|null=null,kind:'pour'|'undo'='pour';
+let deadRevision:number|null=null;
 let hintCache:{revision:number;move:Move}|null=null;
 const blockers=new Set<string>();
 function haptic(strong=false){if(Capacitor.isNativePlatform()&&state.settings.haptics!==false)void haptics.impact({strong}).catch(()=>{});}
@@ -26,7 +27,8 @@ function message(text:string,important=false){$('status').textContent=important?
 function guidance(){
  if(won(attempt(state).board))return 'Все цвета собраны';
  if(queued)return 'Следующий ход выбран · фон — отмена';
- if(!scene.busy&&!moves(attempt(state).board).length)return 'Нет доступных ходов · можно отменить ход';
+ if(deadRevision===state.revision)return 'Из этого положения решения нет';
+ if(!scene.busy&&!moves(attempt(state).board).length)return 'Нет доступных ходов';
  if(scene.hintMove)return 'Перелей в колбу со стрелкой';
  if(scene.selected!==null)return scene.busy?'Следующий ход: выбери цель':'Выбери пустую или с тем же цветом сверху';
  if(state.current===0&&attempt(state).history.length===0)return 'Выбери цветную колбу, затем пустую';
@@ -47,6 +49,7 @@ function paint(){
  ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
  $('symbols').setAttribute('aria-pressed',String(state.settings.symbols));
  $('continue').hidden=!finished;
+ $('rescue').hidden=finished||scene.busy||!(deadRevision===state.revision||!moves(a.board).length);
  $('continue').textContent=state.current===levels.length-1?'К уровням →':'Дальше →';
  $('finish-title').hidden=!finished;$('finish-title').textContent=state.current===levels.length-1?'Набор пройден':'Готово!';
  if(finished)message(`Все цвета собраны · ходов: ${a.history.length}`);
@@ -96,7 +99,7 @@ scene.onTap=(i)=>{
  if(board[i].length){scene.selected=i;audio.tap();haptic();message(guidance());}
  else{scene.selected=null;scene.reject(i);audio.reject();message('Сначала выбери цветную колбу');}
 };
-scene.onPour=()=>{if(lastMove&&kind==='pour')audio.pour(state.settings.fast?154:269,lastMove.amount);};
+scene.onPour=(remainingMs)=>{if(lastMove&&kind==='pour')audio.pour(remainingMs,lastMove.amount);};
 scene.onComplete=()=>{
  const board=attempt(state).board;
  if(kind==='undo'){audio.land();paint();message(guidance());drainQueue();return;}
@@ -107,11 +110,13 @@ scene.onComplete=()=>{
  paint();message(guidance());
  drainQueue();
 };
-$('undo').onclick=()=>{
+function undo(){
  const a=attempt(state),m=a.history.at(-1);if(!m)return;const before=a.board;
  interrupt();if(commit(undone(state))){hintCache=null;kind='undo';lastMove=null;scene.setBoard(attempt(state).board);scene.animate(before,{from:m.to,to:m.from,amount:m.amount,color:m.color},true);audio.undo();paint();message('Возвращаем предыдущий ход');}
-};
-$('restart').onclick=()=>{audio.ui();if(!attempt(state).history.length){restart();return;}modal('Начать заново?','Вернётся та же раскладка. Текущие ходы будут сброшены.',[{label:'Начать заново',primary:true,action:restart},{label:'Продолжить',action:close}]);};
+}
+$('undo').onclick=undo;
+function askRestart(){audio.ui();if(!attempt(state).history.length){restart();return;}modal('Начать заново?','Вернётся та же раскладка. Текущие ходы будут сброшены.',[{label:'Начать заново',primary:true,action:restart},{label:'Продолжить',action:close}]);}
+$('restart').onclick=askRestart;
 $('continue').onclick=()=>{audio.ui();if(state.current===levels.length-1)menu();else switchLevel(state.current+1);};
 $('symbols').onclick=()=>{const n=structuredClone(state);n.settings.symbols=!n.settings.symbols;if(commit(n)){paint();audio.ui();}};
 function showHint(m:Move){clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
@@ -119,16 +124,35 @@ $('hint').onclick=()=>{
  if(scene.busy||blockers.size||locked||won(attempt(state).board))return;audio.prime();
  if(hintCache?.revision===state.revision){showHint(hintCache.move);return;}
  cancelSearch();const id=++requestId,revision=state.revision;searching=true;paint();message('Ищу продолжение…');
- worker=new Worker(new URL('./core/solver.worker.ts',import.meta.url),{type:'module'});
- worker.onmessage=(event:MessageEvent<{result:Result;revision:number;requestId:number}>)=>{
-  if(event.data.requestId!==id||event.data.revision!==state.revision)return;
-  const result=event.data.result;cancelSearch();paint();
-  if(result.status==='FOUND'&&result.path.length){hintCache={revision,move:result.path[0]};showHint(result.path[0]);}
-  else message(result.status==='UNSOLVABLE'?'Из этого положения решения нет. Можно отменить ходы.':'Решение пока не найдено. Попробуй отменить ход.');
- };
- worker.onerror=()=>{cancelSearch();paint();message('Подсказка недоступна. Можно продолжить или отменить ход.');};
- worker.postMessage({board:attempt(state).board,revision,requestId:id});
+ const failed=()=>{if(id!==requestId)return;cancelSearch();paint();message('Подсказка недоступна. Можно продолжить или отменить ход.');};
+ try{
+  worker=new Worker(new URL('./core/solver.worker.ts',import.meta.url),{type:'module'});
+  worker.onmessage=(event:MessageEvent<{result:Result;revision:number;requestId:number}>)=>{
+   if(event.data.requestId!==id||event.data.revision!==state.revision)return;
+   const result=event.data.result;cancelSearch();paint();
+   if(result.status==='FOUND'&&result.path.length){hintCache={revision,move:result.path[0]};showHint(result.path[0]);}
+   else if(result.status==='UNSOLVABLE'){deadRevision=state.revision;paint();help(true);}
+   else message('Решение пока не найдено. Попробуй отменить ход.');
+  };
+  worker.onerror=e=>{e.preventDefault();failed();};
+  worker.onmessageerror=failed;
+  worker.postMessage({board:attempt(state).board,revision,requestId:id});
+ }catch{failed();}
 };
+function addTube(){
+ if(attempt(state).extra||won(attempt(state).board))return;
+ if(commit(expanded(state))){interrupt();hintCache=null;close();scene.reveal();message('Добавлена пустая колба · ходы сохранены');}
+}
+function help(proven=deadRevision===state.revision){
+ const a=attempt(state),buttons:{label:string;action:()=>void;primary?:boolean}[]=[];
+ if(!a.extra)buttons.push({label:'Добавить колбу',primary:true,action:addTube});
+ if(a.history.length)buttons.push({label:'Отменить ход',primary:a.extra,action:()=>{close();undo();}});
+ buttons.push({label:'Заново',action:askRestart});
+ modal(proven?'Решения нет':'Если застрял',
+  (proven?'Из этой раскладки цвета уже не собрать. ':'')+(a.extra?'Дополнительная колба уже добавлена. Она останется при перезапуске.':'Можно бесплатно добавить одну пустую колбу на уровень. Текущие ходы сохранятся.'),buttons);
+ message(guidance());
+}
+$('rescue').onclick=()=>{audio.ui();help();};
 function menu(){
  audio.ui();const body=modal('Уровни',`Пройдено ${state.completed.length} из ${levels.length}`,[{label:won(attempt(state).board)&&state.current<levels.length-1?'Следующий уровень':'Продолжить',primary:true,action:()=>won(attempt(state).board)&&state.current<levels.length-1?switchLevel(state.current+1):close()}]);
  const grid=document.createElement('div');grid.className='levels';
@@ -137,6 +161,7 @@ function menu(){
   b.setAttribute('aria-label',`Уровень ${i+1}${done?', пройден':!available?', закрыт':''}`);
   const mark=document.createElement('small');mark.textContent=done?'✓':i===state.current?'Сейчас':!available?'Закрыт':'';b.append(mark);b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
  });body.append(grid);
+ if(!won(attempt(state).board)){const helpButton=document.createElement('button');helpButton.className='help-button';helpButton.textContent='Если застрял';helpButton.onclick=()=>{audio.ui();help();};body.append(helpButton);}
  const note=document.createElement('p');note.className='build-note';note.textContent='Тестовый набор · подсказки без лимита';body.append(note);
 }
 $('menu').onclick=menu;

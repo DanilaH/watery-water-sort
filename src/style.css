@@ -31,3 +31,20 @@ nav button span{font-size:12px}
 .finished #status{font-size:12px}
 @media(orientation:landscape) and (max-height:550px){#app{grid-template-rows:48px 26px minmax(0,1fr) 56px 10px}#continue{min-height:48px}.finished #status{font-size:12px}}
 @media(orientation:portrait) and (max-height:600px){#app{grid-template-rows:48px 27px minmax(0,1fr) 60px 72px 6px}#continue{min-height:48px}.finished #status{font-size:12px}}
+
+/* Recovery actions share the reserved feedback row. */
+#rescue{flex-shrink:0;min-height:48px;padding:8px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font-size:13px}
+#rescue[hidden]{display:none}
+.help-button{width:100%;min-height:48px;margin-top:18px;border:1px solid var(--line);border-radius:10px;background:transparent;font-size:14px}
+/* Landscape: header rail frees height for the vessels. Safe-area padding stays on #app. */
+@media(orientation:landscape) and (max-height:550px){
+ #app{grid-template-columns:76px minmax(0,1fr) 84px;grid-template-rows:32px minmax(0,1fr) 56px 6px;column-gap:4px}
+ .game-header{grid-column:1;grid-row:1/4;flex-direction:column;justify-content:space-between;padding:0 0 8px}
+ .game-header h1{font-size:16px;line-height:1.3}
+ #meta{grid-column:2;grid-row:1;font-size:11px;position:relative}
+ #symbols{min-height:48px;z-index:1}
+ #board{grid-column:2;grid-row:2}
+ #feedback{grid-column:2;grid-row:3;gap:8px}
+ nav{grid-column:3;grid-row:1/4}
+ #banner-slot{grid-column:1/4;grid-row:4}
+}

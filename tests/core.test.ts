@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { apply, moveFor, moves, reverse, validBoard, won, type Board } from '../src/core/rules';
 import { solve } from '../src/core/solver';
-import { levels, fresh, moved, undone, restarted, validSave, attempt, levelKey } from '../src/core/session';
+import { levels, fresh, moved, undone, restarted, expanded, validSave, attempt, levelKey } from '../src/core/session';
 import { SaveStore } from '../src/platform/storage';
 import { area, clip, surface, layout, bounds, planPour, pourPose, vesselPolygon, LIQUID_FILL, pourTransfer } from '../src/game/geometry';
 describe('rules',()=>{
@@ -102,4 +102,16 @@ describe('unavailable storage',()=>{
 it('does not unlock an older backup when the primary snapshot could not be read',()=>{
  const store=new SaveStore({getItem:k=>{if(k==='water-sort-v1')throw Error('blocked');return JSON.stringify(fresh());},setItem:()=>{throw Error('must not write');}});
  expect(store.load()).toMatchObject({unavailable:true,recovered:false,corrupt:false});
+});
+
+
+describe('additional tube',()=>{
+ it('is granted once without changing accepted moves, including across undo and restart',()=>{
+  const before=moved(fresh(),levels[0].witness[0]),after=expanded(before);
+  expect(attempt(before).extra).toBe(false);expect(attempt(after).board).toEqual([...attempt(before).board,[]]);
+  expect(attempt(after).history).toEqual(attempt(before).history);expect(validSave(after)).toBe(true);
+  expect(expanded(after)).toBe(after);expect(validSave(undone(after))).toBe(true);expect(validSave(restarted(after))).toBe(true);
+  const n=moved(after,{from:0,to:4,color:attempt(after).board[0].at(-1)!,amount:2});
+  expect(validSave(n)).toBe(true);expect(attempt(undone(n)).board).toEqual(attempt(after).board);
+ });
 });

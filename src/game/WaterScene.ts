@@ -40,7 +40,7 @@ export class WaterScene extends Phaser.Scene {
   private previousSignature='';
   private lastFrame=0;private frameStep=.016;
   onTap:(i:number|null)=>void=()=>{};
-  onPour:()=>void=()=>{};
+  onPour:(remainingMs:number)=>void=()=>{};
   onComplete:()=>void=()=>{};
   create(){
     this.root=this.add.container(0,0).setScale(this.density);
@@ -193,7 +193,7 @@ export class WaterScene extends Phaser.Scene {
     this.previousSignature=signature;this.hitPolygons.clear();this.ink.clear();this.fx.clear();for(const l of this.queueLabels)l.setVisible(false);for(const l of this.activeLabels){l.setVisible(false);this.labels.push(l);}this.activeLabels=[];
     const poses=this.positions(),f=this.flight;
     const t=f?Math.min(1,(now-f.start)/f.duration):0,transfer=f?pourTransfer(t):0;
-    if(f&&t>=.25&&!this.startedSound){this.startedSound=true;this.onPour();}
+    if(f&&t>=.25&&!this.startedSound){this.startedSound=true;if(t<.73)this.onPour((.73-t)*f.duration);}
     for(let i=0;i<this.board.length;i++){
       if(f&&i===f.from)continue;
       const r={...poses[i]},chosen=this.selected===i||this.hintMove?.from===i;
