@@ -1,0 +1,353 @@
+{
+  "note": "Cue requests, not acoustic latency. Real clock, desktop Chromium. Each amount case uses a valid witnessed prefix, not an invented board.",
+  "results": [
+    {
+      "case": "amount",
+      "amount": 1,
+      "events": [
+        {
+          "key": "input",
+          "time": 0,
+          "target": "CANVAS"
+        },
+        {
+          "key": "tap",
+          "time": 0.7999999988824129,
+          "args": []
+        },
+        {
+          "key": "input",
+          "time": 13.599999999627471,
+          "target": "CANVAS"
+        },
+        {
+          "key": "animate",
+          "time": 15,
+          "args": [
+            [
+              [
+                0,
+                1,
+                0,
+                1
+              ],
+              [
+                1,
+                0,
+                1,
+                0
+              ],
+              [],
+              []
+            ],
+            {
+              "from": 1,
+              "to": 3,
+              "color": 0,
+              "amount": 1
+            },
+            false
+          ],
+          "duration": 560
+        },
+        {
+          "key": "pour",
+          "time": 158.5,
+          "args": [
+            264.8,
+            1
+          ]
+        },
+        {
+          "key": "land",
+          "time": 585.9000000003725,
+          "args": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "case": "amount",
+      "amount": 2,
+      "events": [
+        {
+          "key": "input",
+          "time": 0,
+          "target": "CANVAS"
+        },
+        {
+          "key": "tap",
+          "time": 0.7000000011175871,
+          "args": []
+        },
+        {
+          "key": "input",
+          "time": 3.099999999627471,
+          "target": "CANVAS"
+        },
+        {
+          "key": "animate",
+          "time": 4.400000000372529,
+          "args": [
+            [
+              [
+                0,
+                0,
+                1,
+                1
+              ],
+              [
+                1,
+                1,
+                0,
+                0
+              ],
+              [],
+              []
+            ],
+            {
+              "from": 1,
+              "to": 3,
+              "color": 0,
+              "amount": 2
+            },
+            false
+          ],
+          "duration": 560
+        },
+        {
+          "key": "pour",
+          "time": 155.30000000074506,
+          "args": [
+            257.3999999996275,
+            2
+          ]
+        },
+        {
+          "key": "land",
+          "time": 572.3000000007451,
+          "args": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "case": "amount",
+      "amount": 3,
+      "events": [
+        {
+          "key": "input",
+          "time": 0,
+          "target": "CANVAS"
+        },
+        {
+          "key": "tap",
+          "time": 0.7000000011175871,
+          "args": []
+        },
+        {
+          "key": "input",
+          "time": 3.300000000745058,
+          "target": "CANVAS"
+        },
+        {
+          "key": "animate",
+          "time": 5.099999999627471,
+          "args": [
+            [
+              [
+                0,
+                1,
+                1,
+                1
+              ],
+              [
+                1,
+                0,
+                0,
+                0
+              ],
+              [],
+              []
+            ],
+            {
+              "from": 1,
+              "to": 3,
+              "color": 0,
+              "amount": 3
+            },
+            false
+          ],
+          "duration": 560
+        },
+        {
+          "key": "pour",
+          "time": 154.59999999962747,
+          "args": [
+            258.00000000111754,
+            3
+          ]
+        },
+        {
+          "key": "land",
+          "time": 571.7000000011176,
+          "args": []
+        }
+      ],
+      "errors": []
+    },
+    {
+      "case": "relocate-complete-color",
+      "amount": 4,
+      "events": [
+        {
+          "key": "input",
+          "time": 0,
+          "target": "CANVAS"
+        },
+        {
+          "key": "tap",
+          "time": 0.09999999962747097,
+          "args": []
+        },
+        {
+          "key": "input",
+          "time": 12.699999999254942,
+          "target": "CANVAS"
+        },
+        {
+          "key": "animate",
+          "time": 13.099999999627471,
+          "args": [
+            [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                1,
+                1,
+                1
+              ],
+              [],
+              [
+                0,
+                0
+              ]
+            ],
+            {
+              "from": 1,
+              "to": 2,
+              "color": 1,
+              "amount": 4
+            },
+            false
+          ],
+          "duration": 560
+        },
+        {
+          "key": "pour",
+          "time": 166.90000000037253,
+          "args": [
+            254.89999999962745,
+            4
+          ]
+        },
+        {
+          "key": "celebrate",
+          "time": 584,
+          "args": [
+            2
+          ]
+        },
+        {
+          "key": "finish",
+          "time": 584,
+          "args": [
+            false,
+            0
+          ]
+        }
+      ],
+      "won": false,
+      "errors": []
+    },
+    {
+      "case": "rescue-landscape",
+      "board": {
+        "x": 96,
+        "y": 36,
+        "width": 368,
+        "height": 222
+      },
+      "poses": [
+        {
+          "x": 52,
+          "y": 40,
+          "w": 21.374999999999996,
+          "h": 75,
+          "hitW": 48,
+          "hitH": 85
+        },
+        {
+          "x": 140,
+          "y": 40,
+          "w": 21.374999999999996,
+          "h": 75,
+          "hitW": 48,
+          "hitH": 85
+        },
+        {
+          "x": 228,
+          "y": 40,
+          "w": 21.374999999999996,
+          "h": 75,
+          "hitW": 48,
+          "hitH": 85
+        },
+        {
+          "x": 316,
+          "y": 40,
+          "w": 21.374999999999996,
+          "h": 75,
+          "hitW": 48,
+          "hitH": 85
+        },
+        {
+          "x": 52,
+          "y": 131,
+          "w": 21.374999999999996,
+          "h": 75,
+          "hitW": 48,
+          "hitH": 85
+        },
+        {
+          "x": 140,
+          "y": 131,
+          "w": 21.374999999999996,
+          "h": 75,
+          "hitW": 48,
+          "hitH": 85
+        },
+        {
+          "x": 228,
+          "y": 131,
+          "w": 21.374999999999996,
+          "h": 75,
+          "hitW": 48,
+          "hitH": 85
+        },
+        {
+          "x": 316,
+          "y": 131,
+          "w": 21.374999999999996,
+          "h": 75,
+          "hitW": 48,
+          "hitH": 85
+        }
+      ],
+      "errors": []
+    }
+  ]
+}

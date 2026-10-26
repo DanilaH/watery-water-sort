@@ -50,3 +50,5 @@ Android: JDK 21 и SDK 36, `npm run android:sync`, затем `cd android && ./g
 `npm run levels` воспроизводит исходный прототипный банк. Не перегенерировать выпущенные задачи без новой версии и миграции.
 
 - [Помощь в тупике, компактный landscape и исправления 0.9](docs/ASSISTANCE_09.md).
+
+- [Исследование feel и независимый разбор 0.9](docs/FEEL_RESEARCH_09.md).
