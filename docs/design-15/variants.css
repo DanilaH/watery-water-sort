@@ -1,0 +1,104 @@
+/* Review prototypes, injected by tools/capture-design-15.mjs. Not production CSS. */
+@font-face{font-family:Rubik;src:url('/__design/Rubik.woff') format('woff');font-weight:300 900;font-display:block}
+body.design{font-family:Rubik,sans-serif;--text:#f5f8ff;--muted:#b3c9ef;--panel:#f3f7ff;--line:#9bb6ef;--accent:#bef067;--ink:#23380e;--control:#fff;--surface:#3056a7;--selected:#24458e;--shadow:#101a41;background:radial-gradient(ellipse at 50% 36%,#284a9c 0,#1b3272 48%,#121e48 100%)}
+body.design.light{--text:#17386c;--muted:#516e91;--accent:#3874ed;--ink:#fff;--control:#173e83;--surface:#fff;--selected:#e2edff;--shadow:#a5bedc;--line:#c0d3ed;color-scheme:light;background:radial-gradient(ellipse at 50% 40%,#fff 0,#edf5ff 55%,#d5e7fa 100%)}
+body.design button{font-family:Rubik,sans-serif;font-weight:650;border-radius:17px;border:1px solid #ffffff25;transition:transform 130ms cubic-bezier(.2,.8,.2,1),box-shadow 130ms,background 130ms,opacity 130ms;box-shadow:inset 0 2px 0 #ffffff18,0 4px 0 #0b1a4755}
+body.design button:active:not(:disabled){transform:translateY(3px);box-shadow:inset 0 2px 0 #ffffff12,0 1px 0 #0b1a4755}
+body.design button:disabled{opacity:.45;box-shadow:none}
+body.design button:focus-visible{outline:3px solid var(--accent);outline-offset:5px}
+body.design.light button{border-color:#fff;box-shadow:inset 0 2px 0 #fff,0 4px 0 #b6cce8}
+body.design.light button:active:not(:disabled){box-shadow:0 1px 0 #b6cce8}
+body.design #app{padding-top:calc(14px + env(safe-area-inset-top));grid-template-rows:56px 38px minmax(0,1fr) 64px 96px 20px}
+body.design .game-header button{width:48px;height:48px;color:var(--text);background:var(--surface);border-radius:16px}
+body.design .game-header button svg{width:24px;height:24px}
+body.design .game-header h1{font:650 12px/1 Rubik,sans-serif;gap:7px;color:var(--muted)}
+body.design .game-header h1 strong{font:800 32px/1 Rubik,sans-serif;color:var(--text)}
+body.design #meta{font-size:13px;font-weight:500;max-width:none;color:var(--muted)}
+body.design #progress{display:none}
+body.design #symbols{min-height:48px;color:var(--muted);font-size:12px;padding:0 3px;box-shadow:none;background:transparent;border:0}
+body.design #symbols svg{width:16px;height:16px}
+body.design #symbols[aria-pressed=true]{color:var(--text)}
+body.design #status{font:450 13px/1.35 Rubik,sans-serif;color:var(--muted)}
+body.design #star-target{font:550 12px/1.4 Rubik,sans-serif;color:var(--muted);margin:5px 0 0}
+body.design nav{padding-top:5px;gap:34px}
+body.design nav button{width:62px;flex-basis:62px;height:58px;background:var(--surface);color:var(--control);border-radius:19px}
+body.design nav button svg{width:28px;height:28px}
+body.design nav button span{top:68px;font:500 12px/1.2 Rubik,sans-serif;color:var(--muted);left:-20px;right:-20px}
+body.design #hint{border-color:#ffffff25;background:var(--surface);color:var(--control)}
+body.design #continue{border-radius:17px;background:var(--accent);color:var(--ink);padding:12px 18px;font:750 15px/1.2 Rubik,sans-serif;box-shadow:inset 0 2px 0 #ffffff50,0 4px 0 #689c2d}
+body.design.light #continue{box-shadow:inset 0 2px 0 #ffffff30,0 4px 0 #2453b6}
+body.design #finish-title{font:800 26px/1.1 Rubik,sans-serif;letter-spacing:-.025em;margin:0;color:var(--text)}
+body.design #earned-stars{font-family:Rubik,sans-serif;font-size:20px;color:#ffd658;letter-spacing:1px;filter:drop-shadow(0 2px 0 #7c4c2733)}
+body.design.light #earned-stars{color:#b66b00}
+body.design .finished #feedback{max-width:600px}
+body.design #extra-tube{border:0;border-radius:0;box-shadow:none;color:#b0caed}
+body.design.light #extra-tube{color:#5477aa}
+body.design #extra-tube:active{transform:translateY(2px);box-shadow:none;background:transparent}
+body.design .locked-vessel{opacity:.8}
+body.design .reward-video{color:#a9d9ff;width:24px;height:24px;filter:drop-shadow(0 2px 0 #12255455)}
+body.design.light .reward-video{color:#8fcaff}
+body.design dialog{border-radius:26px;border:2px solid #fff;color:#17386c;background:#f3f7ff;box-shadow:0 10px 0 #0d1b4c55,0 24px 65px #08143466;width:min(92vw,430px)}
+body.design dialog[open]{animation:design-sheet-in 180ms cubic-bezier(.2,.8,.2,1) both}
+body.design dialog::backdrop{background:#0c184a88;backdrop-filter:blur(5px)}
+body.design .dialog-header{padding:18px 18px 8px;margin-bottom:10px;gap:8px}
+body.design .dialog-header h2{font:800 24px/1.15 Rubik,sans-serif;letter-spacing:-.03em;color:#17386c}
+body.design .dialog-close{border:0;background:#dce8fb;color:#3a5d91;border-radius:15px;font-size:29px;box-shadow:none}
+body.design .dialog-body{padding:0 22px 18px}
+body.design .dialog-body p{font:450 14px/1.55 Rubik,sans-serif;color:#516888}
+body.design .dialog-actions{padding:6px 22px 24px;gap:12px;background:transparent;border:0}
+body.design .dialog-actions button{background:#dfeafa;color:#2b4b7c;border:1px solid #d8e4f5;box-shadow:inset 0 2px 0 #fff9,0 4px 0 #bdcfe8;min-height:52px;font:650 15px/1.2 Rubik,sans-serif}
+body.design .dialog-actions button.primary{background:var(--accent);color:var(--ink);border-color:transparent;box-shadow:inset 0 2px 0 #ffffff55,0 4px 0 #7eaa43}
+body.design.light .dialog-actions button.primary{box-shadow:inset 0 2px 0 #ffffff55,0 4px 0 #2453b6}
+body.design .setting{border-color:#d9e4f4;min-height:62px;font:550 14px/1.2 Rubik,sans-serif;gap:10px}
+body.design .setting input{border:0;background:#c7d5e9;width:46px;height:28px}
+body.design .setting input:before{height:22px;width:22px;top:3px;left:3px;background:#fff;box-shadow:0 2px 2px #29457322}
+body.design .setting input:checked{background:#497fe8}
+body.design .setting input:checked:before{transform:translateX(18px);background:#fff}
+body.design .levels{gap:12px}
+body.design .levels button{border-radius:17px;background:#e0eafa;color:#52739c;min-height:77px;font:750 25px/1 Rubik,sans-serif;box-shadow:inset 0 2px 0 #fff,0 3px 0 #c3d5ed;border:1px solid #d8e6f8}
+body.design .levels button.completed{background:#d9e8ff;color:#254f96}
+body.design .levels button[aria-current]{background:#3a70d8;color:#fff;border-color:#608ce3;box-shadow:inset 0 2px 0 #ffffff44,0 3px 0 #214eaa}
+body.design .levels button small{font:500 10px/1.2 Rubik,sans-serif;color:#56739b;margin-top:5px}
+body.design .levels button[aria-current] small{color:#e4edff}
+body.design .level-stars{color:#9b620b!important}
+body.design .levels button[aria-current] .level-stars{color:#ffdf7d!important}
+body.design .help-button{background:#e0eafa;color:#2b4b7c;box-shadow:none;border:0}
+body.design .dialog-body .build-note{font-size:11px}
+body.design #home{background:inherit;overflow:auto;padding:24px}
+body.design .home-content{width:min(100%,344px);display:flex;flex-direction:column;align-items:center;margin:auto;text-align:center}
+body.design .home-mark{display:none}
+body.design .home-hero{width:min(100%,300px);height:270px;display:block;margin:0 0 13px;flex-shrink:0}
+body.design .home-content h1{font:900 45px/1.05 Rubik,sans-serif;letter-spacing:-.055em;color:var(--text);text-shadow:0 3px 0 #0b164c66;margin:0}
+body.design.light .home-content h1{text-shadow:none}
+body.design .home-content p{font:450 14px/1.5 Rubik,sans-serif;margin:17px 0 28px;color:var(--muted)}
+body.design .home-actions{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:22px 16px}
+body.design .home-actions #home-play{grid-column:1/3;background:var(--accent);color:var(--ink);border-radius:21px;min-height:66px;font:800 21px/1 Rubik,sans-serif;box-shadow:inset 0 3px 0 #ffffff55,0 6px 0 #7aa73e;text-shadow:none;letter-spacing:-.025em}
+body.design.light .home-actions #home-play{box-shadow:inset 0 3px 0 #ffffff44,0 6px 0 #2453b6}
+body.design .home-actions #home-play:active{transform:translateY(4px);box-shadow:0 2px 0 #7aa73e}
+body.design .home-actions #home-levels,body.design .home-actions #home-settings{border-radius:18px;background:var(--surface);color:var(--text);min-height:78px;font:550 13px/1.3 Rubik,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+body.design .home-actions button svg{width:25px;height:25px;display:block}
+body.design #home-error{font-size:13px;color:var(--text)}
+@keyframes design-sheet-in{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+body.design:not(.home) #app{animation:design-game-in 200ms ease-out both}
+@keyframes design-game-in{from{opacity:0}to{opacity:1}}
+/* B is a quieter glass/studio direction, with less relief and lighter typography. */
+body.design.light .home-content h1{font-weight:650;font-size:42px;letter-spacing:-.05em}
+body.design.light .home-hero use[stroke]{stroke:#688fba;stroke-width:1.6}
+body.design.light .home-hero ellipse[stroke]{stroke:#688fba}
+body.design.light .home-hero .hero-outline{stroke:#688fba;stroke-width:1.6}
+body.design.light .home-hero>path{fill:#7093bb}
+body.design.light .game-header button,body.design.light nav button{border-radius:50%;box-shadow:0 2px 0 #b9cce4}
+body.design.light .game-header h1 strong{font-weight:650}
+body.design.light .home-actions #home-play{border-radius:14px;font-weight:650;box-shadow:inset 0 1px 0 #ffffff44,0 3px 0 #2453b6}
+body.design.light .home-actions #home-levels,body.design.light .home-actions #home-settings{background:transparent;border:1px solid #b7cde7;border-radius:14px;box-shadow:none;font-weight:500}
+body.design.light dialog{border-radius:18px;border:1px solid #fff;box-shadow:0 14px 55px #18385b33}
+body.design.light .dialog-header h2{font-weight:650}
+body.design.light .dialog-actions button{border-radius:12px;font-weight:550;box-shadow:0 2px 0 #bdcfe8}
+body.design.light .dialog-actions button.primary{box-shadow:0 2px 0 #2453b6}
+body.design.light .levels button{border-radius:11px;font-weight:650;box-shadow:none}
+body.design.light .levels button[aria-current]{box-shadow:0 2px 0 #214eaa}
+@media(orientation:portrait) and (max-height:600px){body.design #app{padding-top:max(4px,env(safe-area-inset-top));grid-template-rows:48px 30px minmax(0,1fr) 60px 80px 4px}body.design nav{gap:28px;padding-top:2px}body.design nav button{height:48px;width:58px;flex-basis:58px;border-radius:17px}body.design nav button span{top:58px;font-size:11px}body.design #status{font-size:12px}body.design #star-target{font-size:11px}body.design #finish-title{font-size:23px}body.design #earned-stars{font-size:17px}body.design .home-hero{height:165px;width:200px;margin-bottom:10px}body.design .home-content h1{font-size:37px}body.design .home-content p{font-size:12px;margin:12px 0 19px}body.design .home-actions{gap:17px 12px}body.design .home-actions #home-play{min-height:54px;font-size:19px}body.design .home-actions #home-levels,body.design .home-actions #home-settings{min-height:64px}}
+@media(orientation:landscape) and (max-height:550px){body.design #app{padding-top:max(4px,env(safe-area-inset-top));grid-template-columns:70px minmax(0,1fr) 78px;grid-template-rows:32px minmax(0,1fr) 60px 4px;column-gap:4px}body.design .game-header h1{font-size:10px;gap:4px}body.design .game-header h1 strong{font-size:26px}body.design #meta{font-size:12px}body.design nav{gap:18px}body.design nav button{width:50px;flex:0 0 48px;height:48px;min-height:48px;border-radius:15px}body.design nav button svg{width:25px;height:25px}body.design nav button span{top:54px;font-size:10px}body.design #status{font-size:12px}body.design #star-target{font-size:11px}body.design #finish-title{font-size:22px}body.design #earned-stars{font-size:17px}body.design #continue{font-size:13px;padding:10px 12px}body.design .dialog-header{padding:8px 16px 4px;margin-bottom:6px}body.design .dialog-header h2{font-size:23px}body.design .dialog-body{padding-bottom:8px}body.design .dialog-body p{font-size:13px;margin-bottom:6px}body.design .dialog-actions{padding:6px 18px 16px;gap:10px}body.design .setting{min-height:52px}body.design .levels button{min-height:68px;font-size:22px}body.design .home-content{display:grid;grid-template-columns:1fr 1fr;gap:0 36px;width:min(100%,640px);text-align:center}body.design .home-hero{grid-column:1;grid-row:1;width:200px;height:155px;margin:0 auto 8px}body.design .home-content h1{grid-column:1;grid-row:2;font-size:32px}body.design .home-content #home-summary{grid-column:1;grid-row:3;font-size:12px;margin:10px 0 0}body.design .home-actions{grid-column:2;grid-row:1/4;gap:20px 12px}body.design .home-actions #home-play{min-height:60px;font-size:20px}body.design .home-actions #home-levels,body.design .home-actions #home-settings{min-height:76px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){body.design button,body.design dialog[open]{animation:none;transition:none}}
+@media(orientation:portrait) and (max-height:600px){body.design.light .home-content h1{font-size:37px}}
+@media(orientation:landscape) and (max-height:550px){body.design.light .home-content h1{font-size:32px}}

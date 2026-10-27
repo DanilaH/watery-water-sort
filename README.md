@@ -67,3 +67,5 @@ Android: JDK 21 и SDK 36, `npm run android:sync`, затем `cd android && ./g
 - [Главное меню и переигрывание 0.13](docs/NAVIGATION_13.md).
 
 - [Звёзды, рекорды и rewarded-колба 0.14](docs/STARS_REWARDED_14.md).
+
+- [Конкурентный разбор и два варианта оформления](docs/DESIGN_REVIEW_15.md) — прототипы на настоящем интерфейсе; направление ещё не выбрано, production остаётся 0.14.

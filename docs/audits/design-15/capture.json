@@ -1,0 +1,1436 @@
+{
+  "base": "e407615dd508e92db4e2fb7d1985f3b1cfdc433b",
+  "prototype": true,
+  "errors": [],
+  "checks": [
+    {
+      "name": "a-home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "home-play",
+          "x": 24,
+          "y": 537.125,
+          "w": 342,
+          "h": 66,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-levels",
+          "x": 24,
+          "y": 625.125,
+          "w": 163,
+          "h": 78,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-settings",
+          "x": 203,
+          "y": 625.125,
+          "w": 163,
+          "h": 78,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-game",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "menu",
+          "x": 16,
+          "y": 18,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 326,
+          "y": 18,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 308,
+          "y": 70,
+          "w": 66,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 272.546875,
+          "y": 417.015625,
+          "w": 72.890625,
+          "h": 232.96875,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 68,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 164,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 260,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-reward",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "Закрыть",
+          "x": 303,
+          "y": 287.3125,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Смотреть рекламу",
+          "x": 43,
+          "y": 438.28125,
+          "w": 304,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Позже",
+          "x": 43,
+          "y": 502.28125,
+          "w": 304,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-settings",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "Закрыть",
+          "x": 303,
+          "y": 193,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Звуки",
+          "x": 43,
+          "y": 259,
+          "w": 304,
+          "h": 62,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Вибрация",
+          "x": 43,
+          "y": 321,
+          "w": 304,
+          "h": 62,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Быстрое переливание",
+          "x": 43,
+          "y": 383,
+          "w": 304,
+          "h": 62,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Метки на цветах",
+          "x": 43,
+          "y": 445,
+          "w": 304,
+          "h": 62,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Светлая тема",
+          "x": 43,
+          "y": 507,
+          "w": 304,
+          "h": 62,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Готово",
+          "x": 43,
+          "y": 593,
+          "w": 304,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-victory",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "menu",
+          "x": 16,
+          "y": 18,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 326,
+          "y": 18,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 308,
+          "y": 70,
+          "w": 66,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "continue",
+          "x": 258.421875,
+          "y": 668,
+          "w": 115.578125,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 68,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 164,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 260,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-levels",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "Закрыть",
+          "x": 303,
+          "y": 186.125,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Уровень 1, пройден",
+          "x": 43,
+          "y": 287.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Уровень 2, пройден",
+          "x": 122,
+          "y": 287.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Уровень 3, пройден",
+          "x": 201,
+          "y": 287.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Уровень 4",
+          "x": 280,
+          "y": 287.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Уровень 5, закрыт",
+          "x": 43,
+          "y": 376.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 6, закрыт",
+          "x": 122,
+          "y": 376.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 7, закрыт",
+          "x": 201,
+          "y": 376.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 8, закрыт",
+          "x": 280,
+          "y": 376.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 9, закрыт",
+          "x": 43,
+          "y": 465.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 10, закрыт",
+          "x": 122,
+          "y": 465.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 11, закрыт",
+          "x": 201,
+          "y": 465.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 12, закрыт",
+          "x": 280,
+          "y": 465.8125,
+          "w": 67,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "В главное меню",
+          "x": 43,
+          "y": 599.859375,
+          "w": 304,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-dense-320x480",
+      "viewport": {
+        "width": 320,
+        "height": 480
+      },
+      "controls": [
+        {
+          "id": "menu",
+          "x": 16,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 256,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 238,
+          "y": 52,
+          "w": 66,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 236,
+          "y": 224,
+          "w": 48,
+          "h": 101,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 45,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 131,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 217,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-reward-320x480",
+      "viewport": {
+        "width": 320,
+        "height": 480
+      },
+      "controls": [
+        {
+          "id": "Закрыть",
+          "x": 253.921875,
+          "y": 105.3125,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Смотреть рекламу",
+          "x": 43,
+          "y": 256.28125,
+          "w": 234,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Позже",
+          "x": 43,
+          "y": 320.28125,
+          "w": 234,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-home-320x480",
+      "viewport": {
+        "width": 320,
+        "height": 480
+      },
+      "controls": [
+        {
+          "id": "home-play",
+          "x": 24,
+          "y": 303.921875,
+          "w": 272,
+          "h": 54,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-levels",
+          "x": 24,
+          "y": 374.921875,
+          "w": 130,
+          "h": 64,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-settings",
+          "x": 166,
+          "y": 374.921875,
+          "w": 130,
+          "h": 64,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-dense-568x320",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "controls": [
+        {
+          "id": "menu",
+          "x": 27,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 27,
+          "y": 260,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 404,
+          "y": 4,
+          "w": 66,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 377.328125,
+          "y": 161,
+          "w": 48,
+          "h": 84,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 488,
+          "y": 72.5,
+          "w": 50,
+          "h": 48,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 488,
+          "y": 138.5,
+          "w": 50,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 488,
+          "y": 204.5,
+          "w": 50,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-reward-568x320",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "controls": [
+        {
+          "id": "Закрыть",
+          "x": 433,
+          "y": 39.859375,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Смотреть рекламу",
+          "x": 89,
+          "y": 158.140625,
+          "w": 390,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Позже",
+          "x": 89,
+          "y": 220.140625,
+          "w": 390,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "a-home-568x320",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "controls": [
+        {
+          "id": "home-play",
+          "x": 302,
+          "y": 82,
+          "w": 242,
+          "h": 60,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-levels",
+          "x": 302,
+          "y": 162,
+          "w": 115,
+          "h": 76,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-settings",
+          "x": 429,
+          "y": 162,
+          "w": 115,
+          "h": 76,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "home-play",
+          "x": 24,
+          "y": 535.546875,
+          "w": 342,
+          "h": 66,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-levels",
+          "x": 24,
+          "y": 623.546875,
+          "w": 163,
+          "h": 78,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-settings",
+          "x": 203,
+          "y": 623.546875,
+          "w": 163,
+          "h": 78,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-game",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "menu",
+          "x": 16,
+          "y": 18,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 326,
+          "y": 18,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 308,
+          "y": 70,
+          "w": 66,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 272.546875,
+          "y": 417.015625,
+          "w": 72.890625,
+          "h": 232.96875,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 68,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 164,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 260,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-reward",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "Закрыть",
+          "x": 304,
+          "y": 287.3125,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Смотреть рекламу",
+          "x": 42,
+          "y": 438.28125,
+          "w": 306,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Позже",
+          "x": 42,
+          "y": 502.28125,
+          "w": 306,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-settings",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "Закрыть",
+          "x": 304,
+          "y": 193,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Звуки",
+          "x": 42,
+          "y": 259,
+          "w": 306,
+          "h": 62,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Вибрация",
+          "x": 42,
+          "y": 321,
+          "w": 306,
+          "h": 62,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Быстрое переливание",
+          "x": 42,
+          "y": 383,
+          "w": 306,
+          "h": 62,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Метки на цветах",
+          "x": 42,
+          "y": 445,
+          "w": 306,
+          "h": 62,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Светлая тема",
+          "x": 42,
+          "y": 507,
+          "w": 306,
+          "h": 62,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Готово",
+          "x": 42,
+          "y": 593,
+          "w": 306,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-victory",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "menu",
+          "x": 16,
+          "y": 18,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 326,
+          "y": 18,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 308,
+          "y": 70,
+          "w": 66,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "continue",
+          "x": 258.421875,
+          "y": 668,
+          "w": 115.578125,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 68,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 164,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 260,
+          "y": 733,
+          "w": 62,
+          "h": 58,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-levels",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "controls": [
+        {
+          "id": "Закрыть",
+          "x": 304,
+          "y": 186.125,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Уровень 1, пройден",
+          "x": 42,
+          "y": 287.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Уровень 2, пройден",
+          "x": 121.5,
+          "y": 287.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Уровень 3, пройден",
+          "x": 201,
+          "y": 287.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Уровень 4",
+          "x": 280.5,
+          "y": 287.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Уровень 5, закрыт",
+          "x": 42,
+          "y": 376.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 6, закрыт",
+          "x": 121.5,
+          "y": 376.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 7, закрыт",
+          "x": 201,
+          "y": 376.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 8, закрыт",
+          "x": 280.5,
+          "y": 376.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 9, закрыт",
+          "x": 42,
+          "y": 465.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 10, закрыт",
+          "x": 121.5,
+          "y": 465.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 11, закрыт",
+          "x": 201,
+          "y": 465.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "Уровень 12, закрыт",
+          "x": 280.5,
+          "y": 465.8125,
+          "w": 67.5,
+          "h": 77,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "В главное меню",
+          "x": 42,
+          "y": 599.859375,
+          "w": 306,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-dense-320x480",
+      "viewport": {
+        "width": 320,
+        "height": 480
+      },
+      "controls": [
+        {
+          "id": "menu",
+          "x": 16,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 256,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 238,
+          "y": 52,
+          "w": 66,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 236,
+          "y": 224,
+          "w": 48,
+          "h": 101,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 45,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 131,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 217,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-reward-320x480",
+      "viewport": {
+        "width": 320,
+        "height": 480
+      },
+      "controls": [
+        {
+          "id": "Закрыть",
+          "x": 242.921875,
+          "y": 105.3125,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Смотреть рекламу",
+          "x": 42,
+          "y": 256.28125,
+          "w": 236,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Позже",
+          "x": 42,
+          "y": 320.28125,
+          "w": 236,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-home-320x480",
+      "viewport": {
+        "width": 320,
+        "height": 480
+      },
+      "controls": [
+        {
+          "id": "home-play",
+          "x": 24,
+          "y": 303.921875,
+          "w": 272,
+          "h": 54,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-levels",
+          "x": 24,
+          "y": 374.921875,
+          "w": 130,
+          "h": 64,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-settings",
+          "x": 166,
+          "y": 374.921875,
+          "w": 130,
+          "h": 64,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-dense-568x320",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "controls": [
+        {
+          "id": "menu",
+          "x": 27,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 27,
+          "y": 260,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 404,
+          "y": 4,
+          "w": 66,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 377.328125,
+          "y": 161,
+          "w": 48,
+          "h": 84,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 488,
+          "y": 72.5,
+          "w": 50,
+          "h": 48,
+          "disabled": true,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 488,
+          "y": 138.5,
+          "w": 50,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 488,
+          "y": 204.5,
+          "w": 50,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-reward-568x320",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "controls": [
+        {
+          "id": "Закрыть",
+          "x": 434,
+          "y": 49.921875,
+          "w": 48,
+          "h": 48,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Смотреть рекламу",
+          "x": 88,
+          "y": 148.0625,
+          "w": 392,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "Позже",
+          "x": 88,
+          "y": 210.0625,
+          "w": 392,
+          "h": 52,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "name": "b-home-568x320",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "controls": [
+        {
+          "id": "home-play",
+          "x": 302,
+          "y": 82,
+          "w": 242,
+          "h": 60,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-levels",
+          "x": 302,
+          "y": 162,
+          "w": 115,
+          "h": 76,
+          "disabled": false,
+          "inside": true
+        },
+        {
+          "id": "home-settings",
+          "x": 429,
+          "y": 162,
+          "w": 115,
+          "h": 76,
+          "disabled": false,
+          "inside": true
+        }
+      ]
+    }
+  ],
+  "limits": "Static styling injected into real Vite UI; home hero is new SVG. SDK and audio are not evaluated. Victory captured from a valid saved winning path; celebration is not redesigned.",
+  "summary": {
+    "measuredControls": 134,
+    "minWidth": 48,
+    "minHeight": 48,
+    "outOfBounds": 0
+  }
+}
