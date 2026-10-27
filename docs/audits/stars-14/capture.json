@@ -1,0 +1,99 @@
+{
+  "errors": [],
+  "bounds": [
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "light": false,
+      "lock": {
+        "x": 285,
+        "y": 454.90625,
+        "width": 48,
+        "height": 165.34375
+      },
+      "slots": 11,
+      "realBoard": 10
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "light": true,
+      "lock": {
+        "x": 285,
+        "y": 454.90625,
+        "width": 48,
+        "height": 165.34375
+      },
+      "slots": 11,
+      "realBoard": 10
+    },
+    {
+      "viewport": [
+        320,
+        480
+      ],
+      "light": false,
+      "lock": {
+        "x": 236,
+        "y": 225.5,
+        "width": 48,
+        "height": 105.5
+      },
+      "slots": 11,
+      "realBoard": 10
+    },
+    {
+      "viewport": [
+        320,
+        480
+      ],
+      "light": true,
+      "lock": {
+        "x": 236,
+        "y": 225.5,
+        "width": 48,
+        "height": 105.5
+      },
+      "slots": 11,
+      "realBoard": 10
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "light": false,
+      "lock": {
+        "x": 373.328125,
+        "y": 162,
+        "width": 48,
+        "height": 85
+      },
+      "slots": 11,
+      "realBoard": 10
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "light": true,
+      "lock": {
+        "x": 373.328125,
+        "y": 162,
+        "width": 48,
+        "height": 85
+      },
+      "slots": 11,
+      "realBoard": 10
+    }
+  ],
+  "recordMoves": 9,
+  "replayMoves": 0,
+  "sdk": "Browser unavailability only; native SDK and successful reward are NOT simulated in these captures.",
+  "shots": 14
+}
