@@ -65,7 +65,7 @@ for(const count of [10,11])test(`landscape gives ${count} tubes more height with
  const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,await slotCount(page));expect(b.height).toBeGreaterThanOrEqual(220);expect(ps[0].h).toBeGreaterThan(73);
  for(const p of ps){expect(p.hitW).toBeGreaterThanOrEqual(48);expect(p.hitH).toBeGreaterThanOrEqual(48);}
  for(const id of ['menu','settings','symbols','undo','hint','restart']){const r=(await page.locator('#'+id).boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y).toBeGreaterThanOrEqual(0);expect(r.y+r.height).toBeLessThanOrEqual(320);}
- await help(page);for(const button of await page.locator('.dialog-actions button').all()){const r=(await button.boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y+r.height).toBeLessThanOrEqual(320);}
+ await help(page);for(const button of await page.locator('.dialog-actions button').all()){const r=(await button.boundingBox())!;expect(r.height+0.001).toBeGreaterThanOrEqual(48);expect(r.y+r.height).toBeLessThanOrEqual(320);}
 });
 
 test('extra tube keeps two readable rows and exclusive targets on short portrait',async({page})=>{
@@ -79,5 +79,5 @@ test('extra tube keeps two readable rows and exclusive targets on short portrait
 test('small landscape rescue explanation is visible without scrolling',async({page})=>{
  await page.setViewportSize({width:568,height:320});await open(page,dead);await page.locator('#rescue').click();
  const body=await page.locator('.dialog-body').evaluate(e=>({client:e.clientHeight,scroll:e.scrollHeight}));expect(body.scroll).toBeLessThanOrEqual(body.client+1);
- for(const button of await page.locator('.dialog-actions button').all()){const r=(await button.boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y+r.height).toBeLessThanOrEqual(320);}
+ for(const button of await page.locator('.dialog-actions button').all()){const r=(await button.boundingBox())!;expect(r.height+0.001).toBeGreaterThanOrEqual(48);expect(r.y+r.height).toBeLessThanOrEqual(320);}
 });

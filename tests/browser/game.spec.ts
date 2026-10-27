@@ -12,7 +12,7 @@ test('complete tutorial, retain move during animation, undo after reload',async(
 });
 test('hint, symbols, fast mode, themes and layouts',async({page})=>{
  await startGame(page);await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');await page.locator('#symbols').click();await expect(page.locator('#symbols')).toHaveAttribute('aria-pressed','true');
- await page.locator('#settings').click();await page.getByLabel('Быстрое переливание').check();await page.getByLabel('Светлая тема').check();await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('body')).toHaveClass('light');
+ await page.locator('#settings').click();await page.getByLabel('Быстрое переливание').check();await page.getByRole('button',{name:'Лёд',exact:true}).click();await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('body')).toHaveClass('light');
  for(const [width,height]of [[320,568],[844,390],[768,1024]]){await page.setViewportSize({width,height});await page.waitForTimeout(150);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);for(const id of ['undo','restart','hint','symbols','board','banner-slot']){const b=(await page.locator('#'+id).boundingBox())!;expect(b.x).toBeGreaterThanOrEqual(0);expect(b.x+b.width).toBeLessThanOrEqual(width+1);expect(b.y+b.height).toBeLessThanOrEqual(height+1);}}
 });
 

@@ -9,6 +9,7 @@ import { attempt, levels, moved, undone, restarted, levelKey, offerExtra, displa
 import { SaveStore } from './platform/storage';
 import {stars,targets} from './core/ratings';
 import {Rewarded,type Receipt} from './platform/rewarded';
+import {THEMES,themeFor} from './core/themes';
 import type { Result } from './core/solver';
 const haptics=registerPlugin<{impact(options:{strong:boolean}):Promise<void>}>('FeelHaptics');
 const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
@@ -51,8 +52,10 @@ function paint(){
  $('app').setAttribute('aria-hidden',String(atHome));
  $('home-play').textContent=hasStarted()?'Продолжить':'Играть';
  $('home-summary').textContent=hasStarted()?`Уровень ${state.current+1} · ходов: ${a.history.length}`:'Собери каждый цвет в свою колбу';
- scene.slots=displaySlots(state);scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=state.settings.light;audio.setEnabled(state.settings.sound);
- document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',displaySlots(state)>10);document.body.classList.toggle('light',state.settings.light);document.body.classList.toggle('finished',finished);
+ const theme=themeFor(state.settings);document.body.dataset.theme=theme.id;
+ document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content=theme.color;
+ scene.slots=displaySlots(state);scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=theme.light;audio.setEnabled(state.settings.sound);
+ document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',displaySlots(state)>10);document.body.classList.toggle('light',theme.light);document.body.classList.toggle('finished',finished);
  $('level-title').innerHTML=`<span>Уровень</span> <strong>${state.current+1}</strong>`;$('moves').textContent=`Ходов: ${a.history.length}`;$('progress').textContent=`${levels.length} уровней`;
  ($('undo') as HTMLButtonElement).disabled=!a.history.length;
  ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
@@ -225,10 +228,17 @@ $('home-levels').onclick=menu;
 $('home-settings').onclick=settings;
 function settings(){
  audio.ui();const body=modal('Настройки','',[{label:'Готово',primary:true,action:close}]);
- for(const [key,label]of Object.entries({sound:'Звуки',haptics:'Вибрация',fast:'Быстрое переливание',symbols:'Метки на цветах',light:'Светлая тема'})){
+ for(const [key,label]of Object.entries({sound:'Звуки',haptics:'Вибрация',fast:'Быстрое переливание',symbols:'Метки на цветах'})){
   const row=document.createElement('label');row.className='setting';const text=document.createElement('span');text.textContent=label;const input=document.createElement('input');input.type='checkbox';input.setAttribute('role','switch');input.checked=state.settings[key as keyof typeof state.settings]!==false;
-  input.onchange=()=>{const n=structuredClone(state);n.settings[key as keyof typeof state.settings]=input.checked;if(commit(n)){paint();audio.ui();}else input.checked=!input.checked;};row.append(text,input);body.append(row);
+  input.onchange=()=>{const n=structuredClone(state);n.settings[key as 'sound'|'haptics'|'fast'|'symbols']=input.checked;if(commit(n)){paint();audio.ui();}else input.checked=!input.checked;};row.append(text,input);body.append(row);
  }
+ const themes=document.createElement('fieldset');themes.className='theme-picker';const legend=document.createElement('legend');legend.textContent='Оформление';themes.append(legend);
+ const choices=document.createElement('div');choices.className='theme-options';
+ const selected=()=>{for(const b of choices.querySelectorAll<HTMLButtonElement>('button'))b.setAttribute('aria-pressed',String(b.dataset.themeChoice===themeFor(state.settings).id));};
+ for(const theme of THEMES){const b=document.createElement('button');b.type='button';b.dataset.themeChoice=theme.id;b.textContent=theme.name;b.setAttribute('aria-label',theme.name);b.style.setProperty('--swatch',theme.color);
+  b.onclick=()=>{const n=structuredClone(state);n.settings.theme=theme.id;n.settings.light=theme.light;if(commit(n)){paint();selected();audio.ui();}};choices.append(b);
+ }
+ themes.append(choices);body.append(themes);selected();
 }
 $('settings').onclick=settings;
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!dialog.open&&!atHome){e.preventDefault();showHome();}});

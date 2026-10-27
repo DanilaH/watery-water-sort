@@ -1,0 +1,527 @@
+{
+  "errors": [],
+  "checks": [
+    {
+      "theme": "blue",
+      "viewport": [
+        320,
+        480
+      ],
+      "bounds": [
+        {
+          "id": "menu",
+          "x": 16,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 256,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 238,
+          "y": 52,
+          "w": 66,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 45,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 131,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 217,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 236,
+          "y": 224,
+          "w": 48,
+          "h": 101,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "theme": "blue",
+      "viewport": [
+        568,
+        320
+      ],
+      "bounds": [
+        {
+          "id": "menu",
+          "x": 27,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 27,
+          "y": 260,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 404,
+          "y": 4,
+          "w": 66,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 488,
+          "y": 72.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 488,
+          "y": 138.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 488,
+          "y": 204.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 377.328125,
+          "y": 161,
+          "w": 48,
+          "h": 84,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "theme": "plum",
+      "viewport": [
+        320,
+        480
+      ],
+      "bounds": [
+        {
+          "id": "menu",
+          "x": 16,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 256,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 238,
+          "y": 52,
+          "w": 66,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 45,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 131,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 217,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 236,
+          "y": 224,
+          "w": 48,
+          "h": 101,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "theme": "plum",
+      "viewport": [
+        568,
+        320
+      ],
+      "bounds": [
+        {
+          "id": "menu",
+          "x": 27,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 27,
+          "y": 260,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 404,
+          "y": 4,
+          "w": 66,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 488,
+          "y": 72.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 488,
+          "y": 138.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 488,
+          "y": 204.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 377.328125,
+          "y": 161,
+          "w": 48,
+          "h": 84,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "theme": "graphite",
+      "viewport": [
+        320,
+        480
+      ],
+      "bounds": [
+        {
+          "id": "menu",
+          "x": 16,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 256,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 238,
+          "y": 52,
+          "w": 66,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 45,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 131,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 217,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 236,
+          "y": 224,
+          "w": 48,
+          "h": 101,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "theme": "graphite",
+      "viewport": [
+        568,
+        320
+      ],
+      "bounds": [
+        {
+          "id": "menu",
+          "x": 27,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 27,
+          "y": 260,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 404,
+          "y": 4,
+          "w": 66,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 488,
+          "y": 72.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 488,
+          "y": 138.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 488,
+          "y": 204.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 377.328125,
+          "y": 161,
+          "w": 48,
+          "h": 84,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "theme": "ice",
+      "viewport": [
+        320,
+        480
+      ],
+      "bounds": [
+        {
+          "id": "menu",
+          "x": 16,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 256,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 238,
+          "y": 52,
+          "w": 66,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 45,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 131,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 217,
+          "y": 398,
+          "w": 58,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 236,
+          "y": 224,
+          "w": 48,
+          "h": 101,
+          "inside": true
+        }
+      ]
+    },
+    {
+      "theme": "ice",
+      "viewport": [
+        568,
+        320
+      ],
+      "bounds": [
+        {
+          "id": "menu",
+          "x": 27,
+          "y": 4,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "settings",
+          "x": 27,
+          "y": 260,
+          "w": 48,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "symbols",
+          "x": 404,
+          "y": 4,
+          "w": 66,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "undo",
+          "x": 488,
+          "y": 72.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "hint",
+          "x": 488,
+          "y": 138.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "restart",
+          "x": 488,
+          "y": 204.5,
+          "w": 50,
+          "h": 48,
+          "inside": true
+        },
+        {
+          "id": "extra-tube",
+          "x": 377.328125,
+          "y": 161,
+          "w": 48,
+          "h": 84,
+          "inside": true
+        }
+      ]
+    }
+  ],
+  "source": "Real production build, no style injection or SDK mock",
+  "screens": 28
+}

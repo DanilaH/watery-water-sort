@@ -132,7 +132,7 @@ export class WaterScene extends Phaser.Scene {
     const local=vesselPolygon(r.w,h);
     const poly=local.map(p=>transform(p.x,p.y));this.hitPolygons.set(index,poly);
     // A soft elliptical contact shadow anchors the bottle while the lifted one floats.
-    const resting=this.positions()[index];const shadowY=resting.y+resting.h+9;const lift=Math.min(1,Math.abs(r.y-resting.y)/50);for(let n=3;n>=1;n--){g.fillStyle(this.light?0x746c50:0x030c0a,.055*(1-lift*.8));g.fillEllipse(resting.x,shadowY,r.w*(1+n*.20)*(1-lift*.25)*(1+contact*.05),4+n*2);}
+    const resting=this.positions()[index];const shadowY=resting.y+resting.h+9;const lift=Math.min(1,Math.abs(r.y-resting.y)/50);for(let n=3;n>=1;n--){g.fillStyle(this.light?0x6782a6:0x030c0a,.055*(1-lift*.8));g.fillEllipse(resting.x,shadowY,r.w*(1+n*.20)*(1-lift*.25)*(1+contact*.05),4+n*2);}
     if(selected||target){const glow=selected?0xb9e3ff:0x68d9e9;for(let n=3;n>=1;n--){g.lineStyle(n*5,glow,.025);g.strokePoints(poly,true);}g.fillStyle(glow,.12*(1-lift));g.fillEllipse(resting.x,shadowY,r.w*1.25,12);}
     this.polygon(poly,this.light?0x8bbbe4:0xb8e4ff,this.light?.13:.045);
     const total=layers.reduce((v,l)=>v+l.amount,0);let sum=0;
@@ -167,8 +167,8 @@ export class WaterScene extends Phaser.Scene {
       sum+=layer.amount;
     }
     // A clean rounded glass silhouette: bright lip, thick base, one broad reflection.
-    g.lineStyle(4,this.light?0x456965:0x9bc8ee,this.light?.25:.14);g.strokePoints(poly,true);
-    g.lineStyle(1.5,this.light?0x456965:0xc9e5ff,this.light?.85:.72);g.strokePoints(poly,true);
+    g.lineStyle(4,this.light?0x496f9b:0x9bc8ee,this.light?.25:.14);g.strokePoints(poly,true);
+    g.lineStyle(1.5,this.light?0x496f9b:0xc9e5ff,this.light?.85:.72);g.strokePoints(poly,true);
     const rimA=transform(-w,0),rimB=transform(w,0);
     g.lineStyle(5,0xa6cbea,.5);g.lineBetween(rimA.x,rimA.y,rimB.x,rimB.y);
     g.lineStyle(1.4,0xf3fbff,.96);g.lineBetween(rimA.x,rimA.y-1,rimB.x,rimB.y-1);
