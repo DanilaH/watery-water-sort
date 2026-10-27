@@ -1,0 +1,14 @@
+{
+  "apk": "/workspace/scratch/3a5c9a735dde/deliverables/watery-water-sort-0.13.0.apk",
+  "bytes": 4625225,
+  "sha256": "342e4523a8941c76853e691b4e202525ecce15c53c3d7c59047e613ffaa1d757",
+  "manifest": {
+    "versionCode": 13,
+    "versionName": "0.13.0-navigation",
+    "package": "com.danilah.waterywatersort.preview3"
+  },
+  "certificate_sha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373",
+  "main_asset": "assets/public/assets/index-BHDrVgGO.js",
+  "all_dist_assets_match": true,
+  "ogg_assets": 11
+}
