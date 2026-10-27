@@ -2,7 +2,7 @@ import {chromium} from 'playwright';import fs from 'node:fs';
 import {fresh,levels} from '../src/core/session.ts';import {THEMES} from '../src/core/themes.ts';
 const out=process.env.UI_CAPTURE_DIR??'test-results/themes-15';fs.mkdirSync(out,{recursive:true});
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']}),page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2}),errors=[],checks=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(process.argv[2]??'http://127.0.0.1:4175');
-const shot=async name=>{await page.waitForTimeout(230);await page.screenshot({path:out+'/'+name+'.png'});};
+const shot=async name=>{await page.waitForTimeout(230);await page.screenshot({path:out+'/'+name+'.png',animations:'disabled'});};
 async function open(theme,index=2,play=true){const s={...fresh(),current:index,completed:levels.slice(0,index).map(l=>l.id),settings:{...fresh().settings,theme:theme.id,light:theme.light,sound:false}};await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.reload();await page.evaluate(()=>document.fonts.ready);if(play){await page.locator('#home-play').click();await page.waitForTimeout(320);}}
 for(const theme of THEMES){
  await page.setViewportSize({width:390,height:844});await open(theme,2,false);await shot(theme.id+'-home');await page.locator('#home-play').click();await page.waitForTimeout(320);await shot(theme.id+'-game');await page.locator('#settings').click();await shot(theme.id+'-settings');await page.getByRole('button',{name:'Готово',exact:true}).click();await page.locator('#extra-tube').click();await shot(theme.id+'-reward');await page.getByRole('button',{name:'Позже',exact:true}).click();

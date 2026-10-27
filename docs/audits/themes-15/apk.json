@@ -1,0 +1,20 @@
+{
+  "bytes": 9909268,
+  "sha256": "8f051d8abca98d1531022fc0329d54af266e96e7e8947829d4a63d7c0cbc92d3",
+  "manifest": {
+    "versionCode": 15,
+    "versionName": "0.15.0-themes",
+    "package": "com.danilah.waterywatersort.preview3"
+  },
+  "certificate_sha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373",
+  "main_asset": "assets/public/assets/index-Bm49Ghyc.js",
+  "all_dist_assets_match": true,
+  "ogg_assets": 11,
+  "code_commit": "e82ca64a17ae32a8c20516a345adb5b9952a2d85",
+  "ci_run": 40495114310,
+  "ci_conclusion": "success",
+  "artifact_id": 12729364121,
+  "artifact_zip_sha256": "997936af3c63249b10cb53c932be14c7677779ac7ab11f26cce0630384d273d3",
+  "physical_android_tested": false,
+  "native_ad_display_tested": false
+}
