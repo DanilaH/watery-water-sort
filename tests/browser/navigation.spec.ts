@@ -40,9 +40,9 @@ test('failed level reset cannot discard the attempt; home Continue still restore
 });
 
 test('home interrupts queued actions, preserving only the accepted move',async({page})=>{
- await page.goto('/');await page.locator('#home-play').click();await page.locator('canvas').waitFor();await page.waitForTimeout(150);await tap(page,0);await tap(page,2);
+ await page.goto('/');await page.locator('#home-play').click();await page.locator('canvas').waitFor();await page.waitForTimeout(150);const box=(await page.locator('#board').boundingBox())!,poses=layout(box.width,box.height,4),click=(i:number)=>page.mouse.click(box.x+poses[i].x,box.y+poses[i].y+poses[i].h/2);
  await page.evaluate(()=>{new MutationObserver(()=>{if(document.getElementById('status')!.textContent!.includes('Следующий ход выбран')&&!(window as any).homeAtQueue){(window as any).homeAtQueue={moves:JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-001@1'].history.length,busy:document.body.classList.contains('pouring')};document.getElementById('menu')!.click();}}).observe(document.getElementById('status')!,{childList:true,subtree:true,characterData:true});});
- await tap(page,1);await tap(page,0);await expect(page.locator('#home')).toBeVisible();expect(await page.evaluate(()=>(window as any).homeAtQueue)).toEqual({moves:1,busy:true});await page.waitForTimeout(700);expect(attempt(await saved(page)).history).toHaveLength(1);await page.locator('#home-play').click();await expect(page.locator('#moves')).toHaveText('Ходов: 1');
+ await click(0);await click(2);await click(1);await click(0);await expect(page.locator('#home')).toBeVisible();expect(await page.evaluate(()=>(window as any).homeAtQueue)).toEqual({moves:1,busy:true});await page.waitForTimeout(700);expect(attempt(await saved(page)).history).toHaveLength(1);await page.locator('#home-play').click();await expect(page.locator('#moves')).toHaveText('Ходов: 1');
 });
 
 for(const [width,height]of [[320,480],[568,320]])test(`home fits ${width}x${height} with full controls and independent settings`,async({page})=>{
