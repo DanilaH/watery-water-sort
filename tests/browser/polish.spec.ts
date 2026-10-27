@@ -1,11 +1,11 @@
-import {startGame,reloadGame,openLevels,resumeGame} from './navigation';
+import {startGame,reloadGame,openLevels,resumeGame,slotCount} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {layout} from '../../src/game/geometry';
 const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
 const initial=(current=0)=>({schema:1,current,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false}});
 async function start(page:Page,index=0){await startGame(page);await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),initial(index));await reloadGame(page);await expect(page.locator('canvas')).toBeVisible();await page.waitForTimeout(120);}
-async function tap(page:Page,i:number,index=0){const b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,levels[index].initial.length)[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
+async function tap(page:Page,i:number,index=0){const b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,await slotCount(page))[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
 test('retina rendering preserves logical hit testing and real hint selection',async({browser})=>{
  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});const page=await context.newPage();await start(page,2);
  const density=await page.locator('canvas').evaluate(c=>({backing:(c as HTMLCanvasElement).width,css:c.getBoundingClientRect().width}));expect(density.backing/density.css).toBeCloseTo(2,1);
@@ -36,12 +36,12 @@ test('manual selection cancels an in-flight hint without stealing input',async({
  const source=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-003@1'].history.at(-1).from);expect(source).toBe(0);
 });
 
-test('dense field has no phantom cell and idle instructions stay quiet',async({page})=>{
+test('dense field reserves one advertised slot outside the real board and keeps guidance quiet',async({page})=>{
  await page.setViewportSize({width:320,height:480});await start(page,11);await expect(page.locator('#status')).toHaveText('');
  const expected=levels[11].initial.length;
  await page.evaluate(async()=>{const path='/src/game/WaterScene.ts',m=await import(path),original=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(this:any){const poses=original.call(this);(window as any).__field={slots:this.slots,tubes:this.board.length,poses:poses.length};m.WaterScene.prototype.positions=original;return poses;};});
  await tap(page,0,11);const actual=await page.evaluate(()=>(window as any).__field);
- expect(actual).toEqual({slots:expected,tubes:expected,poses:expected});await expect(page.locator('#status')).toContainText('Выбери');
+ expect(actual).toEqual({slots:expected+1,tubes:expected,poses:expected+1});await expect(page.locator('#extra-tube')).toBeVisible();await expect(page.locator('#status')).toContainText('Выбери');
 });
 
 test('controls retain 48px touch areas in portrait and landscape',async({page})=>{

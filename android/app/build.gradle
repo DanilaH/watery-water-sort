@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+def rewardedUnit = System.getenv('YANDEX_REWARDED_AD_UNIT_ID') ?: ''
+if (rewardedUnit && !rewardedUnit.matches('[A-Za-z0-9_-]+')) throw new GradleException('Invalid rewarded ad unit id')
 
 android {
     namespace = "com.danilah.waterywatersort"
@@ -7,8 +9,9 @@ android {
         applicationId "com.danilah.waterywatersort"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 13
-        versionName "0.13.0-navigation"
+        buildConfigField "String", "REWARDED_AD_UNIT_ID", "\"${rewardedUnit}\""
+        versionCode 14
+        versionName "0.14.0-stars"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,6 +19,7 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    buildFeatures { buildConfig true }
     signingConfigs {
         publicPreview {
             storeFile file("../debug-signing/public-test.p12")
@@ -27,6 +31,7 @@ android {
     }
     buildTypes {
         debug {
+            buildConfigField "String", "REWARDED_AD_UNIT_ID", '"demo-rewarded-yandex"'
             applicationIdSuffix ".preview3"
             signingConfig signingConfigs.publicPreview
         }
@@ -44,6 +49,7 @@ repositories {
 }
 
 dependencies {
+    implementation "com.yandex.android:mobileads:8.6.0"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:$androidxAppCompatVersion"
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"

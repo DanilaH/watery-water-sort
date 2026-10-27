@@ -27,7 +27,7 @@ test('backup notice survives resize until a real board action',async({page})=>{
 
 for(const lastLevel of [false,true])test(`victory target fits small viewports (${lastLevel?'last':'first'} level)`,async({page})=>{
  const current=lastLevel?11:0,l=levels[current];let board=l.initial.map((t:number[])=>[...t]);for(const m of l.witness)board[m.to].push(...board[m.from].splice(-m.amount));const s={...fresh(),current,completed:levels.slice(0,current+1).map((l:any)=>l.id),attempts:{[`${l.id}@${l.version}`]:{board,history:l.witness,extra:false}}};await seed(page,s);await startGame(page);
- for(const [width,height]of [[320,480],[568,320],[390,844]]){await page.setViewportSize({width,height});await expect(page.locator('#continue')).toBeVisible();const r=(await page.locator('#continue').boundingBox())!,feedback=(await page.locator('#feedback').boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y).toBeGreaterThanOrEqual(feedback.y);expect(r.y+r.height).toBeLessThanOrEqual(feedback.y+feedback.height+.5);const nav=(await page.locator('nav').boundingBox())!;expect(r.x+r.width<=nav.x||r.y+r.height<=nav.y).toBe(true);}
+ for(const [width,height]of [[320,480],[568,320],[390,844]]){await page.setViewportSize({width,height});await expect(page.locator('#continue')).toBeVisible();await expect.poll(()=>page.evaluate(()=>{const r=document.getElementById('continue')!.getBoundingClientRect(),f=document.getElementById('feedback')!.getBoundingClientRect(),nav=document.querySelector('nav')!.getBoundingClientRect();return r.height>=48&&r.top>=f.top&&r.bottom<=f.bottom+.5&&r.bottom<=innerHeight&&(r.right<=nav.left||r.bottom<=nav.top);})).toBe(true);}
 });
 
 test('cached vessels reproduce the same commands and symbols as a fresh render',async({page})=>{

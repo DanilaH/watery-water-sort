@@ -1,0 +1,2414 @@
+[
+  {
+    "level": 0,
+    "extra": 0,
+    "optimal": 3,
+    "lowerBound": 2,
+    "expanded": 3,
+    "states": 6,
+    "path": [
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 5,
+    "proofMs": 0.05
+  },
+  {
+    "level": 0,
+    "extra": 1,
+    "optimal": 3,
+    "lowerBound": 2,
+    "expanded": 3,
+    "states": 6,
+    "path": [
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 7,
+    "proofMs": 0.05
+  },
+  {
+    "level": 1,
+    "extra": 0,
+    "optimal": 7,
+    "lowerBound": 6,
+    "expanded": 8,
+    "states": 21,
+    "path": [
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 5,
+    "proofMs": 0.03
+  },
+  {
+    "level": 1,
+    "extra": 1,
+    "optimal": 7,
+    "lowerBound": 6,
+    "expanded": 8,
+    "states": 21,
+    "path": [
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 7,
+    "proofMs": 0.08
+  },
+  {
+    "level": 2,
+    "extra": 0,
+    "optimal": 9,
+    "lowerBound": 8,
+    "expanded": 10,
+    "states": 36,
+    "path": [
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 7,
+    "proofMs": 0.04
+  },
+  {
+    "level": 2,
+    "extra": 1,
+    "optimal": 9,
+    "lowerBound": 8,
+    "expanded": 10,
+    "states": 36,
+    "path": [
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 10,
+    "proofMs": 0.05
+  },
+  {
+    "level": 3,
+    "extra": 0,
+    "optimal": 10,
+    "lowerBound": 8,
+    "expanded": 18,
+    "states": 54,
+    "path": [
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 3,
+        "color": 2
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 87,
+    "proofMs": 0.46
+  },
+  {
+    "level": 3,
+    "extra": 1,
+    "optimal": 10,
+    "lowerBound": 8,
+    "expanded": 18,
+    "states": 55,
+    "path": [
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 3,
+        "color": 2
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 145,
+    "proofMs": 0.52
+  },
+  {
+    "level": 4,
+    "extra": 0,
+    "optimal": 12,
+    "lowerBound": 10,
+    "expanded": 17,
+    "states": 60,
+    "path": [
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 5,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 5,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 2
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 84,
+    "proofMs": 0.3
+  },
+  {
+    "level": 4,
+    "extra": 1,
+    "optimal": 12,
+    "lowerBound": 10,
+    "expanded": 17,
+    "states": 63,
+    "path": [
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 5,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 5,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 2
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 147,
+    "proofMs": 0.64
+  },
+  {
+    "level": 5,
+    "extra": 0,
+    "optimal": 14,
+    "lowerBound": 12,
+    "expanded": 41,
+    "states": 157,
+    "path": [
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 3,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 5,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 5,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 2
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 244,
+    "proofMs": 0.92
+  },
+  {
+    "level": 5,
+    "extra": 1,
+    "optimal": 14,
+    "lowerBound": 12,
+    "expanded": 41,
+    "states": 160,
+    "path": [
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 3,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 5,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 5,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 2
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 414,
+    "proofMs": 1.38
+  },
+  {
+    "level": 6,
+    "extra": 0,
+    "optimal": 16,
+    "lowerBound": 14,
+    "expanded": 45,
+    "states": 203,
+    "path": [
+      {
+        "from": 1,
+        "to": 5,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 0,
+        "to": 5,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 6,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 6,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 2,
+        "color": 3
+      },
+      {
+        "from": 2,
+        "to": 6,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 3,
+        "to": 2,
+        "amount": 3,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 5,
+        "amount": 1,
+        "color": 4
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 251,
+    "proofMs": 1.09
+  },
+  {
+    "level": 6,
+    "extra": 1,
+    "optimal": 16,
+    "lowerBound": 14,
+    "expanded": 45,
+    "states": 212,
+    "path": [
+      {
+        "from": 1,
+        "to": 5,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 0,
+        "to": 5,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 6,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 6,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 2,
+        "color": 3
+      },
+      {
+        "from": 2,
+        "to": 6,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 3,
+        "to": 2,
+        "amount": 3,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 5,
+        "amount": 1,
+        "color": 4
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 442,
+    "proofMs": 2.09
+  },
+  {
+    "level": 7,
+    "extra": 0,
+    "optimal": 19,
+    "lowerBound": 16,
+    "expanded": 826,
+    "states": 1670,
+    "path": [
+      {
+        "from": 4,
+        "to": 6,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 5,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 5,
+        "to": 6,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 1,
+        "to": 5,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 3,
+        "to": 1,
+        "amount": 2,
+        "color": 4
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 6,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 7,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 7,
+        "amount": 3,
+        "color": 4
+      },
+      {
+        "from": 3,
+        "to": 1,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 5,
+        "to": 3,
+        "amount": 2,
+        "color": 5
+      },
+      {
+        "from": 0,
+        "to": 5,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 5,
+        "amount": 1,
+        "color": 0
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 3613,
+    "proofMs": 20.74
+  },
+  {
+    "level": 7,
+    "extra": 1,
+    "optimal": 19,
+    "lowerBound": 16,
+    "expanded": 825,
+    "states": 4206,
+    "path": [
+      {
+        "from": 4,
+        "to": 6,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 5,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 5,
+        "to": 6,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 1,
+        "to": 5,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 3,
+        "to": 1,
+        "amount": 2,
+        "color": 4
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 6,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 7,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 7,
+        "amount": 3,
+        "color": 4
+      },
+      {
+        "from": 3,
+        "to": 1,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 5,
+        "to": 3,
+        "amount": 2,
+        "color": 5
+      },
+      {
+        "from": 0,
+        "to": 5,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 5,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 1,
+        "color": 5
+      }
+    ],
+    "ms": 1,
+    "independentNoShorterPath": true,
+    "proofNodes": 10099,
+    "proofMs": 48.85
+  },
+  {
+    "level": 8,
+    "extra": 0,
+    "optimal": 18,
+    "lowerBound": 16,
+    "expanded": 143,
+    "states": 534,
+    "path": [
+      {
+        "from": 2,
+        "to": 6,
+        "amount": 2,
+        "color": 5
+      },
+      {
+        "from": 3,
+        "to": 2,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 1,
+        "to": 6,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 3,
+        "to": 7,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 2,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 2,
+        "color": 4
+      },
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 5,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 5,
+        "to": 7,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 5,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "amount": 3,
+        "color": 4
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 6,
+        "amount": 1,
+        "color": 5
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 357,
+    "proofMs": 2.04
+  },
+  {
+    "level": 8,
+    "extra": 1,
+    "optimal": 18,
+    "lowerBound": 16,
+    "expanded": 160,
+    "states": 864,
+    "path": [
+      {
+        "from": 2,
+        "to": 6,
+        "amount": 2,
+        "color": 5
+      },
+      {
+        "from": 3,
+        "to": 2,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 1,
+        "to": 6,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 3,
+        "to": 7,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 2,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 2,
+        "color": 4
+      },
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 5,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 5,
+        "to": 7,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 5,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "amount": 3,
+        "color": 4
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 6,
+        "amount": 1,
+        "color": 5
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 635,
+    "proofMs": 2.74
+  },
+  {
+    "level": 9,
+    "extra": 0,
+    "optimal": 20,
+    "lowerBound": 17,
+    "expanded": 967,
+    "states": 1827,
+    "path": [
+      {
+        "from": 2,
+        "to": 7,
+        "amount": 2,
+        "color": 4
+      },
+      {
+        "from": 6,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 3,
+        "to": 6,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 7,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 6,
+        "to": 8,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 6,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 6,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 5,
+        "to": 2,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 2,
+        "color": 6
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 8,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 5,
+        "to": 1,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 5,
+        "to": 4,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 7,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 4185,
+    "proofMs": 26.13
+  },
+  {
+    "level": 9,
+    "extra": 1,
+    "optimal": 20,
+    "lowerBound": 17,
+    "expanded": 967,
+    "states": 5576,
+    "path": [
+      {
+        "from": 2,
+        "to": 7,
+        "amount": 2,
+        "color": 4
+      },
+      {
+        "from": 6,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 3,
+        "to": 6,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 7,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 5,
+        "to": 4,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 6,
+        "to": 8,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 6,
+        "to": 5,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 6,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 2,
+        "color": 6
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 8,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 7,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 5,
+        "to": 1,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 5,
+        "to": 4,
+        "amount": 1,
+        "color": 5
+      }
+    ],
+    "ms": 1,
+    "independentNoShorterPath": true,
+    "proofNodes": 12912,
+    "proofMs": 67.22
+  },
+  {
+    "level": 10,
+    "extra": 0,
+    "optimal": 22,
+    "lowerBound": 19,
+    "expanded": 1050,
+    "states": 2023,
+    "path": [
+      {
+        "from": 5,
+        "to": 7,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 7,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 5,
+        "to": 4,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 5,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 2,
+        "to": 8,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 2,
+        "to": 7,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 7,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 6,
+        "to": 1,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 6,
+        "to": 8,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 8,
+        "amount": 2,
+        "color": 6
+      },
+      {
+        "from": 5,
+        "to": 0,
+        "amount": 2,
+        "color": 4
+      },
+      {
+        "from": 5,
+        "to": 3,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 5,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 6,
+        "to": 5,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 6,
+        "to": 0,
+        "amount": 1,
+        "color": 4
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 4114,
+    "proofMs": 25.92
+  },
+  {
+    "level": 10,
+    "extra": 1,
+    "optimal": 22,
+    "lowerBound": 19,
+    "expanded": 1050,
+    "states": 6232,
+    "path": [
+      {
+        "from": 5,
+        "to": 7,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 7,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 5,
+        "to": 4,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 5,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 2,
+        "to": 8,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 2,
+        "to": 7,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 7,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 6,
+        "to": 1,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 6,
+        "to": 8,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 8,
+        "amount": 2,
+        "color": 6
+      },
+      {
+        "from": 5,
+        "to": 0,
+        "amount": 2,
+        "color": 4
+      },
+      {
+        "from": 5,
+        "to": 3,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 5,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 6,
+        "to": 5,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 6,
+        "to": 0,
+        "amount": 1,
+        "color": 4
+      }
+    ],
+    "ms": 1,
+    "independentNoShorterPath": true,
+    "proofNodes": 13489,
+    "proofMs": 68.53
+  },
+  {
+    "level": 11,
+    "extra": 0,
+    "optimal": 23,
+    "lowerBound": 21,
+    "expanded": 92,
+    "states": 518,
+    "path": [
+      {
+        "from": 6,
+        "to": 8,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 4,
+        "to": 6,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 4,
+        "to": 8,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 5,
+        "to": 8,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 5,
+        "to": 4,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 5,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 7,
+        "to": 8,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 3,
+        "to": 7,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 6,
+        "to": 3,
+        "amount": 2,
+        "color": 3
+      },
+      {
+        "from": 2,
+        "to": 9,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 6,
+        "to": 1,
+        "amount": 1,
+        "color": 7
+      },
+      {
+        "from": 6,
+        "to": 5,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 0,
+        "to": 9,
+        "amount": 2,
+        "color": 5
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 7,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 7,
+        "amount": 2,
+        "color": 7
+      },
+      {
+        "from": 1,
+        "to": 9,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 3,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 5,
+        "amount": 1,
+        "color": 6
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 576,
+    "proofMs": 3.29
+  },
+  {
+    "level": 11,
+    "extra": 1,
+    "optimal": 23,
+    "lowerBound": 21,
+    "expanded": 92,
+    "states": 627,
+    "path": [
+      {
+        "from": 6,
+        "to": 8,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 4,
+        "to": 6,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 4,
+        "to": 8,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 5,
+        "to": 8,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 5,
+        "to": 4,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 5,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 7,
+        "to": 8,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 3,
+        "to": 7,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 6,
+        "to": 3,
+        "amount": 2,
+        "color": 3
+      },
+      {
+        "from": 2,
+        "to": 9,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 6,
+        "to": 1,
+        "amount": 1,
+        "color": 7
+      },
+      {
+        "from": 6,
+        "to": 5,
+        "amount": 1,
+        "color": 6
+      },
+      {
+        "from": 0,
+        "to": 9,
+        "amount": 2,
+        "color": 5
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 7,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 7,
+        "amount": 2,
+        "color": 7
+      },
+      {
+        "from": 1,
+        "to": 9,
+        "amount": 1,
+        "color": 5
+      },
+      {
+        "from": 0,
+        "to": 1,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 3,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 5,
+        "amount": 1,
+        "color": 6
+      }
+    ],
+    "ms": 0,
+    "independentNoShorterPath": true,
+    "proofNodes": 1050,
+    "proofMs": 5.42
+  }
+]

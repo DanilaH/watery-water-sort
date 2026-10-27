@@ -15,6 +15,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run ratings:check
       - run: npm test
       - run: npm run build
       # Ubuntu 24.04 hosted runners already include Chrome runtime libraries.
@@ -28,6 +29,8 @@ jobs:
           java-version: 21
       - run: npx cap sync android
       - run: chmod +x android/gradlew && cd android && ./gradlew assembleDebug --no-daemon
+        env:
+          YANDEX_REWARDED_AD_UNIT_ID: ${{ secrets.YANDEX_REWARDED_AD_UNIT_ID }}
       - uses: actions/upload-artifact@v4
         with:
           name: watery-water-sort-debug

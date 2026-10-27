@@ -5,8 +5,10 @@ import './style.css';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
 import { moveFor, completeTube, won, moves, type Move } from './core/rules';
-import { attempt, levels, moved, undone, restarted, expanded, levelKey, type Save } from './core/session';
+import { attempt, levels, moved, undone, restarted, levelKey, offerExtra, displaySlots, grantExtra, type Save } from './core/session';
 import { SaveStore } from './platform/storage';
+import {stars,targets} from './core/ratings';
+import {Rewarded,type Receipt} from './platform/rewarded';
 import type { Result } from './core/solver';
 const haptics=registerPlugin<{impact(options:{strong:boolean}):Promise<void>}>('FeelHaptics');
 const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
@@ -22,7 +24,8 @@ let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,la
 let deadRevision:number|null=null;
 let hintCache:{revision:number;move:Move}|null=null;
 const blockers=new Set<string>();
-let atHome=true;
+let atHome=true,rewardBusy=false;
+const rewarded=new Rewarded();let pendingReceipt:Receipt|undefined;
 const hasStarted=()=>Object.keys(state.attempts).length>0||state.completed.length>0;
 function haptic(strong=false){if(Capacitor.isNativePlatform()&&state.settings.haptics!==false)void haptics.impact({strong}).catch(()=>{});}
 function message(text:string,important=false){$('status').textContent=important?text:recoveryNotice||text;}
@@ -48,21 +51,25 @@ function paint(){
  $('app').setAttribute('aria-hidden',String(atHome));
  $('home-play').textContent=hasStarted()?'Продолжить':'Играть';
  $('home-summary').textContent=hasStarted()?`Уровень ${state.current+1} · ходов: ${a.history.length}`:'Собери каждый цвет в свою колбу';
- scene.slots=a.board.length;scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=state.settings.light;audio.setEnabled(state.settings.sound);
- document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',a.board.length>10);document.body.classList.toggle('light',state.settings.light);document.body.classList.toggle('finished',finished);
+ scene.slots=displaySlots(state);scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=state.settings.light;audio.setEnabled(state.settings.sound);
+ document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',displaySlots(state)>10);document.body.classList.toggle('light',state.settings.light);document.body.classList.toggle('finished',finished);
  $('level-title').innerHTML=`<span>Уровень</span> <strong>${state.current+1}</strong>`;$('moves').textContent=`Ходов: ${a.history.length}`;$('progress').textContent=`${levels.length} уровней`;
  ($('undo') as HTMLButtonElement).disabled=!a.history.length;
  ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
  $('symbols').setAttribute('aria-pressed',String(state.settings.symbols));
  const bottom=Math.max(...scene.positions().map(p=>p.y+p.h));
  $('app').style.setProperty('--result-rise',String(finished?Math.max(0,Math.min(140,$('board').clientHeight-bottom-20)):0));
+ const target=targets(levelKey(state.current));$('star-target').hidden=finished;$('star-target').textContent=`★★★ ≤ ${target.three} · ★★ ≤ ${target.two}`;
+ $('earned-stars').hidden=!finished;const earned=stars(levelKey(state.current),a.history.length);$('earned-stars').textContent='★'.repeat(earned)+'☆'.repeat(3-earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
+ const extra=$('extra-tube');extra.hidden=atHome||!offerExtra(state)||won(a.board);(extra as HTMLButtonElement).disabled=scene.busy||rewardBusy;
+ if(offerExtra(state)){const r=scene.positions().at(-1)!;Object.assign(extra.style,{left:`${r.x-r.hitW/2}px`,top:`${r.y+r.h/2-r.hitH/2}px`,width:`${r.hitW}px`,height:`${r.hitH}px`});extra.style.setProperty('--vessel-width',r.w+'px');extra.style.setProperty('--vessel-height',r.h+'px');}
  $('continue').hidden=!finished;
  $('rescue').hidden=finished||scene.busy||!(deadRevision===state.revision||!moves(a.board).length);
  $('continue').textContent=state.current===levels.length-1?'К уровням →':'Дальше →';
  $('finish-title').hidden=!finished;$('finish-title').textContent=state.current===levels.length-1?'Набор пройден':'Готово!';
- if(finished)message(`Все цвета собраны · ходов: ${a.history.length}`);
+ if(finished)message(`Ходов: ${a.history.length} · рекорд: ${state.best?.[levelKey(state.current)]?.history.length??a.history.length}`);
 }
-function close(){if(locked)return;dialog.close();block('dialog',false);message(guidance());}
+function close(){if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;dialog.close();block('dialog',false);message(guidance());}
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
  block('dialog',true);content.replaceChildren();
  const header=document.createElement('header');header.className='dialog-header';
@@ -162,17 +169,42 @@ $('hint').onclick=()=>{
   worker.postMessage({board:attempt(state).board,revision,requestId:id});
  }catch{failed();}
 };
-function addTube(){
- if(attempt(state).extra||won(attempt(state).board))return;
- if(commit(expanded(state))){interrupt();hintCache=null;activateGame();message('Добавлена пустая колба · ходы сохранены');}
+async function applyReceipt(receipt:Receipt){
+ const i=levels.findIndex((_,i)=>levelKey(i)===receipt.level);if(i<0||levels[i].colors<=2){await rewarded.ack(receipt.token);return true;}
+ if(!attempt({...state,current:i}).extra&&!commit(grantExtra(state,receipt.level)))return false;
+ await rewarded.ack(receipt.token).catch(()=>{});return true;
 }
+async function watchForTube(){
+ if(rewardBusy)return;const key=levelKey(state.current);if(!offerExtra(state))return;
+ rewardBusy=true;block('reward',true);const button=content.querySelector<HTMLButtonElement>('.dialog-actions .primary');if(button){button.disabled=true;button.textContent=pendingReceipt?'Получаем колбу…':'Загружаем рекламу…';}
+ let granted=false,notice='';
+ try{
+  if(pendingReceipt&&pendingReceipt.level!==key){if(await applyReceipt(pendingReceipt))pendingReceipt=undefined;else throw Error('Save unavailable');}
+  if(!pendingReceipt){const r=await rewarded.request(key);if(r.status==='rewarded'&&r.receipt?.level===key)pendingReceipt=r.receipt;else notice=r.status==='closed'?'Просмотр не завершён. Колба остаётся закрытой.':'Реклама пока недоступна. Попробуй позже.';}
+  if(pendingReceipt){granted=await applyReceipt(pendingReceipt);if(granted)pendingReceipt=undefined;else notice='Награда получена, но колбу не удалось сохранить. Нажми «Получить колбу» — повторный просмотр не нужен.';}
+ }catch{notice='Реклама пока недоступна. Попробуй позже.';}
+ finally{rewardBusy=false;block('reward',false);}
+ if(granted){interrupt();hintCache=null;activateGame();message('Колба открыта · ходы сохранены');}
+ else{const body=content.querySelector('.dialog-body');if(body){let note=body.querySelector<HTMLElement>('.reward-notice');if(!note){note=document.createElement('p');note.className='reward-notice';note.setAttribute('role','status');body.append(note);}note.textContent=notice;}if(button){button.disabled=false;button.textContent=pendingReceipt?'Получить колбу':'Смотреть рекламу';}}
+}
+function askExtra(){
+ if(!offerExtra(state)||won(attempt(state).board))return;
+ modal('Дополнительная колба','Добавит место для переливания. Текущие ходы сохранятся.',[{label:pendingReceipt?'Получить колбу':'Смотреть рекламу',primary:true,action:()=>{void watchForTube();}},{label:'Позже',action:close}]);
+}
+$('extra-tube').onclick=askExtra;
+async function recoverRewards(){
+ try{const receipts=await rewarded.pending();if(!receipts.length)return;block('reward',true);for(const r of receipts){if(!await applyReceipt(r)){pendingReceipt=r;break;}}}
+ catch{/* Offline/native bridge unavailability never blocks playing. */}
+ finally{block('reward',false);}
+}
+
 function help(proven=deadRevision===state.revision){
  const a=attempt(state),buttons:{label:string;action:()=>void;primary?:boolean}[]=[];
- if(!a.extra)buttons.push({label:'Добавить колбу',primary:true,action:addTube});
+ if(offerExtra(state))buttons.push({label:'Добавить колбу',primary:true,action:askExtra});
  if(a.history.length)buttons.push({label:'Отменить ход',primary:a.extra,action:()=>{activateGame();undo();}});
  buttons.push({label:'Заново',action:askRestart});
  modal(proven?'Решения нет':'Если застрял',
-  (proven?'Из этой раскладки цвета уже не собрать. ':'')+(a.extra?'Дополнительная колба уже добавлена. Она останется при перезапуске.':'Одна бесплатная колба. Ходы сохранятся.'),buttons);
+  (proven?'Из этой раскладки цвета уже не собрать. ':'')+(a.extra?'Дополнительная колба уже добавлена. Она останется при перезапуске.':offerExtra(state)?'Дополнительную колбу можно открыть за просмотр рекламы.':'Можно отменить ход или начать уровень заново.'),buttons);
  message(guidance());
 }
 $('rescue').onclick=()=>{audio.ui();help();};
@@ -182,7 +214,7 @@ function menu(){
  levels.forEach((l,i)=>{const b=document.createElement('button'),done=state.completed.includes(l.id),available=i===0||i===state.current||state.completed.includes(levels[i-1].id);
   b.disabled=!available;b.textContent=String(i+1);b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
   b.setAttribute('aria-label',`Уровень ${i+1}${done?', пройден':!available?', закрыт':''}`);
-  const mark=document.createElement('small');mark.textContent=done?'✓':i===state.current?'Сейчас':'';b.append(mark);b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
+  const record=state.best?.[levelKey(i)],earned=record?stars(levelKey(i),record.history.length):done?1:0;const mark=document.createElement('small');mark.className='level-stars';mark.textContent='★'.repeat(earned)+'☆'.repeat(3-earned);mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);if(record){const best=document.createElement('small');best.textContent=`${record.history.length} ходов`;b.append(best);}b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
  });body.append(grid);
  if(!won(attempt(state).board)){const helpButton=document.createElement('button');helpButton.className='help-button';helpButton.textContent='Если застрял';helpButton.onclick=()=>{audio.ui();help();};body.append(helpButton);}
  const note=document.createElement('p');note.className='build-note';note.textContent='Тестовый набор · подсказки без лимита';body.append(note);
@@ -226,3 +258,4 @@ function showReadFailure(){modal('Прогресс недоступен','Не �
  }}]);}
 function showCorrupt(){modal('Сохранение повреждено','Основная и резервная копии не читаются. Начать заново можно только после подтверждения.',[{label:'Начать заново',action:()=>{if(commit(state)){locked=false;close();}}}]);}
 startupIssue();
+if(!locked)void recoverRewards();

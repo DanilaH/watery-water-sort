@@ -1,4 +1,4 @@
-import {startGame,reloadGame,openLevels,resumeGame} from './navigation';
+import {startGame,reloadGame,openLevels,resumeGame,slotCount} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {layout} from '../../src/game/geometry';
@@ -78,7 +78,7 @@ for(const dense of [false,true])test(`queue badge belongs to its source (${dense
  const state=initial();state.current=dense?11:0;state.completed=dense?levels.slice(0,11).map((l:any)=>l.id):[];
  if(dense)await page.setViewportSize({width:320,height:480});
  await open(page,state);
- const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,levels[state.current].initial.length);
+ const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,await slotCount(page));
  const click=async(i:number)=>page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);
  const [first,next]=levels[state.current].witness;
  for(const m of [first,next]){await click(m.from);await click(m.to);}
