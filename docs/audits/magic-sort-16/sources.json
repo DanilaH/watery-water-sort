@@ -1,0 +1,80 @@
+{
+  "sources": [
+    {
+      "filename": "video_2026-10-27_17-20-07.mp4",
+      "sha256": "bee704172b6a64212762e80251736086fdeb44b3e3194c828c79e11fa067c253",
+      "bytes": 141473048,
+      "container_duration": 497.342766,
+      "video_duration": 497.187,
+      "size": [
+        576,
+        1280
+      ],
+      "frames": 12061
+    },
+    {
+      "filename": "video_2026-10-27_17-20-13.mp4",
+      "sha256": "bc6456f3cf50c6d6167a31ef4d288a4b9b9626f61c8038bb367b952ebc0d813a",
+      "bytes": 81226875,
+      "container_duration": 285.512562,
+      "video_duration": 285.446,
+      "size": [
+        576,
+        1280
+      ],
+      "frames": 6919
+    }
+  ],
+  "panels": [
+    {
+      "file": "color.webp",
+      "source": "video_2026-10-27_17-20-07.mp4",
+      "times": [
+        41.5,
+        41.95,
+        42.35,
+        42.8
+      ]
+    },
+    {
+      "file": "giant.webp",
+      "source": "video_2026-10-27_17-20-07.mp4",
+      "times": [
+        63.65,
+        64.25,
+        64.85,
+        65.45
+      ]
+    },
+    {
+      "file": "parallel.webp",
+      "source": "video_2026-10-27_17-20-07.mp4",
+      "times": [
+        40.0,
+        40.2,
+        40.4,
+        41.9
+      ]
+    },
+    {
+      "file": "coins.webp",
+      "source": "video_2026-10-27_17-20-13.mp4",
+      "times": [
+        217.1,
+        217.6,
+        218.3,
+        218.7
+      ]
+    },
+    {
+      "file": "hard.webp",
+      "source": "video_2026-10-27_17-20-07.mp4",
+      "times": [
+        299.6,
+        304.0,
+        410.0
+      ]
+    }
+  ],
+  "method": "195 overview frames at 1/4 fps; selected events re-examined at 5–10 fps. Timing estimates ±0.1–0.2 s; no touch telemetry or physical haptic measurements. Audio PCM envelopes/spectra inspected, no subjective listening validation."
+}
