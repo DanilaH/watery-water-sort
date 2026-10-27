@@ -1,4 +1,4 @@
-import levels from './levels.json';
+import levels from './levels.json' with {type:'json'};
 import { apply, clone, reverse, validBoard, type Board, type Move } from './rules';
 export { levels };
 export type Attempt = { board: Board; history: Move[]; extra: boolean };

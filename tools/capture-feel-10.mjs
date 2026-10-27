@@ -9,7 +9,7 @@ await page.addInitScript(()=>{
 });
 const cdp=await context.newCDPSession(page);cdp.on('Page.screencastFrame',e=>{const file=path.join(framesDir,String(frames.length).padStart(5,'0')+'.jpg');fs.writeFileSync(file,Buffer.from(e.data,'base64'));frames.push({file,t:e.metadata.timestamp});void cdp.send('Page.screencastFrameAck',{sessionId:e.sessionId}).catch(()=>{});});
 await cdp.send('Page.startScreencast',{format:'jpeg',quality:90,maxWidth:390,maxHeight:844,everyNthFrame:1});
-await page.goto(process.argv[2]??'http://127.0.0.1:4175');await page.locator('canvas').waitFor();await page.waitForTimeout(350);
+await page.goto(process.argv[2]??'http://127.0.0.1:4175');if(await page.locator('#home').isVisible())await page.locator('#home-play').click();await page.locator('canvas').waitFor();await page.waitForTimeout(350);
 const box=await page.locator('#board').boundingBox();await page.mouse.click(box.x+1,box.y+1);await page.waitForTimeout(180);
 async function tap(i,count=4){const b=await page.locator('#board').boundingBox(),p=layout(b.width,b.height,count)[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
 await tap(1);await page.waitForTimeout(200);await tap(3);await page.waitForTimeout(145);await page.screenshot({path:out+'/stream.png'});await page.waitForTimeout(450);

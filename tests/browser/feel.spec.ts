@@ -1,3 +1,4 @@
+import {startGame,reloadGame,openLevels,resumeGame} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {layout} from '../../src/game/geometry';
@@ -5,7 +6,7 @@ const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import
 const points=new WeakMap<Page,{x:number;y:number}[]>();
 async function open(page:Page,fast=false){
  await page.addInitScript(fast=>{if(sessionStorage.feel10)return;sessionStorage.feel10='1';localStorage.setItem('water-sort-v1',JSON.stringify({schema:1,artVersion:4,current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast,symbols:false,light:false}}));},fast);
- await page.goto('/');await page.locator('canvas').waitFor();await page.waitForTimeout(300);
+ await startGame(page);await page.locator('canvas').waitFor();await page.waitForTimeout(300);
  const b=(await page.locator('#board').boundingBox())!;points.set(page,layout(b.width,b.height,4).map(p=>({x:b.x+p.x,y:b.y+p.y+p.h/2})));
  await page.evaluate(async()=>{(window as any).hadQueue=false;new MutationObserver(()=>{if(document.getElementById('status')!.textContent!.includes('Следующий ход выбран'))(window as any).hadQueue=true;}).observe(document.getElementById('status')!,{subtree:true,childList:true,characterData:true});const p='/src/audio/sound.ts',m=await import(p);(window as any).cues=[];for(const key of ['tap','accept','pour','land','finish','stop']){const f=m.Sound.prototype[key];m.Sound.prototype[key]=function(...args:any[]){(window as any).cues.push({key,args,time:performance.now()});return f.apply(this,args);};}});
 }

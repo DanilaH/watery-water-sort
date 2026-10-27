@@ -1,3 +1,4 @@
+import {startGame,reloadGame,openLevels,resumeGame} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
@@ -11,11 +12,11 @@ import {moves} from '../../src/core/rules';
 const dead=JSON.parse(readFileSync(new URL('../../docs/audits/review-05/deadend-save.json',import.meta.url),'utf8')) as Save;
 async function open(page:Page,s:Save=fresh()){
  await page.addInitScript(s=>{if(sessionStorage.seed09)return;localStorage.setItem('water-sort-v1',JSON.stringify(s));sessionStorage.seed09='1';},s);
- await page.goto('/');await page.locator('canvas').waitFor();await page.waitForTimeout(300);
+ await startGame(page);await page.locator('canvas').waitFor();await page.waitForTimeout(300);
 }
 async function saved(page:Page):Promise<Save>{return page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
 async function tap(page:Page,i:number){const s=await saved(page),b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,attempt(s).board.length)[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
-async function help(page:Page){await page.locator('#menu').click();await page.getByRole('button',{name:'Если застрял',exact:true}).click();}
+async function help(page:Page){await openLevels(page);await page.getByRole('button',{name:'Если застрял',exact:true}).click();}
 for(const failure of ['constructor','postMessage','async'])test(`hint recovers from ${failure} failure and retries`,async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await open(page);
  await page.evaluate(failure=>{const Original=window.Worker;(window as any).restoreWorker=()=>window.Worker=Original;
@@ -41,10 +42,10 @@ test('extra tube preserves history and survives undo, restart, reload and level 
  const seeded=structuredClone(dead);seeded.completed=levels.slice(0,6).map((l:any)=>l.id);await open(page,seeded);await page.locator('#rescue').click();await page.getByRole('button',{name:'Добавить колбу',exact:true}).click();let s=await saved(page);
  expect(attempt(s).extra).toBe(true);expect(attempt(s).board.slice(0,-1)).toEqual(attempt(dead).board);expect(attempt(s).history).toEqual(attempt(dead).history);
  const intoExtra=moves(attempt(s).board).find(m=>m.to===7)!;await tap(page,intoExtra.from);await tap(page,7);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(8);
- await page.reload();await page.locator('canvas').waitFor();await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).board).toEqual(attempt(s).board);await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();s=await saved(page);expect(attempt(s).extra).toBe(true);expect(attempt(s).board).toHaveLength(8);expect(attempt(s).history).toHaveLength(6);
+ await reloadGame(page);await page.locator('canvas').waitFor();await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).board).toEqual(attempt(s).board);await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();s=await saved(page);expect(attempt(s).extra).toBe(true);expect(attempt(s).board).toHaveLength(8);expect(attempt(s).history).toHaveLength(6);
  await page.locator('#restart').click();await page.getByRole('button',{name:'Начать заново',exact:true}).click();s=await saved(page);expect(attempt(s).board).toEqual([...levels[6].initial,[]]);expect(attempt(s).history).toHaveLength(0);
  await help(page);await expect(page.getByRole('button',{name:'Добавить колбу',exact:true})).toHaveCount(0);await expect(page.locator('.dialog-body')).toContainText('уже добавлена');await page.getByRole('button',{name:'Закрыть',exact:true}).click();
- await page.locator('#menu').click();await page.locator('.levels button').nth(0).click();expect(attempt(await saved(page)).extra).toBe(false);await page.locator('#menu').click();await page.locator('.levels button').nth(6).click();expect(attempt(await saved(page)).extra).toBe(true);
+ await openLevels(page);await page.locator('.levels button').nth(0).click();expect(attempt(await saved(page)).extra).toBe(false);await openLevels(page);await page.locator('.levels button').nth(6).click();expect(attempt(await saved(page)).extra).toBe(true);
 });
 test('failed extra-tube save keeps the old board and offers retry',async({page})=>{
  await open(page,dead);await page.locator('#rescue').click();const original=await saved(page);
@@ -57,7 +58,7 @@ test('proven dead end with legal moves offers help, then hints work with an extr
 });
 test('help supports undo and restart confirmation',async({page})=>{
  await open(page,dead);await page.locator('#rescue').click();await page.getByRole('button',{name:'Отменить ход',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(6);
- await help(page);await page.locator('dialog').getByRole('button',{name:'Заново',exact:true}).click();await expect(page.getByRole('heading',{name:'Начать заново?'})).toBeVisible();await page.getByRole('button',{name:'Продолжить',exact:true}).click();expect(attempt(await saved(page)).history).toHaveLength(6);
+ await help(page);await page.locator('dialog').getByRole('button',{name:'Заново',exact:true}).click();await expect(page.getByRole('heading',{name:'Начать заново?'})).toBeVisible();await page.getByRole('button',{name:'Продолжить игру',exact:true}).click();expect(attempt(await saved(page)).history).toHaveLength(6);
 });
 for(const count of [10,11])test(`landscape gives ${count} tubes more height with exclusive 48px targets`,async({page})=>{
  const s=fresh();s.current=11;if(count===11){s.attempts[levelKey(11)]={board:[...levels[11].initial,[]],history:[],extra:true};}await page.setViewportSize({width:568,height:320});await open(page,s);

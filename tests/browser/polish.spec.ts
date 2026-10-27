@@ -1,9 +1,10 @@
+import {startGame,reloadGame,openLevels,resumeGame} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {layout} from '../../src/game/geometry';
 const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
 const initial=(current=0)=>({schema:1,current,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false}});
-async function start(page:Page,index=0){await page.goto('/');await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),initial(index));await page.reload();await expect(page.locator('canvas')).toBeVisible();await page.waitForTimeout(120);}
+async function start(page:Page,index=0){await startGame(page);await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),initial(index));await reloadGame(page);await expect(page.locator('canvas')).toBeVisible();await page.waitForTimeout(120);}
 async function tap(page:Page,i:number,index=0){const b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,levels[index].initial.length)[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
 test('retina rendering preserves logical hit testing and real hint selection',async({browser})=>{
  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});const page=await context.newPage();await start(page,2);
@@ -14,7 +15,7 @@ test('retina rendering preserves logical hit testing and real hint selection',as
 test('victory remains actionable after final-move rotation and reload',async({page})=>{
  await page.setViewportSize({width:390,height:844});await start(page);
  for(const m of levels[0].witness.slice(0,2)){await tap(page,m.from);await tap(page,m.to);await page.waitForTimeout(620);}
- const m=levels[0].witness[2];await tap(page,m.from);await tap(page,m.to);await page.setViewportSize({width:844,height:390});await expect(page.locator('#continue')).toBeVisible();await page.reload();await expect(page.locator('#continue')).toBeVisible();await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 2');
+ const m=levels[0].witness[2];await tap(page,m.from);await tap(page,m.to);await page.setViewportSize({width:844,height:390});await expect(page.locator('#continue')).toBeVisible();await reloadGame(page);await expect(page.locator('#continue')).toBeVisible();await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 2');
 });
 test('blank tap cancels the queued move',async({page})=>{
  await page.clock.install({time:new Date('2026-01-01T00:00:00Z')});await start(page);await page.clock.pauseAt(new Date('2026-01-01T00:00:10Z'));await tap(page,1);await tap(page,3);await tap(page,0);await tap(page,2);await expect(page.locator('#status')).toContainText('Следующий ход');
@@ -52,9 +53,9 @@ test('controls retain 48px touch areas in portrait and landscape',async({page})=
 
 
 test('an already earned extra tube survives the layout change and remains usable',async({page})=>{
- await page.setViewportSize({width:390,height:844});await page.goto('/');
+ await page.setViewportSize({width:390,height:844});await startGame(page);
  const state={...initial(),attempts:{[`${levels[0].id}@${levels[0].version}`]:{board:[...levels[0].initial,[]],history:[],extra:true}}};
- await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),state);await page.reload();await page.locator('canvas').waitFor();await page.waitForTimeout(150);
+ await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),state);await reloadGame(page);await page.locator('canvas').waitFor();await page.waitForTimeout(150);
  const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,5);
  for(const i of [0,4]){const p=ps[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
  await expect(page.locator('#moves')).toHaveText('Ходов: 1');
