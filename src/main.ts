@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { App } from '@capacitor/app';
-import { Capacitor, registerPlugin } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core';
 import './style.css';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
@@ -11,9 +11,16 @@ import {stars,targets} from './core/ratings';
 import {Rewarded,type Receipt} from './platform/rewarded';
 import {THEMES,themeFor} from './core/themes';
 import type { Result } from './core/solver';
-const haptics=registerPlugin<{impact(options:{strong:boolean}):Promise<void>}>('FeelHaptics');
+import {TouchFeedback,type Touch} from './platform/haptics';
+import {StarReward} from './game/StarReward';
+import {totalStars} from './core/progress';
+import {isHard} from './core/difficulty';
+const touch=new TouchFeedback();
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
 const dialog=$<HTMLDialogElement>('dialog'),content=$('dialog-content'),audio=new Sound(),store=new SaveStore(()=>localStorage);
+const reward=new StarReward($('earned-stars'),[$('star-total'),$('home-star-total')],index=>{audio.collect(index);haptic('collect');});
+let pendingStars:{before:number;delta:number;earned:number;total:number}|undefined;
 const loaded=store.load();let state=loaded.state,locked=loaded.corrupt||loaded.unavailable;
 audio.setEnabled(state.settings.sound);if(state.settings.sound)void audio.load();
 let recoveryNotice=loaded.recovered?'Откат к резервной копии':'';
@@ -28,7 +35,7 @@ const blockers=new Set<string>();
 let atHome=true,rewardBusy=false;
 const rewarded=new Rewarded();let pendingReceipt:Receipt|undefined;
 const hasStarted=()=>Object.keys(state.attempts).length>0||state.completed.length>0;
-function haptic(strong=false){if(Capacitor.isNativePlatform()&&state.settings.haptics!==false)void haptics.impact({strong}).catch(()=>{});}
+function haptic(event:Touch='select'){touch.enabled=state.settings.haptics!==false;touch.blocked=event==='ui'?[...blockers].some(b=>b!=='home'&&b!=='dialog'):blockers.size>0;touch.play(event);}
 function message(text:string,important=false){$('status').textContent=important?text:recoveryNotice||text;}
 function guidance(){
  if(won(attempt(state).board))return 'Все цвета собраны';
@@ -43,7 +50,7 @@ function guidance(){
 }
 function cancelSearch(){worker?.terminate();worker=undefined;requestId++;searching=false;}
 function clearIntent(){queued=null;scene.queuedMove=null;scene.selected=null;scene.hintMove=null;}
-function interrupt(){scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
+function interrupt(){reward.cancel();pendingStars=undefined;scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
 function block(reason:string,on:boolean){if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();}
 function commit(next:Save){try{store.write(next);state=next;recoveryNotice='';$('home-error').hidden=true;return true;}catch{paint();const error='Не удалось сохранить. Изменение не принято — попробуй ещё раз.';message(error,true);if(atHome&&!dialog.open){$('home-error').textContent=error;$('home-error').hidden=false;}if(dialog.open){const body=content.querySelector('.dialog-body');let note=body?.querySelector<HTMLElement>('[role=alert]');if(body&&!note){note=document.createElement('p');note.setAttribute('role','alert');body.prepend(note);}if(note)note.textContent=error;if(body)body.scrollTop=0;}return false;}}
 function paint(){
@@ -54,6 +61,9 @@ function paint(){
  $('home-summary').textContent=hasStarted()?`Уровень ${state.current+1} · ходов: ${a.history.length}`:'Собери каждый цвет в свою колбу';
  const theme=themeFor(state.settings);document.body.dataset.theme=theme.id;
  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content=theme.color;
+ scene.reduced=reduced.matches;touch.enabled=state.settings.haptics!==false;reward.setTotal(totalStars(state),pendingStars?.before);
+ $('star-capacity').textContent=`/ ${levels.length*3}`;
+ $('hard-badge').hidden=!isHard(state.current);$('home-challenge').hidden=!isHard(state.current);$('home-play').classList.toggle('hard-level',isHard(state.current));
  scene.slots=displaySlots(state);scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=theme.light;audio.setEnabled(state.settings.sound);
  document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',displaySlots(state)>10);document.body.classList.toggle('light',theme.light);document.body.classList.toggle('finished',finished);
  $('level-title').innerHTML=`<span>Уровень</span> <strong>${state.current+1}</strong>`;$('moves').textContent=`Ходов: ${a.history.length}`;$('progress').textContent=`${levels.length} уровней`;
@@ -63,7 +73,7 @@ function paint(){
  const bottom=Math.max(...scene.positions().map(p=>p.y+p.h));
  $('app').style.setProperty('--result-rise',String(finished?Math.max(0,Math.min(140,$('board').clientHeight-bottom-20)):0));
  const target=targets(levelKey(state.current));$('star-target').hidden=finished;$('star-target').textContent=`★★★ ≤ ${target.three} · ★★ ≤ ${target.two}`;
- $('earned-stars').hidden=!finished;const earned=stars(levelKey(state.current),a.history.length);$('earned-stars').textContent='★'.repeat(earned)+'☆'.repeat(3-earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
+ $('earned-stars').hidden=!finished;const earned=stars(levelKey(state.current),a.history.length);if(!finished||!$('earned-stars').classList.contains('revealing-stars'))$('earned-stars').textContent='★'.repeat(earned)+'☆'.repeat(3-earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
  const extra=$('extra-tube');extra.hidden=atHome||!offerExtra(state)||won(a.board);(extra as HTMLButtonElement).disabled=scene.busy||rewardBusy;
  if(offerExtra(state)){const r=scene.positions().at(-1)!;Object.assign(extra.style,{left:`${r.x-r.hitW/2}px`,top:`${r.y+r.h/2-r.hitH/2}px`,width:`${r.hitW}px`,height:`${r.hitH}px`});extra.style.setProperty('--vessel-width',r.w+'px');extra.style.setProperty('--vessel-height',r.h+'px');}
  $('continue').hidden=!finished;
@@ -86,7 +96,7 @@ function modal(title:string,description:string,buttons:{label:string;action:()=>
 }
 function activateGame(){
  atHome=false;dialog.close();blockers.delete('dialog');blockers.delete('home');
- audio.block(blockers.size>0);paint();scene.reveal();message(guidance());$('menu').focus({preventScroll:true});
+ audio.block(blockers.size>0);paint();scene.reveal();message(guidance());$('menu').focus({preventScroll:true});$('hard-badge').classList.remove('challenge-enter');if(isHard(state.current)){void $('hard-badge').offsetWidth;$('hard-badge').classList.add('challenge-enter');}
 }
 function resumeGame(){
  if(locked)return;
@@ -107,10 +117,12 @@ function restart(){const n=restarted(state);if(commit(n)){interrupt();hintCache=
 function drainQueue(){if(!queued)return;const q=queued;clearIntent();const m=moveFor(attempt(state).board,q.from,q.to);if(m)accept(m,true);}
 function accept(m:Move,acknowledged=false){
  if(locked||blockers.size)return;
- cancelSearch();const before=attempt(state).board;const next=moved(state,m);
+ cancelSearch();const before=attempt(state).board,beforeStars=totalStars(state);const next=moved(state,m);
  if(won(attempt(next).board)&&!next.completed.includes(levels[next.current].id))next.completed.push(levels[next.current].id);
  if(!commit(next))return;
- hintCache=null;clearIntent();lastMove=m;kind='pour';newColor=!completeTube(before[m.from])&&completeTube(attempt(next).board[m.to]);if(!acknowledged){audio.accept();haptic();}scene.setBoard(attempt(state).board);scene.animate(before,m,state.settings.fast);paint();message('');
+ hintCache=null;clearIntent();lastMove=m;kind='pour';newColor=!completeTube(before[m.from])&&completeTube(attempt(next).board[m.to]);
+ if(won(attempt(next).board))pendingStars={before:beforeStars,total:totalStars(next),delta:totalStars(next)-beforeStars,earned:stars(levelKey(next.current),attempt(next).history.length)};
+ if(!acknowledged){audio.accept();haptic('accept');}scene.setBoard(attempt(state).board);scene.animate(before,m,state.settings.fast);paint();message('');
 }
 scene.onTap=(i)=>{
  if(locked||blockers.size||won(attempt(state).board))return;
@@ -123,7 +135,7 @@ scene.onTap=(i)=>{
  if(scene.selected===i){clearIntent();audio.tap();message(guidance());return;}
  if(scene.selected!==null){const m=moveFor(board,scene.selected,i);
   if(m){
-   if(scene.busy){queued=m;scene.queuedMove=m;scene.hintMove=null;audio.accept();haptic();message(guidance());}
+   if(scene.busy){queued=m;scene.queuedMove=m;scene.hintMove=null;audio.accept();haptic('accept');message(guidance());}
    else accept(m);
    return;
   }
@@ -133,15 +145,23 @@ scene.onTap=(i)=>{
  else{scene.selected=null;scene.reject(i);audio.reject();message('Сначала выбери цветную колбу');}
 };
 scene.onPour=(remainingMs,fill,endFill)=>{if(lastMove&&kind==='pour')audio.pour(remainingMs,lastMove.amount,fill,endFill);};
+scene.onReceive=()=>{
+ if(kind==='undo'||!lastMove||!newColor)return;
+ scene.celebrate(lastMove.to);haptic('color');
+ if(!won(attempt(state).board))audio.finish(false);else audio.fill();
+};
+scene.onSeal=()=>{if(!blockers.size&&!won(attempt(state).board))audio.seal();};
+scene.onFinale=()=>haptic('victory');
 scene.onComplete=()=>{
  const board=attempt(state).board;
  if(kind==='undo'){audio.land();paint();message(guidance());drainQueue();return;}
  if(won(board)){
-  if(lastMove)scene.celebrate(lastMove.to,true);audio.finish(true);haptic(true);paint();return;
+  if(lastMove)scene.celebrate(lastMove.to,true);audio.finish(true);paint();
+  if(pendingStars){const presentation=pendingStars;pendingStars=undefined;reward.run({...presentation,reduced:reduced.matches});}
+  return;
  }
- if(lastMove&&newColor){scene.celebrate(lastMove.to);audio.finish(false,board.filter(completeTube).length-1);haptic(true);}else{audio.land();}
- paint();message(guidance());
- drainQueue();
+ if(!newColor)audio.land();
+ paint();message(guidance());drainQueue();
 };
 function undo(){
  const a=attempt(state),m=a.history.at(-1);if(!m)return;const before=a.board;
@@ -217,7 +237,8 @@ function menu(){
  levels.forEach((l,i)=>{const b=document.createElement('button'),done=state.completed.includes(l.id),available=i===0||i===state.current||state.completed.includes(levels[i-1].id);
   b.disabled=!available;b.textContent=String(i+1);b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
   b.setAttribute('aria-label',`Уровень ${i+1}${done?', пройден':!available?', закрыт':''}`);
-  const record=state.best?.[levelKey(i)],earned=record?stars(levelKey(i),record.history.length):done?1:0;const mark=document.createElement('small');mark.className='level-stars';mark.textContent='★'.repeat(earned)+'☆'.repeat(3-earned);mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);if(record){const best=document.createElement('small');best.textContent=`${record.history.length} ходов`;b.append(best);}b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
+  const record=state.best?.[levelKey(i)],earned=record?stars(levelKey(i),record.history.length):done?1:0;if(isHard(i)){const difficulty=document.createElement('small');difficulty.className='level-hard';difficulty.textContent='Сложный';b.append(difficulty);}
+  const mark=document.createElement('small');mark.className='level-stars';mark.textContent='★'.repeat(earned)+'☆'.repeat(3-earned);mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);if(record){const best=document.createElement('small');best.textContent=`${record.history.length} ходов`;b.append(best);}b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
  });body.append(grid);
  if(!won(attempt(state).board)){const helpButton=document.createElement('button');helpButton.className='help-button';helpButton.textContent='Если застрял';helpButton.onclick=()=>{audio.ui();help();};body.append(helpButton);}
  const note=document.createElement('p');note.className='build-note';note.textContent='Тестовый набор · подсказки без лимита';body.append(note);
@@ -230,7 +251,7 @@ function settings(){
  audio.ui();const body=modal('Настройки','',[{label:'Готово',primary:true,action:close}]);
  for(const [key,label]of Object.entries({sound:'Звуки',haptics:'Вибрация',fast:'Быстрое переливание',symbols:'Метки на цветах'})){
   const row=document.createElement('label');row.className='setting';const text=document.createElement('span');text.textContent=label;const input=document.createElement('input');input.type='checkbox';input.setAttribute('role','switch');input.checked=state.settings[key as keyof typeof state.settings]!==false;
-  input.onchange=()=>{const n=structuredClone(state);n.settings[key as 'sound'|'haptics'|'fast'|'symbols']=input.checked;if(commit(n)){paint();audio.ui();}else input.checked=!input.checked;};row.append(text,input);body.append(row);
+  input.onchange=()=>{const n=structuredClone(state);n.settings[key as 'sound'|'haptics'|'fast'|'symbols']=input.checked;if(commit(n)){paint();audio.ui();haptic('ui');}else input.checked=!input.checked;};row.append(text,input);body.append(row);
  }
  const themes=document.createElement('fieldset');themes.className='theme-picker';const legend=document.createElement('legend');legend.textContent='Оформление';themes.append(legend);
  const choices=document.createElement('div');choices.className='theme-options';
@@ -241,6 +262,8 @@ function settings(){
  themes.append(choices);body.append(themes);selected();
 }
 $('settings').onclick=settings;
+reduced.addEventListener('change',()=>{interrupt();paint();});
+document.addEventListener('click',event=>{const button=(event.target as Element).closest('button');if(button&&!button.disabled)haptic('ui');},{capture:true});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!dialog.open&&!atHome){e.preventDefault();showHome();}});
 dialog.addEventListener('cancel',e=>{e.preventDefault();close();});
 document.addEventListener('visibilitychange',()=>{block('hidden',document.hidden);if(!document.hidden)message(guidance());});

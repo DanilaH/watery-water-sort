@@ -1,3 +1,18 @@
+# Current bank — revision 0.16
+
+Completion/victory no longer use the rejected Kenney pluck. `complete.ogg`, `cork.ogg`, `victory.ogg` and new `collect.ogg` are built from the following **Vehicle / Jan Schupke — Tinysized SFX, CC0** originals (source/license link below, reconfirmed 2026-10-28):
+
+- `bottle-glass-cork-01.wav`: actual closure for the seating cork;
+- `bottle-glass-uncork-01.wav`: air release/pop in the victory;
+- `water-vial-fill-01.wav`, `water-drop-03.wav`: filled colour and fountain splash;
+- `coinflip-01.wav`: short physical arrival tick for each collected star.
+
+Reproduce with `python tools/build-material-audio.py /path/to/sfx-cc0`. The script selects recording segments, filters rumble/harsh highs, layers water/air with short recorded reflections, limits/fades and encodes Vorbis. It uses no generated oscillators/noise or pitched pluck chord. `public/audio/material-report.json` records SHA-256 of the original WAVs and final files, and **decoded** peak/RMS/duration. Historical `mix-report.json` describes unchanged older edits, not the replacement files. Hint still uses the previous sampled pluck. Four-voice ownership/mute/background behavior is preserved. Subjective listening on a real phone remains unverified.
+
+The source archive is not bundled; the generator accepts the explicitly named CC0 originals from the documented download. No Magic Sort audio was extracted or reused.
+
+---
+
 # Audio sources — revision 0.2
 
 The rejected 0.1 oscillator/noise synthesizer has been removed. Runtime audio uses bundled Vorbis samples. No external audio service or runtime downloads are required. Muting/background interruption stops all owned voices. Maximum four simultaneous voices.

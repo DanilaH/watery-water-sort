@@ -52,7 +52,7 @@ export function pourTilt(width:number,height:number,units:number):number{
 }
 export const pourTransfer=(t:number)=>{const u=Math.max(0,Math.min(1,(t-.25)/.48));return u*u*(3-2*u);};
 export function pourTiming(amount:number,fast=false){
- const speed=fast ? .7 : 1,lift=110*speed,flow=(125+40*Math.max(1,Math.min(4,amount)))*speed,back=115*speed;
+ const speed=fast ? .7 : 1,lift=125*speed,flow=(145+42*Math.max(1,Math.min(4,amount)))*speed,back=100*speed;
  return {lift,flow,back,duration:lift+flow+back};
 }
 /** Preserve the geometry's phase boundaries while giving each phase its own real time. */

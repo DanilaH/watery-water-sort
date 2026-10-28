@@ -1,0 +1,44 @@
+{
+  "sampleRate": 44100,
+  "sources": {
+    "bottle-glass-cork-01.wav": "def1357208b9283a570af8130de7a73f522ce12f6ff869d6f3bbc1411420fac9",
+    "bottle-glass-uncork-01.wav": "af8a6f3fde9764856cbd1dde6749912876764e2c2cb34a5b72f97ee6c476f3b4",
+    "water-vial-fill-01.wav": "6f1b325dcb28e726296185fcd3462b08ed77373559e4f6afd61ac0529e67d6d3",
+    "water-drop-03.wav": "e66ce053a9c8b3a64d26f733310d3c4a62d582124af1c63f9af310bd847dd87b",
+    "coinflip-01.wav": "60c652aca20c60e4fa6efe086f061bc52ddc66d7728dd23d9b625b7e6485a96c"
+  },
+  "assets": [
+    {
+      "name": "cork",
+      "duration": 0.271,
+      "peak": 0.7075,
+      "rms": 0.0661,
+      "bytes": 7112,
+      "sha256": "a39d8974aeb0b5329692ce576d36c1894c3e3bf382732b84ac81cda6f31ad13d"
+    },
+    {
+      "name": "complete",
+      "duration": 0.357,
+      "peak": 0.6567,
+      "rms": 0.0774,
+      "bytes": 7081,
+      "sha256": "b3e100ec12a14c041d634854a4b3509f0d645dba777d93ffb9a4d5a95cdf4a68"
+    },
+    {
+      "name": "victory",
+      "duration": 0.897,
+      "peak": 0.5942,
+      "rms": 0.101,
+      "bytes": 9963,
+      "sha256": "7e22b78ed658dd5d007f7d58dabbc88c69370aa5acffd3eabbafb37cd4d322ba"
+    },
+    {
+      "name": "collect",
+      "duration": 0.187,
+      "peak": 0.7292,
+      "rms": 0.0512,
+      "bytes": 5794,
+      "sha256": "a99bbf77dbd37e6bf4389bf9de8bb463699d0a963e06fa40b936625453c8dca3"
+    }
+  ]
+}

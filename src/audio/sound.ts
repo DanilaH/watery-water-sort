@@ -1,5 +1,5 @@
 // Sample-based foley. Source licenses and processing are recorded in docs/AUDIO_CREDITS.md.
-const FILES=['select','accept','cork','land','reject','hint','complete','victory','pour-1','pour-2','pour-3'] as const;
+const FILES=['select','accept','cork','land','reject','hint','complete','victory','pour-1','pour-2','pour-3','collect'] as const;
 type Cue=typeof FILES[number];
 export class Sound {
   private context?:AudioContext;
@@ -50,7 +50,10 @@ export class Sound {
   land(){this.play('land',.24,0,1,115);}
   reject(){this.play('reject',.25,0);}
   hint(){this.play('hint',.5,1);}
-  finish(won:boolean,sequence=0){this.play('cork',won?.36:.30,2,1,105);this.play(won?'victory':'complete',won?.75:.6,3,won?1:2**(Math.min(3,sequence*.6)/12));}
+  finish(won:boolean){this.play(won?'victory':'complete',won?.58:.42,3);}
+  fill(){this.play('complete',.3,2,1,180);}
+  seal(){this.play('cork',.56,2);}
+  collect(index=0){this.play('collect',.32,1,1+Math.min(2,index)*.025);}
   ui(){this.play('select',.25,0,1.12);}
   undo(){this.play('land',.45,1,.85);}
   pour(durationMs:number,amount:number,fill=0,endFill=Math.min(1,fill+amount/4)){if(durationMs<=12)return;this.variant=(this.variant+1+Math.floor(Math.random()*2))%3;this.play(`pour-${this.variant+1}` as Cue,.80+amount*.025,2,.985+Math.random()*.03,durationMs,{from:fill,to:endFill});}

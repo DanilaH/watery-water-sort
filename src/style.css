@@ -110,3 +110,30 @@ body dialog button:focus-visible{outline-color:#285bbc}body dialog input:focus-v
 @media(orientation:landscape) and (max-height:550px){body dialog{width:min(90vw,570px)}}
 @media(orientation:landscape) and (max-height:350px){body .dialog-header{padding:6px 16px 2px;margin-bottom:4px}body .dialog-body{padding-bottom:8px}body .dialog-actions{padding:6px 18px 10px;gap:6px}body .dialog-actions button{min-height:48px}}
 @media(max-width:350px){.theme-options button{position:relative;font-size:12px;padding:8px;gap:6px}.theme-options button:before{width:20px;height:20px}.theme-options button[aria-pressed=true]:after{position:absolute;right:4px;top:3px;font-size:11px}}
+
+/* Reward rhythm: a permanent destination and separate, cancellable arrival objects. */
+#star-bank,.home-star-bank{display:flex;align-items:center;gap:5px;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--text)}
+#star-bank{font-size:15px;min-width:48px;justify-content:flex-end;transform-origin:right center}
+#star-bank>span,.home-star-bank>span{color:#ffd35d;filter:drop-shadow(0 1px 0 #80501c66);font-size:21px}
+.home-star-bank{font-size:19px;margin-bottom:12px}.home-star-bank small{font-size:12px;color:var(--muted)}
+body.light #star-bank>span,body.light .home-star-bank>span{color:#b66b00;filter:none}
+#earned-stars{display:inline-flex;gap:2px}.result-star{display:inline-block}.revealing-stars .result-star{opacity:0}.revealing-stars .result-star.lit{opacity:1}
+.star-flight{position:fixed;left:0;top:0;z-index:8;pointer-events:none;color:#ffd35d;font:800 30px/1 Rubik,sans-serif;text-shadow:0 2px 0 #9a6024;filter:drop-shadow(0 0 8px #ffdb6599);will-change:transform}
+#hard-badge{display:block;margin-top:5px;padding:3px 9px;border-radius:7px;font-size:10px;line-height:1;font-weight:750;color:#ffe8ff;background:#9e329b;box-shadow:inset 0 1px 0 #ffb8e666}
+#hard-badge[hidden],#home-challenge[hidden]{display:none}
+body #home-challenge{order:5;margin:16px 0 0;color:#ffd1f8;font-size:13px;font-weight:650}
+body .home-actions #home-play.hard-level{background:#be5dca;color:#fff;--accent-edge:#7d378a}
+body.light #home-challenge{color:#893194}
+body .levels button .level-hard{font-size:9px;color:#94338d;font-weight:750;margin-top:4px}
+body .levels button[aria-current] .level-hard{color:#ffe0fa}
+@media(max-width:350px){body .result-heading{gap:5px;flex-wrap:wrap}body #earned-stars{font-size:19px}body #star-bank{font-size:13px}}
+@media(orientation:portrait) and (max-height:600px){.home-star-bank{margin-bottom:5px;font-size:15px}.home-star-bank>span{font-size:17px}body .home-content{position:relative}body #home-challenge{font-size:11px;margin-top:10px}}
+@media(orientation:landscape) and (max-height:550px){.home-star-bank{grid-column:1;grid-row:1;justify-self:start;align-self:start;font-size:14px;margin:0;z-index:1}.home-star-bank>span{font-size:18px}body #home-challenge{grid-column:2;grid-row:4;margin-top:10px;font-size:11px}#hard-badge{font-size:8px;padding:3px 4px;max-width:70px;line-height:1.2}body .levels button:has(.level-hard){min-height:84px}}
+@media(prefers-reduced-motion:reduce){.star-flight{filter:none}}
+/* The result stays inside its row even with the final-bank title and long record. */
+@media(max-width:350px),(orientation:landscape) and (max-height:550px){body.finished .result-heading{display:block}body.finished #finish-title{font-size:18px;line-height:20px;white-space:nowrap}body.finished #earned-stars{font-size:18px;line-height:21px}body.finished #status{font-size:10px;line-height:13px}}
+.challenge-enter{animation:challenge-enter 700ms cubic-bezier(.2,.8,.2,1) both}
+@keyframes challenge-enter{0%{transform:scale(.75);opacity:0}45%{transform:scale(1.13);opacity:1}100%{transform:scale(1);opacity:1}}
+@media(prefers-reduced-motion:reduce){.challenge-enter{animation:none}}
+body.finished .result-heading{display:block}body.finished #earned-stars{font-size:30px;line-height:1.2;margin-top:4px;gap:5px}body.finished #feedback{height:90px;min-height:0;align-self:end}body.finished #finish-title{white-space:nowrap}
+@media(max-width:350px),(orientation:landscape) and (max-height:550px){body.finished #feedback{height:60px}body.finished #earned-stars{font-size:18px;line-height:21px;margin-top:0;gap:2px}}

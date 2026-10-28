@@ -19,10 +19,10 @@ test('hint, symbols, fast mode, themes and layouts',async({page})=>{
 test('all revised foley assets decode and stay within audio headroom',async({page})=>{
  await startGame(page);
  const results=await page.evaluate(async()=>{
-  const context=new AudioContext();const names=['select','accept','cork','land','reject','hint','complete','victory','pour-1','pour-2','pour-3'];
+  const context=new AudioContext();const names=['select','accept','cork','land','reject','hint','complete','victory','pour-1','pour-2','pour-3','collect'];
   const results=[];
   for(const name of names){const response=await fetch('/audio/'+name+'.ogg');const buffer=await context.decodeAudioData(await response.arrayBuffer());const samples=buffer.getChannelData(0);let peak=0,energy=0;for(const v of samples){peak=Math.max(peak,Math.abs(v));energy+=v*v;}results.push({name,peak,rms:Math.sqrt(energy/samples.length),duration:buffer.duration});}
   await context.close();return results;
  });
- expect(results).toHaveLength(11);for(const cue of results){expect(cue.peak).toBeLessThan(.85);expect(cue.rms).toBeGreaterThan(.025);expect(cue.duration).toBeLessThan(1);}
+ expect(results).toHaveLength(12);for(const cue of results){expect(cue.peak).toBeLessThan(.85);expect(cue.rms).toBeGreaterThan(.025);expect(cue.duration).toBeLessThan(1);}
 });

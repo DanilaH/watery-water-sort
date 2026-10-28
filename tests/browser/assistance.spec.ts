@@ -2,7 +2,7 @@ import {startGame,reloadGame,openLevels,resumeGame,slotCount,mockReward,unlockRe
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {layout} from '../../src/game/geometry';
+import {layout,pourTiming} from '../../src/game/geometry';
 import type {Save} from '../../src/core/session';
 const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
 const fresh=():Save=>({schema:1,artVersion:4,current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false}});
@@ -35,7 +35,7 @@ for(const stall of [800,220])test(`pour cue respects remaining water phase after
  },stall);
  await tap(page,0);await tap(page,2);await expect(page.locator('#hint')).toBeEnabled();
  const cues=await page.evaluate(()=>(window as any).cues),pours=cues.filter((c:any)=>c.key==='pour');expect(cues.filter((c:any)=>c.key==='land')).toHaveLength(1);
- if(stall===800)expect(pours).toHaveLength(0);else{expect(pours).toHaveLength(1);expect(pours[0].args[0]).toBeGreaterThan(0);expect(pours[0].args[0]).toBeLessThan(112);}
+ if(stall===800)expect(pours).toHaveLength(0);else{expect(pours).toHaveLength(1);expect(pours[0].args[0]).toBeGreaterThan(0);expect(pours[0].args[0]).toBeLessThanOrEqual(pourTiming(2).lift+pourTiming(2).flow-stall+1);}
  await expect(page.locator('#moves')).toHaveText('Ходов: 1');expect(errors).toEqual([]);
 });
 test('extra tube preserves history and survives undo, restart, reload and level switching',async({page})=>{
