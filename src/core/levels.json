@@ -1972,5 +1972,481 @@
       }
     ],
     "seed": 4246659742
+  },
+  {
+    "id": "water-013",
+    "version": 1,
+    "colors": 2,
+    "seed": 17013,
+    "goal": {
+      "index": 0,
+      "color": 0,
+      "capacity": 8
+    },
+    "initial": [
+      [],
+      [
+        0,
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      []
+    ],
+    "witness": [
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 4,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 2,
+        "color": 0
+      }
+    ]
+  },
+  {
+    "id": "water-014",
+    "version": 1,
+    "colors": 3,
+    "seed": 17014,
+    "goal": {
+      "index": 0,
+      "color": 2,
+      "capacity": 8
+    },
+    "initial": [
+      [],
+      [
+        2,
+        0,
+        2,
+        1
+      ],
+      [
+        0,
+        2,
+        1,
+        2
+      ],
+      [
+        1,
+        0,
+        2,
+        2
+      ],
+      [
+        2,
+        1,
+        0,
+        2
+      ],
+      []
+    ],
+    "witness": [
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 1,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 2,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 4,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      }
+    ]
+  },
+  {
+    "id": "water-015",
+    "version": 1,
+    "colors": 4,
+    "seed": 17015,
+    "goal": {
+      "index": 0,
+      "color": 1,
+      "capacity": 8
+    },
+    "initial": [
+      [],
+      [
+        1,
+        3,
+        0,
+        1
+      ],
+      [
+        2,
+        1,
+        3,
+        0
+      ],
+      [
+        1,
+        2,
+        1,
+        3
+      ],
+      [
+        0,
+        1,
+        2,
+        1
+      ],
+      [
+        3,
+        0,
+        1,
+        2
+      ],
+      []
+    ],
+    "witness": [
+      {
+        "from": 4,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 3,
+        "to": 2,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 2,
+        "color": 3
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 2,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 5,
+        "to": 2,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 5,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 5,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 5,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      }
+    ]
+  },
+  {
+    "id": "water-016",
+    "version": 1,
+    "colors": 4,
+    "seed": 17016,
+    "goal": {
+      "index": 0,
+      "color": 3,
+      "capacity": 8
+    },
+    "initial": [
+      [],
+      [
+        1,
+        3,
+        0,
+        3
+      ],
+      [
+        3,
+        2,
+        1,
+        0
+      ],
+      [
+        2,
+        3,
+        0,
+        3
+      ],
+      [
+        0,
+        1,
+        3,
+        2
+      ],
+      [
+        3,
+        2,
+        3,
+        1
+      ],
+      []
+    ],
+    "witness": [
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 5,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 5,
+        "to": 0,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 4,
+        "to": 5,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 0,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 4,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 5,
+        "to": 3,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 5,
+        "to": 0,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 1,
+        "color": 3
+      }
+    ]
   }
 ]

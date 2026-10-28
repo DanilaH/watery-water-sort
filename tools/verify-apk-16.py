@@ -1,5 +1,6 @@
-"""Validate the 0.16 RSA-signed public preview, not arbitrary Android packages.
-Usage: python tools/verify-apk-16.py APK REPO_ROOT
+"""Validate the RSA-signed public preview, not arbitrary Android packages.
+Usage: python tools/verify-apk-16.py APK REPO_ROOT [VERSION_CODE VERSION_NAME]
+Defaults retain the original 0.16 artifact check.
 Requires cryptography. Checks AOSP v2 signature/protected digests, matching public
 preview certificate, one-byte tamper rejection, ZIP CRC, manifest and dist bytes.
 This is not a replacement for platform install/SDK/phone testing.
@@ -88,7 +89,8 @@ except Exception:tamper_rejected=True
 else:raise ValueError('Tampered content was accepted')
 with zipfile.ZipFile(apk) as z:
  assert z.testzip() is None
- m=manifest(z.read('AndroidManifest.xml'));assert m['package']=='com.danilah.waterywatersort.preview3';assert m['versionCode']==16;assert m['versionName']=='0.16.0-feel'
+ expected_code=int(sys.argv[3]) if len(sys.argv)>3 else 16;expected_name=sys.argv[4] if len(sys.argv)>4 else '0.16.0-feel'
+ m=manifest(z.read('AndroidManifest.xml'));assert m['package']=='com.danilah.waterywatersort.preview3';assert m['versionCode']==expected_code;assert m['versionName']==expected_name
  files=[]
  for p in (repo/'dist').rglob('*'):
   if p.is_file():

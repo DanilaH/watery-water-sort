@@ -137,3 +137,10 @@ body .levels button[aria-current] .level-hard{color:#ffe0fa}
 @media(prefers-reduced-motion:reduce){.challenge-enter{animation:none}}
 body.finished .result-heading{display:block}body.finished #earned-stars{font-size:30px;line-height:1.2;margin-top:4px;gap:5px}body.finished #feedback{height:90px;min-height:0;align-self:end}body.finished #finish-title{white-space:nowrap}
 @media(max-width:350px),(orientation:landscape) and (max-height:550px){body.finished #feedback{height:60px}body.finished #earned-stars{font-size:18px;line-height:21px;margin-top:0;gap:2px}}
+body .levels button .level-mechanic{font-size:9px;font-weight:650;color:#426b9f}
+body .levels button[aria-current] .level-mechanic{color:#e4edff}
+body.goal-board.finished #feedback{height:60px;transform:none}
+body.goal-board.finished #finish-title{font-size:21px;line-height:22px}
+body.goal-board.finished #earned-stars{font-size:22px;line-height:24px;margin-top:0}
+body.goal-board.finished #status{font-size:11px;line-height:14px}
+@media(max-width:350px),(orientation:landscape) and (max-height:550px){body.goal-board.finished #finish-title{font-size:18px;line-height:20px}body.goal-board.finished #earned-stars{font-size:18px;line-height:21px}body.goal-board.finished #status{font-size:10px;line-height:13px}}

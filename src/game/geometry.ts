@@ -13,11 +13,11 @@ export function surface(poly:Point[],fraction:number):number{
   for(let i=0;i<18;i++){const mid=(lo+hi)/2;if(area(clip(poly,mid,true))>target)lo=mid;else hi=mid;}return (lo+hi)/2;
 }
 export type TubePose={x:number;y:number;w:number;h:number;hitW:number;hitH:number};
-export function layout(width:number,height:number,count:number):TubePose[]{
+export function layout(width:number,height:number,count:number,touchGap?:number):TubePose[]{
   const padding=8,headroom=Math.min(62,Math.max(24,height*.09));
   const usableW=Math.max(1,width-padding*2),usableH=Math.max(1,height-headroom-padding*2);
   let best={cols:2,rows:Math.ceil(count/2),pitchX:0,pitchY:0,w:0,h:0,score:-1};
-  const hitGap=width<340&&count>10?2:6;
+  const hitGap=touchGap??(width<340&&count>10?2:6);
   const maxCols=Math.min(6,count,Math.max(2,Math.floor(usableW/(48+hitGap))));
   for(let cols=2;cols<=maxCols;cols++){
     const rows=Math.ceil(count/cols),pitchX=usableW/cols,pitchY=usableH/rows;
@@ -91,4 +91,16 @@ export function pourPose(origin:TubePose,dest:TubePose,t:number,width:number,hei
  const r={...origin,x:origin.x+(target.x-origin.x)*travel,y:origin.y+lifted+(target.y-origin.y-lifted)*travel-Math.sin(Math.PI*travel)*Math.min(18,origin.h*.13)};
  const b=bounds(r,angle);r.x+=Math.max(0,5-b.left)-Math.max(0,b.right-width+5);r.y+=Math.max(0,5-b.top)-Math.max(0,b.bottom-height+5);
  return {...r,angle,tipX:plan.dir*origin.w/2};
+}
+
+/** A permanent goal column keeps the tall receiver and every ordinary touch target separate. */
+export function goalLayout(width:number,height:number,count:number,goalIndex:number):TubePose[]{
+ const column=width<340?64:Math.max(64,Math.min(110,width*.24)),gap=4,head=Math.min(52,Math.max(24,height*.09));
+ const normal=layout(width-column-gap,height,count-1,2).map(r=>{
+  const h=Math.min(r.h,156,Math.max(48,(height-48)*.57)),w=Math.min(r.w,h*.285);
+  return {...r,x:r.x+column+gap,y:r.y+(r.h-h)/2,w,h,hitH:Math.min(r.hitH,Math.max(48,h+20))};
+ });
+ const available=Math.max(48,height-head-34),h=Math.min(320,available,Math.max((normal[0]?.h??70)*1.85,available*.9));
+ const goal={x:column/2+2,y:head+(available-h)/2,w:Math.min(column-16,68,h*.26),h,hitW:column-8,hitH:Math.max(48,h+18)};
+ const poses:TubePose[]=[];let n=0;for(let i=0;i<count;i++)poses.push(i===goalIndex?goal:normal[n++]);return poses;
 }

@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs';
+import { writeFileSync,readFileSync } from 'node:fs';
 import { solve } from '../src/core/solver';
 import { apply, won, type Board } from '../src/core/rules';
 let seed = 81347;
@@ -20,5 +20,6 @@ for (let i=0;i<12;i++) {
     levels.push({id:'water-'+String(i+1).padStart(3,'0'),version:1,colors,initial,witness:result.path,seed:usedSeed});break;
   }
 }
-writeFileSync('src/core/levels.json',JSON.stringify(levels,null,2)+'\n');
+const authored=JSON.parse(readFileSync('src/core/levels.json','utf8')).filter((l:{goal?:unknown})=>l.goal);
+writeFileSync('src/core/levels.json',JSON.stringify([...levels,...authored],null,2)+'\n');
 console.log(`Generated ${levels.length} witnessed prototype levels. Human difficulty calibration pending.`);
