@@ -1,0 +1,55 @@
+{
+  "results": [
+    {
+      "cpuThrottle": 1,
+      "phases": {
+        "pour": {
+          "samples": 17,
+          "p50": 1.199999999254942,
+          "p95": 2.700000001117587,
+          "max": 2.700000001117587
+        },
+        "victory": {
+          "samples": 41,
+          "p50": 0.8999999985098839,
+          "p95": 1.700000001117587,
+          "max": 2.300000000745058
+        },
+        "idle": {
+          "samples": 56,
+          "p50": 0,
+          "p95": 0.10000000149011612,
+          "max": 0.10000000149011612
+        }
+      },
+      "maxParticles": 46,
+      "maxBursts": 5
+    },
+    {
+      "cpuThrottle": 4,
+      "phases": {
+        "pour": {
+          "samples": 11,
+          "p50": 5,
+          "p95": 12.199999999254942,
+          "max": 12.199999999254942
+        },
+        "victory": {
+          "samples": 25,
+          "p50": 4.900000000372529,
+          "p95": 9.299999998882413,
+          "max": 14.599999999627471
+        },
+        "idle": {
+          "samples": 35,
+          "p50": 0,
+          "p95": 0.40000000037252903,
+          "max": 0.599999999627471
+        }
+      },
+      "maxParticles": 46,
+      "maxBursts": 5
+    }
+  ],
+  "note": "Headless Chromium dev server; DPR 2; last delivery into an eight-unit goal and victory. CPU update only; no claim about real Android FPS, rendering, speakers or haptics."
+}

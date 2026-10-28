@@ -1,0 +1,80 @@
+{
+  "apk": "perelevy-0.17.apk",
+  "bytes": 9925339,
+  "sha256": "2ba2ae0f911670f45b294628134575a5d098f862db9421f7b2a6b541ec341cf2",
+  "manifest": {
+    "versionCode": 17,
+    "versionName": "0.17.0-giant-goal",
+    "compileSdkVersion": 36,
+    "compileSdkVersionCodename": "16",
+    "package": "com.danilah.waterywatersort.preview3",
+    "platformBuildVersionCode": 36,
+    "platformBuildVersionName": 16
+  },
+  "v2Signatures": [
+    {
+      "algorithm": "0x103",
+      "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+    }
+  ],
+  "publicPreviewCertificateMatches": true,
+  "tamperedProtectedByteRejected": true,
+  "distFilesMatched": [
+    "index.html",
+    "art/night-shore.svg",
+    "audio/pour-1.ogg",
+    "audio/mix-report.json",
+    "audio/select.ogg",
+    "audio/hint.ogg",
+    "audio/complete.ogg",
+    "audio/accept.ogg",
+    "audio/pour-3.ogg",
+    "audio/victory.ogg",
+    "audio/material-report.json",
+    "audio/reject.ogg",
+    "audio/pour-2.ogg",
+    "audio/land.ogg",
+    "audio/cork.ogg",
+    "audio/collect.ogg",
+    "assets/index-CNZsPvkT.css",
+    "assets/index-Bi6AtkIo.js",
+    "assets/phaser-DFK5Ua9d.js",
+    "assets/web-D0Ltqiwh.js",
+    "assets/solver.worker-BP69J42O.js",
+    "fonts/rubik.woff",
+    "fonts/OFL-Rubik.txt"
+  ],
+  "gameCommit": "9e961b2799be16aca77df562246213624fe56514",
+  "releaseCommit": "e4f82ed08b00782883270cd0f71e715770f610ee",
+  "ciRun": 40656586486,
+  "expectedVersionCode": 17,
+  "expectedVersionName": "0.17.0-giant-goal",
+  "newLevels": [
+    13,
+    14,
+    15,
+    16
+  ],
+  "threeStarTargets": [
+    4,
+    13,
+    17,
+    17
+  ],
+  "twoStarTargets": [
+    6,
+    16,
+    21,
+    21
+  ],
+  "ciJob": 122708976551,
+  "artifactId": 12802575383,
+  "artifactZipSha256": "57ea3930ba5088ad6f7e909083cf28e9d6a0306ada925ac61c7ba6dcc578b010",
+  "checks": {
+    "core": 35,
+    "browser": 106,
+    "independentOptimalBoards": 32,
+    "build": "success",
+    "assembleDebug": "success"
+  }
+}
