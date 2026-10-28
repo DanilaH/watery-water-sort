@@ -1,0 +1,103 @@
+{
+  "errors": [],
+  "bank": "3",
+  "checks": [
+    {
+      "viewport": [
+        320,
+        480
+      ],
+      "continue": {
+        "x": 169.421875,
+        "y": 342,
+        "width": 134.578125,
+        "height": 48
+      },
+      "bank": {
+        "x": 256,
+        "y": 63.5,
+        "width": 48,
+        "height": 25
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "continue": {
+        "x": 360.09375,
+        "y": 262,
+        "width": 109.90625,
+        "height": 48
+      },
+      "bank": {
+        "x": 422,
+        "y": 15.5,
+        "width": 48,
+        "height": 25
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "continue": {
+        "x": 239.421875,
+        "y": 647.1849975585938,
+        "width": 134.578125,
+        "height": 48
+      },
+      "bank": {
+        "x": 326,
+        "y": 81.5,
+        "width": 48,
+        "height": 25
+      }
+    }
+  ],
+  "note": "Production build. Real clocks and actual game input. Seeded valid witness replays for dense result captures.",
+  "gameCommit": "f8e65e927cca5b74563e5bf9c6ad00133a73211e",
+  "preciseFrames": "cork/fountains/eight-colours from capture-frames-16.mjs with stepped browser clock; color/collection and remaining frames from real-time capture-feel-16.mjs",
+  "images": {
+    "05-result.webp": "43297878c9da7ff14182b6c85de18f084ba2b70952820956dae84d9886b86d6a",
+    "06-home.webp": "a4b033340effe95600357e9477a8f0cfb683908fad12560b7959d25690d735a3",
+    "07-challenge.webp": "792afc54924e40d886c3a205e691eb7ff6929923dd807203082f2065e54c2202",
+    "08-challenge-home.webp": "0a470b21acc0f756fe2b7386bc9733c29d2e0cbb8d574b53702c3410460f4d3f",
+    "09-result-320x480.webp": "f579722b1697a4209bb2e82094593f4d63dcac021b97b36bcaf70676f7d2e1c0",
+    "09-result-390x844.webp": "33c8608fe6934d0280ab0b8c8be64b0b948d1a9784c956123f110c37670e0eeb",
+    "09-result-568x320.webp": "937ce43a259060f4981271b7a0ea5fdf5bee67373dda5eabe5b1f99176271642",
+    "collection.webp": "1330a8197eed5068670c4aa3abb33210ae7f25d96172eae881b657745c83c9a4",
+    "color.webp": "26dcecf900b3b9fbfec94219baee3843c335354804e5e2940e110d9daaaa1057",
+    "cork.webp": "a0ae0efd5db1aceb4e2594e27e2edd3a7903d1b6f0ddeb8e8e9da2def07e4e3d",
+    "eight-colours.webp": "a039f83994c7898b8db69252a22aac671bb9be7f0908cc57d70382a0f65b4b8f",
+    "fountains.webp": "937bbdfb110788d36f553147e288c572f5f4babe20d6612c72f7a4df024f4f67",
+    "preview.webp": "cbb6612793a8aa8bcb749f839c59f609dc879a9ccac683d2b34ca5073724ab70"
+  },
+  "bundleFiles": {
+    "index.html": "c1711bfbffbad8537559ac6a7efba8afbe424828cca0acb97a2ecdabef331f72",
+    "art/night-shore.svg": "941fa1cb1e043fcf4aeb2ecc9a788486b32d5f878238843391c77e74244a2607",
+    "audio/pour-1.ogg": "718d64ba1234e434cc0ff1393f46a3a801c141bd12267482bde903decba7a5a9",
+    "audio/mix-report.json": "d3b4be8ca0409d8130666f58c8c7a0a983d3c4ffbe1865ea3af5869db04eb5bf",
+    "audio/select.ogg": "e3051890837463871425d073a8249570b22da3b000e215a1daf4472aea718df1",
+    "audio/hint.ogg": "b49a4494c240c2ad5540518ec6f1484fb30aa939f17a1ef67edaf3d9a75b5706",
+    "audio/complete.ogg": "b3e100ec12a14c041d634854a4b3509f0d645dba777d93ffb9a4d5a95cdf4a68",
+    "audio/accept.ogg": "c70c62a52af1eccfd8bc707f15089ef2a66dd369910b7299f8a078a127c029bb",
+    "audio/pour-3.ogg": "94d6906a9c91c267c951cd8e1c558f0eb92dc68a278447dc4d66e59474d62ee9",
+    "audio/victory.ogg": "7e22b78ed658dd5d007f7d58dabbc88c69370aa5acffd3eabbafb37cd4d322ba",
+    "audio/material-report.json": "0e86df040d00a4065ab8d91f392923a75a73a467ebb95d7ef031fa9e4e6c1e94",
+    "audio/reject.ogg": "16280f9ee8cf79988e711cb0e39e726bc4c9b391918533595d19bfb75094c4cf",
+    "audio/pour-2.ogg": "8bd48b2c02c3e36c61e69aee7d0d0702f3518822b26069c5624c114082057fa5",
+    "audio/land.ogg": "8625c1350d5b210820fa0b5410f9c1d4dfbafc30579a62276e608617ea5335cd",
+    "audio/cork.ogg": "a39d8974aeb0b5329692ce576d36c1894c3e3bf382732b84ac81cda6f31ad13d",
+    "audio/collect.ogg": "a99bbf77dbd37e6bf4389bf9de8bb463699d0a963e06fa40b936625453c8dca3",
+    "assets/index-BlbTjwgL.js": "49c1f7a9585c7c953b176105e007dd87b8a00aece56b596291d5a15edb723abd",
+    "assets/solver.worker-BMZ9b8qr.js": "00ad52ae74ef117a4be01fffe6ae144d6b66eb564f8ecbb7bfe9106ecb0be02f",
+    "assets/phaser-DFK5Ua9d.js": "f9025c1a29bc3ae097dd886ce07717b297466da1ce8f032c8294252ce6cf5cdb",
+    "assets/index-C0JwzLsZ.css": "5128be6175c0f55db12090cd5a956b2072d5fb63028282c1679a9301f9f81dcd",
+    "assets/web-B9SaREoY.js": "3bfd19162f8fcefe1c13a6e6f2ebf9db9f68289eaa2ae66d69130c761df68656",
+    "fonts/rubik.woff": "046fdb74c56ba506461ac26e36143db27b6f3f78347487fbb6ec1a806548bde9",
+    "fonts/OFL-Rubik.txt": "3cb6a6084f5d942a8f3b5fda0f6a90dde18d7f7f1798886f4043d18f8c1a811e"
+  }
+}

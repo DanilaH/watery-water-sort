@@ -1,0 +1,59 @@
+{
+  "apk": "perelevy-0.16.apk",
+  "bytes": 9922995,
+  "sha256": "4b051d82734c27b4890e34b93259d4066c339459ec2a7fc62ff2189da032133b",
+  "manifest": {
+    "versionCode": 16,
+    "versionName": "0.16.0-feel",
+    "compileSdkVersion": 36,
+    "compileSdkVersionCodename": "16",
+    "package": "com.danilah.waterywatersort.preview3",
+    "platformBuildVersionCode": 36,
+    "platformBuildVersionName": 16
+  },
+  "v2Signatures": [
+    {
+      "algorithm": "0x103",
+      "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+    }
+  ],
+  "publicPreviewCertificateMatches": true,
+  "tamperedProtectedByteRejected": true,
+  "distFilesMatched": [
+    "index.html",
+    "art/night-shore.svg",
+    "audio/pour-1.ogg",
+    "audio/mix-report.json",
+    "audio/select.ogg",
+    "audio/hint.ogg",
+    "audio/complete.ogg",
+    "audio/accept.ogg",
+    "audio/pour-3.ogg",
+    "audio/victory.ogg",
+    "audio/material-report.json",
+    "audio/reject.ogg",
+    "audio/pour-2.ogg",
+    "audio/land.ogg",
+    "audio/cork.ogg",
+    "audio/collect.ogg",
+    "assets/index-BlbTjwgL.js",
+    "assets/solver.worker-BMZ9b8qr.js",
+    "assets/phaser-DFK5Ua9d.js",
+    "assets/index-C0JwzLsZ.css",
+    "assets/web-B9SaREoY.js",
+    "fonts/rubik.woff",
+    "fonts/OFL-Rubik.txt"
+  ],
+  "gameCommit": "f8e65e927cca5b74563e5bf9c6ad00133a73211e",
+  "ciRun": 40641711913,
+  "ciJob": 122661126565,
+  "artifactId": 12795288401,
+  "artifactZipSha256": "37c00e5093b6c815c06226506aa7da873eff306389bae99a2844528f2af3e1cd",
+  "checks": {
+    "core": 30,
+    "browser": 95,
+    "independentOptimalBoards": 24,
+    "build": "success",
+    "assembleDebug": "success"
+  }
+}
