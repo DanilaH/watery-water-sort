@@ -1,0 +1,106 @@
+{
+  "errors": [],
+  "checks": [
+    {
+      "viewport": [
+        320,
+        480
+      ],
+      "continue": {
+        "x": 169.421875,
+        "y": 342,
+        "width": 134.578125,
+        "height": 48
+      },
+      "board": {
+        "x": 16,
+        "y": 82,
+        "width": 288,
+        "height": 254
+      }
+    },
+    {
+      "viewport": [
+        568,
+        320
+      ],
+      "continue": {
+        "x": 360.09375,
+        "y": 262,
+        "width": 109.90625,
+        "height": 48
+      },
+      "board": {
+        "x": 90,
+        "y": 36,
+        "width": 380,
+        "height": 220
+      }
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "continue": {
+        "x": 239.421875,
+        "y": 672,
+        "width": 134.578125,
+        "height": 48
+      },
+      "board": {
+        "x": 16,
+        "y": 108,
+        "width": 358,
+        "height": 556
+      }
+    }
+  ],
+  "note": "Production renderer, real input and clocks, valid witness-replay fixtures, no CSS/SDK overrides.",
+  "gameCommit": "9e961b2799be16aca77df562246213624fe56514",
+  "images": {
+    "01-introduction.webp": "586173602c153a3fcb55b7c9d87b9224f2d4f7d99901bb0a6e1e5b8442d77432",
+    "02-half-full.webp": "0345ab479a4619bd3ceeee15016008740cc57d9da69e255dace784fc70fbf391",
+    "03-blue.webp": "b3bcb23edfbde2a60adb31253d657cd42a4567b01cce442afabe38f8042593e2",
+    "03-graphite.webp": "4920fa2f844428df271744db52de3ea7673afb13c12c02e955354424c8c2ecd8",
+    "03-ice.webp": "07cacf1927d808a500f4bf17d8d8afa1a984abc136b3bee0f01a3f65d2f66c54",
+    "03-plum.webp": "a2ced1af84ef7bd934da0fcb17ee4bae16c51e6ffee49b3ba385f4c81fe7b9af",
+    "04-field-320x480.webp": "ded8de6ecfc83a19d2f9fba78b5e6fcac418bd4151b087a171ade405d116c272",
+    "04-field-390x844.webp": "ee08230bd956a5eb8c853feb99556403fe1b400cd4d63b2438fcc660f80c7f07",
+    "04-field-568x320.webp": "5c7c0a6e3d9405181654ffdbe2d6257242cc50f5158c00fd07b46c4b4cd65bf2",
+    "05-victory-320x480.webp": "19628718b8e76ee129b926424ff6854faab8de68b13dcf26aa7b98ec92b593f6",
+    "05-victory-390x844.webp": "50fa9f83eb37905e3b3f2d14b0bd21d3616bce5bf6b0a3983cdd41277d36b599",
+    "05-victory-568x320.webp": "7f86f746cd08816dbb2574cd8c4601b226a0dafbc6fc45bdf63e0e5564f1edf3",
+    "06-result-320x480.webp": "5fbffaa89f9a65e5787a25e97f6a93843d885f244b69f0544efa0493f9170859",
+    "06-result-390x844.webp": "312798eba343e5dc104aa9b8e33e3d07be96ad7e1b02f41e75bab6cc5dcb34c5",
+    "06-result-568x320.webp": "99dbf73f80a92e9aad42521d993a618e4454a9a33a9f1f2838eee137e8cc8abe",
+    "07-goal-completion.webp": "7f3e22077e42128ebf03751a449de7696100af9949b12188e16d3c0aed099ad1",
+    "08-goal-stays-tall.webp": "8fbed29a94521a4722553b8b269765523a01ee1ab8d236fb93102263707948ee",
+    "preview.webp": "9ef4c439a265dc09823807dec28a4d21ce26b0beaffe16ae7c4dc87ef8ffd8ba"
+  },
+  "bundleFiles": {
+    "index.html": "d3ded7611a1f9aff8ea66f243df8b6c714fb767bd7e0d46d674e01d666937b80",
+    "art/night-shore.svg": "941fa1cb1e043fcf4aeb2ecc9a788486b32d5f878238843391c77e74244a2607",
+    "audio/pour-1.ogg": "718d64ba1234e434cc0ff1393f46a3a801c141bd12267482bde903decba7a5a9",
+    "audio/mix-report.json": "d3b4be8ca0409d8130666f58c8c7a0a983d3c4ffbe1865ea3af5869db04eb5bf",
+    "audio/select.ogg": "e3051890837463871425d073a8249570b22da3b000e215a1daf4472aea718df1",
+    "audio/hint.ogg": "b49a4494c240c2ad5540518ec6f1484fb30aa939f17a1ef67edaf3d9a75b5706",
+    "audio/complete.ogg": "b3e100ec12a14c041d634854a4b3509f0d645dba777d93ffb9a4d5a95cdf4a68",
+    "audio/accept.ogg": "c70c62a52af1eccfd8bc707f15089ef2a66dd369910b7299f8a078a127c029bb",
+    "audio/pour-3.ogg": "94d6906a9c91c267c951cd8e1c558f0eb92dc68a278447dc4d66e59474d62ee9",
+    "audio/victory.ogg": "7e22b78ed658dd5d007f7d58dabbc88c69370aa5acffd3eabbafb37cd4d322ba",
+    "audio/material-report.json": "0e86df040d00a4065ab8d91f392923a75a73a467ebb95d7ef031fa9e4e6c1e94",
+    "audio/reject.ogg": "16280f9ee8cf79988e711cb0e39e726bc4c9b391918533595d19bfb75094c4cf",
+    "audio/pour-2.ogg": "8bd48b2c02c3e36c61e69aee7d0d0702f3518822b26069c5624c114082057fa5",
+    "audio/land.ogg": "8625c1350d5b210820fa0b5410f9c1d4dfbafc30579a62276e608617ea5335cd",
+    "audio/cork.ogg": "a39d8974aeb0b5329692ce576d36c1894c3e3bf382732b84ac81cda6f31ad13d",
+    "audio/collect.ogg": "a99bbf77dbd37e6bf4389bf9de8bb463699d0a963e06fa40b936625453c8dca3",
+    "assets/index-CNZsPvkT.css": "0b6ba972b96017014bb856bd84d55be25981d2fb91ec5bc943fe970be7185488",
+    "assets/index-Bi6AtkIo.js": "281c009d8b3d17751ac6800d1a1755939416bdb864ffdabe5d293ebc97e327d6",
+    "assets/phaser-DFK5Ua9d.js": "f9025c1a29bc3ae097dd886ce07717b297466da1ce8f032c8294252ce6cf5cdb",
+    "assets/web-D0Ltqiwh.js": "9e88099e2433b0dd750490f44cc8326aea8964398cc7d166ed917a6bfdda3016",
+    "assets/solver.worker-BP69J42O.js": "d3a65e98bca9773c76a975839517403479ae841b9287d6d8ffb3ed68490bec7b",
+    "fonts/rubik.woff": "046fdb74c56ba506461ac26e36143db27b6f3f78347487fbb6ec1a806548bde9",
+    "fonts/OFL-Rubik.txt": "3cb6a6084f5d942a8f3b5fda0f6a90dde18d7f7f1798886f4043d18f8c1a811e"
+  }
+}

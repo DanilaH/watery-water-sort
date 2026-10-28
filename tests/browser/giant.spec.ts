@@ -54,8 +54,8 @@ test('a goal may finish before the level; its completion neither wins nor disabl
  await move(page,4,2);await expect(page.locator('#continue')).toBeVisible();await expect(page.locator('#earned-stars')).toHaveText('★★☆');
 });
 test('queued deliveries fill only their accepted portions without a premature colour reward',async({page})=>{
- await seed(page);await page.evaluate(async()=>{const p='/src/audio/sound.ts',m=await import(p),fn=m.Sound.prototype.finish;(window as any).goalFinishes=[];m.Sound.prototype.finish=function(...args:any[]){(window as any).goalFinishes.push(args);return fn.apply(this,args);};});
- for(const i of [3,0,2,0])await tap(page,i);await expect(page.locator('#status')).toContainText('Следующий ход');await expect(page.locator('#moves')).toHaveText('Ходов: 2');await expect(page.locator('#hint')).toBeEnabled();
+ await page.clock.install();await seed(page);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await page.evaluate(async()=>{const p='/src/audio/sound.ts',m=await import(p),fn=m.Sound.prototype.finish;(window as any).goalFinishes=[];m.Sound.prototype.finish=function(...args:any[]){(window as any).goalFinishes.push(args);return fn.apply(this,args);};});
+ for(const i of [3,0,2,0])await tap(page,i);await expect(page.locator('#status')).toContainText('Следующий ход');await page.clock.resume();await expect(page.locator('#moves')).toHaveText('Ходов: 2');await expect(page.locator('#hint')).toBeEnabled();
  expect(attempt(await saved(page)).board[0]).toHaveLength(6);expect(await page.evaluate(()=>(window as any).goalFinishes)).toEqual([]);await expect(page.locator('#continue')).toBeHidden();
 });
 test('symbol mode identifies an empty goal by the same mark as its required colour',async({page})=>{
