@@ -1,0 +1,47 @@
+{
+  "apk": "perelevy-0.19.apk",
+  "bytes": 9929667,
+  "sha256": "d10a2f867a78eeb39f751a93fca4bc971dcb5106ee7026e8dbfa7d661651adc8",
+  "manifest": {
+    "versionCode": 19,
+    "versionName": "0.19.0-celebration",
+    "compileSdkVersion": 36,
+    "compileSdkVersionCodename": "16",
+    "package": "com.danilah.waterywatersort.preview3",
+    "platformBuildVersionCode": 36,
+    "platformBuildVersionName": 16
+  },
+  "v2Signatures": [
+    {
+      "algorithm": "0x103",
+      "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+    }
+  ],
+  "publicPreviewCertificateMatches": true,
+  "tamperedProtectedByteRejected": true,
+  "distFilesMatched": [
+    "index.html",
+    "audio/pour-2.ogg",
+    "audio/collect.ogg",
+    "audio/victory.ogg",
+    "audio/hint.ogg",
+    "audio/pour-3.ogg",
+    "audio/land.ogg",
+    "audio/material-report.json",
+    "audio/complete.ogg",
+    "audio/reject.ogg",
+    "audio/mix-report.json",
+    "audio/pour-1.ogg",
+    "audio/cork.ogg",
+    "audio/select.ogg",
+    "audio/accept.ogg",
+    "fonts/rubik.woff",
+    "fonts/OFL-Rubik.txt",
+    "assets/web-qIqSN0mN.js",
+    "assets/solver.worker-BP69J42O.js",
+    "assets/phaser-DFK5Ua9d.js",
+    "assets/index-ahQe_bmi.css",
+    "assets/index-B6XXW6br.js",
+    "art/night-shore.svg"
+  ]
+}

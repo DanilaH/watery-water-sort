@@ -1,0 +1,27 @@
+[
+  {
+    "path": "normal-390x844-pop.webp",
+    "bytes": 23666,
+    "sha256": "db12e8d3805dbd929ef71a9a583c515f57e1c24f9316a069dfc4f46a0a4fce13"
+  },
+  {
+    "path": "objective-390x844.webp",
+    "bytes": 17456,
+    "sha256": "36042148226130c5524567c3419465a2adcf9d901b1afc22c223d74cbba29166"
+  },
+  {
+    "path": "goal-390x844-pop.webp",
+    "bytes": 33000,
+    "sha256": "3aa8fbbde65e4bda5e78e41eed6f54885d3c134bdd4bb2b8c53c6d282b22e6e7"
+  },
+  {
+    "path": "victory-motion.gif",
+    "bytes": 358713,
+    "sha256": "a184790e286390e3b364dfa2ceaeac80f500a07fcc362c56c5ab966326312f98"
+  },
+  {
+    "path": "goal-320x480-result.webp",
+    "bytes": 14094,
+    "sha256": "ac160539ad76b32ccb684e38769d5b064d0d6b5a92ad4cdf6071f3d335e71fd1"
+  }
+]

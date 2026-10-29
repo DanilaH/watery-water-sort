@@ -1,0 +1,620 @@
+{
+  "head": "ef821255cd092cfe25f99a65e31014cf8ce3b812",
+  "dist": [
+    {
+      "path": "index.html",
+      "sha256": "03afa37df22b86a2df924e17bbaad5a23f61481f1ef32fa8d5974a9b3a762aac"
+    },
+    {
+      "path": "art/night-shore.svg",
+      "sha256": "941fa1cb1e043fcf4aeb2ecc9a788486b32d5f878238843391c77e74244a2607"
+    },
+    {
+      "path": "assets/index-B6XXW6br.js",
+      "sha256": "dc5d52567d9c07c50e0b3ddf9b31950fe2cb631172b7b631725c350af3903832"
+    },
+    {
+      "path": "assets/index-BEAoHB9b.css",
+      "sha256": "3aa01f9c73d7ce12d7d1c6be34809f8f973b2a974117f14dcea074b4f54ba1da"
+    },
+    {
+      "path": "assets/index-BUv5-Dd2.js",
+      "sha256": "3c34a18505c102c35a97da4770193d24ca818f0f6312ea5da28d4d48f122ce05"
+    },
+    {
+      "path": "assets/index-ahQe_bmi.css",
+      "sha256": "bf148fa73a8190057df27110f0eb54e5a9be3d53dc5dc45c386c8d69235da00b"
+    },
+    {
+      "path": "assets/index-n5h8cDNX.js",
+      "sha256": "285e41cb1e7de9a0e273aafe9a08141b18cd6a3c144114540520b3b0b478ac85"
+    },
+    {
+      "path": "assets/phaser-DFK5Ua9d.js",
+      "sha256": "f9025c1a29bc3ae097dd886ce07717b297466da1ce8f032c8294252ce6cf5cdb"
+    },
+    {
+      "path": "assets/solver.worker-BP69J42O.js",
+      "sha256": "d3a65e98bca9773c76a975839517403479ae841b9287d6d8ffb3ed68490bec7b"
+    },
+    {
+      "path": "assets/web-HFgSC7V-.js",
+      "sha256": "f96b8928ce6cf9db2b7b02cb8e5e5f4131adbdc01161c388c5d236e552474e6e"
+    },
+    {
+      "path": "assets/web-TSKy2Sb6.js",
+      "sha256": "0a92884ce7a48963369dd8e8e27379e55738aa4de7cd64ddc5c7fab040a4a4b9"
+    },
+    {
+      "path": "assets/web-qIqSN0mN.js",
+      "sha256": "fb8f79db56684ebc97d842e88a13f33ccb80fa786a4d2d7a3f4dfaaa1a1250c6"
+    },
+    {
+      "path": "audio/accept.ogg",
+      "sha256": "c70c62a52af1eccfd8bc707f15089ef2a66dd369910b7299f8a078a127c029bb"
+    },
+    {
+      "path": "audio/collect.ogg",
+      "sha256": "a99bbf77dbd37e6bf4389bf9de8bb463699d0a963e06fa40b936625453c8dca3"
+    },
+    {
+      "path": "audio/complete.ogg",
+      "sha256": "b3e100ec12a14c041d634854a4b3509f0d645dba777d93ffb9a4d5a95cdf4a68"
+    },
+    {
+      "path": "audio/cork.ogg",
+      "sha256": "a39d8974aeb0b5329692ce576d36c1894c3e3bf382732b84ac81cda6f31ad13d"
+    },
+    {
+      "path": "audio/hint.ogg",
+      "sha256": "b49a4494c240c2ad5540518ec6f1484fb30aa939f17a1ef67edaf3d9a75b5706"
+    },
+    {
+      "path": "audio/land.ogg",
+      "sha256": "8625c1350d5b210820fa0b5410f9c1d4dfbafc30579a62276e608617ea5335cd"
+    },
+    {
+      "path": "audio/material-report.json",
+      "sha256": "0e86df040d00a4065ab8d91f392923a75a73a467ebb95d7ef031fa9e4e6c1e94"
+    },
+    {
+      "path": "audio/mix-report.json",
+      "sha256": "d3b4be8ca0409d8130666f58c8c7a0a983d3c4ffbe1865ea3af5869db04eb5bf"
+    },
+    {
+      "path": "audio/pour-1.ogg",
+      "sha256": "718d64ba1234e434cc0ff1393f46a3a801c141bd12267482bde903decba7a5a9"
+    },
+    {
+      "path": "audio/pour-2.ogg",
+      "sha256": "8bd48b2c02c3e36c61e69aee7d0d0702f3518822b26069c5624c114082057fa5"
+    },
+    {
+      "path": "audio/pour-3.ogg",
+      "sha256": "94d6906a9c91c267c951cd8e1c558f0eb92dc68a278447dc4d66e59474d62ee9"
+    },
+    {
+      "path": "audio/reject.ogg",
+      "sha256": "16280f9ee8cf79988e711cb0e39e726bc4c9b391918533595d19bfb75094c4cf"
+    },
+    {
+      "path": "audio/select.ogg",
+      "sha256": "e3051890837463871425d073a8249570b22da3b000e215a1daf4472aea718df1"
+    },
+    {
+      "path": "audio/victory.ogg",
+      "sha256": "7e22b78ed658dd5d007f7d58dabbc88c69370aa5acffd3eabbafb37cd4d322ba"
+    },
+    {
+      "path": "fonts/OFL-Rubik.txt",
+      "sha256": "3cb6a6084f5d942a8f3b5fda0f6a90dde18d7f7f1798886f4043d18f8c1a811e"
+    },
+    {
+      "path": "fonts/rubik.woff",
+      "sha256": "046fdb74c56ba506461ac26e36143db27b6f3f78347487fbb6ec1a806548bde9"
+    }
+  ],
+  "images": [
+    {
+      "path": "advertising-320x480.png",
+      "sha256": "a068978cae5524bb15304302d5292486f07ead42f880884f823032280f46062f"
+    },
+    {
+      "path": "advertising-390x844.png",
+      "sha256": "4efe9312daa7e9a89a32a543d77f50b2881ca929c7501c7fda75363b3994ed9d"
+    },
+    {
+      "path": "goal-320x480-pop.png",
+      "sha256": "4daba2c4fea964d9e0428a0712d7f0d04309bc88e91ba1896d0ceb7ef467849a"
+    },
+    {
+      "path": "goal-320x480-result.png",
+      "sha256": "592ce61f2dd8052e37e37e02fe8e15bdbd702e985f41c5d95280a179f976a07a"
+    },
+    {
+      "path": "goal-390x844-pop.png",
+      "sha256": "c3bc5c927ec9a7fdaab0f6f14544e0c0977fa68aeeca6ed5c2fa137acafe8eeb"
+    },
+    {
+      "path": "goal-390x844-result.png",
+      "sha256": "8ffded9846526e959a87fadabb0cc9bc2500a3f87cd622be401a33f8756a22eb"
+    },
+    {
+      "path": "goal-568x320-pop.png",
+      "sha256": "b176d351a4a4d7978f1ea91af73c4b742d0c1ac8b02e400d7b5f938d21498c2c"
+    },
+    {
+      "path": "goal-568x320-result.png",
+      "sha256": "21c6077c5b4f7023dfb43f5309ac59f5a9bb26505c8dd8ab023f2f9391af2776"
+    },
+    {
+      "path": "normal-320x480-pop.png",
+      "sha256": "b8bcfd8560ff74c2d3e8181e2ab216a5336b7e6ed2369b80e33ed9da065a1456"
+    },
+    {
+      "path": "normal-320x480-result.png",
+      "sha256": "3c6587e0aa8428fe821baf7f54ae465b639a8ca26eab18d6c72105acffb48b39"
+    },
+    {
+      "path": "normal-390x844-pop.png",
+      "sha256": "36cd33af44da2a9c3aff77e41acffe378c40e8f7022edda98a43702db68a2d46"
+    },
+    {
+      "path": "normal-390x844-result.png",
+      "sha256": "80c11b3a97e91b12c949925dd6fd3728f4064f9e7f57c9f96f68d303af22f7ed"
+    },
+    {
+      "path": "normal-568x320-pop.png",
+      "sha256": "0f004c9acb4c0032d3cc726bbe4ca025dc3e49e72fff8335594650d50c6a7e0f"
+    },
+    {
+      "path": "normal-568x320-result.png",
+      "sha256": "8f2b643264bf8257c81c4e8706aea16320a1839ceae3f929b262310909c5dee9"
+    },
+    {
+      "path": "objective-320x480.png",
+      "sha256": "f700ee1f84fc30d343ee06e6fd717072928d4e4e9e6cde4c4c59b91ffc4d4070"
+    },
+    {
+      "path": "objective-390x844.png",
+      "sha256": "8e4ad01a6c02ca53895b265697ebda74dd5cd1a40a7d0540b3a2296faeb43eb7"
+    }
+  ],
+  "evidence": [
+    {
+      "name": "normal-390x844",
+      "boxes": {
+        "board": {
+          "x": 16,
+          "y": 108,
+          "width": 358,
+          "height": 516,
+          "bottom": 624,
+          "right": 374
+        },
+        "feedback": {
+          "x": 16,
+          "y": 624,
+          "width": 358,
+          "height": 104,
+          "bottom": 728,
+          "right": 374
+        },
+        "finish-title": {
+          "x": 18,
+          "y": 633.15625,
+          "width": 144.015625,
+          "height": 29.390625,
+          "bottom": 662.546875,
+          "right": 162.015625
+        },
+        "earned-stars": {
+          "x": 18,
+          "y": 664.546875,
+          "width": 95.0625,
+          "height": 32,
+          "bottom": 696.546875,
+          "right": 113.0625
+        },
+        "continue": {
+          "x": 256.421875,
+          "y": 650,
+          "width": 115.578125,
+          "height": 48,
+          "bottom": 698,
+          "right": 372
+        },
+        "undo": {
+          "x": 68,
+          "y": 733,
+          "width": 62,
+          "height": 58,
+          "bottom": 791,
+          "right": 130
+        }
+      }
+    },
+    {
+      "name": "goal-390x844",
+      "boxes": {
+        "board": {
+          "x": 16,
+          "y": 108,
+          "width": 358,
+          "height": 516,
+          "bottom": 624,
+          "right": 374
+        },
+        "feedback": {
+          "x": 16,
+          "y": 624,
+          "width": 358,
+          "height": 104,
+          "bottom": 728,
+          "right": 374
+        },
+        "finish-title": {
+          "x": 18,
+          "y": 633.15625,
+          "width": 146.015625,
+          "height": 29.390625,
+          "bottom": 662.546875,
+          "right": 164.015625
+        },
+        "earned-stars": {
+          "x": 18,
+          "y": 664.546875,
+          "width": 95.0625,
+          "height": 32,
+          "bottom": 696.546875,
+          "right": 113.0625
+        },
+        "continue": {
+          "x": 237.421875,
+          "y": 650,
+          "width": 134.578125,
+          "height": 48,
+          "bottom": 698,
+          "right": 372
+        },
+        "undo": {
+          "x": 68,
+          "y": 733,
+          "width": 62,
+          "height": 58,
+          "bottom": 791,
+          "right": 130
+        }
+      }
+    },
+    {
+      "name": "normal-320x480",
+      "boxes": {
+        "board": {
+          "x": 16,
+          "y": 82,
+          "width": 288,
+          "height": 226,
+          "bottom": 308,
+          "right": 304
+        },
+        "feedback": {
+          "x": 16,
+          "y": 308,
+          "width": 288,
+          "height": 88,
+          "bottom": 396,
+          "right": 304
+        },
+        "finish-title": {
+          "x": 18,
+          "y": 313.78125,
+          "width": 117.84375,
+          "height": 24.140625,
+          "bottom": 337.921875,
+          "right": 135.84375
+        },
+        "earned-stars": {
+          "x": 18,
+          "y": 339.921875,
+          "width": 84.328125,
+          "height": 28,
+          "bottom": 367.921875,
+          "right": 102.328125
+        },
+        "continue": {
+          "x": 186.421875,
+          "y": 326,
+          "width": 115.578125,
+          "height": 48,
+          "bottom": 374,
+          "right": 302
+        },
+        "undo": {
+          "x": 45,
+          "y": 398,
+          "width": 58,
+          "height": 48,
+          "bottom": 446,
+          "right": 103
+        }
+      }
+    },
+    {
+      "name": "goal-320x480",
+      "boxes": {
+        "board": {
+          "x": 16,
+          "y": 82,
+          "width": 288,
+          "height": 226,
+          "bottom": 308,
+          "right": 304
+        },
+        "feedback": {
+          "x": 16,
+          "y": 308,
+          "width": 288,
+          "height": 88,
+          "bottom": 396,
+          "right": 304
+        },
+        "finish-title": {
+          "x": 18,
+          "y": 313.78125,
+          "width": 118.84375,
+          "height": 24.140625,
+          "bottom": 337.921875,
+          "right": 136.84375
+        },
+        "earned-stars": {
+          "x": 18,
+          "y": 339.921875,
+          "width": 84.328125,
+          "height": 28,
+          "bottom": 367.921875,
+          "right": 102.328125
+        },
+        "continue": {
+          "x": 167.421875,
+          "y": 326,
+          "width": 134.578125,
+          "height": 48,
+          "bottom": 374,
+          "right": 302
+        },
+        "undo": {
+          "x": 45,
+          "y": 398,
+          "width": 58,
+          "height": 48,
+          "bottom": 446,
+          "right": 103
+        }
+      }
+    },
+    {
+      "name": "normal-568x320",
+      "boxes": {
+        "board": {
+          "x": 90,
+          "y": 36,
+          "width": 380,
+          "height": 202,
+          "bottom": 238,
+          "right": 470
+        },
+        "feedback": {
+          "x": 90,
+          "y": 238,
+          "width": 380,
+          "height": 78,
+          "bottom": 316,
+          "right": 470
+        },
+        "finish-title": {
+          "x": 92,
+          "y": 253.25,
+          "width": 123.421875,
+          "height": 25.1875,
+          "bottom": 278.4375,
+          "right": 215.421875
+        },
+        "earned-stars": {
+          "x": 227.421875,
+          "y": 251.84375,
+          "width": 84.328125,
+          "height": 28,
+          "bottom": 279.84375,
+          "right": 311.75
+        },
+        "continue": {
+          "x": 376.09375,
+          "y": 251,
+          "width": 91.90625,
+          "height": 48,
+          "bottom": 299,
+          "right": 468
+        },
+        "undo": {
+          "x": 488,
+          "y": 72.5,
+          "width": 50,
+          "height": 48,
+          "bottom": 120.5,
+          "right": 538
+        }
+      }
+    },
+    {
+      "name": "goal-568x320",
+      "boxes": {
+        "board": {
+          "x": 90,
+          "y": 36,
+          "width": 380,
+          "height": 202,
+          "bottom": 238,
+          "right": 470
+        },
+        "feedback": {
+          "x": 90,
+          "y": 238,
+          "width": 380,
+          "height": 78,
+          "bottom": 316,
+          "right": 470
+        },
+        "finish-title": {
+          "x": 92,
+          "y": 253.25,
+          "width": 125.421875,
+          "height": 25.1875,
+          "bottom": 278.4375,
+          "right": 217.421875
+        },
+        "earned-stars": {
+          "x": 229.421875,
+          "y": 251.84375,
+          "width": 84.328125,
+          "height": 28,
+          "bottom": 279.84375,
+          "right": 313.75
+        },
+        "continue": {
+          "x": 358.09375,
+          "y": 251,
+          "width": 109.90625,
+          "height": 48,
+          "bottom": 299,
+          "right": 468
+        },
+        "undo": {
+          "x": 488,
+          "y": 72.5,
+          "width": 50,
+          "height": 48,
+          "bottom": 120.5,
+          "right": 538
+        }
+      }
+    }
+  ],
+  "verifiedReferencedDist": [
+    {
+      "path": "index.html",
+      "sha256": "03afa37df22b86a2df924e17bbaad5a23f61481f1ef32fa8d5974a9b3a762aac"
+    },
+    {
+      "path": "art/night-shore.svg",
+      "sha256": "941fa1cb1e043fcf4aeb2ecc9a788486b32d5f878238843391c77e74244a2607"
+    },
+    {
+      "path": "assets/index-B6XXW6br.js",
+      "sha256": "dc5d52567d9c07c50e0b3ddf9b31950fe2cb631172b7b631725c350af3903832"
+    },
+    {
+      "path": "assets/index-ahQe_bmi.css",
+      "sha256": "bf148fa73a8190057df27110f0eb54e5a9be3d53dc5dc45c386c8d69235da00b"
+    },
+    {
+      "path": "assets/phaser-DFK5Ua9d.js",
+      "sha256": "f9025c1a29bc3ae097dd886ce07717b297466da1ce8f032c8294252ce6cf5cdb"
+    },
+    {
+      "path": "assets/solver.worker-BP69J42O.js",
+      "sha256": "d3a65e98bca9773c76a975839517403479ae841b9287d6d8ffb3ed68490bec7b"
+    },
+    {
+      "path": "assets/web-qIqSN0mN.js",
+      "sha256": "fb8f79db56684ebc97d842e88a13f33ccb80fa786a4d2d7a3f4dfaaa1a1250c6"
+    },
+    {
+      "path": "audio/accept.ogg",
+      "sha256": "c70c62a52af1eccfd8bc707f15089ef2a66dd369910b7299f8a078a127c029bb"
+    },
+    {
+      "path": "audio/collect.ogg",
+      "sha256": "a99bbf77dbd37e6bf4389bf9de8bb463699d0a963e06fa40b936625453c8dca3"
+    },
+    {
+      "path": "audio/complete.ogg",
+      "sha256": "b3e100ec12a14c041d634854a4b3509f0d645dba777d93ffb9a4d5a95cdf4a68"
+    },
+    {
+      "path": "audio/cork.ogg",
+      "sha256": "a39d8974aeb0b5329692ce576d36c1894c3e3bf382732b84ac81cda6f31ad13d"
+    },
+    {
+      "path": "audio/hint.ogg",
+      "sha256": "b49a4494c240c2ad5540518ec6f1484fb30aa939f17a1ef67edaf3d9a75b5706"
+    },
+    {
+      "path": "audio/land.ogg",
+      "sha256": "8625c1350d5b210820fa0b5410f9c1d4dfbafc30579a62276e608617ea5335cd"
+    },
+    {
+      "path": "audio/material-report.json",
+      "sha256": "0e86df040d00a4065ab8d91f392923a75a73a467ebb95d7ef031fa9e4e6c1e94"
+    },
+    {
+      "path": "audio/mix-report.json",
+      "sha256": "d3b4be8ca0409d8130666f58c8c7a0a983d3c4ffbe1865ea3af5869db04eb5bf"
+    },
+    {
+      "path": "audio/pour-1.ogg",
+      "sha256": "718d64ba1234e434cc0ff1393f46a3a801c141bd12267482bde903decba7a5a9"
+    },
+    {
+      "path": "audio/pour-2.ogg",
+      "sha256": "8bd48b2c02c3e36c61e69aee7d0d0702f3518822b26069c5624c114082057fa5"
+    },
+    {
+      "path": "audio/pour-3.ogg",
+      "sha256": "94d6906a9c91c267c951cd8e1c558f0eb92dc68a278447dc4d66e59474d62ee9"
+    },
+    {
+      "path": "audio/reject.ogg",
+      "sha256": "16280f9ee8cf79988e711cb0e39e726bc4c9b391918533595d19bfb75094c4cf"
+    },
+    {
+      "path": "audio/select.ogg",
+      "sha256": "e3051890837463871425d073a8249570b22da3b000e215a1daf4472aea718df1"
+    },
+    {
+      "path": "audio/victory.ogg",
+      "sha256": "7e22b78ed658dd5d007f7d58dabbc88c69370aa5acffd3eabbafb37cd4d322ba"
+    },
+    {
+      "path": "fonts/OFL-Rubik.txt",
+      "sha256": "3cb6a6084f5d942a8f3b5fda0f6a90dde18d7f7f1798886f4043d18f8c1a811e"
+    },
+    {
+      "path": "fonts/rubik.woff",
+      "sha256": "046fdb74c56ba506461ac26e36143db27b6f3f78347487fbb6ec1a806548bde9"
+    }
+  ],
+  "unreferencedBuildOutputs": [
+    {
+      "path": "assets/index-BEAoHB9b.css",
+      "sha256": "3aa01f9c73d7ce12d7d1c6be34809f8f973b2a974117f14dcea074b4f54ba1da"
+    },
+    {
+      "path": "assets/index-BUv5-Dd2.js",
+      "sha256": "3c34a18505c102c35a97da4770193d24ca818f0f6312ea5da28d4d48f122ce05"
+    },
+    {
+      "path": "assets/index-n5h8cDNX.js",
+      "sha256": "285e41cb1e7de9a0e273aafe9a08141b18cd6a3c144114540520b3b0b478ac85"
+    },
+    {
+      "path": "assets/web-HFgSC7V-.js",
+      "sha256": "f96b8928ce6cf9db2b7b02cb8e5e5f4131adbdc01161c388c5d236e552474e6e"
+    },
+    {
+      "path": "assets/web-TSKy2Sb6.js",
+      "sha256": "0a92884ce7a48963369dd8e8e27379e55738aa4de7cd64ddc5c7fab040a4a4b9"
+    }
+  ],
+  "verificationNote": "The captured index.html and all its referenced assets match the verified APK. Five older, unreferenced output files from overlapping local builds were present in the capture directory; a clean final build removed them."
+}

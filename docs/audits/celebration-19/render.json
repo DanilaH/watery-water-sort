@@ -1,0 +1,56 @@
+{
+  "results": [
+    {
+      "cpuThrottle": 1,
+      "phases": {
+        "pour": {
+          "samples": 15,
+          "p50": 0.7999999970197678,
+          "p95": 2.2000000029802322,
+          "max": 2.2000000029802322
+        },
+        "victory": {
+          "samples": 84,
+          "p50": 1.1000000014901161,
+          "p95": 1.7999999970197678,
+          "max": 4.799999997019768
+        },
+        "idle": {
+          "samples": 74,
+          "p50": 0,
+          "p95": 0.10000000149011612,
+          "max": 0.10000000149011612
+        }
+      },
+      "maxStoredParticles": 18,
+      "maxBursts": 9
+    },
+    {
+      "cpuThrottle": 4,
+      "phases": {
+        "pour": {
+          "samples": 11,
+          "p50": 4.699999995529652,
+          "p95": 12.599999994039536,
+          "max": 12.599999994039536
+        },
+        "victory": {
+          "samples": 48,
+          "p50": 5.200000002980232,
+          "p95": 8.5,
+          "max": 16.399999998509884
+        },
+        "idle": {
+          "samples": 46,
+          "p50": 0.09999999403953552,
+          "p95": 0.7999999970197678,
+          "max": 0.9000000059604645
+        }
+      },
+      "maxStoredParticles": 18,
+      "maxBursts": 9
+    }
+  ],
+  "note": "Headless Chromium dev server; DPR 2; final eight-colour pour and overlapping full-screen victory; 64 droplets per ordinary vessel, 96 for the goal. CPU update only; no claim about real Android FPS, rendering, speakers or haptics.",
+  "sourceCommit": "ef821255cd092cfe25f99a65e31014cf8ce3b812"
+}

@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "ef821255cd092cfe25f99a65e31014cf8ce3b812",
+  "sourceTree": "6650fe1e4b79816cf2651719af8b2089c47b230c",
+  "run": 40936319463,
+  "job": 123667688343,
+  "artifact": 12924823340,
+  "artifactZipSha256": "def747d8c6549eb2af86d3329ee63623c01c6c11f5387bd146dd25ec4ffa84fb",
+  "tests": {
+    "core": 35,
+    "browser": 124,
+    "optimalPaths": 32
+  },
+  "apk": {
+    "name": "perelevy-0.19.apk",
+    "bytes": 9929667,
+    "sha256": "d10a2f867a78eeb39f751a93fca4bc971dcb5106ee7026e8dbfa7d661651adc8"
+  }
+}
