@@ -156,7 +156,7 @@ export class WaterScene extends Phaser.Scene {
       const colour=COLORS[this.goal!.color],completed=sealedTube(this.board,index,this.goal)&&layers.reduce((v,l)=>v+l.amount,0)>=capacity-.001;
       g.lineStyle(3,colour,.7);g.strokePoints(poly,true);
       if(!layers.length){this.polygon(poly,colour,.065);g.fillStyle(colour,.35);g.fillCircle(r.x,r.y+h*.46,r.w*.2);if(this.symbols)this.textMark({x:r.x,y:r.y+h*.46,text:SIGNS[this.goal!.color],size:Math.min(22,r.w*.4)},this.light?'#18294a':'#e6f7ff');}
-      if(!completed)this.textMark({x:r.x,y:r.y-19,text:'ЦЕЛЬ',size:10},this.light?'#35527b':'#c6ddff');
+      if(!completed&&r.y>=40)this.textMark({x:r.x,y:r.y-19,text:'ЦЕЛЬ',size:10},this.light?'#35527b':'#c6ddff');
       this.textMark({x:r.x,y:r.y+h+23,text:`${Math.round(layers.reduce((v,l)=>v+l.amount,0))} / 8`,size:12},this.light?'#35527b':'#c6ddff');
       for(let k=1;k<8;k++){const y=r.y+h*(1-k*LIQUID_FILL/8);g.lineStyle(1,0xffffff,.3);g.lineBetween(r.x+r.w*.28,y,r.x+r.w*.43,y);}
       const burst=this.bursts.find(b=>b.index===index&&!b.final),age=burst?now-burst.start:10000;
