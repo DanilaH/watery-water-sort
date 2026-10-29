@@ -44,7 +44,7 @@ function guidance(){
  if(!scene.busy&&!moves(attempt(state).board,goalFor(state)).length)return 'Нет доступных ходов';
  if(scene.hintMove)return 'Перелей в колбу со стрелкой';
  if(scene.selected!==null)return scene.busy?'Следующий ход: выбери цель':'Выбери пустую или с тем же цветом сверху';
- if(goalFor(state)&&attempt(state).history.length===0)return 'Большая колба принимает свой цвет. Обратно не льётся.';
+ if(goalFor(state)&&attempt(state).history.length===0)return 'Из большой колбы обратно не льётся.';
  if(state.current===0&&attempt(state).history.length===0)return 'Выбери цветную колбу, затем пустую';
  if(state.current<2)return 'Одинаковые верхние слои льются вместе';
  return '';
@@ -72,7 +72,7 @@ function paint(){
  ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
  $('symbols').setAttribute('aria-pressed',String(state.settings.symbols));
  const objective=goalFor(state);$('objective').hidden=finished||!objective;$('objective').textContent=objective?`Собери ${['голубую','жёлтую','фиолетовую','зелёную','розовую','синюю','лимонную','оранжевую'][objective.color]} жидкость в большую колбу`:'';
- const target=targets(levelKey(state.current));$('star-target').hidden=finished;$('star-target').textContent=`Три звезды — за ${target.three} переливаний. Две — за ${target.two}.`;
+ const target=targets(levelKey(state.current));$('star-target').hidden=finished;$('star-target').textContent=`Три звезды — не больше ${target.three} ходов; две — ${target.two}.`;
  $('earned-stars').hidden=!finished;const earned=stars(levelKey(state.current),a.history.length);if(!finished||!$('earned-stars').classList.contains('revealing-stars'))$('earned-stars').textContent='★'.repeat(earned)+'☆'.repeat(3-earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
  const extra=$('extra-tube');extra.hidden=atHome||!offerExtra(state)||won(a.board,goalFor(state));(extra as HTMLButtonElement).disabled=scene.busy||rewardBusy;
  if(offerExtra(state)){const r=scene.positions().at(-1)!;Object.assign(extra.style,{left:`${r.x-r.hitW/2}px`,top:`${r.y+r.h/2-r.hitH/2}px`,width:`${r.hitW}px`,height:`${r.hitH}px`});extra.style.setProperty('--vessel-width',(r.w+4)+'px');extra.style.setProperty('--vessel-height',(r.h+4)+'px');const glass=extra.querySelector<SVGSVGElement>('.locked-vessel')!;glass.setAttribute('viewBox',`0 0 ${r.w+4} ${r.h+4}`);const radius=r.w/2;glass.innerHTML=`<path d="M2 2h${r.w}v${r.h-radius}a${radius} ${radius} 0 0 1-${r.w} 0Z" fill="currentColor" fill-opacity=".06" stroke="currentColor" stroke-width="1.5"/><ellipse cx="${radius+2}" cy="2" rx="${radius}" ry="2" stroke="currentColor"/><path d="M6 10v${r.h*.64}" stroke="white" stroke-opacity=".42" stroke-width="2"/><g transform="translate(${radius+2} ${r.h*.5})"><path d="M-${radius-2} -17L${radius-2} 17M-${radius-2} 17L${radius-2} -17" stroke="currentColor" stroke-width="4" stroke-dasharray="5 3"/><rect x="-9" y="-6" width="18" height="16" rx="3" fill="currentColor"/><path d="M-5 -6v-5a5 5 0 0 1 10 0v5" stroke="currentColor" stroke-width="2.5"/></g>`;}

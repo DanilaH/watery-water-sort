@@ -40,3 +40,7 @@ API reference: https://developer.android.com/reference/android/os/VibrationEffec
 ## Validation
 
 Browser regression covers persisted completion, Undo, rewarded expansion, source reuse, navigation, rotation, small screens, reduced motion and star collection. Added focused checks for three phase ordering, ordered pops, permanent cork removal, full-screen overlay geometry, selection/release liquid reactions, result/control separation and effect cancellation. Production captures use actual input and elapsed animation time; finite CSS animations are completed only for screenshots.
+
+The final pass also caches settled glass during the victory fountains, invalidating on cork-pop state, and forces a final entrance frame after a stalled initial frame. A regression checks that an advertising slot and the ordinary glass reach their actual layout position. The focused phone layout cases include the final bank and its longer result action.
+
+An eight-colour headless CPU diagnostic (DPR 2) measured scene-update p95 of 1.8 ms normally and 8.2 ms at ×4 CPU throttling after glass caching, with a 14.7 ms maximum at ×4. This includes the overlay drawing calls; it excludes GPU/presentation and real-phone behaviour. The pre-cache diagnostic overlapped screenshot work, so its timings are not used as a controlled speedup ratio. The reproducible diagnostic is `tools/benchmark-feel-18.mjs`.

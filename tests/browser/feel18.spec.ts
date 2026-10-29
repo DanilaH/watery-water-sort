@@ -24,9 +24,10 @@ test('three fill beats precede ordered full-screen pops; corks stay gone',async(
 });
 test('select and deselect both disturb the liquid without accepting a move',async({page})=>{
  await prepare(page,false);await tap(page,0);
+ await expect.poll(()=>page.evaluate(()=>(window as any).feelScene.settles.get(0)??0)).toBeGreaterThan(0);
  const first=await page.evaluate(()=>{const s=(window as any).feelScene;return {selected:s.selected,at:s.settles.get(0)};});expect(first.selected).toBe(0);expect(first.at).toBeGreaterThan(0);
  await page.waitForTimeout(80);await tap(page,0);await expect.poll(()=>page.evaluate(()=>(window as any).feelScene.selected)).toBe(null);
- expect(await page.evaluate(()=>(window as any).feelScene.settles.get(0))).toBeGreaterThan(first.at);await expect(page.locator('#moves')).toHaveText('Ходов: 0');
+ await expect.poll(()=>page.evaluate(()=>(window as any).feelScene.settles.get(0))).toBeGreaterThan(first.at);await expect(page.locator('#moves')).toHaveText('Ходов: 0');
 });
 for(const index of [0,15])for(const [width,height]of [[320,480],[390,844],[568,320]])test(`result, stars and controls do not overlap level ${index+1}, ${width}x${height}`,async({page})=>{
  await page.setViewportSize({width,height});await prepare(page,true,index);await finish(page,index);await page.waitForTimeout(800);
@@ -38,4 +39,16 @@ for(const index of [0,15])for(const [width,height]of [[320,480],[390,844],[568,3
 });
 test('reduced motion and interruption do not leave a full-screen effect behind',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});await prepare(page);await finish(page);await page.waitForTimeout(950);await expect(page.locator('#victory-effects')).toBeVisible();await page.locator('#menu').click();await expect(page.locator('#victory-effects')).toHaveCount(0);await page.waitForTimeout(1200);await expect(page.locator('#victory-effects')).toHaveCount(0);
+});
+
+test('entrance reaches its resting slot even after a long first frame',async({page})=>{
+ await prepare(page,false);const b=(await page.locator('#board').boundingBox())!;await page.mouse.click(b.x+1,b.y+1);
+ const data=await page.evaluate(()=>{const s=(window as any).feelScene;s.resetEffects();s.reveal();s.update();const first=s.hitPolygons.get(0)[0].y;s.entrance-=600;s.update();return {first,rest:s.positions()[0].y,last:s.hitPolygons.get(0)[0].y};});
+ expect(data.first).toBeGreaterThan(data.rest+5);expect(data.last).toBeCloseTo(data.rest,3);
+});
+
+test('goal words and star conditions fit above controls on a small phone',async({page})=>{
+ await page.setViewportSize({width:320,height:480});await prepare(page,false,12);
+ const data=await page.evaluate(()=>{const b=document.getElementById('star-target')!.getBoundingClientRect(),n=document.getElementById('undo')!.getBoundingClientRect();return {bottom:b.bottom,controls:n.y};});
+ expect(data.bottom).toBeLessThanOrEqual(data.controls);await expect(page.locator('#objective')).toContainText('голубую жидкость');
 });
