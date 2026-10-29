@@ -13,11 +13,11 @@ async function tap(page:Page,i:number){const b=(await page.locator('#board').bou
 async function finish(page:Page,index=0){const m=levels[index].witness.at(-1)!;await tap(page,m.from);
  await page.evaluate(()=>{const s=(window as any).feelScene,w=window as any;w.beats=[];w.pops=[];const phase=s.onPhase,finale=s.onFinale;s.onPhase=(n:number)=>{w.beats.push({n,time:performance.now()});phase(n);};s.onFinale=(n:number)=>{w.pops.push({n,time:performance.now()});finale(n);};});
  await tap(page,m.to);await expect(page.locator('#continue')).toBeVisible();}
-test('three fill beats precede ordered full-screen pops; corks stay gone',async({page})=>{
+test('fill beats and ordered pops overlap, while the receiver seals before its own pop; corks stay gone',async({page})=>{
  await prepare(page);const before=(await page.locator('#board').boundingBox())!;await finish(page);
  await expect.poll(()=>page.evaluate(()=>(window as any).pops.length)).toBe(2);
  const data=await page.evaluate(()=>({beats:(window as any).beats,pops:(window as any).pops,popped:[...(window as any).feelScene.popped]}));
- expect(data.beats.map((b:any)=>b.n)).toEqual([0,1,2]);expect(data.pops.map((b:any)=>b.n)).toEqual([0,1]);expect(data.pops[0].time).toBeGreaterThan(data.beats[2].time);expect(data.pops[1].time-data.pops[0].time).toBeGreaterThan(130);
+ expect(data.beats.map((b:any)=>b.n)).toEqual([0,1,2]);expect(data.pops.map((b:any)=>b.n)).toEqual([0,1]);expect(data.pops[0].time).toBeLessThan(data.beats[2].time);expect(data.pops.at(-1).time).toBeGreaterThan(data.beats[2].time);expect(data.pops[1].time-data.pops[0].time).toBeGreaterThan(130);
  const box=(await page.locator('#victory-effects').boundingBox())!,view=page.viewportSize()!;expect(box).toMatchObject({x:0,y:0,width:view.width,height:view.height});expect(await page.locator('#victory-effects').evaluate(e=>getComputedStyle(e).pointerEvents)).toBe('none');
  const after=(await page.locator('#board').boundingBox())!;expect(after).toEqual(before);
  await page.waitForTimeout(2100);expect(await page.evaluate(()=>[...(window as any).feelScene.popped])).toEqual(data.popped);await expect(page.locator('#victory-effects')).toHaveCount(0);

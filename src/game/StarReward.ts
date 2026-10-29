@@ -1,3 +1,4 @@
+import {starGlyph} from './VictoryUI';
 type Options={earned:number;delta:number;before:number;total:number;reduced:boolean};
 /** Pure presentation. The best result has already been saved before this starts. */
 export class StarReward{
@@ -19,7 +20,7 @@ export class StarReward{
     this.cancel();this.total=total;
     const target=document.getElementById('star-bank')!;
     const items=Array.from({length:3},(_,i)=>{
-      const e=document.createElement('span');e.className='result-star';e.textContent=i<earned?'★':'☆';
+      const e=starGlyph(i,i<earned,'result-star');
       e.setAttribute('aria-hidden','true');this.result.append(e);return e;
     });
     // replace the static text, retaining the accessible label on the parent.
@@ -30,7 +31,7 @@ export class StarReward{
     const tick=(now:number)=>{
       const elapsed=now-start;
       for(let i=0;i<3;i++){
-        if(elapsed>=(reduced?80:380)+i*(reduced?70:150)&&!revealed.has(i)){
+        if(elapsed>=(reduced?80:420)+i*(reduced?70:120)&&!revealed.has(i)){
           revealed.add(i);items[i].classList.add('lit');
           if(!reduced&&i<earned)this.animations.push(items[i].animate([{transform:'scale(.45) rotate(-18deg)',opacity:0},{transform:'scale(1.24) rotate(5deg)',opacity:1,offset:.65},{transform:'scale(1)',opacity:1}],{duration:280,easing:'ease-out'}));
         }

@@ -40,6 +40,7 @@ public class FeelHapticsPlugin extends Plugin {
                 case "victoryRise": duration=50;amplitude=220;break;
                 case "victoryPeak": duration=65;amplitude=255;break;
             }
+            if (Boolean.TRUE.equals(call.getBoolean("heavy", false))) {duration=Math.min(90,Math.round(duration*1.35f));amplitude=Math.min(255,Math.round(amplitude*1.15f));}
             if (Build.VERSION.SDK_INT >= 26) v.vibrate(VibrationEffect.createOneShot(duration, v.hasAmplitudeControl() ? amplitude : VibrationEffect.DEFAULT_AMPLITUDE));
             else v.vibrate(duration);
             call.resolve();

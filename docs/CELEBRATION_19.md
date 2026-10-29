@@ -1,0 +1,12 @@
+# Celebration pass 0.19
+
+Scope: six screenshot-review requests after 0.18. Level rules, witnesses, rating thresholds, rewarded access and save format are unchanged.
+
+- The large goal starts at the top of the upper ordinary row and ends at the bottom of the lower row. The same calculation applies to a single row in landscape; its wider body still distinguishes the receiver. The fraction counter is removed. The colour tint, required-colour mark, crystal support and plain-language objective remain.
+- Goal completion and its victory pop carry a heavy haptic flag: pulse duration ×1.35 (maximum 90 ms), amplitude ×1.15 (maximum 255). Ordinary events keep their previous parameters. App/system settings and background cancellation remain effective. Actual motor strength still requires phone testing.
+- The goal fountain is wider, with 96 larger droplets instead of 64 normal droplets, and a wider spread. Apex bounds remain screen-aware.
+- Other filled bottles begin popping 220 ms after the final pour ends, 150 ms apart. The last receiver pops last, no earlier than 620 ms, after its three fill beats. Each fountain lives across following pops. Word entry starts after 120 ms, stars reveal at 420/540/660 ms, collection starts at 1050 ms, and the Continue highlight breathes from 800 ms. These effects deliberately overlap. Continue is immediately usable.
+- Victory letters have independent entrance and idle wrappers: staggered bouncing entry, then a small phase-shifted vertical wave. Stars enter with a twist and overshoot, then sway and brighten. The button pulses through light and a halo, preserving stable hit bounds. Reduced motion removes continuous loops and large entrances.
+- The dry rating sentence is replaced by a three-star potential-reward control. Crossing a move threshold dims the corresponding star; Undo restores it. Tapping the control reveals exact rules. This preview reflects accepted moves against the existing thresholds, not an extra solver prediction of the remaining path.
+
+Validation covers ordinary and goal levels, three screen sizes, live/reduced motion, overlapping cues, heavy goal events, safe navigation, potential-star loss and restoration, accessible conditions, and all existing persistence/advertising regressions. Production screenshots come from actual game inputs; screenshot capture completes finite CSS entrances, so static screenshots show the readable result rather than every intermediate letter pose.

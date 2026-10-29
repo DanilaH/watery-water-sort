@@ -20,7 +20,7 @@ test('goal fill remains tall, completes once, records exact stars; next and repl
  await seed(page,12,levels[12].witness.length-1);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),f=m.WaterScene.prototype.animate;m.WaterScene.prototype.animate=function(...args:any[]){(window as any).giantScene=this;return f.apply(this,args);};});
  const last=levels[12].witness.at(-1)!;await move(page,last.from,last.to);await expect(page.locator('#continue')).toBeVisible();await expect(page.locator('#earned-stars')).toHaveText('★★★');
  const s=await saved(page);expect(attempt(s).board[0]).toHaveLength(8);expect(s.best[levelKey(12)].history).toHaveLength(4);
- const sizes=await page.evaluate(()=>{const s=(window as any).giantScene,ps=s.positions();return {goal:ps[0].h,normal:ps[1].h,slots:s.slots};});expect(sizes.goal).toBeGreaterThan(sizes.normal*1.25);
+ const sizes=await page.evaluate(()=>{const s=(window as any).giantScene,ps=s.positions();return {goal:ps[0].h,top:ps[0].y,bankTop:Math.min(...ps.slice(1).map((p:any)=>p.y)),bankBottom:Math.max(...ps.slice(1).map((p:any)=>p.y+p.h)),slots:s.slots};});expect(sizes.top).toBeCloseTo(sizes.bankTop,5);expect(sizes.top+sizes.goal).toBeCloseTo(sizes.bankBottom,5);
  await page.waitForTimeout(1700);const after=await page.evaluate(()=>(window as any).giantScene.positions()[0].h);expect(after).toBe(sizes.goal);
  await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 14');await page.locator('#menu').click();await page.locator('#home-levels').click();await page.locator('.levels button').nth(12).click();expect(attempt(await saved(page)).board[0]).toEqual([]);expect((await saved(page)).best[levelKey(12)].history).toHaveLength(4);
 });

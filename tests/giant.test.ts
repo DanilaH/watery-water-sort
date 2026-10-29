@@ -32,9 +32,9 @@ test('exploratory goal moves conserve units and every accepted transfer reverses
  let b=levels[15].initial,seed=43;const g=levels[15].goal!,counts=b.flat().sort().join();
  for(let i=0;i<500;i++){const options=moves(b,g);if(!options.length||won(b,g)){b=levels[15].initial;continue;}seed=(Math.imul(seed,1664525)+1013904223)>>>0;const m=options[seed%options.length],next=apply(b,m,g);expect(validBoard(next,g)).toBe(true);expect(next.flat().sort().join()).toBe(counts);expect(reverse(next,m,g)).toEqual(b);b=next;}
 });
-test('all new bank layouts retain separated 48px targets and a visibly taller goal',()=>{
+test('goal matches the top and bottom of the bank and keeps separated 48px targets',()=>{
  for(const [w,h]of [[288,247],[358,542],[384,220],[420,176]])for(const count of [5,6,7,8]){
-  const ps=goalLayout(w,h,count,0);expect(ps[0].h).toBeGreaterThan(Math.max(...ps.slice(1).map(p=>p.h))*1.25);
+  const ps=goalLayout(w,h,count,0);expect(ps[0].y).toBeCloseTo(Math.min(...ps.slice(1).map(p=>p.y)),6);expect(ps[0].y+ps[0].h).toBeCloseTo(Math.max(...ps.slice(1).map(p=>p.y+p.h)),6);
   for(const p of ps){expect(p.hitW).toBeGreaterThanOrEqual(48);expect(p.hitH).toBeGreaterThanOrEqual(48);expect(p.x-p.hitW/2).toBeGreaterThanOrEqual(0);expect(p.x+p.hitW/2).toBeLessThanOrEqual(w);}
   for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){const a=ps[i],b=ps[j];expect(Math.abs(a.x-b.x)>=(a.hitW+b.hitW)/2||Math.abs(a.y+a.h/2-b.y-b.h/2)>=(a.hitH+b.hitH)/2).toBe(true);}
  }

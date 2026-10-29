@@ -7,7 +7,7 @@ const SIGNS=['●','▲','◆','✚','♥','★','■','✦'];
 type Pose={x:number;y:number;w:number;h:number};
 type Layer={color:number;amount:number};
 type Flight=Move & {before:Board;start:number;duration:number;timing:ReturnType<typeof pourTiming>;received:boolean;lifted:number;plan:PourPlan};
-type Burst={index:number;start:number;color:number;final:boolean;sealed?:boolean;phase?:number;fired?:boolean;order?:number};
+type Burst={index:number;start:number;color:number;final:boolean;sealed?:boolean;phase?:number;fired?:boolean;order?:number;heavy?:boolean};
 type SymbolMark={x:number;y:number;text:string;size:number;colour?:string};
 type TubeCache={key:string;commands:number[];poly:Point[];symbols:SymbolMark[]};
 type Particle={x:number;y:number;vx:number;vy:number;life:number;age:number;color:number;size:number;spin:number};
@@ -49,8 +49,8 @@ export class WaterScene extends Phaser.Scene {
   onComplete:()=>void=()=>{};
   onReceive:()=>void=()=>{};
   onSeal:()=>void=()=>{};
-  onPhase:(phase:number)=>void=()=>{};
-  onFinale:(order:number)=>void=()=>{};
+  onPhase:(phase:number,heavy:boolean)=>void=()=>{};
+  onFinale:(order:number,heavy:boolean)=>void=()=>{};
   create(){
     this.root=this.add.container(0,0).setScale(this.density);
     this.ink=this.add.graphics();this.fx=this.add.graphics().setDepth(4);this.root.add([this.ink,this.fx]);
@@ -93,16 +93,16 @@ export class WaterScene extends Phaser.Scene {
     const r=this.positions()[index];if(!r)return;
     const color=COLORS[this.board[index]?.[0]??0],now=performance.now();this.corkOpen.set(index,0);
     if(final){
-      // Finish the receiver's three beats before popping each bottle in reading order.
-      const order=this.board.map((_,i)=>i).filter(i=>sealedTube(this.board,i,this.goal)).sort((a,b)=>this.positions()[a].y-this.positions()[b].y||this.positions()[a].x-this.positions()[b].x);
-      order.forEach((i,n)=>this.bursts.push({index:i,start:now+800+n*200,color:COLORS[this.board[i][0]],final:true,order:n}));
+      // Other bottles begin while the receiver seals. Its own pop follows its third beat.
+      const order=this.board.map((_,i)=>i).filter(i=>i!==index&&sealedTube(this.board,i,this.goal)).sort((a,b)=>this.positions()[a].y-this.positions()[b].y||this.positions()[a].x-this.positions()[b].x);order.push(index);
+      order.forEach((i,n)=>this.bursts.push({index:i,start:now+Math.max(i===index?620:0,220+n*150),color:COLORS[this.board[i][0]],final:true,order:n,heavy:i===this.goal?.index}));
       return;
     }
-    this.bursts.push({index,start:now,color,final,phase:0});
-    this.onPhase(0);
-    for(let n=0;n<(this.reduced?0:final?28:18);n++){
-      const theta=Math.PI*2*n/(final?28:18),speed=35+Math.random()*90;
-      this.particles.push({x:r.x,y:r.y+r.h*.43,vx:Math.cos(theta)*speed,vy:Math.sin(theta)*speed-60,age:0,life:.45+Math.random()*.4,color:n%3?color:0xfff0bc,size:2+Math.random()*2,spin:Math.random()*6});
+    const heavy=index===this.goal?.index;this.bursts.push({index,start:now,color,final,phase:0,heavy});
+    this.onPhase(0,heavy);
+    for(let n=0;n<(this.reduced?0:heavy?30:18);n++){
+      const theta=Math.PI*2*n/(heavy?30:18),speed=35+Math.random()*90;
+      this.particles.push({x:r.x,y:r.y+r.h*.43,vx:Math.cos(theta)*speed,vy:Math.sin(theta)*speed-60,age:0,life:.45+Math.random()*.4,color:n%3?color:0xfff0bc,size:(2+Math.random()*2)*(heavy?1.4:1),spin:Math.random()*6});
     }
     this.particles=this.particles.slice(-100);
 
@@ -157,7 +157,6 @@ export class WaterScene extends Phaser.Scene {
       g.lineStyle(3,colour,.7);g.strokePoints(poly,true);
       if(!layers.length){this.polygon(poly,colour,.065);g.fillStyle(colour,.35);g.fillCircle(r.x,r.y+h*.46,r.w*.2);if(this.symbols)this.textMark({x:r.x,y:r.y+h*.46,text:SIGNS[this.goal!.color],size:Math.min(22,r.w*.4)},this.light?'#18294a':'#e6f7ff');}
       if(!completed&&r.y>=40)this.textMark({x:r.x,y:r.y-19,text:'ЦЕЛЬ',size:10},this.light?'#35527b':'#c6ddff');
-      this.textMark({x:r.x,y:r.y+h+23,text:`${Math.round(layers.reduce((v,l)=>v+l.amount,0))} / 8`,size:12},this.light?'#35527b':'#c6ddff');
       for(let k=1;k<8;k++){const y=r.y+h*(1-k*LIQUID_FILL/8);g.lineStyle(1,0xffffff,.3);g.lineBetween(r.x+r.w*.28,y,r.x+r.w*.43,y);}
       const burst=this.bursts.find(b=>b.index===index&&!b.final),age=burst?now-burst.start:10000;
       const p=completed?Math.min(1,age/650):0;
@@ -288,14 +287,14 @@ export class WaterScene extends Phaser.Scene {
       }
     }
     // If a completed vessel is immediately reused, it must not seal an empty slot.
-    this.bursts=this.bursts.filter(b=>b.final||sealedTube(this.board,b.index,this.goal));
+    this.bursts=this.bursts.filter(b=>b.final||!this.popped.has(b.index)&&sealedTube(this.board,b.index,this.goal));
     for(const b of this.bursts){
       const age=now-b.start;
       if(!b.final){
         const phase=age>=570?2:age>=260?1:0;
-        if(phase>(b.phase??0)){b.phase=phase;if(!this.busyTube(b.index)&&this.selected!==b.index)this.onPhase(phase);}
+        if(phase>(b.phase??0)){b.phase=phase;if(!this.busyTube(b.index)&&this.selected!==b.index)this.onPhase(phase,!!b.heavy);}
         if(!b.sealed&&age>=570){b.sealed=true;if(!this.busyTube(b.index)&&this.selected!==b.index)this.onSeal();}
-      }else if(age>=0&&!b.fired){b.fired=true;this.popped.add(b.index);this.onFinale(b.order??0);}
+      }else if(age>=0&&!b.fired){b.fired=true;this.popped.add(b.index);this.onFinale(b.order??0,!!b.heavy);}
     }
     this.overlay.draw(this.bursts.filter(b=>b.final),poses,now,this.reduced);
     this.bursts=this.bursts.filter(b=>now-b.start<(b.final?1900:900));

@@ -12,6 +12,7 @@ import {Rewarded,type Receipt} from './platform/rewarded';
 import {THEMES,themeFor} from './core/themes';
 import type { Result } from './core/solver';
 import {TouchFeedback,type Touch} from './platform/haptics';
+import {renderVictoryTitle,renderResultStars,renderPotentialStars} from './game/VictoryUI';
 import {StarReward} from './game/StarReward';
 import {totalStars} from './core/progress';
 import {isHard} from './core/difficulty';
@@ -35,8 +36,8 @@ const blockers=new Set<string>();
 let atHome=true,rewardBusy=false;
 const rewarded=new Rewarded();let pendingReceipt:Receipt|undefined;
 const hasStarted=()=>Object.keys(state.attempts).length>0||state.completed.length>0;
-function haptic(event:Touch='select'){touch.enabled=state.settings.haptics!==false;touch.blocked=event==='ui'?[...blockers].some(b=>b!=='home'&&b!=='dialog'):blockers.size>0;touch.play(event);}
-function message(text:string,important=false){$('status').textContent=important?text:recoveryNotice||text;}
+function haptic(event:Touch='select',heavy=false){touch.enabled=state.settings.haptics!==false;touch.blocked=event==='ui'?[...blockers].some(b=>b!=='home'&&b!=='dialog'):blockers.size>0;touch.play(event,heavy);}
+function message(text:string,important=false){const value=important?text:recoveryNotice||text;$('status').textContent=value;$('objective').hidden=!!value||!goalFor(state)||document.body.classList.contains('finished');}
 function guidance(){
  if(won(attempt(state).board,goalFor(state)))return 'Все цвета собраны';
  if(queued)return 'Следующий ход выбран · фон — отмена';
@@ -44,7 +45,7 @@ function guidance(){
  if(!scene.busy&&!moves(attempt(state).board,goalFor(state)).length)return 'Нет доступных ходов';
  if(scene.hintMove)return 'Перелей в колбу со стрелкой';
  if(scene.selected!==null)return scene.busy?'Следующий ход: выбери цель':'Выбери пустую или с тем же цветом сверху';
- if(goalFor(state)&&attempt(state).history.length===0)return 'Из большой колбы обратно не льётся.';
+ if(goalFor(state)&&attempt(state).history.length===0)return '';
  if(state.current===0&&attempt(state).history.length===0)return 'Выбери цветную колбу, затем пустую';
  if(state.current<2)return 'Одинаковые верхние слои льются вместе';
  return '';
@@ -71,15 +72,15 @@ function paint(){
  ($('undo') as HTMLButtonElement).disabled=!a.history.length;
  ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
  $('symbols').setAttribute('aria-pressed',String(state.settings.symbols));
- const objective=goalFor(state);$('objective').hidden=finished||!objective;$('objective').textContent=objective?`Собери ${['голубую','жёлтую','фиолетовую','зелёную','розовую','синюю','лимонную','оранжевую'][objective.color]} жидкость в большую колбу`:'';
- const target=targets(levelKey(state.current));$('star-target').hidden=finished;$('star-target').textContent=`Три звезды — не больше ${target.three} ходов; две — ${target.two}.`;
- $('earned-stars').hidden=!finished;const earned=stars(levelKey(state.current),a.history.length);if(!finished||!$('earned-stars').classList.contains('revealing-stars'))$('earned-stars').textContent='★'.repeat(earned)+'☆'.repeat(3-earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
+ const objective=goalFor(state);$('objective').hidden=finished||!objective||!!$('status').textContent;$('objective').textContent=objective?`Собери ${['голубую','жёлтую','фиолетовую','зелёную','розовую','синюю','лимонную','оранжевую'][objective.color]} жидкость в большую колбу`:'';
+ $('star-target').hidden=finished;($('star-target') as HTMLButtonElement).disabled=scene.busy;renderPotentialStars($('star-target'),stars(levelKey(state.current),a.history.length));
+ $('earned-stars').hidden=!finished;const earned=stars(levelKey(state.current),a.history.length);if(!finished||!$('earned-stars').classList.contains('revealing-stars'))renderResultStars($('earned-stars'),earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
  const extra=$('extra-tube');extra.hidden=atHome||!offerExtra(state)||won(a.board,goalFor(state));(extra as HTMLButtonElement).disabled=scene.busy||rewardBusy;
  if(offerExtra(state)){const r=scene.positions().at(-1)!;Object.assign(extra.style,{left:`${r.x-r.hitW/2}px`,top:`${r.y+r.h/2-r.hitH/2}px`,width:`${r.hitW}px`,height:`${r.hitH}px`});extra.style.setProperty('--vessel-width',(r.w+4)+'px');extra.style.setProperty('--vessel-height',(r.h+4)+'px');const glass=extra.querySelector<SVGSVGElement>('.locked-vessel')!;glass.setAttribute('viewBox',`0 0 ${r.w+4} ${r.h+4}`);const radius=r.w/2;glass.innerHTML=`<path d="M2 2h${r.w}v${r.h-radius}a${radius} ${radius} 0 0 1-${r.w} 0Z" fill="currentColor" fill-opacity=".06" stroke="currentColor" stroke-width="1.5"/><ellipse cx="${radius+2}" cy="2" rx="${radius}" ry="2" stroke="currentColor"/><path d="M6 10v${r.h*.64}" stroke="white" stroke-opacity=".42" stroke-width="2"/><g transform="translate(${radius+2} ${r.h*.5})"><path d="M-${radius-2} -17L${radius-2} 17M-${radius-2} 17L${radius-2} -17" stroke="currentColor" stroke-width="4" stroke-dasharray="5 3"/><rect x="-9" y="-6" width="18" height="16" rx="3" fill="currentColor"/><path d="M-5 -6v-5a5 5 0 0 1 10 0v5" stroke="currentColor" stroke-width="2.5"/></g>`;}
  $('continue').hidden=!finished;
  $('rescue').hidden=finished||scene.busy||!(deadRevision===state.revision||!moves(a.board,goalFor(state)).length);
  $('continue').textContent=state.current===levels.length-1?'К уровням →':'Дальше →';
- $('finish-title').hidden=!finished;$('finish-title').textContent=state.current===levels.length-1?'Пройдено!':earned===3?'Идеально!':'Получилось!';
+ $('finish-title').hidden=!finished;renderVictoryTitle($('finish-title'),state.current===levels.length-1?'Пройдено!':earned===3?'Идеально!':'Получилось!');
  if(finished)message(`Ходов: ${a.history.length} · рекорд: ${state.best?.[levelKey(state.current)]?.history.length??a.history.length}`);
 }
 function close(){if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;dialog.close();block('dialog',false);message(guidance());}
@@ -152,8 +153,8 @@ scene.onReceive=()=>{
  if(!won(attempt(state).board,goalFor(state)))audio.finish(false);else audio.fill();
 };
 scene.onSeal=()=>{if(!blockers.size&&!won(attempt(state).board,goalFor(state)))audio.seal();};
-scene.onPhase=phase=>haptic(phase===0?'color':phase===1?'colorRise':'colorSeal');
-scene.onFinale=order=>{audio.seal();haptic(order===0?'victory':order===1?'victoryRise':'victoryPeak');};
+scene.onPhase=(phase,heavy)=>haptic(phase===0?'color':phase===1?'colorRise':'colorSeal',heavy);
+scene.onFinale=(order,heavy)=>{audio.seal();haptic(order===0?'victory':order===1?'victoryRise':'victoryPeak',heavy);};
 scene.onComplete=()=>{
  const board=attempt(state).board;
  if(kind==='undo'){audio.land();paint();message(guidance());drainQueue();return;}
@@ -219,6 +220,7 @@ function askExtra(){
  modal('Дополнительная колба','Добавит место для переливания. Текущие ходы сохранятся.',[{label:pendingReceipt?'Получить колбу':'Смотреть рекламу',primary:true,action:()=>{void watchForTube();}},{label:'Позже',action:close}]);
 }
 $('extra-tube').onclick=askExtra;
+$('star-target').onclick=()=>{const t=targets(levelKey(state.current));modal('Звёзды за уровень',`★★★ — не больше ${t.three} ходов. ★★ — не больше ${t.two}. ★ — за любое прохождение. Отмена хода возвращает и шанс на звезду.`,[{label:'Понятно',primary:true,action:close}]);};
 async function recoverRewards(){
  try{const receipts=await rewarded.pending();if(!receipts.length)return;block('reward',true);for(const r of receipts){if(!await applyReceipt(r)){pendingReceipt=r;break;}}}
  catch{/* Offline/native bridge unavailability never blocks playing. */}

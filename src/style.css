@@ -168,3 +168,26 @@ body.packed-board.finished .result-heading{gap:0 4px}
 body.packed-board.finished #finish-title{font-size:20px;line-height:1}
 body.packed-board.finished #earned-stars{font-size:24px;line-height:1}
 body.packed-board.finished #status{font-size:10px;line-height:12px;margin-top:2px}
+/* Potential reward is a tactile star cluster, with exact rules available on tap. */
+body:not(.finished) #feedback>div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;width:100%}
+body:not(.finished) #feedback .result-heading{display:none}
+body:not(.finished) #objective,body:not(.finished) #status{grid-column:1;grid-row:1;text-align:left;margin:0}
+body #star-target{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:center;gap:3px;min-width:100px;min-height:48px;padding:0 5px;margin:0;border:0;background:transparent;box-shadow:none;color:#ffd658;font-size:29px;line-height:1;filter:drop-shadow(0 2px 0 #805016)}
+body #star-target:disabled{opacity:1}body #star-target[hidden]{display:none}body #star-target:active{transform:scale(.96);box-shadow:none}
+.potential-star{display:inline-block;transition:color 180ms,opacity 180ms;transform-origin:center}
+.potential-star[data-filled=false]{color:var(--muted);opacity:.38;filter:none}
+.star-lost{animation:star-lost 440ms cubic-bezier(.2,.8,.3,1)}
+@keyframes star-lost{0%{transform:scale(1.25) rotate(0)}40%{transform:scale(.7) rotate(-15deg)}70%{transform:scale(1.04) rotate(6deg)}100%{transform:scale(1) rotate(0)}}
+/* Each word has one entrance and a continuing, phase-shifted wave. */
+.victory-letter,.victory-letter-wave,.star-spark{display:inline-block}
+body.finished .victory-letter{animation:letter-arrive 470ms cubic-bezier(.2,.8,.25,1) both;animation-delay:calc(120ms + var(--i)*28ms)}
+body.finished .victory-letter-wave{animation:letter-wave 1900ms ease-in-out infinite;animation-delay:calc(620ms + var(--i)*-85ms)}
+@keyframes letter-arrive{0%{opacity:0;transform:translateY(14px) scale(.35) rotate(-12deg)}55%{opacity:1;transform:translateY(-5px) scale(1.12) rotate(4deg)}80%{transform:translateY(2px) scale(.98)}100%{opacity:1;transform:none}}
+@keyframes letter-wave{0%,100%{transform:translateY(1px)}50%{transform:translateY(-3px)}}
+body.finished .result-star[data-filled=true] .star-spark{animation:star-idle 2350ms ease-in-out infinite;animation-delay:calc(var(--i)*-410ms)}
+@keyframes star-idle{0%,100%{transform:translateY(0) rotate(-4deg) scale(1);filter:brightness(1)}45%{transform:translateY(-3px) rotate(6deg) scale(1.06);filter:brightness(1.25)}70%{transform:translateY(1px) rotate(-2deg) scale(.99);filter:brightness(1)}}
+body.finished #continue{animation:continue-breathe 2100ms ease-in-out 800ms infinite;transform-origin:center}
+@keyframes continue-breathe{0%,100%{filter:brightness(1);box-shadow:inset 0 2px 0 #ffffff50,0 4px 0 var(--accent-edge),0 0 0 0 #c8ff7933}50%{filter:brightness(1.1);box-shadow:inset 0 2px 0 #ffffff70,0 4px 0 var(--accent-edge),0 0 0 4px #c8ff7922,0 0 18px #c8ff7922}}
+body.light #star-target{color:#b66b00;filter:none}
+@media(max-width:350px),(orientation:landscape) and (max-height:550px){body #star-target{min-width:86px;font-size:25px;gap:2px}body:not(.finished) #feedback>div{gap:7px}}
+@media(prefers-reduced-motion:reduce){body.finished .victory-letter,body.finished .victory-letter-wave,body.finished .result-star .star-spark,body.finished #continue,.star-lost{animation:none!important}body #star-target,.potential-star{transition:none}body.finished .victory-letter{opacity:1;transform:none}}
