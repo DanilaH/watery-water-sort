@@ -1,0 +1,27 @@
+[
+  {
+    "path": "normal-390x844-pop.webp",
+    "bytes": 23128,
+    "sha256": "9f09dcf7d2d63594d57b53ec5294cb68a317f49c60d85c9c2f9bc54e82ca4f2a"
+  },
+  {
+    "path": "preview.webp",
+    "bytes": 54032,
+    "sha256": "0e2ed929cdf830cfc1a4eafd330287f9f7ac077a98f567c56441e1af751df6e5"
+  },
+  {
+    "path": "advertising-390x844.webp",
+    "bytes": 16302,
+    "sha256": "780ec41c0e07ee6f12708954ef77b022897fb27eaa455f67889d4a2d95308e8d"
+  },
+  {
+    "path": "objective-320x480.webp",
+    "bytes": 15598,
+    "sha256": "1c7fb5359d7d08880c77b90a99de76e78dc2b583202e6f2a4ba6c594ab4841ec"
+  },
+  {
+    "path": "goal-320x480-result.webp",
+    "bytes": 14102,
+    "sha256": "e28b1d6e39b946ef76e83054327786835a2160ea1d5cc4198b8adcae3f93cb9c"
+  }
+]

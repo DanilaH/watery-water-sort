@@ -1,0 +1,483 @@
+{
+  "head": "c31bca1052d4edfd95c23b376441027b68548c7d",
+  "dist": [
+    {
+      "path": "index.html",
+      "sha256": "491a783e8b01a47036c5a6583bb0df44d22c31dedd086b6a72a4dc3b0130eaf2"
+    },
+    {
+      "path": "art/night-shore.svg",
+      "sha256": "941fa1cb1e043fcf4aeb2ecc9a788486b32d5f878238843391c77e74244a2607"
+    },
+    {
+      "path": "assets/index-B0piDZrE.js",
+      "sha256": "8a2c534538a2677e5df10eb87fab150a32b11e4fe895be22698ad26fb801cd07"
+    },
+    {
+      "path": "assets/index-CNUEp2qB.css",
+      "sha256": "77211da9bdb8dbc962d6f290a0fb0ed78dcb1af9134bbaf67c665fdc8a92a942"
+    },
+    {
+      "path": "assets/phaser-DFK5Ua9d.js",
+      "sha256": "f9025c1a29bc3ae097dd886ce07717b297466da1ce8f032c8294252ce6cf5cdb"
+    },
+    {
+      "path": "assets/solver.worker-BP69J42O.js",
+      "sha256": "d3a65e98bca9773c76a975839517403479ae841b9287d6d8ffb3ed68490bec7b"
+    },
+    {
+      "path": "assets/web-CZNAcO5d.js",
+      "sha256": "c67cade2a83cfe030d9baac440778c98303e347813d3747a2c658112601542d3"
+    },
+    {
+      "path": "audio/accept.ogg",
+      "sha256": "c70c62a52af1eccfd8bc707f15089ef2a66dd369910b7299f8a078a127c029bb"
+    },
+    {
+      "path": "audio/collect.ogg",
+      "sha256": "a99bbf77dbd37e6bf4389bf9de8bb463699d0a963e06fa40b936625453c8dca3"
+    },
+    {
+      "path": "audio/complete.ogg",
+      "sha256": "b3e100ec12a14c041d634854a4b3509f0d645dba777d93ffb9a4d5a95cdf4a68"
+    },
+    {
+      "path": "audio/cork.ogg",
+      "sha256": "a39d8974aeb0b5329692ce576d36c1894c3e3bf382732b84ac81cda6f31ad13d"
+    },
+    {
+      "path": "audio/hint.ogg",
+      "sha256": "b49a4494c240c2ad5540518ec6f1484fb30aa939f17a1ef67edaf3d9a75b5706"
+    },
+    {
+      "path": "audio/land.ogg",
+      "sha256": "8625c1350d5b210820fa0b5410f9c1d4dfbafc30579a62276e608617ea5335cd"
+    },
+    {
+      "path": "audio/material-report.json",
+      "sha256": "0e86df040d00a4065ab8d91f392923a75a73a467ebb95d7ef031fa9e4e6c1e94"
+    },
+    {
+      "path": "audio/mix-report.json",
+      "sha256": "d3b4be8ca0409d8130666f58c8c7a0a983d3c4ffbe1865ea3af5869db04eb5bf"
+    },
+    {
+      "path": "audio/pour-1.ogg",
+      "sha256": "718d64ba1234e434cc0ff1393f46a3a801c141bd12267482bde903decba7a5a9"
+    },
+    {
+      "path": "audio/pour-2.ogg",
+      "sha256": "8bd48b2c02c3e36c61e69aee7d0d0702f3518822b26069c5624c114082057fa5"
+    },
+    {
+      "path": "audio/pour-3.ogg",
+      "sha256": "94d6906a9c91c267c951cd8e1c558f0eb92dc68a278447dc4d66e59474d62ee9"
+    },
+    {
+      "path": "audio/reject.ogg",
+      "sha256": "16280f9ee8cf79988e711cb0e39e726bc4c9b391918533595d19bfb75094c4cf"
+    },
+    {
+      "path": "audio/select.ogg",
+      "sha256": "e3051890837463871425d073a8249570b22da3b000e215a1daf4472aea718df1"
+    },
+    {
+      "path": "audio/victory.ogg",
+      "sha256": "7e22b78ed658dd5d007f7d58dabbc88c69370aa5acffd3eabbafb37cd4d322ba"
+    },
+    {
+      "path": "fonts/OFL-Rubik.txt",
+      "sha256": "3cb6a6084f5d942a8f3b5fda0f6a90dde18d7f7f1798886f4043d18f8c1a811e"
+    },
+    {
+      "path": "fonts/rubik.woff",
+      "sha256": "046fdb74c56ba506461ac26e36143db27b6f3f78347487fbb6ec1a806548bde9"
+    }
+  ],
+  "images": [
+    {
+      "path": "advertising-320x480.png",
+      "sha256": "55eba73107c9ecc4334e915d4de64301790b40cf56402fcddef4df2eec04e669"
+    },
+    {
+      "path": "advertising-390x844.png",
+      "sha256": "d3b74c3cf7b9560cb0c53e515aee61fa846aa2485aee11a975fc8b3b6d4b4f85"
+    },
+    {
+      "path": "goal-320x480-pop.png",
+      "sha256": "4b839f8d9173c8d48dd3457733ab6f8d92f79d6ab6f68ad99b7e795455c6b174"
+    },
+    {
+      "path": "goal-320x480-result.png",
+      "sha256": "839bd535e8fb549f7fcc0089e2261fc7a12c99e4f77d6ded8cd315b45ed92128"
+    },
+    {
+      "path": "goal-390x844-pop.png",
+      "sha256": "542f4a0d127553e217cea06246840c05281397facba99072464dbe35a38ac244"
+    },
+    {
+      "path": "goal-390x844-result.png",
+      "sha256": "500b9957e567cc65576c236722ef76d03b78a7552460f0cf58e610be80674205"
+    },
+    {
+      "path": "goal-568x320-pop.png",
+      "sha256": "e110ff32a5f509a85436f572baa1c9b3fe7d6b2afdfebb64834115e3f7839277"
+    },
+    {
+      "path": "goal-568x320-result.png",
+      "sha256": "063d65da3c277d975e505741c6b9cc47a077ddf8d51856badbc5d8d7d19a4d71"
+    },
+    {
+      "path": "normal-320x480-pop.png",
+      "sha256": "6b3681cf698d9d0b8a1b22d11c1be035b1ff902d1d44e6cbf7a57c0ba0c6ba7c"
+    },
+    {
+      "path": "normal-320x480-result.png",
+      "sha256": "981b6b20f3f5c2768d28a09c7c2b07172b4cc8600c1b6cc75b3b938c0544257d"
+    },
+    {
+      "path": "normal-390x844-pop.png",
+      "sha256": "dc4613ad624185354106e974c64e406f83d62040478f37366970f8f5f8f6d9a5"
+    },
+    {
+      "path": "normal-390x844-result.png",
+      "sha256": "2548167114b481d486b68d5f9af67f518ed4107b41404c5e7fc8ed5d92e7c5ba"
+    },
+    {
+      "path": "normal-568x320-pop.png",
+      "sha256": "47e011172d8aa3bb10ae4df1f21c34c08f8591f6bcfa0bf38e4d1d890cd956e5"
+    },
+    {
+      "path": "normal-568x320-result.png",
+      "sha256": "891d8b351aa9a5a6c804b4edee7bea1203c6daad092bb0a99ec8cb063fd9b901"
+    },
+    {
+      "path": "objective-320x480.png",
+      "sha256": "1a5dcbe94a786f72d150ad75ed92766d704b8a6895d48c6c9462bd01b84ef234"
+    },
+    {
+      "path": "objective-390x844.png",
+      "sha256": "a3738edccf7725b6ed929bd953afc87c84976053bbbf7a1275daee7cda68921b"
+    }
+  ],
+  "evidence": [
+    {
+      "name": "normal-390x844",
+      "boxes": {
+        "board": {
+          "x": 16,
+          "y": 108,
+          "width": 358,
+          "height": 516,
+          "bottom": 624,
+          "right": 374
+        },
+        "feedback": {
+          "x": 16,
+          "y": 624,
+          "width": 358,
+          "height": 104,
+          "bottom": 728,
+          "right": 374
+        },
+        "finish-title": {
+          "x": 18,
+          "y": 633.15625,
+          "width": 143.921875,
+          "height": 29.390625,
+          "bottom": 662.546875,
+          "right": 161.921875
+        },
+        "earned-stars": {
+          "x": 18,
+          "y": 664.546875,
+          "width": 95.0625,
+          "height": 32,
+          "bottom": 696.546875,
+          "right": 113.0625
+        },
+        "continue": {
+          "x": 256.421875,
+          "y": 650,
+          "width": 115.578125,
+          "height": 48,
+          "bottom": 698,
+          "right": 372
+        },
+        "undo": {
+          "x": 68,
+          "y": 733,
+          "width": 62,
+          "height": 58,
+          "bottom": 791,
+          "right": 130
+        }
+      }
+    },
+    {
+      "name": "goal-390x844",
+      "boxes": {
+        "board": {
+          "x": 16,
+          "y": 108,
+          "width": 358,
+          "height": 516,
+          "bottom": 624,
+          "right": 374
+        },
+        "feedback": {
+          "x": 16,
+          "y": 624,
+          "width": 358,
+          "height": 104,
+          "bottom": 728,
+          "right": 374
+        },
+        "finish-title": {
+          "x": 18,
+          "y": 633.15625,
+          "width": 145.921875,
+          "height": 29.390625,
+          "bottom": 662.546875,
+          "right": 163.921875
+        },
+        "earned-stars": {
+          "x": 18,
+          "y": 664.546875,
+          "width": 95.0625,
+          "height": 32,
+          "bottom": 696.546875,
+          "right": 113.0625
+        },
+        "continue": {
+          "x": 237.421875,
+          "y": 650,
+          "width": 134.578125,
+          "height": 48,
+          "bottom": 698,
+          "right": 372
+        },
+        "undo": {
+          "x": 68,
+          "y": 733,
+          "width": 62,
+          "height": 58,
+          "bottom": 791,
+          "right": 130
+        }
+      }
+    },
+    {
+      "name": "normal-320x480",
+      "boxes": {
+        "board": {
+          "x": 16,
+          "y": 82,
+          "width": 288,
+          "height": 226,
+          "bottom": 308,
+          "right": 304
+        },
+        "feedback": {
+          "x": 16,
+          "y": 308,
+          "width": 288,
+          "height": 88,
+          "bottom": 396,
+          "right": 304
+        },
+        "finish-title": {
+          "x": 18,
+          "y": 313.78125,
+          "width": 117.734375,
+          "height": 24.140625,
+          "bottom": 337.921875,
+          "right": 135.734375
+        },
+        "earned-stars": {
+          "x": 18,
+          "y": 339.921875,
+          "width": 84.328125,
+          "height": 28,
+          "bottom": 367.921875,
+          "right": 102.328125
+        },
+        "continue": {
+          "x": 186.421875,
+          "y": 326,
+          "width": 115.578125,
+          "height": 48,
+          "bottom": 374,
+          "right": 302
+        },
+        "undo": {
+          "x": 45,
+          "y": 398,
+          "width": 58,
+          "height": 48,
+          "bottom": 446,
+          "right": 103
+        }
+      }
+    },
+    {
+      "name": "goal-320x480",
+      "boxes": {
+        "board": {
+          "x": 16,
+          "y": 82,
+          "width": 288,
+          "height": 226,
+          "bottom": 308,
+          "right": 304
+        },
+        "feedback": {
+          "x": 16,
+          "y": 308,
+          "width": 288,
+          "height": 88,
+          "bottom": 396,
+          "right": 304
+        },
+        "finish-title": {
+          "x": 18,
+          "y": 313.78125,
+          "width": 118.734375,
+          "height": 24.140625,
+          "bottom": 337.921875,
+          "right": 136.734375
+        },
+        "earned-stars": {
+          "x": 18,
+          "y": 339.921875,
+          "width": 84.328125,
+          "height": 28,
+          "bottom": 367.921875,
+          "right": 102.328125
+        },
+        "continue": {
+          "x": 167.421875,
+          "y": 326,
+          "width": 134.578125,
+          "height": 48,
+          "bottom": 374,
+          "right": 302
+        },
+        "undo": {
+          "x": 45,
+          "y": 398,
+          "width": 58,
+          "height": 48,
+          "bottom": 446,
+          "right": 103
+        }
+      }
+    },
+    {
+      "name": "normal-568x320",
+      "boxes": {
+        "board": {
+          "x": 90,
+          "y": 36,
+          "width": 380,
+          "height": 202,
+          "bottom": 238,
+          "right": 470
+        },
+        "feedback": {
+          "x": 90,
+          "y": 238,
+          "width": 380,
+          "height": 78,
+          "bottom": 316,
+          "right": 470
+        },
+        "finish-title": {
+          "x": 92,
+          "y": 253.25,
+          "width": 123.375,
+          "height": 25.1875,
+          "bottom": 278.4375,
+          "right": 215.375
+        },
+        "earned-stars": {
+          "x": 227.375,
+          "y": 251.84375,
+          "width": 84.328125,
+          "height": 28,
+          "bottom": 279.84375,
+          "right": 311.703125
+        },
+        "continue": {
+          "x": 376.09375,
+          "y": 251,
+          "width": 91.90625,
+          "height": 48,
+          "bottom": 299,
+          "right": 468
+        },
+        "undo": {
+          "x": 488,
+          "y": 72.5,
+          "width": 50,
+          "height": 48,
+          "bottom": 120.5,
+          "right": 538
+        }
+      }
+    },
+    {
+      "name": "goal-568x320",
+      "boxes": {
+        "board": {
+          "x": 90,
+          "y": 36,
+          "width": 380,
+          "height": 202,
+          "bottom": 238,
+          "right": 470
+        },
+        "feedback": {
+          "x": 90,
+          "y": 238,
+          "width": 380,
+          "height": 78,
+          "bottom": 316,
+          "right": 470
+        },
+        "finish-title": {
+          "x": 92,
+          "y": 253.25,
+          "width": 125.375,
+          "height": 25.1875,
+          "bottom": 278.4375,
+          "right": 217.375
+        },
+        "earned-stars": {
+          "x": 229.375,
+          "y": 251.84375,
+          "width": 84.328125,
+          "height": 28,
+          "bottom": 279.84375,
+          "right": 313.703125
+        },
+        "continue": {
+          "x": 358.09375,
+          "y": 251,
+          "width": 109.90625,
+          "height": 48,
+          "bottom": 299,
+          "right": 468
+        },
+        "undo": {
+          "x": 488,
+          "y": 72.5,
+          "width": 50,
+          "height": 48,
+          "bottom": 120.5,
+          "right": 538
+        }
+      }
+    }
+  ]
+}
