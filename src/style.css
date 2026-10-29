@@ -25,7 +25,7 @@ body button{font-family:Rubik,sans-serif;font-weight:650;border-radius:17px;bord
 body button:active:not(:disabled){transform:translateY(3px);box-shadow:inset 0 2px 0 #ffffff12,0 1px 0 var(--button-edge)}
 body button:disabled{opacity:.45;box-shadow:none}
 body button:focus-visible{outline:3px solid var(--accent);outline-offset:5px}
-body #app{padding-top:calc(14px + env(safe-area-inset-top));grid-template-rows:56px 38px minmax(0,1fr) 64px 96px 20px}
+body #app{padding-top:calc(14px + env(safe-area-inset-top));grid-template-rows:56px 38px minmax(0,1fr) 104px 96px 20px}
 body .game-header button{width:48px;height:48px;color:var(--text);background:var(--surface);border-radius:16px}
 body .game-header button svg{width:24px;height:24px}
 body .game-header h1{font:650 12px/1 Rubik,sans-serif;gap:7px;color:var(--muted)}
@@ -104,8 +104,8 @@ body dialog button:focus-visible{outline-color:#285bbc}body dialog input:focus-v
 @media(prefers-reduced-motion:reduce){.setting input:before{transition:none}}
 
 
-@media(orientation:portrait) and (max-height:600px){body #app{padding-top:max(4px,env(safe-area-inset-top));grid-template-rows:48px 30px minmax(0,1fr) 60px 80px 4px}body nav{gap:28px;padding-top:2px}body nav button{height:48px;width:58px;flex-basis:58px;border-radius:17px}body nav button span{top:58px;font-size:11px}body #status{font-size:12px}body #star-target{font-size:11px}body #finish-title{font-size:23px}body #earned-stars{font-size:17px}body .home-hero{height:165px;width:200px;margin-bottom:10px}body .home-content h1{font-size:37px}body .home-content p{font-size:12px;margin:12px 0 19px}body .home-actions{gap:17px 12px}body .home-actions #home-play{min-height:54px;font-size:19px}body .home-actions #home-levels,body .home-actions #home-settings{min-height:64px}}
-@media(orientation:landscape) and (max-height:550px){body #app{padding-top:max(4px,env(safe-area-inset-top));grid-template-columns:70px minmax(0,1fr) 78px;grid-template-rows:32px minmax(0,1fr) 60px 4px;column-gap:4px}body .game-header h1{font-size:10px;gap:4px}body .game-header h1 strong{font-size:26px}body #meta{font-size:12px}body nav{gap:18px}body nav button{width:50px;flex:0 0 48px;height:48px;min-height:48px;border-radius:15px}body nav button svg{width:25px;height:25px}body nav button span{top:54px;font-size:10px}body #status{font-size:12px}body #star-target{font-size:11px}body #finish-title{font-size:22px}body #earned-stars{font-size:17px}body #continue{font-size:13px;padding:10px 12px}body .dialog-header{padding:8px 16px 4px;margin-bottom:6px}body .dialog-header h2{font-size:23px}body .dialog-body{padding-bottom:8px}body .dialog-body p{font-size:13px;margin-bottom:6px}body .dialog-actions{padding:6px 18px 16px;gap:10px}body .setting{min-height:52px}body .levels button{min-height:68px;font-size:22px}body .home-content{display:grid;grid-template-columns:1fr 1fr;gap:0 36px;width:min(100%,640px);text-align:center}body .home-hero{grid-column:1;grid-row:1;width:200px;height:155px;margin:0 auto 8px}body .home-content h1{grid-column:1;grid-row:2;font-size:32px}body .home-content #home-summary{grid-column:1;grid-row:3;font-size:12px;margin:10px 0 0}body .home-actions{grid-column:2;grid-row:1/4;gap:20px 12px}body .home-actions #home-play{min-height:60px;font-size:20px}body .home-actions #home-levels,body .home-actions #home-settings{min-height:76px;font-size:11px}}
+@media(orientation:portrait) and (max-height:600px){body #app{padding-top:max(4px,env(safe-area-inset-top));grid-template-rows:48px 30px minmax(0,1fr) 88px 80px 4px}body nav{gap:28px;padding-top:2px}body nav button{height:48px;width:58px;flex-basis:58px;border-radius:17px}body nav button span{top:58px;font-size:11px}body #status{font-size:12px}body #star-target{font-size:11px}body #finish-title{font-size:23px}body #earned-stars{font-size:17px}body .home-hero{height:165px;width:200px;margin-bottom:10px}body .home-content h1{font-size:37px}body .home-content p{font-size:12px;margin:12px 0 19px}body .home-actions{gap:17px 12px}body .home-actions #home-play{min-height:54px;font-size:19px}body .home-actions #home-levels,body .home-actions #home-settings{min-height:64px}}
+@media(orientation:landscape) and (max-height:550px){body #app{padding-top:max(4px,env(safe-area-inset-top));grid-template-columns:70px minmax(0,1fr) 78px;grid-template-rows:32px minmax(0,1fr) 78px 4px;column-gap:4px}body .game-header h1{font-size:10px;gap:4px}body .game-header h1 strong{font-size:26px}body #meta{font-size:12px}body nav{gap:18px}body nav button{width:50px;flex:0 0 48px;height:48px;min-height:48px;border-radius:15px}body nav button svg{width:25px;height:25px}body nav button span{top:54px;font-size:10px}body #status{font-size:12px}body #star-target{font-size:11px}body #finish-title{font-size:22px}body #earned-stars{font-size:17px}body #continue{font-size:13px;padding:10px 12px}body .dialog-header{padding:8px 16px 4px;margin-bottom:6px}body .dialog-header h2{font-size:23px}body .dialog-body{padding-bottom:8px}body .dialog-body p{font-size:13px;margin-bottom:6px}body .dialog-actions{padding:6px 18px 16px;gap:10px}body .setting{min-height:52px}body .levels button{min-height:68px;font-size:22px}body .home-content{display:grid;grid-template-columns:1fr 1fr;gap:0 36px;width:min(100%,640px);text-align:center}body .home-hero{grid-column:1;grid-row:1;width:200px;height:155px;margin:0 auto 8px}body .home-content h1{grid-column:1;grid-row:2;font-size:32px}body .home-content #home-summary{grid-column:1;grid-row:3;font-size:12px;margin:10px 0 0}body .home-actions{grid-column:2;grid-row:1/4;gap:20px 12px}body .home-actions #home-play{min-height:60px;font-size:20px}body .home-actions #home-levels,body .home-actions #home-settings{min-height:76px;font-size:11px}}
 
 @media(orientation:landscape) and (max-height:550px){body dialog{width:min(90vw,570px)}}
 @media(orientation:landscape) and (max-height:350px){body .dialog-header{padding:6px 16px 2px;margin-bottom:4px}body .dialog-body{padding-bottom:8px}body .dialog-actions{padding:6px 18px 10px;gap:6px}body .dialog-actions button{min-height:48px}}
@@ -144,3 +144,27 @@ body.goal-board.finished #finish-title{font-size:21px;line-height:22px}
 body.goal-board.finished #earned-stars{font-size:22px;line-height:24px;margin-top:0}
 body.goal-board.finished #status{font-size:11px;line-height:14px}
 @media(max-width:350px),(orientation:landscape) and (max-height:550px){body.goal-board.finished #finish-title{font-size:18px;line-height:20px}body.goal-board.finished #earned-stars{font-size:18px;line-height:21px}body.goal-board.finished #status{font-size:10px;line-height:13px}}
+/* A screen-wide, non-interactive celebration; the puzzle keeps its own clipping. */
+#victory-effects{position:fixed;inset:0;z-index:4;pointer-events:none;width:100vw!important;height:100dvh!important}
+/* The complete result occupies its allocated row, including its button shadow. */
+body.finished #feedback,body.goal-board.finished #feedback{height:100%;transform:none;align-self:stretch;padding:4px 2px 8px;gap:10px}
+body.finished .result-heading{display:flex;flex-wrap:wrap;align-items:center;gap:2px 12px}
+body.finished #finish-title,body.goal-board.finished #finish-title{font-size:28px;line-height:1.05;letter-spacing:-.04em;text-shadow:0 2px 0 #08183944}
+body.finished #earned-stars,body.goal-board.finished #earned-stars{font-size:32px;line-height:1;margin:0;gap:3px;filter:drop-shadow(0 2px 0 #91570b) drop-shadow(0 0 9px #ffcb4555)}
+body.finished #status,body.goal-board.finished #status{font-size:11px;line-height:1.3;margin-top:4px}
+body.finished #app{grid-template-rows:56px 38px minmax(0,1fr) 104px 96px 20px}
+body.finished #continue{align-self:center}
+#extra-tube .locked-vessel{width:var(--vessel-width);height:var(--vessel-height);min-width:0;max-width:none;opacity:1}
+@media(orientation:portrait) and (max-height:600px){body.finished #app{grid-template-rows:48px 30px minmax(0,1fr) 88px 80px 4px}body.finished #finish-title,body.goal-board.finished #finish-title{font-size:23px}body.finished #earned-stars,body.goal-board.finished #earned-stars{font-size:28px}}
+@media(orientation:landscape) and (max-height:550px){body.finished #app{grid-template-rows:32px minmax(0,1fr) 78px 4px}body.finished #finish-title,body.goal-board.finished #finish-title{font-size:24px}body.finished #earned-stars,body.goal-board.finished #earned-stars{font-size:28px}}
+#objective{font:650 14px/1.3 Rubik,sans-serif;color:var(--text);margin:0 0 5px}#objective[hidden]{display:none}
+body.finished .result-star:nth-child(2){translate:0 -3px;scale:1.1}
+/* Dense banks keep their established two-row bottle height. */
+body.packed-board #app{grid-template-rows:56px 38px minmax(0,1fr) 64px 96px 20px}
+@media(orientation:portrait) and (max-height:600px){body.packed-board #app{grid-template-rows:48px 30px minmax(0,1fr) 60px 80px 4px}#objective{font-size:12px}}
+@media(orientation:landscape) and (max-height:550px){body.packed-board #app{grid-template-rows:32px minmax(0,1fr) 60px 4px}#objective{font-size:12px}}
+body.packed-board.finished #feedback{padding:0 2px 4px}
+body.packed-board.finished .result-heading{gap:0 4px}
+body.packed-board.finished #finish-title{font-size:20px;line-height:1}
+body.packed-board.finished #earned-stars{font-size:24px;line-height:1}
+body.packed-board.finished #status{font-size:10px;line-height:12px;margin-top:2px}

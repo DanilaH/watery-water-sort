@@ -9,7 +9,7 @@ async function saved(page:Page){return page.evaluate(()=>JSON.parse(localStorage
 async function tap(page:Page,index:number){const s=await saved(page),b=(await page.locator('#board').boundingBox())!,ps=goalLayout(b.width,b.height,displaySlots(s),0),p=ps[index];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
 async function move(page:Page,from:number,to:number){await tap(page,from);await tap(page,to);}
 test('first goal teaches its rules, rejects wrong colours and pouring back, survives Undo/reload',async({page})=>{
- const initial=await seed(page);await expect(page.locator('#status')).toContainText('8 порций');await expect(page.locator('#extra-tube')).toBeHidden();
+ const initial=await seed(page);await expect(page.locator('#objective')).toContainText('Собери голубую жидкость в большую колбу');await expect(page.locator('#extra-tube')).toBeHidden();
  await move(page,1,0);await expect(page.locator('#moves')).toHaveText('Ходов: 0');await expect(page.locator('#status')).toContainText('свой цвет');
  await move(page,3,0);await expect(page.locator('#hint')).toBeEnabled();let s=await saved(page);expect(attempt(s).board[0]).toHaveLength(4);
  await move(page,0,4);expect(attempt(await saved(page)).history).toHaveLength(1);
