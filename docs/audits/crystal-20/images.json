@@ -1,0 +1,17 @@
+[
+  {
+    "path": "crystal-blue-320x480.webp",
+    "sha256": "7b0c07783efff149b53be61d0c053818ef0b2d1eb9e2b420f949526e271640e7",
+    "bytes": 14874
+  },
+  {
+    "path": "crystal-blue-390x844.webp",
+    "sha256": "00181898982c3eb8cfb327ae26b6bbbea5e6a6c713df07388a7648cadd6820f8",
+    "bytes": 19142
+  },
+  {
+    "path": "crystal-ice-390x844.webp",
+    "sha256": "c71998ad42ad12c4d542d2e8630f4942c03c039cac7999a9cd0a43be3ce96d52",
+    "bytes": 17914
+  }
+]

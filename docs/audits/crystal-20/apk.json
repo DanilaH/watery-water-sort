@@ -1,0 +1,54 @@
+{
+  "apk": "perelevy-0.20.apk",
+  "bytes": 10125119,
+  "sha256": "710684545fb07a4711360a285b4727af4af0b29ee52b323e77ff1ae156bd6744",
+  "manifest": {
+    "versionCode": 20,
+    "versionName": "0.20.0-crystal",
+    "compileSdkVersion": 36,
+    "compileSdkVersionCodename": "16",
+    "package": "com.danilah.waterywatersort.preview3",
+    "platformBuildVersionCode": 36,
+    "platformBuildVersionName": 16
+  },
+  "v2Signatures": [
+    {
+      "algorithm": "0x103",
+      "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+    }
+  ],
+  "publicPreviewCertificateMatches": true,
+  "tamperedProtectedByteRejected": true,
+  "distFilesMatched": [
+    "index.html",
+    "audio/pour-2.ogg",
+    "audio/collect.ogg",
+    "audio/victory.ogg",
+    "audio/hint.ogg",
+    "audio/pour-3.ogg",
+    "audio/land.ogg",
+    "audio/material-report.json",
+    "audio/complete.ogg",
+    "audio/reject.ogg",
+    "audio/mix-report.json",
+    "audio/pour-1.ogg",
+    "audio/cork.ogg",
+    "audio/select.ogg",
+    "audio/accept.ogg",
+    "fonts/rubik.woff",
+    "fonts/OFL-Rubik.txt",
+    "assets/solver.worker-BP69J42O.js",
+    "assets/phaser-DFK5Ua9d.js",
+    "assets/web-CdDtJiJH.js",
+    "assets/index-ahQe_bmi.css",
+    "assets/index-DB_tY299.js",
+    "art/goal-crystal.json",
+    "art/goal-crystal-shard-4.webp",
+    "art/goal-crystal-base.webp",
+    "art/goal-crystal-shard-2.webp",
+    "art/night-shore.svg",
+    "art/goal-crystal-shard-0.webp",
+    "art/goal-crystal-shard-3.webp",
+    "art/goal-crystal-shard-1.webp"
+  ]
+}
