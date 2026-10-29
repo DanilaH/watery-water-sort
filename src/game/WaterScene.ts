@@ -23,6 +23,8 @@ export class WaterScene extends Phaser.Scene {
   private viewWidth=1;private viewHeight=1;private density=1;private entrance=0;
   private ink!:Phaser.GameObjects.Graphics;
   private fx!:Phaser.GameObjects.Graphics;
+  private crystalBase?:Phaser.GameObjects.Image;
+  private crystalShards:Phaser.GameObjects.Image[]=[];
   private labels:Phaser.GameObjects.Text[]=[];
   private activeLabels:Phaser.GameObjects.Text[]=[];
   private floatLabels:Phaser.GameObjects.Text[]=[];
@@ -51,10 +53,16 @@ export class WaterScene extends Phaser.Scene {
   onSeal:()=>void=()=>{};
   onPhase:(phase:number,heavy:boolean)=>void=()=>{};
   onFinale:(order:number,heavy:boolean)=>void=()=>{};
+  preload(){
+    this.load.image('goal-crystal-base','art/goal-crystal-base.webp');
+    for(let i=0;i<5;i++)this.load.image(`goal-crystal-shard-${i}`,`art/goal-crystal-shard-${i}.webp`);
+  }
   create(){
     this.root=this.add.container(0,0).setScale(this.density);
     this.ink=this.add.graphics();this.fx=this.add.graphics().setDepth(4);this.root.add([this.ink,this.fx]);
     this.queueLabels=['2','↓'].map(text=>{const label=this.add.text(0,0,text,{fontFamily:'sans-serif',fontSize:'13px',fontStyle:'bold',color:'#402d19'}).setOrigin(.5).setDepth(6).setResolution(this.density).setVisible(false);this.root.add(label);return label;});this.root.sort('depth');
+    this.crystalBase=this.add.image(0,0,'goal-crystal-base').setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(this.crystalBase);
+    this.crystalShards=Array.from({length:5},(_,i)=>{const shard=this.add.image(0,0,`goal-crystal-shard-${i}`).setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(shard);return shard;});this.root.sort('depth');
     this.input.on('pointerdown',(p:Phaser.Input.Pointer)=>{
       if(!p.primaryDown)return;
       this.onTap(this.hitTube(p.x/this.density,p.y/this.density));
@@ -86,7 +94,7 @@ export class WaterScene extends Phaser.Scene {
   get busy(){return !!this.flight;}
   busyTube(i:number){return this.flight?.from===i||this.flight?.to===i;}
   skip(){this.flight=undefined;this.startedSound=false;this.previousSignature='';}
-  resetEffects(){this.overlay.clear();this.popped.clear();this.lastSelected=null;this.skip();this.tubes.clear();this.hitPolygons.clear();this.corkOpen.clear();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.impulses.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
+  resetEffects(){this.crystalBase?.setVisible(false);this.crystalShards.forEach(s=>s.setVisible(false));this.overlay.clear();this.popped.clear();this.lastSelected=null;this.skip();this.tubes.clear();this.hitPolygons.clear();this.corkOpen.clear();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.impulses.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
   reject(i:number){this.pulses.set(i,performance.now());}
   land(i:number,amount=1){this.settles.set(i,performance.now());this.impulses.set(i,.55+amount*.16);}
   celebrate(index:number,final=false){
@@ -117,7 +125,25 @@ export class WaterScene extends Phaser.Scene {
     if(label.style.color!==colour)label.setColor(colour);
     label.setPosition(mark.x,mark.y).setText(mark.text).setVisible(true);this.activeLabels.push(label);
   }
+  private pedestal(r:Pose,completed:boolean,index:number,now:number){
+    const base=this.crystalBase;if(!base)return;
+    const source=base.texture.getSourceImage(),ratio=source.height/source.width;
+    const below=Math.max(8,this.viewHeight-r.y-r.h-4),width=Math.min(110,r.w*1.55,2*(r.x-4),2*(this.viewWidth-r.x-4),below/(ratio*.55)),height=width*ratio;
+    const burst=this.bursts.find(b=>b.index===index&&!b.final),age=completed?(burst?now-burst.start:10000):-1;
+    base.setPosition(r.x,r.y+r.h+2).setDisplaySize(width,height).setRotation(0).setAlpha(1).clearTint();
+    this.crystalShards.forEach(s=>s.setVisible(false));
+    if(!completed){base.setVisible(true);return;}
+    if(this.reduced){base.setVisible(age<220).setAlpha(Math.max(0,1-age/220));return;}
+    base.setVisible(age<70);if(age<70){base.setTintFill(0xd9ffff);return;}
+    const p=Math.min(1,(age-70)/580);if(p>=1)return;
+    const directions=[-.35,.35,-.9,.9,0],jumps=[24,26,17,19,12],spins=[-.6,.6,-.95,.95,.12];
+    this.crystalShards.forEach((shard,i)=>{
+      const dx=Math.max(4-r.x+width/2,Math.min(this.viewWidth-4-r.x-width/2,directions[i]*width*p*.6));
+      shard.setVisible(true).setPosition(r.x+dx,r.y+r.h+2+p*p*35-Math.sin(p*Math.PI)*jumps[i]).setDisplaySize(width,height).setRotation(spins[i]*p).setAlpha(Math.pow(1-p,1.2));
+    });
+  }
   private restingTube(r:Pose,layers:Layer[],selected:boolean,target:boolean,index:number,now:number){
+    if(index===this.goal?.index)this.pedestal(r,sealedTube(this.board,index,this.goal)&&layers.reduce((v,l)=>v+l.amount,0)>=8-.001,index,now);
     const age=now-(this.settles.get(index)??-10000),shake=now-(this.pulses.get(index)??-10000),opening=this.corkOpen.get(index)??0;
     // Cache only settled, unselected vessels. Moving liquid, ripples, corks and glows stay live.
     const stable=!this.bursts.some(b=>b.index===index&&!b.final)&&!selected&&!target&&!this.busyTube(index)&&age>=650&&shake>=220&&opening===0&&(this.selectionY.get(index)??0)===0&&now-this.entrance>=260;
@@ -158,14 +184,7 @@ export class WaterScene extends Phaser.Scene {
       if(!layers.length){this.polygon(poly,colour,.065);g.fillStyle(colour,.35);g.fillCircle(r.x,r.y+h*.46,r.w*.2);if(this.symbols)this.textMark({x:r.x,y:r.y+h*.46,text:SIGNS[this.goal!.color],size:Math.min(22,r.w*.4)},this.light?'#18294a':'#e6f7ff');}
       if(!completed&&r.y>=40)this.textMark({x:r.x,y:r.y-19,text:'ЦЕЛЬ',size:10},this.light?'#35527b':'#c6ddff');
       for(let k=1;k<8;k++){const y=r.y+h*(1-k*LIQUID_FILL/8);g.lineStyle(1,0xffffff,.3);g.lineBetween(r.x+r.w*.28,y,r.x+r.w*.43,y);}
-      const burst=this.bursts.find(b=>b.index===index&&!b.final),age=burst?now-burst.start:10000;
-      const p=completed?Math.min(1,age/650):0;
-      if(!completed||p<1)for(let k=0;k<7;k++){
-        const dx=(k-3)*r.w*.17,fall=this.reduced?0:p*p*70,spread=this.reduced?0:dx*p*.8;
-        const x=r.x+dx+spread,y=r.y+h+7+fall-Math.sin(p*Math.PI)*(8+k%3*5),size=5+(k%3)*2;
-        const gem=[{x:x-size,y},{x,y:y-size*1.2},{x:x+size,y},{x,y:y+size*.7}];
-        this.polygon(gem,blend(colour,0xffffff,.12+(k%3)*.12),1-p);g.lineStyle(1,0xffffff,.5*(1-p));g.strokePoints(gem,true);
-      }
+
     }
     const total=layers.reduce((v,l)=>v+l.amount,0);let sum=0;
     const bounds={lo:Math.min(...poly.map(p=>p.x)),hi:Math.max(...poly.map(p=>p.x))};

@@ -1,0 +1,43 @@
+{
+  "sourceSha256": "377694a3541f4042122684563d68ee21515400c1eaacc9710863ec2d4f1fbcbd",
+  "crop": [
+    376,
+    283,
+    1417,
+    758
+  ],
+  "width": 512,
+  "height": 234,
+  "files": [
+    {
+      "path": "public/art/goal-crystal-base.webp",
+      "bytes": 93522,
+      "sha256": "d0c3cb7b7da13b51300c11e9d792812dfe89094c901d8dbc197b2e1065b3a2b4"
+    },
+    {
+      "path": "public/art/goal-crystal-shard-0.webp",
+      "bytes": 18782,
+      "sha256": "23855587a498896aac4ef1db13c61ae7fe5585633757d97970ebf4649cdd75f2"
+    },
+    {
+      "path": "public/art/goal-crystal-shard-1.webp",
+      "bytes": 18576,
+      "sha256": "bba3161903d0d6ef9400541581cd1680f8c9a62b92b5ca740f0f8fcd036a38ab"
+    },
+    {
+      "path": "public/art/goal-crystal-shard-2.webp",
+      "bytes": 19782,
+      "sha256": "0105f6468809e6094832b57d3642431b6e4c9123c354bfcbb2dc7642eaa7f211"
+    },
+    {
+      "path": "public/art/goal-crystal-shard-3.webp",
+      "bytes": 19682,
+      "sha256": "078aeeda8c690f5b98e1de35e972116120fcf953f936387224a9ca54a8f288b8"
+    },
+    {
+      "path": "public/art/goal-crystal-shard-4.webp",
+      "bytes": 23062,
+      "sha256": "a082067abb8303760459c71474fd851b4132f8ca6d6e74210ac56a2d265bc11b"
+    }
+  ]
+}
