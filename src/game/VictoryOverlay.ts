@@ -23,7 +23,7 @@ export class VictoryOverlay{
   const active=bursts.filter(b=>now>=b.start&&now-b.start<1900);
   if(!active.length){this.clear();return;}
   if(!this.canvas){this.canvas=document.createElement('canvas');this.canvas.id='victory-effects';this.canvas.setAttribute('aria-hidden','true');document.body.append(this.canvas);}
-  const canvas=this.canvas,dpr=Math.min(3,Math.max(2,devicePixelRatio||1)),width=innerWidth,height=innerHeight;
+  const canvas=this.canvas,dpr=Math.min(2,devicePixelRatio||1),width=innerWidth,height=innerHeight;
   if(canvas.width!==Math.round(width*dpr)||canvas.height!==Math.round(height*dpr)){canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);}
   const ctx=canvas.getContext('2d')!;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,height);
   const board=document.getElementById('board')!.getBoundingClientRect();
