@@ -26,3 +26,15 @@ test('switching from ordinary to giant does not restore an old small glass over 
  await page.locator('#symbols').click();await page.waitForTimeout(100);
  expect(await page.evaluate(()=>{const s=(window as any).glassScene;return {goal:s.goal.index,oldGlass:s.glass.tubes.get(0).visible,ordinary:[...s.glass.tubes.entries()].some(([i,v]:any)=>i!==0&&v.visible)};})).toEqual({goal:0,oldGlass:false,ordinary:true});
 });
+
+test('entrance returns cached glass to the exact settled pose without another input',async({page})=>{
+ await page.setViewportSize({width:320,height:480});const s={...fresh(),current:11};s.settings.sound=false;
+ await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');
+ await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).glassScene=this;return fn.call(this);};});
+ for(let n=0;n<2;n++){
+  await page.locator('#home-play').click();await page.waitForTimeout(700);
+  const offsets=await page.evaluate(()=>{const s=(window as any).glassScene;return s.positions().slice(0,s.board.length).map((r:any,i:number)=>{const t=s.glass.tubes.get(i);return Math.abs(t.y-r.y)+Math.abs(t.x-r.x)+Math.abs(t.rotation);});});
+  for(const d of offsets)expect(d).toBeLessThan(.01);
+  await page.locator('#menu').click();
+ }
+});

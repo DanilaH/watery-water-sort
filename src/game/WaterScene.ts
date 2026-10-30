@@ -164,7 +164,7 @@ export class WaterScene extends Phaser.Scene {
     const stable=!this.bursts.some(b=>b.index===index&&!b.final)&&!selected&&!target&&!this.busyTube(index)&&!this.liquid.has(index)&&!this.bodyMotion.has(index)&&age>=650&&shake>=220&&opening===0&&(this.selectionY.get(index)??0)===0&&now-this.entrance>=260;
     const key=stable?JSON.stringify([r,layers,this.light,this.symbols,this.goal,this.popped.has(index)]):'',cached=this.tubes.get(index);
     if(stable&&cached?.key===key){
-      if(index!==this.goal?.index)this.glass?.restore(index,cached.cork);
+      if(index!==this.goal?.index)this.glass?.restore(index,cached.cork,r);
       for(const command of cached.commands)this.ink.commandBuffer.push(command);
       this.hitPolygons.set(index,cached.poly);for(const mark of cached.symbols)this.textMark(mark,mark.colour??'#18294a');return;
     }
