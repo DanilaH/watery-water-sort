@@ -1,0 +1,17 @@
+[
+  {
+    "name": "perelevy-0.26-complete.webp",
+    "bytes": 630904,
+    "sha256": "c234d7d329e11b8dd2b903582110036fbe71e08db94e6a0376e1907342a18c64"
+  },
+  {
+    "name": "perelevy-0.26-layers.webp",
+    "bytes": 747554,
+    "sha256": "873feb8ebdd2d812e66cc9d764f36576c070be8941ce8b898e8839c8fbfc8e71"
+  },
+  {
+    "name": "perelevy-0.26-frame.png",
+    "bytes": 182849,
+    "sha256": "071078a6afcbe9abf974205093c3e70c2937f4cdf6af415bebb65d8374319677"
+  }
+]
