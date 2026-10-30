@@ -1,0 +1,22 @@
+[
+  {
+    "name": "perelevy-0.27-layers.gif",
+    "bytes": 3367551,
+    "sha256": "9cbbb94ec54364f779d7f103952470bcf6c5ba8b453365eb292e9e465d0f872b"
+  },
+  {
+    "name": "perelevy-0.27-before.gif",
+    "bytes": 1373632,
+    "sha256": "a789137afac40bb071c2875599ceab39e0bca5cf7ad0647aca37e1a468ffe768"
+  },
+  {
+    "name": "perelevy-0.27-after.gif",
+    "bytes": 2298691,
+    "sha256": "13431bdf529dd6dc45c02b1f262aa3bfcbbd3785a664fc301eade1d6aafa4ccf"
+  },
+  {
+    "name": "perelevy-0.27-frame.png",
+    "bytes": 106715,
+    "sha256": "cac852eea9b88fc7efc0f499f9464a951fac92a7114bdeab3077d286b5fed81f"
+  }
+]

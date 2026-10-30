@@ -1,0 +1,12 @@
+{
+  "runtimeCommit": "7bf33167d33d8b0ee0b35f38d0f2f1db0cc95619",
+  "run": 41055432795,
+  "job": 124061655067,
+  "artifact": 12976588567,
+  "core": 42,
+  "browser": 145,
+  "optimalPaths": 32,
+  "zipSha256": "dd2c17deda2581d98f0fbf606626c254887b4491c7896df5a78a697dd9cf632e",
+  "captureAssetsMatchApk": 40,
+  "physicalPhoneTested": false
+}

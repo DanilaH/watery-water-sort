@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "7bf33167d33d8b0ee0b35f38d0f2f1db0cc95619",
+  "screens": [
+    {
+      "width": 320,
+      "height": 480,
+      "theme": "blue",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "width": 568,
+      "height": 320,
+      "theme": "ice",
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "ice",
+      "errors": [],
+      "overflow": false
+    }
+  ]
+}
