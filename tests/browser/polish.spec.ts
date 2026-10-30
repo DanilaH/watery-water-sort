@@ -6,11 +6,13 @@ const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import
 const initial=(current=0)=>({schema:1,current,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false}});
 async function start(page:Page,index=0){await startGame(page);await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),initial(index));await reloadGame(page);await expect(page.locator('canvas')).toBeVisible();await page.waitForTimeout(120);}
 async function tap(page:Page,i:number,index=0){const b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,await slotCount(page))[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
-test('retina rendering preserves logical hit testing and real hint selection',async({browser})=>{
+for(const manual of [false,true])test(`retina rendering preserves logical hit testing and real hint selection (${manual?'manual override':'hint recipient'})`,async({browser})=>{
  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});const page=await context.newPage();await start(page,2);
  const density=await page.locator('canvas').evaluate(c=>({backing:(c as HTMLCanvasElement).width,css:c.getBoundingClientRect().width}));expect(density.backing/density.css).toBeCloseTo(3,1);
- await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');await tap(page,4,2);await expect(page.locator('#moves')).toHaveText('Ходов: 1');await page.waitForTimeout(610);
- await start(page,2);await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');await tap(page,0,2);await tap(page,3,2);const from=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-003@1'].history.at(-1).from);expect(from).toBe(0);await context.close();
+ await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');
+ if(manual){await tap(page,0,2);await tap(page,3,2);const from=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-003@1'].history.at(-1).from);expect(from).toBe(0);}
+ else{await tap(page,4,2);await expect(page.locator('#moves')).toHaveText('Ходов: 1');}
+ await context.close();
 });
 test('victory remains actionable after final-move rotation and reload',async({page})=>{
  await page.setViewportSize({width:390,height:844});await start(page);

@@ -20,7 +20,7 @@ for(const fast of [false,true])test(`queues a next move into the source of the c
 });
 
 test('replacement can use the recipient of the current pour as its next source',async({page})=>{
- await open(page);await queueFirstChain(page);await tap(page,2);await expect(page.locator('#status')).toContainText('выбери цель');await tap(page,3);await expect.poll(async()=>(await history(page)).length).toBe(2);await expect(page.locator('#hint')).toBeEnabled();expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[0,2],[2,3]]);
+ await openFrozen(page);await queueFirstChain(page);await tap(page,2);await expect(page.locator('#status')).toContainText('выбери цель');await tap(page,3);expect(await history(page)).toHaveLength(1);await page.clock.resume();await expect.poll(async()=>(await history(page)).length).toBe(2);await expect(page.locator('#hint')).toBeEnabled();expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[0,2],[2,3]]);
 });
 
 test('a half-selected next move survives the end of the current animation',async({page})=>{
