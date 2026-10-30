@@ -1,0 +1,14 @@
+{
+  "runtimeCommit": "573131f420cd8bf914555f462a6be489dae635ce",
+  "testCommit": "081865e12e50dd045d318085cdb19d8b4e62bec0",
+  "run": 41094120692,
+  "job": 124195316124,
+  "conclusion": "success",
+  "core": 42,
+  "browser": 155,
+  "optimalPaths": 32,
+  "artifact": 12995093191,
+  "artifactZipSha256": "393c693a0e94fd5783aef54c54e9de92c5109be50e6376c79e8b1d9e1c891ef0",
+  "captureDistFilesMatched": 45,
+  "phoneTested": false
+}

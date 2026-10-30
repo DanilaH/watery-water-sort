@@ -1,0 +1,571 @@
+{
+  "scope": "Production preview; 4 themes x 3 viewports; no physical phone",
+  "results": [
+    {
+      "theme": "blue",
+      "width": 390,
+      "height": 844,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 24,
+            "y": 555.625,
+            "width": 342,
+            "height": 66,
+            "top": 555.625,
+            "right": 366,
+            "bottom": 621.625,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 24,
+            "y": 643.625,
+            "width": 163,
+            "height": 78,
+            "top": 643.625,
+            "right": 187,
+            "bottom": 721.625,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 203,
+            "y": 643.625,
+            "width": 163,
+            "height": 78,
+            "top": 643.625,
+            "right": 366,
+            "bottom": 721.625,
+            "left": 203
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "blue",
+      "width": 320,
+      "height": 480,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 24,
+            "y": 316.921875,
+            "width": 272,
+            "height": 54,
+            "top": 316.921875,
+            "right": 296,
+            "bottom": 370.921875,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 24,
+            "y": 387.921875,
+            "width": 130,
+            "height": 64,
+            "top": 387.921875,
+            "right": 154,
+            "bottom": 451.921875,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 166,
+            "y": 387.921875,
+            "width": 130,
+            "height": 64,
+            "top": 387.921875,
+            "right": 296,
+            "bottom": 451.921875,
+            "left": 166
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "blue",
+      "width": 568,
+      "height": 320,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 302,
+            "y": 82,
+            "width": 242,
+            "height": 60,
+            "top": 82,
+            "right": 544,
+            "bottom": 142,
+            "left": 302
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 302,
+            "y": 162,
+            "width": 115,
+            "height": 76,
+            "top": 162,
+            "right": 417,
+            "bottom": 238,
+            "left": 302
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 429,
+            "y": 162,
+            "width": 115,
+            "height": 76,
+            "top": 162,
+            "right": 544,
+            "bottom": 238,
+            "left": 429
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "plum",
+      "width": 390,
+      "height": 844,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 24,
+            "y": 555.625,
+            "width": 342,
+            "height": 66,
+            "top": 555.625,
+            "right": 366,
+            "bottom": 621.625,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 24,
+            "y": 643.625,
+            "width": 163,
+            "height": 78,
+            "top": 643.625,
+            "right": 187,
+            "bottom": 721.625,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 203,
+            "y": 643.625,
+            "width": 163,
+            "height": 78,
+            "top": 643.625,
+            "right": 366,
+            "bottom": 721.625,
+            "left": 203
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "plum",
+      "width": 320,
+      "height": 480,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 24,
+            "y": 316.921875,
+            "width": 272,
+            "height": 54,
+            "top": 316.921875,
+            "right": 296,
+            "bottom": 370.921875,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 24,
+            "y": 387.921875,
+            "width": 130,
+            "height": 64,
+            "top": 387.921875,
+            "right": 154,
+            "bottom": 451.921875,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 166,
+            "y": 387.921875,
+            "width": 130,
+            "height": 64,
+            "top": 387.921875,
+            "right": 296,
+            "bottom": 451.921875,
+            "left": 166
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "plum",
+      "width": 568,
+      "height": 320,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 302,
+            "y": 82,
+            "width": 242,
+            "height": 60,
+            "top": 82,
+            "right": 544,
+            "bottom": 142,
+            "left": 302
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 302,
+            "y": 162,
+            "width": 115,
+            "height": 76,
+            "top": 162,
+            "right": 417,
+            "bottom": 238,
+            "left": 302
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 429,
+            "y": 162,
+            "width": 115,
+            "height": 76,
+            "top": 162,
+            "right": 544,
+            "bottom": 238,
+            "left": 429
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "graphite",
+      "width": 390,
+      "height": 844,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 24,
+            "y": 555.625,
+            "width": 342,
+            "height": 66,
+            "top": 555.625,
+            "right": 366,
+            "bottom": 621.625,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 24,
+            "y": 643.625,
+            "width": 163,
+            "height": 78,
+            "top": 643.625,
+            "right": 187,
+            "bottom": 721.625,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 203,
+            "y": 643.625,
+            "width": 163,
+            "height": 78,
+            "top": 643.625,
+            "right": 366,
+            "bottom": 721.625,
+            "left": 203
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "graphite",
+      "width": 320,
+      "height": 480,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 24,
+            "y": 316.921875,
+            "width": 272,
+            "height": 54,
+            "top": 316.921875,
+            "right": 296,
+            "bottom": 370.921875,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 24,
+            "y": 387.921875,
+            "width": 130,
+            "height": 64,
+            "top": 387.921875,
+            "right": 154,
+            "bottom": 451.921875,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 166,
+            "y": 387.921875,
+            "width": 130,
+            "height": 64,
+            "top": 387.921875,
+            "right": 296,
+            "bottom": 451.921875,
+            "left": 166
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "graphite",
+      "width": 568,
+      "height": 320,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 302,
+            "y": 82,
+            "width": 242,
+            "height": 60,
+            "top": 82,
+            "right": 544,
+            "bottom": 142,
+            "left": 302
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 302,
+            "y": 162,
+            "width": 115,
+            "height": 76,
+            "top": 162,
+            "right": 417,
+            "bottom": 238,
+            "left": 302
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 429,
+            "y": 162,
+            "width": 115,
+            "height": 76,
+            "top": 162,
+            "right": 544,
+            "bottom": 238,
+            "left": 429
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "ice",
+      "width": 390,
+      "height": 844,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 24,
+            "y": 555.625,
+            "width": 342,
+            "height": 66,
+            "top": 555.625,
+            "right": 366,
+            "bottom": 621.625,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 24,
+            "y": 643.625,
+            "width": 163,
+            "height": 78,
+            "top": 643.625,
+            "right": 187,
+            "bottom": 721.625,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 203,
+            "y": 643.625,
+            "width": 163,
+            "height": 78,
+            "top": 643.625,
+            "right": 366,
+            "bottom": 721.625,
+            "left": 203
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "ice",
+      "width": 320,
+      "height": 480,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 24,
+            "y": 316.921875,
+            "width": 272,
+            "height": 54,
+            "top": 316.921875,
+            "right": 296,
+            "bottom": 370.921875,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 24,
+            "y": 387.921875,
+            "width": 130,
+            "height": 64,
+            "top": 387.921875,
+            "right": 154,
+            "bottom": 451.921875,
+            "left": 24
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 166,
+            "y": 387.921875,
+            "width": 130,
+            "height": 64,
+            "top": 387.921875,
+            "right": 296,
+            "bottom": 451.921875,
+            "left": 166
+          }
+        }
+      ],
+      "errors": []
+    },
+    {
+      "theme": "ice",
+      "width": 568,
+      "height": 320,
+      "controls": [
+        {
+          "id": "home-play",
+          "r": {
+            "x": 302,
+            "y": 82,
+            "width": 242,
+            "height": 60,
+            "top": 82,
+            "right": 544,
+            "bottom": 142,
+            "left": 302
+          }
+        },
+        {
+          "id": "home-levels",
+          "r": {
+            "x": 302,
+            "y": 162,
+            "width": 115,
+            "height": 76,
+            "top": 162,
+            "right": 417,
+            "bottom": 238,
+            "left": 302
+          }
+        },
+        {
+          "id": "home-settings",
+          "r": {
+            "x": 429,
+            "y": 162,
+            "width": 115,
+            "height": 76,
+            "top": 162,
+            "right": 544,
+            "bottom": 238,
+            "left": 429
+          }
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "victory": "0.3",
+  "home": "1"
+}

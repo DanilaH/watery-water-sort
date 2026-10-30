@@ -1,0 +1,13 @@
+{
+  "core": 42,
+  "ambientHomeNavigationThemes": 17,
+  "productionThemeViewportPairs": 12,
+  "victoryOpacity": 0.3,
+  "homeAfterVictoryOpacity": 1,
+  "sourceCommit": "573131f420cd8bf914555f462a6be489dae635ce",
+  "captureClean": true,
+  "distFiles": 45,
+  "phoneTested": false,
+  "postFixPersistenceLiquidBrowser": 17,
+  "runtimeUnchangedByTestFix": true
+}

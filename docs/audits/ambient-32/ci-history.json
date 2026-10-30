@@ -1,0 +1,20 @@
+{
+  "initialRun": 41091587989,
+  "initialCorePassed": 42,
+  "initialBrowserPassed": 151,
+  "initialBrowserFailed": 3,
+  "failures": [
+    "combined reward history/reload/undo/restart/help/level switching hit 30s test limit",
+    "normal liquid settling assumed 4000 fake clock ms meant four seconds of integration",
+    "fast liquid settling made same rAF-delivery assumption"
+  ],
+  "fixes": [
+    "split reward persistence into two independent tests, retaining every assertion and the real reward in first case",
+    "retain real receiving/return/wave-continuity assertions, then explicitly deliver 240 renderer update steps at 1/60s and require exact-zero liquid map before navigation"
+  ],
+  "runtimeChangedForFix": false,
+  "timeoutsIncreased": false,
+  "retriesAdded": false,
+  "checksSkipped": false,
+  "localPostFixBrowserPassed": 17
+}
