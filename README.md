@@ -107,3 +107,5 @@ Android: JDK 21 и SDK 36, `npm run android:sync`, затем `cd android && ./g
 - [Живые колбы в меню 0.31](docs/HOME_31.md).
 
 - [Фоновые частицы 0.32](docs/AMBIENT_32.md).
+
+- [Углублённый разбор механик конкурентов, 31.10.2026](docs/MECHANICS_DEEP_DIVE_2026-10-31.md).

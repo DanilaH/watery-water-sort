@@ -1,0 +1,525 @@
+{
+  "studyDateClient": "2026-10-31",
+  "clientTimezone": "Asia/Yekaterinburg",
+  "retrievedAtUtc": "2026-10-30T19:33:34.694673+00:00",
+  "gameBaselineCommit": "db6fcad0c3fa7e129f0cceeaed8df8c05784974a",
+  "method": "Direct public HTTP pages and extracted images; full-size frames of original user videos; production-rules BFS. No competitor installation or later video playback.",
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Magic Sort, Google Play",
+      "url": "https://play.google.com/store/apps/details?id=com.grandgames.magicsort&hl=en",
+      "httpStatus": 200,
+      "snapshotBytes": 1339789,
+      "snapshotSha256": "ba813c37ca8d23dd12e94be7adc34f2bb8f972b6d4d3f519dbbc2258dfb13650",
+      "scope": "B description / C screenshots"
+    },
+    {
+      "id": "S2",
+      "title": "Magic Sort, App Store",
+      "url": "https://apps.apple.com/us/app/magic-sort/id6499209744",
+      "httpStatus": 200,
+      "snapshotBytes": 770805,
+      "snapshotSha256": "53da687431c7ece50e6e44effda69c1ce2e8d3de97bd656c6ea56dd924538bbd",
+      "scope": "B publisher listing"
+    },
+    {
+      "id": "S3",
+      "title": "Grand Games games",
+      "url": "https://grand.gs/games",
+      "httpStatus": 200,
+      "snapshotBytes": 106488,
+      "snapshotSha256": "78b2b37c9750be63bd69db15b5fdc684919bd9775ca7a101fed4ca8efede2325",
+      "scope": "B product identity"
+    },
+    {
+      "id": "S4",
+      "title": "SortPuz, Google Play",
+      "url": "https://play.google.com/store/apps/details?id=sortpuz.water.sort.puzzle.game&hl=en",
+      "httpStatus": 200,
+      "snapshotBytes": 1364697,
+      "snapshotSha256": "15d8abe91af8670b962760b2a5c84b49011a809fa451389c2e427630bddfc7eb",
+      "scope": "B orders description / C images"
+    },
+    {
+      "id": "S5",
+      "title": "IEC, Google Play",
+      "url": "https://play.google.com/store/apps/details?id=com.gma.water.sort.puzzle&hl=en",
+      "httpStatus": 200,
+      "snapshotBytes": 1371418,
+      "snapshotSha256": "d292d865ca3543adba4117376f7c1097930e10696982144b916472f9c2b4692c",
+      "scope": "B description / C ice and cover images"
+    },
+    {
+      "id": "S6",
+      "title": "Bottle Sort, RuStore",
+      "url": "https://www.rustore.ru/catalog/app/com.codeafm.bottlesort",
+      "httpStatus": 200,
+      "snapshotBytes": 536279,
+      "snapshotSha256": "0c9f669d7c529289f4bac10fb3aa6a2cd2ffb7e81b6a3541ac6886589aaca74c",
+      "scope": "B image labels 8 layers / C rescue gameplay"
+    },
+    {
+      "id": "S7",
+      "title": "Potion Sort, RuStore",
+      "url": "https://www.rustore.ru/catalog/app/ru.orion.potionsort",
+      "httpStatus": 200,
+      "snapshotBytes": 501400,
+      "snapshotSha256": "3d4560729163dd622447f3e748cb94d24164b2c5bc7cb7d4f9e6516e862a3d96",
+      "scope": "B six mechanic names, rules not demonstrated"
+    },
+    {
+      "id": "S8",
+      "title": "Magic Sort Apple RSS US",
+      "url": "https://itunes.apple.com/us/rss/customerreviews/id=6499209744/sortBy=mostRecent/json",
+      "httpStatus": 200,
+      "snapshotBytes": 39320,
+      "snapshotSha256": "6a9cb2e2acf0591eb06cd57280b642280020ffe3b0de4354647c16a9a583ca7e",
+      "scope": "C user reports"
+    },
+    {
+      "id": "S9",
+      "title": "Magic Sort Apple RSS GB",
+      "url": "https://itunes.apple.com/gb/rss/customerreviews/id=6499209744/sortBy=mostRecent/json",
+      "httpStatus": 200,
+      "snapshotBytes": 38094,
+      "snapshotSha256": "c103cfcd0362cf1d16f4d386d861ac3313fc2b3665643f6b0b9254de3b68c994",
+      "scope": "C Tiny Bottle and streak user reports"
+    },
+    {
+      "id": "S10",
+      "title": "Magic Sort Apple RSS AU",
+      "url": "https://itunes.apple.com/au/rss/customerreviews/id=6499209744/sortBy=mostRecent/json",
+      "httpStatus": 200,
+      "snapshotBytes": 37498,
+      "snapshotSha256": "780ffb25aee9b4055182c305a31eafe9febedb062dbad1090d7a6187c0287b0b",
+      "scope": "C no additional obstacle confirmation"
+    }
+  ],
+  "promotionalImages": [
+    {
+      "listing": "magic-play",
+      "index": 0,
+      "url": "https://play-lh.googleusercontent.com/iEUZV1kLcQW2_YSPSKK_soEZuzJxkLItyhE6Y1CbV0uSzvyj6nmtk_1hvjuWDPBXXbEO3K-YdEGpXXdkjdkk=w526-h296",
+      "sha256": "495b755f25c5e387997bf5c0fe8fb388513bceaa0066c3ad9a427a049e95d0bd",
+      "bytes": 1338577,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "magic-play",
+      "index": 1,
+      "url": "https://play-lh.googleusercontent.com/bMX8E6MfcISLL8A-NJ4EXOcJDCtHJJHGOM2d_LjvwFkinjiLN3emhsG9h5rHKUKGqv0ZcZxRFrbvjIbKFnGaP9A=w526-h296",
+      "sha256": "0cb5c98588ba52cad8bedc4643fa7a5423153ddeb98ee546f935037d436de7c1",
+      "bytes": 1448395,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "magic-play",
+      "index": 2,
+      "url": "https://play-lh.googleusercontent.com/QuUg9Jju_OCoUsed8KBwbf6h8wmoLYziMy_ehJUFD5VKP0_tDGJJt9EbO4CX_H1vS6TlTwLhpDACfXI1DiTrrNE=w526-h296",
+      "sha256": "87dfa64593a166ffb5b992bd607fa24325d6b801ed083f07cab5214f774e3a52",
+      "bytes": 2202048,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "magic-play",
+      "index": 3,
+      "url": "https://play-lh.googleusercontent.com/aym-3bsZ3R_Mb-zPtXLxqtH3-EY7Wqgitda-Cb3gc0XkDPxhevxKWG8MeshtFPoszJdEvp3UPRtXECEVL1Cr1Q=w526-h296",
+      "sha256": "c0834a808cbb78248a14066d4f1938834fcda9c889d2caeb2365ee9332845df9",
+      "bytes": 2780476,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "magic-play",
+      "index": 4,
+      "url": "https://play-lh.googleusercontent.com/mNMYiGnajNGMZ7Q9ECG4uS8Xox4YPAmOQKOhTI1lZr3697osrt5UU2eKZXlPrsix39XQzsHnALyjU9ORmk1H4w=w526-h296",
+      "sha256": "2f60fb7d2c4ec0da64770ca0d43d0a2c87d71104dfb0168f9c9ae80f99e20d58",
+      "bytes": 1737202,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "magic-play",
+      "index": 5,
+      "url": "https://play-lh.googleusercontent.com/HAgoMUpLcZT_gwcO802JxL8ZrUiS8VdMxdwbBSDHg-RJjgqWqIS0nBgvyAKByJSElxCNqi_eORO-1dXiO5jD=w526-h296",
+      "sha256": "97b0ea225d93777c3007ade2d692d179aac838a1925e9295bbb66587f53143d1",
+      "bytes": 1274054,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "magic-play",
+      "index": 6,
+      "url": "https://play-lh.googleusercontent.com/uouaUWPwlfw-qAWnnCj5_bmnihkV4iA3CgtPbtzvNDa8qTEdy1PvG5MFVtNtz98zg9SKdPThbBpQvUSPCVXLXw=w526-h296",
+      "sha256": "7debf6d5fc2a0b53981b7eaa3a780fb1bc513b34ec51a81140c2ad341af36714",
+      "bytes": 3107889,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "magic-play",
+      "index": 7,
+      "url": "https://play-lh.googleusercontent.com/voR-Wvpm6V58lEkvLo_isF7Ux9nH2ahjilK8CCgJgKWh8nS2LtJSTv1NzgiQygcSGZkIFdR_1PafqZqxv-9N5Q=w526-h296",
+      "sha256": "701792d1a5d027deecb67a8b0672fd537498b340db55cfc466679d09685da01f",
+      "bytes": 2397450,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "sortpuz",
+      "index": 0,
+      "url": "https://play-lh.googleusercontent.com/JxfDfRhlYxoW9vjbtsaY-qo2z3d13Tes4j5g1HBg_-Tbm8-ng8ZKM-7yBBVLSycr4jQyJn21ohDx9RtJFQ1t7A=w526-h296",
+      "sha256": "ae6f668330a40abb323a9aa9dd4c11c068b8b401280c7ad87292b234eedd2833",
+      "bytes": 249295,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "sortpuz",
+      "index": 1,
+      "url": "https://play-lh.googleusercontent.com/hlYWtMEmMmTcG0Z4mCBw7v8Kk3lM4zLPDbViOR4Cx5Q6OYX-sQBSeNDryUV3wYL0bpUogHfwFa5DXUM62eL7=w526-h296",
+      "sha256": "cae1565a372fe1fce60fdbf24ab9ca3ae82f51f91449e74c6eca9feeb979d851",
+      "bytes": 190319,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "sortpuz",
+      "index": 2,
+      "url": "https://play-lh.googleusercontent.com/h8dnLubMyF4kDdXT5mieNU2X_-xWgwCZxgf8YtVu6AwL2s8jGzEHQA1HsbWc_m5kxK29OU9PvN-pqEj0K33kQ1Q=w526-h296",
+      "sha256": "8a09bb3875e81a9a960e7925c7844d21bd77d33984685a21ce92600e7afe1b01",
+      "bytes": 221094,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "sortpuz",
+      "index": 3,
+      "url": "https://play-lh.googleusercontent.com/FpD28-YWQLCz9Q3kNMUvG7TxhreWFeS3jehV0Nm0EeYYfCYGQTI8-EKVOhsJiTkbuXx9QyTyHMRV3JxYc5HSwA=w526-h296",
+      "sha256": "7a63f164189bcf313b43ba87b689da8fdae2340a1e7e2f366339527643f99e42",
+      "bytes": 209691,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "sortpuz",
+      "index": 4,
+      "url": "https://play-lh.googleusercontent.com/URle4duo92cm13KBMzrqJyp_TE6jcvwQNT-Y2a9Szn46Ap0sMRLTinyieVDLntGfBw07_ffBiHlW31rI4MdmRw=w526-h296",
+      "sha256": "37895d46b8a251516a54881f24615d0391b2c7b0f8b22bd962eba31bb7f740b7",
+      "bytes": 177179,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "sortpuz",
+      "index": 5,
+      "url": "https://play-lh.googleusercontent.com/UCJ08ZE8YUhaeC7ZuLPfS1KVzu8x6fvJ25FcB-TmAfGDnAgbR1vhPqh7QrNC4cThxiOu7Ur-VlpHXpTpliqQqA=w526-h296",
+      "sha256": "e380a5de167197f5a5216bdde21fb83f54312c3e7f5d9a46d335a78680d502b2",
+      "bytes": 228672,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "sortpuz",
+      "index": 6,
+      "url": "https://play-lh.googleusercontent.com/Bxmiek9U7IOb1eUqdYH7Q14C6Y2aBNGo50ndZNcaDKaK2cGCLKn0SZKJkvnjR6lWbCG6xAM9y0BcfoireLcY=w526-h296",
+      "sha256": "879c9d028becdb19d9f65e397eac17c77a48b6d387ecd4b295e7eb9253ed644c",
+      "bytes": 219825,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "iec",
+      "index": 0,
+      "url": "https://play-lh.googleusercontent.com/WqzGKnxRLD-GAlhYPYjN-cQ-B7XamVmPUQdF2w7WVTXAtVXuc4AHLgj4dxCDxB7ePE9fik-M9bJ8rVWnA2Kr=w526-h296",
+      "sha256": "23b4eb84adee9a6dfbd1f786360f3a35fb8ed3e6a6b661dd970b5c3d29518483",
+      "bytes": 564230,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "iec",
+      "index": 1,
+      "url": "https://play-lh.googleusercontent.com/2NEPHAhiL5kcwU7XVjoefngSISwsziAb63qznsVyic9Gac5Mh5hsVITz6SYA4dhnsv4JXV3wLetevO9WSNS7Nq4=w526-h296",
+      "sha256": "8c2ee143f682a33dade767ef68e9141ea45938dd3c2d108cecff1a3969613596",
+      "bytes": 956380,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "iec",
+      "index": 2,
+      "url": "https://play-lh.googleusercontent.com/6SdYUNwrCNYQDb9Ah1fc02EeL1f82FkLOapSd_J7OTWW5-TBmO1qyL4wdLijM15LvzaWgIeUz0GShldWYqBN6Q=w526-h296",
+      "sha256": "97469210cfe548d3d0453f5d585ff65b56d58819cfdbb25592dbb4bcfa3af478",
+      "bytes": 783366,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "iec",
+      "index": 3,
+      "url": "https://play-lh.googleusercontent.com/4TBqRfQLDbe6RLObfBJKqXWgZU3xUksZ2ogiAPS2BiY5vLXRsC7-VlNPMiqOBPLBoj-KS5C6hs6SfgdcWzzU=w526-h296",
+      "sha256": "2e424497ed19885b446e7daa5047a4489592b0a26772b707bf205c9ac679bde3",
+      "bytes": 803558,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "iec",
+      "index": 4,
+      "url": "https://play-lh.googleusercontent.com/XFaYgtVV4CQGLbZyPDjzCAZb4TpFEI8GSvjIY0wywY8GhGY2PXpE7Uijwx2J15SOiy8tMX2sh690NMYXON0fWas=w526-h296",
+      "sha256": "484f891102248f8652a122da32b565b5b09041847c81e4b594f0db1db577584b",
+      "bytes": 873895,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "iec",
+      "index": 5,
+      "url": "https://play-lh.googleusercontent.com/keZI8CerQrngq2wUJIfc9Fry4ATPLDFDF-wEeWqo-kjHfa8DUqMOeMeSD8bf7XGyFHn86KJpzoD8e3pIuQ3LtWs=w526-h296",
+      "sha256": "8f685f8ec2972cddef6d003daeac1df49f47ac61dd678797d9c0375730f6fd52",
+      "bytes": 378937,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "iec",
+      "index": 6,
+      "url": "https://play-lh.googleusercontent.com/pT5nTGmI2mGzZDCsT9Bx1H2PmGQWsI42zTju5fQs5ziorcsyR2Yl6AQ62RA6pVnlu1iUQAbpdNpQnauftVeP7hk=w526-h296",
+      "sha256": "713700f648875f8d97fd8dd8b94b09409ff9cd97acace72997fbd5c380381bee",
+      "bytes": 357383,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "iec",
+      "index": 7,
+      "url": "https://play-lh.googleusercontent.com/H2VYiowuZbfuzU4dZtVFDo5yDYCK_xD9uzyYvLS0B084y2q7R6-pcuCYCgajc5sKKMu3qLSetuc-59Mug2ikbA=w526-h296",
+      "sha256": "f98386303f0df99f831781217982da341740c80a5a7570a559fb1151de9d4c64",
+      "bytes": 331390,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "potion",
+      "index": 0,
+      "url": "https://static.rustore.ru/imgproxy/G2rNfqOUzvfJpBDyCbpn13UMu65SGRDJBhJDoZIig_Y/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/9/6/bb/apk/2063754079/content/SCREENSHOT/d282284f-afe8-4c2e-be18-e5e9b6c1c612.png@webp",
+      "sha256": "749aad458a161b08c20b1ac3ed91dd95ab17e7f13137dbe33918652cdf90c79d",
+      "bytes": 44130,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "potion",
+      "index": 1,
+      "url": "https://static.rustore.ru/imgproxy/jYkKoyjJTxU1QXTm33KfymvjJdDTIF4kWYBln6mVXWs/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/9/6/a2/apk/2063754079/content/SCREENSHOT/2e143696-af95-43fc-9dc5-fc0d747cc90d.png@webp",
+      "sha256": "17d321012bd18041d2575fc7d54741959460866cb819f0375267c437a280187f",
+      "bytes": 51438,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "potion",
+      "index": 2,
+      "url": "https://static.rustore.ru/imgproxy/kukllN7FK1Hn7vXOGPmJ9pPgOLD3rnlvBRsySw2H1b8/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/9/6/e6/apk/2063754079/content/SCREENSHOT/6cd4e28f-cbb8-46b8-9f47-d04118f2d9b2.png@webp",
+      "sha256": "bc4feb39eda49b264893e0f52a376173d340da3faec626c0e9dd77aa92eba5bd",
+      "bytes": 47832,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "potion",
+      "index": 3,
+      "url": "https://static.rustore.ru/imgproxy/H0w1YBXb11xMEKJvrDwtUqR2ctdlnUSOB9K7mOnihFc/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/9/6/b9/apk/2063754079/content/SCREENSHOT/8542137f-f030-4864-8f13-e693c2b55ac2.png@webp",
+      "sha256": "6238f4216aaaf7b41acfaae210edc0682dd780f8c6f7d089b25da300cb7ef2f3",
+      "bytes": 53492,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "bottle",
+      "index": 0,
+      "url": "https://static.rustore.ru/imgproxy/7N_p_361b2ceIjTHLw1txLbYV_VSAfoy8EtbggQF1jE/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/10/22/f3/apk/2063719334/content/SCREENSHOT/a5a1faa8-f2b6-479a-aad9-adf50f080bcc.png@webp",
+      "sha256": "55b27d78528481d79dd5930eee5a590407494c5eff75a16bf23ff41e5db1fa62",
+      "bytes": 19432,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "bottle",
+      "index": 1,
+      "url": "https://static.rustore.ru/imgproxy/H3bPMSHW5vYvQwooacW-CicTbM2j_mj3drIaNKohACk/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/10/22/e6/apk/2063719334/content/SCREENSHOT/0eb6c04d-2c29-4bc0-86fb-884e765a733b.png@webp",
+      "sha256": "298832040e697b0ffd298437d34f49465a082fc697d54a51a33d441095078e13",
+      "bytes": 18536,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "bottle",
+      "index": 2,
+      "url": "https://static.rustore.ru/imgproxy/4Er8NFMgUgg2RlVALruEwqFfuu60ZNMm0R-_SzPgL8g/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/10/22/48/apk/2063719334/content/SCREENSHOT/700a0233-9eaa-42e4-875b-2cde9b73fd13.png@webp",
+      "sha256": "8e60b475e7205c3a2136275fc7c41f12a3f966a2489c801d075a7bef6298335c",
+      "bytes": 16444,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "bottle",
+      "index": 3,
+      "url": "https://static.rustore.ru/imgproxy/QoLP7c-5VNBvzbqHfHijWX6bVE51-qbox8F5gkEqZDM/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/10/22/a8/apk/2063719334/content/SCREENSHOT/384ea831-bd58-4cec-8b1e-edb05ca1d72a.png@webp",
+      "sha256": "cac3d44a00f094e320a578d8869f0b56e1db7dcf4e49e2039d2abeed5a023206",
+      "bytes": 21762,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "bottle",
+      "index": 4,
+      "url": "https://static.rustore.ru/imgproxy/X8id8LdB7zJV3sJNxrbIcXpYLowajqQGBJ-hofNZV_E/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/10/22/89/apk/2063719334/content/SCREENSHOT/f7f59805-ac91-44d1-9f23-a653780a7a5c.png@webp",
+      "sha256": "95da1a5e7e38938db7fba5a2a0b68cb427ee39192445fdc723e836581a20393c",
+      "bytes": 21812,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "bottle",
+      "index": 5,
+      "url": "https://static.rustore.ru/imgproxy/hyTcUbxYrMqvykCmQqPuMwAZTyW4ks2M_rUchbc3TfU/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/10/22/d9/apk/2063719334/content/SCREENSHOT/bae84feb-5aed-42de-9cc2-e612538ed80e.png@webp",
+      "sha256": "9016d4c520c923e2c0bca918fc3339c6888bc85cad54934f67e8ab92153377fd",
+      "bytes": 18852,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "bottle",
+      "index": 6,
+      "url": "https://static.rustore.ru/imgproxy/i2O-aDPZeLu5blSKsZWQxw1Lr4ZA8WqxJUiGp2iljqU/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/10/22/f1/apk/2063719334/content/SCREENSHOT/954739c7-9b30-437b-a485-930a428af16e.png@webp",
+      "sha256": "36bb62d0271a2a7cf7ff1c22119dd3999316d31fe2565956d67cb7be40018705",
+      "bytes": 18942,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    },
+    {
+      "listing": "bottle",
+      "index": 7,
+      "url": "https://static.rustore.ru/imgproxy/rNoi5xKeou9w-wnI9c0QmJErSeBjs9ZqH9qhnsfRwjQ/preset:web_scr_prt_162/plain/https://static.rustore.ru/2026/10/22/82/apk/2063719334/content/SCREENSHOT/6eed85d9-6746-49de-8eff-db9a3748de91.png@webp",
+      "sha256": "fe28584f82024c5a1517795817594fe1a29b51044a384c51a4697ce6bd9ae36f",
+      "bytes": 18268,
+      "scope": "Promotional image; appearance does not establish mechanics"
+    }
+  ],
+  "userVideos": [
+    {
+      "filename": "video_2026-10-27_17-20-07.mp4",
+      "sha256": "bee704172b6a64212762e80251736086fdeb44b3e3194c828c79e11fa067c253",
+      "bytes": 141473048,
+      "container_duration": 497.342766,
+      "video_duration": 497.187,
+      "size": [
+        576,
+        1280
+      ],
+      "frames": 12061
+    },
+    {
+      "filename": "video_2026-10-27_17-20-13.mp4",
+      "sha256": "bc6456f3cf50c6d6167a31ef4d288a4b9b9626f61c8038bb367b952ebc0d813a",
+      "bytes": 81226875,
+      "container_duration": 285.512562,
+      "video_duration": 285.446,
+      "size": [
+        576,
+        1280
+      ],
+      "frames": 6919
+    }
+  ],
+  "reviewedHiddenFrames": [
+    {
+      "video": "video_2026-10-27_17-20-13.mp4",
+      "seconds": 156,
+      "sha256": "afa253d7483dc5b4486754d1f549c5bc8e289b8db95e7bd3f66fd3be5d6865ce"
+    },
+    {
+      "video": "video_2026-10-27_17-20-13.mp4",
+      "seconds": 160,
+      "sha256": "6e0ae06bcadd934ec88458600e3abaa93a56a2776b64eae1ac35e793f43fb23e"
+    },
+    {
+      "video": "video_2026-10-27_17-20-13.mp4",
+      "seconds": 164,
+      "sha256": "721efd64a8751d839af0cd79551e5ceb3001b6b9805da6e62fee74ee40620e1b"
+    },
+    {
+      "video": "video_2026-10-27_17-20-13.mp4",
+      "seconds": 168,
+      "sha256": "ff1c2fadc52dcf59d6d46ee6d56bc477136333576d79565cf76832cca54bb5bc"
+    },
+    {
+      "video": "video_2026-10-27_17-20-13.mp4",
+      "seconds": 176,
+      "sha256": "38a1edb72c112d7a701602a9816984981106f71fac2a3c82a17498763b4c5ea7"
+    },
+    {
+      "video": "video_2026-10-27_17-20-13.mp4",
+      "seconds": 184,
+      "sha256": "ea7fdbdbdb4be3e8539098f333a3e2ef1419c32afc933ef622258374094d6071"
+    },
+    {
+      "video": "video_2026-10-27_17-20-13.mp4",
+      "seconds": 196,
+      "sha256": "3d3a346bc5234dec795cb4fb9d911c9f91f5489a14d46389deed126730b3ee8d"
+    },
+    {
+      "video": "video_2026-10-27_17-20-13.mp4",
+      "seconds": 210,
+      "sha256": "d4055ac766cfdd6c3a92da031bd51e2beb7f2e86f9e8a05af88c6e04e8c06d67"
+    }
+  ],
+  "appleReviewEntries": {
+    "US": 50,
+    "GB": 50,
+    "AU": 50
+  },
+  "lateVideoCandidates": [
+    {
+      "id": "BCSYGDLaoho",
+      "title": "Level 40! Covered Bottles Make This Puzzle Much Harder | Magic Sort",
+      "by": "Magic Sort Journey",
+      "duration": "0:48",
+      "url": "https://www.youtube.com/watch?v=BCSYGDLaoho",
+      "reviewed": false,
+      "evidence": "Public search metadata only; playback access was blocked"
+    },
+    {
+      "id": "qdwzICYxvfI",
+      "title": "Magic Sort (Grand Games) - Level 45-46-47 #games #puzzle #magicsort #grandgames",
+      "by": "Almighty Queenie",
+      "duration": "3:35",
+      "url": "https://www.youtube.com/watch?v=qdwzICYxvfI",
+      "reviewed": false,
+      "evidence": "Public search metadata only; playback access was blocked"
+    },
+    {
+      "id": "sefN7X9Baf8",
+      "title": "Magic Sort by Grand Games A.Ş. Walkthrough Level 1-32 (Water Sort)",
+      "by": "Momomo",
+      "duration": "35:34",
+      "url": "https://www.youtube.com/watch?v=sefN7X9Baf8",
+      "reviewed": false,
+      "evidence": "Public search metadata only; playback access was blocked"
+    },
+    {
+      "id": "YDbl93Z61hI",
+      "title": "Magic Sort (Grand Games) - Level 79 #games #puzzle #magicsort #grandgames",
+      "by": "Almighty Queenie",
+      "duration": "4:04",
+      "url": "https://www.youtube.com/watch?v=YDbl93Z61hI",
+      "reviewed": false,
+      "evidence": "Public search metadata only; playback access was blocked"
+    },
+    {
+      "id": "pp7ZR7wwJM8",
+      "title": "Break the Ice, Sort the Chaos ❄️🧠 | Magic Sort 250",
+      "by": "Cozy iPad Games",
+      "duration": "0:52",
+      "url": "https://www.youtube.com/watch?v=pp7ZR7wwJM8",
+      "reviewed": false,
+      "evidence": "Public search metadata only; playback access was blocked"
+    }
+  ],
+  "excludedEvidence": [
+    "Search service returned empty errors",
+    "Bing returned empty or unrelated results",
+    "DuckDuckGo challenge not solved",
+    "Brave 429, Yahoo 500",
+    "YouTube playback 429 / sign-in bot check: no credentials or session used, no bypass; metadata is not watched gameplay",
+    "Failed thumbnail image decoding: not used as evidence"
+  ],
+  "experiment": {
+    "file": "hidden-fairness.json",
+    "scope": "Two valid positions of our current complete-information core, under a hypothetical visual mask. Free Undo can recover a three-star final route; no claim that first-play three stars are impossible with Undo."
+  },
+  "reviewedGoalFrames": [
+    {
+      "video": "video_2026-10-27_17-20-07.mp4",
+      "seconds": 82,
+      "sha256": "e95e0f1d7615ef511ba1cac3cd11d35bd1b1f5a6cb15ac9a4f4b36fb770dd21c"
+    },
+    {
+      "video": "video_2026-10-27_17-20-07.mp4",
+      "seconds": 220,
+      "sha256": "c3e155a1b5935e62c5785c4e76f4fbcdafebee7e00235909d83ee758733c68ed"
+    }
+  ]
+}
