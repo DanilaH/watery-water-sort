@@ -1,0 +1,12 @@
+[
+  {
+    "path": "goal.webp",
+    "bytes": 35356,
+    "sha256": "620839a35a30a5d93326f9247d739b50c03866fa38315c523e6408a74be520ed"
+  },
+  {
+    "path": "normal.webp",
+    "bytes": 26368,
+    "sha256": "b4f8e96aeeeaa166f65e76fc425428a715638f988bdeec88d64ad60ab61d81ba"
+  }
+]
