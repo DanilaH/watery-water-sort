@@ -1,0 +1,62 @@
+[
+  {
+    "path": "after-blue-320x480-12.webp",
+    "sha256": "553a58cd3cd0f07578a866e3697cf4ad6336999fff225a26e23938cc54effcdc"
+  },
+  {
+    "path": "after-blue-390x844-12.webp",
+    "sha256": "b82fb2be3f90f4109e3be0203258a4f865a3ec423f80fa4036f36192b109d287"
+  },
+  {
+    "path": "after-blue-390x844-13.webp",
+    "sha256": "89a4400cb9e954714e2db90c0c5006fa96ce1efe950ed0d41f635cb4511831b4"
+  },
+  {
+    "path": "after-blue-568x320-12.webp",
+    "sha256": "dfd484c50f8898942aaa10ea4ea467ecfd2b233eb2beadbf408f3224f6ef91dd"
+  },
+  {
+    "path": "after-graphite-390x844-12.webp",
+    "sha256": "e2d961723a217f16f5906e808890c2c0181180508e9bf0a210932a772faf6c13"
+  },
+  {
+    "path": "after-ice-390x844-12.webp",
+    "sha256": "ead9bea46aebd419e9c5db740b43c1fbd6df6437e1f5b2b72908ae633953122d"
+  },
+  {
+    "path": "after-plum-390x844-12.webp",
+    "sha256": "d23b2b8ff3b8c9f8d5420eb1c48c40508ce5bf5f9637909bc395599913166868"
+  },
+  {
+    "path": "before-blue-320x480-12.webp",
+    "sha256": "cfead60b2760cbf9b22883bb6dde07b18d6a4b444935f8b4961f44031f38f766"
+  },
+  {
+    "path": "before-blue-390x844-12.webp",
+    "sha256": "6e3cad067f0aaf0f8b07b2e8b6369e695c5bf205158662d82a732976f3eb1c58"
+  },
+  {
+    "path": "before-blue-390x844-13.webp",
+    "sha256": "0201dfc9be1b9df62caa26c0a4d483ce83154a5d761cfc36b6f03ee0f169b4ed"
+  },
+  {
+    "path": "before-blue-568x320-12.webp",
+    "sha256": "e550d7b4dbe86859e9db017d2c94cc60697e2646897ab69bf2cfa7b04b8a78d8"
+  },
+  {
+    "path": "before-graphite-390x844-12.webp",
+    "sha256": "179d6d31a73cc4b745995f1f4a7df346cab182650ae88f0c56b288c9a41ad2b3"
+  },
+  {
+    "path": "before-ice-390x844-12.webp",
+    "sha256": "c5ea458fd53b422a7e6606fe9d9588fe6d12dbbe8ded821e3ed8b7370ce5dc0b"
+  },
+  {
+    "path": "before-plum-390x844-12.webp",
+    "sha256": "33a9eab1d4b8190c4e3712f1f652bcb84d007b210566c8f8dc265b923c5e0c5f"
+  },
+  {
+    "path": "comparison.webp",
+    "sha256": "98486b52ccc74857adfd966057e340f870b2e73c8be8b1472cad7f3a650d32c5"
+  }
+]
