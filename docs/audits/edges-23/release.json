@@ -1,0 +1,14 @@
+{
+  "runtimeCommit": "85e9e0202c1c52b3b3d88e006806fb82e370f74c",
+  "sourceCommit": "8745e43665bfb5650ad2eb3be59a14accce17b1f",
+  "sourceTree": "b8e4c840de76ab1915e0d9d1caee997f17206eb1",
+  "run": 41022369470,
+  "job": 123952414226,
+  "artifact": 12962183268,
+  "artifactZipSha256": "795a6a8223ac5ac5465ca365fc790275b360eb1b87473564bbd077f7a566d51f",
+  "corePassed": 39,
+  "browserPassed": 136,
+  "optimalPathsVerified": 32,
+  "captureDistMatchesApk": true,
+  "physicalAndroidTested": false
+}

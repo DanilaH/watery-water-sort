@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "edd46e783bbb71c9c796065271cc79e2127e7f57",
+  "server": "Vite dev",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 3
+  },
+  "render": {
+    "width": 716,
+    "height": 1032,
+    "antialias": true,
+    "samples": 4
+  },
+  "path": "before-dpr3.png",
+  "sha256": "68e783a76cb75328c80c38dc608cf5523c3faa856f462ee81b2e948e1eb598b0"
+}

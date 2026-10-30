@@ -1,0 +1,52 @@
+[
+  {
+    "path": "before-dpr3.png",
+    "bytes": 1215090,
+    "sha256": "10bf745daa1e3d6bb17e0920e45c21fd4662097b8cc6caa83a1bd459c46e9167"
+  },
+  {
+    "path": "blue-320x480-dpr2.75-level12.webp",
+    "bytes": 51126,
+    "sha256": "7cdaf4eafaa7e515bcac0d6b16281d106b294c26c5db2bf1c63b65272c2bfde9"
+  },
+  {
+    "path": "blue-390x844-dpr1-level1.webp",
+    "bytes": 15174,
+    "sha256": "f1ebc8a263b5a40ffcff471056b3a2f62ca92309091e38d4a0049f6c69dd71b2"
+  },
+  {
+    "path": "blue-390x844-dpr2-level1.webp",
+    "bytes": 34288,
+    "sha256": "75eab164c2d30d31cd7b772a1561b886f57771e8385592e7fce578e1bd162785"
+  },
+  {
+    "path": "blue-390x844-dpr2.75-level1.webp",
+    "bytes": 50218,
+    "sha256": "9e3f8805dc1d6c4963713166888d7b23ec3a0643dd8c9691424754afee395c39"
+  },
+  {
+    "path": "blue-390x844-dpr2.75-level13.webp",
+    "bytes": 63352,
+    "sha256": "f14d9072dda261d598359098b6edb7daac793166e651febe1ced97a98b8a3d14"
+  },
+  {
+    "path": "blue-390x844-dpr3-level1.webp",
+    "bytes": 56742,
+    "sha256": "cbf79cb3798f3c46f8e576085c35f1c6f181d528b92ecf1c7856eefbe302c2b9"
+  },
+  {
+    "path": "blue-568x320-dpr2.75-level12.webp",
+    "bytes": 47962,
+    "sha256": "497afdd7260c20e84c87ec3d02f41290dfc7ce5cc2b5b6c44c26099e8d9cf437"
+  },
+  {
+    "path": "edge-comparison.png",
+    "bytes": 28593,
+    "sha256": "57e6eb6a668e6f0faeab2d78533e5da308662a05847e600161c9f3a09600db3a"
+  },
+  {
+    "path": "ice-390x844-dpr2.75-level1.webp",
+    "bytes": 48410,
+    "sha256": "7142160f1ad97365d3630426f2dedf7720f7b20a268deeb7b327ad3caff045fa"
+  }
+]

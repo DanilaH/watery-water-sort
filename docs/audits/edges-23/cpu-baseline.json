@@ -1,0 +1,38 @@
+{
+  "scope": "Browser scene update CPU time only; no physical Android GPU measurement",
+  "results": [
+    {
+      "current": 0,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 3
+      },
+      "frames": 21,
+      "p95": 2.1000000005587935,
+      "max": 2.6000000005587935
+    },
+    {
+      "current": 11,
+      "viewport": {
+        "width": 320,
+        "height": 480,
+        "dpr": 2.75
+      },
+      "frames": 15,
+      "p95": 4.7000000001862645,
+      "max": 4.7000000001862645
+    },
+    {
+      "current": 12,
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "dpr": 3
+      },
+      "frames": 19,
+      "p95": 2.699999999254942,
+      "max": 2.699999999254942
+    }
+  ]
+}

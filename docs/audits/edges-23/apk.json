@@ -1,0 +1,54 @@
+{
+  "apk": "perelevy-0.23.apk",
+  "bytes": 10125527,
+  "sha256": "b0de36d556451c715498a20300edd721ee3bc4ac650ba4694f36f26ad60c3b06",
+  "manifest": {
+    "versionCode": 23,
+    "versionName": "0.23.0-smooth",
+    "compileSdkVersion": 36,
+    "compileSdkVersionCodename": "16",
+    "package": "com.danilah.waterywatersort.preview3",
+    "platformBuildVersionCode": 36,
+    "platformBuildVersionName": 16
+  },
+  "v2Signatures": [
+    {
+      "algorithm": "0x103",
+      "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+    }
+  ],
+  "publicPreviewCertificateMatches": true,
+  "tamperedProtectedByteRejected": true,
+  "distFilesMatched": [
+    "index.html",
+    "assets/web-NWmtoaWg.js",
+    "assets/phaser-DFK5Ua9d.js",
+    "assets/index-DrW8jLrJ.js",
+    "assets/solver.worker-BP69J42O.js",
+    "assets/index-CJio5nJD.css",
+    "art/goal-crystal-shard-3.webp",
+    "art/goal-crystal-shard-0.webp",
+    "art/night-shore.svg",
+    "art/goal-crystal-shard-4.webp",
+    "art/goal-crystal-shard-1.webp",
+    "art/goal-crystal.json",
+    "art/goal-crystal-shard-2.webp",
+    "art/goal-crystal-base.webp",
+    "audio/pour-2.ogg",
+    "audio/select.ogg",
+    "audio/victory.ogg",
+    "audio/hint.ogg",
+    "audio/accept.ogg",
+    "audio/material-report.json",
+    "audio/mix-report.json",
+    "audio/reject.ogg",
+    "audio/cork.ogg",
+    "audio/pour-3.ogg",
+    "audio/pour-1.ogg",
+    "audio/land.ogg",
+    "audio/complete.ogg",
+    "audio/collect.ogg",
+    "fonts/rubik.woff",
+    "fonts/OFL-Rubik.txt"
+  ]
+}
