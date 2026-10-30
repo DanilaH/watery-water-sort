@@ -80,18 +80,23 @@ for(const [width,height]of [[320,480],[568,320]])test(`challenge label and rewar
  await expect(page.locator('#home-challenge')).toBeVisible();await page.locator('#home-play').click();await expect(page.locator('#hard-badge')).toBeVisible();
  for(const id of ['star-bank','hard-badge','menu','settings']){const r=(await page.locator('#'+id).boundingBox())!;expect(r.x).toBeGreaterThanOrEqual(0);expect(r.y).toBeGreaterThanOrEqual(0);expect(r.x+r.width).toBeLessThanOrEqual(width);expect(r.y+r.height).toBeLessThanOrEqual(height);}
 });
-test('a colour completes at visual fill while its source is still returning',async({page})=>{
+test('a colour completes on the first filled frame before the flight is cleared',async({page})=>{
  const s=moved(fresh(),levels[0].witness[0]);s.settings.sound=false;
  await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');await page.locator('#home-play').click();await page.waitForTimeout(300);
  await page.evaluate(async()=>{
-  const path='/src/game/WaterScene.ts',m=await import(path),fn=m.WaterScene.prototype.celebrate;
+  const path='/src/game/WaterScene.ts',m=await import(path),fn=m.WaterScene.prototype.celebrate,animate=m.WaterScene.prototype.animate;
   (window as any).completions=[];
-  m.WaterScene.prototype.celebrate=function(index:number,final=false){(window as any).completions.push({index,final,busy:this.busy,received:this.flight?.received,tail:performance.now()-this.flight?.start-this.flight?.timing.lift-this.flight?.timing.flow});return fn.call(this,index,final);};
+  m.WaterScene.prototype.animate=function(...args:any[]){
+   const scene=this,update=this.sys.sceneUpdate;let previous=performance.now();
+   this.sys.sceneUpdate=function(...frameArgs:any[]){const now=performance.now();scene.fillPreviousFrame=previous;previous=now;return update.apply(scene,frameArgs);};
+   return animate.apply(this,args);
+  };
+  m.WaterScene.prototype.celebrate=function(index:number,final=false){const fullAt=this.flight.start+this.flight.timing.lift+this.flight.timing.flow;(window as any).completions.push({index,final,busy:this.busy,received:this.flight?.received,previousBeforeFill:this.fillPreviousFrame-fullAt,tail:performance.now()-fullAt});return fn.call(this,index,final);};
  });
  const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,4),m=levels[0].witness[1];
  for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);
  await expect(page.locator('#hint')).toBeEnabled();const events=await page.evaluate(()=>(window as any).completions);
- expect(events).toHaveLength(1);expect(events[0]).toMatchObject({index:m.to,final:false,busy:true,received:true});expect(events[0].tail).toBeLessThan(100);
+ expect(events).toHaveLength(1);expect(events[0]).toMatchObject({index:m.to,final:false,busy:true,received:true});expect(events[0].tail).toBeGreaterThanOrEqual(-1);expect(events[0].previousBeforeFill).toBeLessThan(1);
 });
 test('immediately reusing a completed vessel cancels its old cork contact',async({page})=>{
  const s=moved(fresh(),levels[0].witness[0]);s.settings.sound=false;

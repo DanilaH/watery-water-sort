@@ -44,11 +44,10 @@ test('dense field reserves one advertised slot outside the real board and keeps 
  expect(actual).toEqual({slots:expected+1,tubes:expected,poses:expected+1});await expect(page.locator('#extra-tube')).toBeVisible();await expect(page.locator('#status')).toContainText('Выбери');
 });
 
-test('controls retain 48px touch areas in portrait and landscape',async({page})=>{
- for(const [width,height]of [[390,844],[320,480],[568,320]]){await page.setViewportSize({width,height});await start(page,11);
+for(const [width,height]of [[390,844],[320,480],[568,320]])test(`controls retain 48px touch areas ${width}x${height}`,async({page})=>{
+ await page.setViewportSize({width,height});await start(page,11);
   for(const id of ['menu','settings','symbols','undo','hint','restart']){const b=(await page.locator('#'+id).boundingBox())!;expect(b.width).toBeGreaterThanOrEqual(48);expect(b.height).toBeGreaterThanOrEqual(48);expect(b.x).toBeGreaterThanOrEqual(0);expect(b.y).toBeGreaterThanOrEqual(0);expect(b.x+b.width).toBeLessThanOrEqual(width);expect(b.y+b.height).toBeLessThanOrEqual(height);}
   await page.locator('#settings').click();const close=page.getByRole('button',{name:'Закрыть',exact:true}),b=(await close.boundingBox())!;expect(b.width+0.001).toBeGreaterThanOrEqual(48);expect(b.height+0.001).toBeGreaterThanOrEqual(48);await close.click();
- }
 });
 
 
