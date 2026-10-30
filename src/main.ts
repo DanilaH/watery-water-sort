@@ -26,7 +26,8 @@ const loaded=store.load();let state=loaded.state,locked=loaded.corrupt||loaded.u
 audio.setEnabled(state.settings.sound);if(state.settings.sound)void audio.load();
 let recoveryNotice=loaded.recovered?'Откат к резервной копии':'';
 const scene=new WaterScene('water');
-const density=Math.min(2,Math.max(1,devicePixelRatio));
+// Downsample on 1× displays; retain native detail on common 2.5–3× phones.
+const density=Math.min(3,Math.max(2,devicePixelRatio));
 scene.setViewport($('board').clientWidth,$('board').clientHeight,density);
 const game=new Phaser.Game({type:Phaser.AUTO,parent:'board',transparent:true,antialias:true,scale:{mode:Phaser.Scale.NONE,width:Math.round($('board').clientWidth*density),height:Math.round($('board').clientHeight*density)},scene:[scene],audio:{noAudio:true}});
 let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,lastMove:Move|null=null,kind:'pour'|'undo'='pour',newColor=false;

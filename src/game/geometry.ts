@@ -37,7 +37,7 @@ export function layout(width:number,height:number,count:number,touchGap?:number)
 /** Shared inner silhouette for both rendering and the outlet/volume calculation. */
 export function vesselPolygon(width:number,height:number):Point[]{
  const r=width/2,poly=[{x:-r,y:0},{x:r,y:0},{x:r,y:height-r}];
- for(let n=1;n<=16;n++){const a=n*Math.PI/16;poly.push({x:Math.cos(a)*r,y:height-r+Math.sin(a)*r});}
+ for(let n=1;n<=32;n++){const a=n*Math.PI/32;poly.push({x:Math.cos(a)*r,y:height-r+Math.sin(a)*r});}
  return poly;
 }
 export const LIQUID_FILL=.87;
