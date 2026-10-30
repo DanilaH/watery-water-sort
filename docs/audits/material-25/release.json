@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "807f812405f022c223cdfe98b4269d27352b27e6",
+  "sourceTree": "36530e5d6bec99aed0c65343ca37c707e179aa95",
+  "run": 41041004322,
+  "job": 124013494220,
+  "artifact": 12970168003,
+  "artifactZipSha256": "757314559ff7251565a7f86cd718709e63ce212b919cc54f9c1a01bf61ff5f93",
+  "corePassed": 42,
+  "browserPassed": 142,
+  "optimalPathsVerified": 32,
+  "captureDistMatchesApk": true,
+  "physicalAndroidTested": false
+}
