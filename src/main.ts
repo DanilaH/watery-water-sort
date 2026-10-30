@@ -28,7 +28,8 @@ let pendingStars:{before:number;delta:number;earned:number;total:number}|undefin
 const loaded=store.load();let state=loaded.state,locked=loaded.corrupt||loaded.unavailable;
 audio.setEnabled(state.settings.sound);if(state.settings.sound)void audio.load();
 let recoveryNotice=loaded.recovered?'Откат к резервной копии':'';
-void mountHomeHero();
+let homeHero:Awaited<ReturnType<typeof mountHomeHero>>;
+void mountHomeHero().then(hero=>{homeHero=hero;paint();});
 for(const id of ['home-play','home-levels','home-settings','menu','settings','undo','hint','restart','continue','rescue']){const b=$(id);b.classList.add('gel-button');if(id==='home-play'||id==='continue')b.classList.add('gel-primary');}
 const scene=new WaterScene('water');
 // Downsample on 1× displays; retain native detail on common 2.5–3× phones.
@@ -64,6 +65,7 @@ function commit(next:Save){try{store.write(next);state=next;recoveryNotice='';$(
 function paint(){
  const a=attempt(state),finished=won(a.board,goalFor(state))&&!scene.busy;
  document.body.classList.toggle('home',atHome);$('home').hidden=!atHome;$('home').inert=!atHome;$('app').inert=atHome;
+ homeHero?.setActive(atHome&&![...blockers].some(x=>x!=='home')&&!document.hidden,reduced.matches);
  $('app').setAttribute('aria-hidden',String(atHome));
  $('home-play').textContent=hasStarted()?'Продолжить':'Играть';
  $('home-summary').textContent=hasStarted()?`Уровень ${state.current+1} · ходов: ${a.history.length}`:'Собери каждый цвет в свою колбу';

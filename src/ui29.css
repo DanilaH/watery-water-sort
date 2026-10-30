@@ -23,7 +23,7 @@ body .level-stars{display:flex;justify-content:center;gap:1px;margin-top:5px;fon
 .map-star{display:inline-block;width:17px;height:17px;font-size:0;background:url('/art/ui/star-gold-29.svg') center/contain no-repeat;filter:drop-shadow(0 1px 0 #2a315944)}
 .map-star[data-filled=false]{background-image:url('/art/ui/star-empty-29.svg');opacity:.8;filter:none}
 body #star-bank>span,body .home-star-bank>span{display:inline-block;width:25px;height:25px;font-size:0;background:url('/art/ui/star-gold-29.svg') center/contain no-repeat;filter:drop-shadow(0 1px 1px #17234455)}
-body img.home-hero{object-fit:contain;filter:drop-shadow(0 5px 4px #07183122)}
+body .home-hero[data-material=glass]{object-fit:contain;filter:drop-shadow(0 5px 4px #07183122)}
 body dialog{background:linear-gradient(155deg,var(--sheet-top),var(--sheet-base));border:2px solid var(--sheet-line);color:var(--sheet-ink);box-shadow:inset 0 2px 0 #ffffff44,0 7px 0 #08152d55,0 22px 60px #07122b77}
 body .dialog-header{border-bottom:1px solid #d8eeff22;padding-bottom:14px}
 body .dialog-header h2{color:var(--sheet-ink);text-shadow:0 2px 1px #091d3b33;letter-spacing:-.035em}
