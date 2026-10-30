@@ -40,7 +40,7 @@ body[data-theme=ice] .theme-options button[aria-pressed=true]:after{color:#8c5c1
 body dialog button:focus-visible,body dialog input:focus-visible{outline-color:#ffe292}
 body[data-theme=ice] dialog button:focus-visible,body[data-theme=ice] dialog input:focus-visible{outline-color:#1d68c4}
 body dialog::backdrop{backdrop-filter:blur(3px)}
-@media(orientation:portrait) and (min-height:650px){body #app{grid-template-rows:52px 30px minmax(0,1fr) 104px 86px 20px}}
+@media(orientation:portrait) and (min-height:650px){body:not(.packed-board) #app{grid-template-rows:52px 30px minmax(0,1fr) 104px 86px 20px}}
 @media(max-width:350px),(orientation:landscape) and (max-height:550px){body .map-star{width:15px;height:15px}body #star-bank>span,body .home-star-bank>span{width:21px;height:21px}}
 @media(prefers-reduced-motion:reduce){body .gel-button::before{transition:none}}
 body #home .home-actions #home-play.gel-button{background:transparent;border:0;box-shadow:none;color:#593700;text-shadow:0 1px 0 #fff3b580}
