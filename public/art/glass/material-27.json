@@ -1,0 +1,51 @@
+{
+  "sourceSha256": "91aed777acf2fc72946bfbf4b62722908610ddbc7fc7c8e069d2a0508356134b",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "processing": "Unmodified RGBA crop, lossless WebP; no repainted material or alpha reconstruction",
+  "assets": [
+    {
+      "path": "tube-27.webp",
+      "crop": [
+        364,
+        78,
+        640,
+        958
+      ],
+      "size": [
+        276,
+        880
+      ],
+      "bytes": 189724,
+      "sha256": "8ed6eb7c3ff8b4cc936281a4a82ebb4601c6af171f6de6e21732303b3eff315e"
+    },
+    {
+      "path": "cork-27.webp",
+      "crop": [
+        926,
+        356,
+        1216,
+        520
+      ],
+      "size": [
+        290,
+        164
+      ],
+      "bytes": 60274,
+      "sha256": "da674781a74f140413c0091e8251ffece65d6c9130ac82c7e30709606555a405"
+    }
+  ],
+  "mapping": {
+    "width": 276,
+    "innerWidth": 204,
+    "anchor": [
+      138,
+      27
+    ],
+    "bottomMargin": 39,
+    "topSlice": 80,
+    "bottomSlice": 170
+  }
+}
