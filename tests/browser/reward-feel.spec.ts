@@ -34,12 +34,32 @@ test('saved best result precedes cosmetic collection; replay and reload cannot f
  await expect(page.locator('#continue')).toBeVisible();await page.waitForTimeout(1800);
  await expect(page.locator('.star-flight')).toHaveCount(0);await expect(page.locator('#star-total')).toHaveText('3');
 });
-test('next immediately cancels all reward arrivals and fountains without losing saved stars',async({page})=>{
- await prepare(page);await finish(page);await page.locator('#continue').click();
+test('next cancels future reward arrivals and fountains without losing saved stars',async({page})=>{
+ await prepare(page);
+ // Snapshot at the actual click, before cancellation; remote click delivery can take
+ // long enough for a legitimate star arrival to happen before the user event.
+ await page.evaluate(()=>document.getElementById('continue')!.addEventListener('click',()=>{(window as any).arrivalsAtNext=[...(window as any).arrivals];},{capture:true,once:true}));
+ await finish(page);await page.locator('#continue').click();
  await expect(page.locator('#level-title')).toHaveText('Уровень 2');await page.waitForTimeout(2000);
- expect(await page.evaluate(()=>(window as any).arrivals)).toEqual([]);
+ const arrivals=await page.evaluate(()=>({atClick:(window as any).arrivalsAtNext,after:(window as any).arrivals}));expect(arrivals.atClick).toBeDefined();expect(arrivals.after).toEqual(arrivals.atClick);
  expect(await page.evaluate(()=>(window as any).waterScene.bursts)).toEqual([]);
  await expect(page.locator('.star-flight')).toHaveCount(0);await expect(page.locator('#star-total')).toHaveText('3');
+});
+test('an immediate next event cancels pending collection before its first arrival',async({page})=>{
+ await prepare(page);
+ await page.evaluate(()=>{
+  const button=document.getElementById('continue') as HTMLButtonElement;
+  const observer=new MutationObserver(()=>{
+   if(button.hidden)return;observer.disconnect();
+   (window as any).immediateNext={arrivals:[...(window as any).arrivals],revealing:document.getElementById('earned-stars')!.classList.contains('revealing-stars'),pendingBursts:(window as any).waterScene.bursts.length};
+   button.click();
+  });observer.observe(button,{attributes:true,attributeFilter:['hidden']});
+ });
+ const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,4),m=levels[0].witness.at(-1)!;
+ for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);
+ await expect(page.locator('#level-title')).toHaveText('Уровень 2');
+ const atClick=await page.evaluate(()=>(window as any).immediateNext);expect(atClick.arrivals).toEqual([]);expect(atClick.revealing).toBe(true);expect(atClick.pendingBursts).toBeGreaterThan(0);
+ await page.waitForTimeout(2000);expect(await page.evaluate(()=>(window as any).arrivals)).toEqual([]);expect(await page.evaluate(()=>(window as any).waterScene.bursts)).toEqual([]);await expect(page.locator('.star-flight')).toHaveCount(0);await expect(page.locator('#star-total')).toHaveText('3');
 });
 test('background cancels future collection ticks, resume shows persisted total',async({page})=>{
  await prepare(page);await finish(page);
