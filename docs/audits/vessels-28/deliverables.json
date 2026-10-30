@@ -1,0 +1,27 @@
+[
+  {
+    "name": "perelevy-0.28-goal.gif",
+    "bytes": 2816291,
+    "sha256": "b621d25af6aa6efe30feca318f2ba4a9f96608ed6157d7042b32d91ea1c4e3e7"
+  },
+  {
+    "name": "perelevy-0.28-layers.png",
+    "bytes": 211632,
+    "sha256": "4eb4d58a2ed06cbb90ca94b2a0f87695803ae3bbd3cddf3052ebfea7f0d2ac31"
+  },
+  {
+    "name": "perelevy-0.28-goal.png",
+    "bytes": 224431,
+    "sha256": "7f57376b5cbd96c672f07e2b9c838ef39531a4efb28eb5ad87cdaadecffe2476"
+  },
+  {
+    "name": "perelevy-0.28.apk",
+    "bytes": 10514967,
+    "sha256": "aae55f1d9952655068c5ed187b107cf072d7b5e2399e08e607f72ad029fad33e"
+  },
+  {
+    "name": "perelevy-0.28-reward.gif",
+    "bytes": 1333656,
+    "sha256": "80d37ef98761466f38f4a52a63749c630e4cb67ed021ba27dff1f2cf8cbd8fb0"
+  }
+]

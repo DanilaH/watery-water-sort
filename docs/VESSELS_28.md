@@ -9,3 +9,9 @@
 - Новых ассетов и зависимостей нет: используется исходное lossless стекло/пробка 0.27; цепи — кодовый SVG. Темы и Canvas fallback поддержаны.
 
 Проверено локально: 42 core, 28 browser regression по goal/reward/material и ещё 2 проверки shared glass/landscape cork. Production build. Полный CI/подпись APK и реальные кадры — в audits/vessels-28 после сборки. Физический Android/ощущение вибрации не проверялись.
+
+Production QA: 12 комбинаций экранов/тем без pageerror/overflow; просмотрены контактные листы dense portrait и giant+reward landscape всех тем. Реальные GIF/PNG и manifest SHA в audits/vessels-28.
+
+Финальная проверка: run 41068305406 / job 124105453978 / artifact 12983218250, release head 6282b2c2707bf2e0339be69fc0f758a9bc81b8bf. 149 browser / 42 core / 32 optimal paths; Android successful. Runtime source неизменён относительно записей d3f9f1b77d0aac33b805802253c7343653038483 (два следующих коммита меняли только тесты). Все четыре capture manifest и все 40 dist-ресурсов совпали с APK. APK 10514967 B, SHA256 aae55f1d9952655068c5ed187b107cf072d7b5e2399e08e607f72ad029fad33e; версия 28 / 0.28.0-vessels. ZIP SHA256 1a5e6df5e09ead5760234a5fb8ba67f5c3460d4ee198fe182070e918a5b30175. Проверены v2-подпись, preview-сертификат, tamper rejection, manifest, CRC. Телефон не проверялся.
+
+Прогон потребовал актуализации строгой cache-проверки (теперь 11 rendered slots, из них 10 playable), разделения трёх viewport-проверок в независимые тесты и замены фиксированных 100 ms в проверке заполнения на более строгую причинную гарантию первого полного render frame до сброса flight. Тайминги игры, retries и skips не менялись. Исходные failed CI runs: 41065207825 (cache count), 41066335209 (общий timeout трёх viewport и frame starvation); финальный весь зелёный.

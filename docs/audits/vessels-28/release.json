@@ -1,0 +1,13 @@
+{
+  "runtimeCommit": "d3f9f1b77d0aac33b805802253c7343653038483",
+  "releaseHead": "6282b2c2707bf2e0339be69fc0f758a9bc81b8bf",
+  "run": 41068305406,
+  "job": 124105453978,
+  "artifact": 12983218250,
+  "browser": 149,
+  "core": 42,
+  "optimalPaths": 32,
+  "assetsMatchingApk": 40,
+  "captureManifestsMatchingApk": 4,
+  "physicalPhoneTested": false
+}
