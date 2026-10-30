@@ -84,7 +84,7 @@ export function planPour(origin:TubePose,dest:TubePose,width:number,height:numbe
  return best;
 }
 export function pourPose(origin:TubePose,dest:TubePose,t:number,width:number,height:number,lifted=0,plan=planPour(origin,dest,width,height)){
- const ease=(v:number)=>1-Math.pow(1-v,3),travel=t<.25?ease(t/.25):t>.73?1-ease((t-.73)/.27):1;
+ const ease=(v:number)=>{const u=Math.max(0,Math.min(1,v));return u*u*u*(u*(u*6-15)+10);},travel=t<.25?ease(t/.25):t>.73?1-ease((t-.73)/.27):1;
  const units=plan.startUnits+(plan.endUnits-plan.startUnits)*pourTransfer(t);
  const angle=plan.dir*pourTilt(origin.w,origin.h,units)*travel;
  const target=targetPose(origin,dest,plan.dir,angle);
