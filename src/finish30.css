@@ -1,0 +1,17 @@
+/* Shared generated reward material, with independent entrance and idle wrappers. */
+body #star-target .star-spark,body #earned-stars .star-spark{width:1em;height:1em;vertical-align:middle;line-height:1;color:transparent;text-shadow:none;background:url('/art/ui/star-gold-29.svg') center/contain no-repeat}
+body .potential-star[data-filled=false]{opacity:1}
+body .potential-star[data-filled=false] .star-spark,body .result-star[data-filled=false] .star-spark{background-image:url('/art/ui/star-empty-29.svg');opacity:.85;filter:none}
+body #star-target{position:relative}
+body #star-target::after{content:'?';position:absolute;right:-7px;top:4px;width:14px;height:14px;border:1px solid #b7d7fb77;border-radius:50%;font:650 10px/13px Rubik,sans-serif;color:var(--muted);background:var(--bg-mid);filter:none}
+body .star-flight{width:30px;height:30px;font-size:0;color:transparent;text-shadow:none;background:url('/art/ui/star-gold-29.svg') center/contain no-repeat;filter:drop-shadow(0 2px 2px #77451666) drop-shadow(0 0 5px #ffde8477)}
+body.finished #finish-title,body.goal-board.finished #finish-title{font-size:30px;line-height:34px;letter-spacing:-.035em;color:#fff3cf;-webkit-text-stroke:.6px #d5a15d;text-shadow:0 2px 0 #98612b,0 4px 0 #0b183d66}
+body.finished #earned-stars,body.goal-board.finished #earned-stars{font-size:36px;line-height:38px;margin-top:2px;gap:5px;filter:drop-shadow(0 2px 1px #55351155)}
+body.finished #status,body.goal-board.finished #status{font-size:12px;line-height:16px;color:var(--muted)}
+body[data-theme=ice].finished #finish-title{color:#285a91;-webkit-text-stroke:.5px #f7fcff;text-shadow:0 2px 0 #fff,0 3px 0 #9cbcd844}
+@media(max-width:350px),(orientation:landscape) and (max-height:550px){
+ body.finished #finish-title,body.goal-board.finished #finish-title{font-size:22px;line-height:24px}
+ body.finished #earned-stars,body.goal-board.finished #earned-stars{font-size:26px;line-height:28px;margin-top:0;gap:4px}
+ body.finished #status,body.goal-board.finished #status{font-size:10px;line-height:13px}
+}
+@media(prefers-reduced-motion:reduce){body .star-flight{filter:none}}

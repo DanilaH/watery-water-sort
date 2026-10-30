@@ -31,9 +31,9 @@ export class StarReward{
     const tick=(now:number)=>{
       const elapsed=now-start;
       for(let i=0;i<3;i++){
-        if(elapsed>=(reduced?80:420)+i*(reduced?70:120)&&!revealed.has(i)){
+        if(elapsed>=(reduced?80:220)+i*(reduced?70:100)&&!revealed.has(i)){
           revealed.add(i);items[i].classList.add('lit');
-          if(!reduced&&i<earned)this.animations.push(items[i].animate([{transform:'scale(.45) rotate(-18deg)',opacity:0},{transform:'scale(1.24) rotate(5deg)',opacity:1,offset:.65},{transform:'scale(1)',opacity:1}],{duration:280,easing:'ease-out'}));
+          if(!reduced)this.animations.push(items[i].animate(i<earned?[{transform:'scale(.4) rotate(-20deg)',opacity:0},{transform:'scale(1.3) rotate(7deg)',opacity:1,offset:.62},{transform:'scale(1)',opacity:1}]:[{transform:'scale(.82)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:i<earned?340:240,easing:'cubic-bezier(.2,.8,.2,1)'}));
         }
       }
       for(let i=0;i<delta;i++){
