@@ -32,3 +32,15 @@ export function liquidMesh(poly:Point[],fractions:number[],displacement:number,h
  return mesh;
 }
 export function liquidBand(mesh:LiquidMesh,column:LiquidColumn,lower:number,upper:number){return cutBoundary(mesh,column,cutBoundary(mesh,column,column.poly,mesh.boundaries[upper],true),mesh.boundaries[lower],false);}
+
+/** Join the column mesh before rasterization so its internal edges cannot show through. */
+export function liquidContour(mesh:LiquidMesh,lower:number,upper:number):Point[]{
+ const key=(p:Point)=>`${Math.round(p.x*1e7)},${Math.round(p.y*1e7)}`,edges=new Map<string,{a:Point;b:Point}>();
+ for(const column of mesh.columns){const band=liquidBand(mesh,column,lower,upper);
+  for(let i=0;i<band.length;i++){const a=band[i],b=band[(i+1)%band.length],ka=key(a),kb=key(b);if(ka===kb)continue;const id=ka<kb?ka+'|'+kb:kb+'|'+ka;if(edges.has(id))edges.delete(id);else edges.set(id,{a,b});}
+ }
+ if(!edges.size)return [];
+ const next=new Map([...edges.values()].map(e=>[key(e.a),e])),first=edges.values().next().value!,out:Point[]=[];let edge=first;
+ do{out.push(edge.a);next.delete(key(edge.a));const following=next.get(key(edge.b));if(!following)break;edge=following;}while(out.length<=edges.size);
+ return out;
+}

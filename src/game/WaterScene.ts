@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import {VictoryOverlay} from './VictoryOverlay';
-import {liquidMesh,liquidBand,boundaryY,cutBoundary} from './liquidSurface';
+import {liquidMesh,liquidContour,boundaryY,cutBoundary} from './liquidSurface';
 import {stepLiquid,smooth,streamEnvelope,completionCork,FILL_BEATS,type LiquidMotion} from './liquid';
 import { type Board, type Move, type Goal, capacityAt, sealedTube, moveFor } from '../core/rules';
 import { area, clip, layout, goalLayout, surface, planPour, pourPose, vesselPolygon, LIQUID_FILL, pourTransfer, pourTiming, pourFrame, type PourPlan, type Point } from './geometry';
@@ -202,7 +202,7 @@ export class WaterScene extends Phaser.Scene {
     for(let n=0;n<layers.length;n++){
       const layer=layers[n];if(layer.amount<.001)continue;
       const low=boundaries[n].y,high=boundaries[n+1].y,base=COLORS[layer.color],wave=boundaries[n+1].amplitude;
-      const band=clip(clip(poly,high,true),low,false);
+      const band=mesh?liquidContour(mesh,n,n+1):clip(clip(poly,high,true),low,false);
       const receiving=this.flight?.to===index&&!this.flight.received&&now>=this.flight.start+this.flight.timing.lift;
       const flowAge=receiving?now-this.flight!.start-this.flight!.timing.lift:0;
       // Cross-section shading is clipped to the actual liquid, including on a tilted vessel.
@@ -212,9 +212,9 @@ export class WaterScene extends Phaser.Scene {
         // keeps warm liquid warm instead of mixing every hue with the blue glass.
         let col=blend(base,0x000000,.14*Math.pow(Math.abs(t-.43)*1.75,2));
         col=blend(col,0xffffff,Math.exp(-Math.pow((t-(.18+Math.sin(angle)*.055+Math.tanh((this.liquid.get(index)?.x??0)/4)*.014))/.065,2))*.17);
-        this.polygon(mesh?liquidBand(mesh,mesh.columns[k],n,n+1):clipX(clipX(band,x0,true),x1,false),col);
+        this.polygon(clipX(clipX(band,x0,true),x1,false),col);
       }
-      if(Math.abs(angle)<.09){
+      if(n===layers.length-1&&Math.abs(angle)<.09){
         
         const cap=clip(poly,high+3,true);const left=cap.length?Math.min(...cap.map(p=>p.x)):r.x-w,right=cap.length?Math.max(...cap.map(p=>p.x)):r.x+w;
         if(Math.abs(wave)<.5){g.fillStyle(blend(base,0xffffff,.10),.94*(1-smooth(Math.abs(wave)/.5)));g.fillEllipse((left+right)/2,high+.7,(right-left)-1,Math.max(3,r.w*.105));}
