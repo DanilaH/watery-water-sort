@@ -3,7 +3,7 @@ import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {layout,pourTiming} from '../../src/game/geometry';
-import type {Save} from '../../src/core/session';
+import {expanded,type Save} from '../../src/core/session';
 const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
 const fresh=():Save=>({schema:1,artVersion:4,current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false}});
 const levelKey=(i:number)=>`${levels[i].id}@${levels[i].version}`;
@@ -38,11 +38,14 @@ for(const stall of [800,220])test(`pour cue respects remaining water phase after
  if(stall===800)expect(pours).toHaveLength(0);else{expect(pours).toHaveLength(1);expect(pours[0].args[0]).toBeGreaterThan(0);expect(pours[0].args[0]).toBeLessThanOrEqual(pourTiming(2).lift+pourTiming(2).flow-stall+1);}
  await expect(page.locator('#moves')).toHaveText('Ходов: 1');expect(errors).toEqual([]);
 });
-test('extra tube preserves history and survives undo, restart, reload and level switching',async({page})=>{
+test('extra tube preserves history through a real move, reload and two undos',async({page})=>{
  const seeded=structuredClone(dead);seeded.completed=levels.slice(0,6).map((l:any)=>l.id);await open(page,seeded);await page.locator('#rescue').click();await unlockReward(page);let s=await saved(page);
  expect(attempt(s).extra).toBe(true);expect(attempt(s).board.slice(0,-1)).toEqual(attempt(dead).board);expect(attempt(s).history).toEqual(attempt(dead).history);
  const intoExtra=moves(attempt(s).board).find(m=>m.to===7)!;await tap(page,intoExtra.from);await tap(page,7);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(8);
  await reloadGame(page);await page.locator('canvas').waitFor();await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).board).toEqual(attempt(s).board);await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();s=await saved(page);expect(attempt(s).extra).toBe(true);expect(attempt(s).board).toHaveLength(8);expect(attempt(s).history).toHaveLength(6);
+});
+test('earned extra tube survives restart, help and level switching',async({page})=>{
+ const seeded=expanded(structuredClone(dead));seeded.completed=levels.slice(0,6).map((l:any)=>l.id);await open(page,seeded);let s=await saved(page);expect(attempt(s).extra).toBe(true);
  await page.locator('#restart').click();await page.getByRole('button',{name:'Начать заново',exact:true}).click();s=await saved(page);expect(attempt(s).board).toEqual([...levels[6].initial,[]]);expect(attempt(s).history).toHaveLength(0);
  await help(page);await expect(page.getByRole('button',{name:'Добавить колбу',exact:true})).toHaveCount(0);await expect(page.locator('.dialog-body')).toContainText('уже добавлена');await page.getByRole('button',{name:'Закрыть',exact:true}).click();
  await openLevels(page);await page.locator('.levels button').nth(0).click();expect(attempt(await saved(page)).extra).toBe(false);await openLevels(page);await page.locator('.levels button').nth(6).click();expect(attempt(await saved(page)).extra).toBe(true);

@@ -10,12 +10,13 @@ async function open(page:Page,fast=false){const s=fresh();s.settings.sound=false
 }
 async function tap(page:Page,index:number,s:ReturnType<typeof fresh>){const b=(await page.locator('#board').boundingBox())!,r=layout(b.width,b.height,displaySlots(s))[index];await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
 for(const fast of [false,true])test(`liquid survives receiving and return, settles and clears on navigation (${fast?'fast':'normal'})`,async({page})=>{
- await page.clock.install();const s=await open(page,fast);await tap(page,1,s);await page.waitForTimeout(60);await tap(page,3,s);
+ const s=await open(page,fast);await tap(page,1,s);await page.waitForTimeout(60);await tap(page,3,s);
  await expect.poll(()=>page.evaluate(()=>(window as any).liquidFrames.some((f:any)=>f.index===3&&f.received&&Math.abs(f.wave)>.1))).toBe(true);
  await expect.poll(()=>page.evaluate(()=>(window as any).liquidFrames.some((f:any)=>f.index===3&&!f.busy&&Math.abs(f.wave)>.05))).toBe(true);
  const impacts=await page.evaluate(()=>(window as any).liquidImpacts);expect(impacts.some((x:any)=>x.i===3)).toBe(true);expect(impacts.every((x:any)=>x.before===x.after)).toBe(true);
- // Advance rendered frames, rather than assuming a loaded CI runner renders 4s in 4s.
- await page.clock.runFor(4000);expect(await page.evaluate(()=>(window as any).liquidScene.liquid.size)).toBe(0);await page.locator('#menu').click();expect(await page.evaluate(()=>(window as any).liquidScene.liquid.size)).toBe(0);await expect(page.locator('#home')).toBeVisible();
+ // Drive four seconds of simulation, independently of host rAF delivery.
+ // runFor(4000) advances timers but does not guarantee 240 Phaser updates.
+ await page.evaluate(()=>{const scene=(window as any).liquidScene;if(scene.busy)throw Error('Expected completed pour');for(let i=0;i<240;i++){scene.lastFrame=performance.now()-1000/60;scene.update();}});expect(await page.evaluate(()=>(window as any).liquidScene.liquid.size)).toBe(0);await page.locator('#menu').click();expect(await page.evaluate(()=>(window as any).liquidScene.liquid.size)).toBe(0);await expect(page.locator('#home')).toBeVisible();
 });
 test('reduced motion does not keep a decorative wave loop running',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});const s=await open(page);await tap(page,1,s);await tap(page,3,s);await page.waitForTimeout(700);expect(await page.evaluate(()=>(window as any).liquidFrames.every((f:any)=>f.wave===0))).toBe(true);expect(await page.evaluate(()=>(window as any).liquidScene.liquid.size)).toBe(0);
