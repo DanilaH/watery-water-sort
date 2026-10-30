@@ -1,0 +1,79 @@
+{
+  "sourceSha256": "56a4cf164b0a960c0baed7103257ef8597fc13677f05e3e7cfc99c04e33d3c3e",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "processing": "RGBA crop, aspect-preserving Lanczos downsample, pixel-exact lossless WebP; no painted replacements",
+  "assets": [
+    {
+      "path": "button-blue-29.svg",
+      "crop": [
+        56,
+        68,
+        576,
+        555
+      ],
+      "size": [
+        288,
+        270
+      ],
+      "bytes": 74702,
+      "sha256": "2e55ad3ad5bab1c65726650806c0d2dfbb281b8bd0412205f898c9a5871f3dd5",
+      "embeddedWebPBytes": 55906,
+      "embeddedWebPSha256": "f22bb7547974f87907c2b868a75ac8a622c7b9c52cfa6a453e496fa0c4ef546f"
+    },
+    {
+      "path": "button-gold-29.svg",
+      "crop": [
+        640,
+        138,
+        1508,
+        465
+      ],
+      "size": [
+        764,
+        288
+      ],
+      "bytes": 205626,
+      "sha256": "788c36097c4017a390735862944c7f650453f2c81de7356718c8c6914c261d86",
+      "embeddedWebPBytes": 154100,
+      "embeddedWebPSha256": "0fb4674bf55da00b1bfd261cfe9560d436f091b635b361ecbc4545ab53cbcb70"
+    },
+    {
+      "path": "star-gold-29.svg",
+      "crop": [
+        550,
+        535,
+        980,
+        952
+      ],
+      "size": [
+        256,
+        248
+      ],
+      "bytes": 66146,
+      "sha256": "4b30e8e171efbcf5151d73b7d683f8caf455abdbce335ef095a9c332b3de0056",
+      "embeddedWebPBytes": 49490,
+      "embeddedWebPSha256": "0c252e3716eea42ae50feba5f37a9a2461e0bc331f2c93478ab88bc33981f698"
+    },
+    {
+      "path": "star-empty-29.svg",
+      "crop": [
+        1045,
+        535,
+        1478,
+        952
+      ],
+      "size": [
+        256,
+        247
+      ],
+      "bytes": 63894,
+      "sha256": "7ca88cf7dddd83d726fd0fd8ec0bb20c2b7f8ea1b0ca64e507225fd26b3faba3",
+      "embeddedWebPBytes": 47800,
+      "embeddedWebPSha256": "f1bf2a33cc53b30c5bd2f549e218c36078d372dfc6d5e34daea8896abe9b296f"
+    }
+  ],
+  "transport": "SVG image-only containers embed the original lossless WebP bytes exactly; no re-drawing, scripts, external references or pixel changes. GitHub binary blob upload was unavailable."
+}

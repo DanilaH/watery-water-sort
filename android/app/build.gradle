@@ -10,8 +10,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         buildConfigField "String", "REWARDED_AD_UNIT_ID", "\"${rewardedUnit}\""
-        versionCode 28
-        versionName "0.28.0-vessels"
+        versionCode 29
+        versionName "0.29.0-ui"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

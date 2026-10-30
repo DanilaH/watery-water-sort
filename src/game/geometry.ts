@@ -22,8 +22,8 @@ export function layout(width:number,height:number,count:number,touchGap?:number)
   for(let cols=2;cols<=maxCols;cols++){
     const rows=Math.ceil(count/cols),pitchX=usableW/cols,pitchY=usableH/rows;
     const verticalGap=height<320?16:height<420?24:32;
-    const h=Math.max(18,Math.min(218,pitchY-verticalGap,pitchX*2.55));
-    const w=Math.max(18,Math.min(54,pitchX*.53,h*.285));
+    const h=Math.max(18,Math.min(250,pitchY-verticalGap,pitchX*2.85));
+    const w=Math.max(18,Math.min(62,pitchX*.61,h*.34));
     const score=Math.sqrt(w*h)*(1+.17*Math.max(0,3-rows));
     if(score>best.score)best={cols,rows,pitchX,pitchY,w,h,score};
   }
@@ -97,7 +97,7 @@ export function pourPose(origin:TubePose,dest:TubePose,t:number,width:number,hei
 export function goalLayout(width:number,height:number,count:number,goalIndex:number):TubePose[]{
  const column=width<340?64:Math.max(64,Math.min(110,width*.24)),gap=4;
  const normal=layout(width-column-gap,height,count-1,2).map(r=>{
-  const h=Math.min(r.h,156,Math.max(48,(height-48)*.57)),w=Math.min(r.w,h*.285);
+  const h=Math.min(r.h,156,Math.max(48,(height-48)*.57)),w=Math.min(r.w,h*.34);
   return {...r,x:r.x+column+gap,y:r.y+(r.h-h)/2,w,h,hitH:Math.min(r.hitH,Math.max(48,h+20))};
  });
  const top=Math.min(...normal.map(r=>r.y)),bottom=Math.max(...normal.map(r=>r.y+r.h)),h=bottom-top;

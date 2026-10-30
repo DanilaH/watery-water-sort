@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import './style.css';
+import './ui29.css';
+import {mountHomeHero} from './game/HomeHero';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
 import { moveFor, sealedTube, won, moves, type Move } from './core/rules';
@@ -25,6 +27,8 @@ let pendingStars:{before:number;delta:number;earned:number;total:number}|undefin
 const loaded=store.load();let state=loaded.state,locked=loaded.corrupt||loaded.unavailable;
 audio.setEnabled(state.settings.sound);if(state.settings.sound)void audio.load();
 let recoveryNotice=loaded.recovered?'Откат к резервной копии':'';
+void mountHomeHero();
+for(const id of ['home-play','home-levels','home-settings','menu','settings','undo','hint','restart','continue','rescue']){const b=$(id);b.classList.add('gel-button');if(id==='home-play'||id==='continue')b.classList.add('gel-primary');}
 const scene=new WaterScene('water');
 // Downsample on 1× displays; retain native detail on common 2.5–3× phones.
 const density=Math.min(3,Math.max(2,devicePixelRatio));
@@ -89,11 +93,11 @@ function modal(title:string,description:string,buttons:{label:string;action:()=>
  block('dialog',true);content.replaceChildren();
  const header=document.createElement('header');header.className='dialog-header';
  const h=document.createElement('h2');h.textContent=title;h.tabIndex=-1;header.append(h);
- const x=document.createElement('button');x.className='dialog-close';x.textContent='×';x.setAttribute('aria-label','Закрыть');x.onclick=close;x.hidden=locked;header.append(x);
+ const x=document.createElement('button');x.className='dialog-close gel-button';x.textContent='×';x.setAttribute('aria-label','Закрыть');x.onclick=close;x.hidden=locked;header.append(x);
  const body=document.createElement('div');body.className='dialog-body';
  if(description){const p=document.createElement('p');p.textContent=description;body.append(p);}
  const footer=document.createElement('footer');footer.className='dialog-actions';
- for(const item of buttons){const b=document.createElement('button');b.textContent=item.label;b.className=item.primary?'primary':'';b.onclick=()=>{audio.ui();item.action();};footer.append(b);}
+ for(const item of buttons){const b=document.createElement('button');b.textContent=item.label;b.className=item.primary?'primary gel-button gel-primary':'gel-button';b.onclick=()=>{audio.ui();item.action();};footer.append(b);}
  content.append(header,body,footer);if(!dialog.open)dialog.showModal();h.focus({preventScroll:true});return body;
 }
 function activateGame(){
@@ -242,14 +246,14 @@ function menu(){
  audio.ui();const body=modal('Уровни',`Пройдено ${state.completed.length} из ${levels.length}`,[{label:atHome?'В главное меню':'Продолжить игру',primary:true,action:close}]);
  const grid=document.createElement('div');grid.className='levels';
  levels.forEach((l,i)=>{const b=document.createElement('button'),done=state.completed.includes(l.id),available=done||i===0||i===state.current||state.completed.includes(levels[i-1].id);
-  b.disabled=!available;b.textContent=String(i+1);b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
+  b.disabled=!available;b.classList.add('gel-button');if(i===state.current)b.classList.add('gel-primary');b.textContent=String(i+1);b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
   b.setAttribute('aria-label',`Уровень ${i+1}${l.goal?', большая бутылка':''}${done?', пройден':!available?', закрыт':''}`);
   const record=state.best?.[levelKey(i)],earned=record?stars(levelKey(i),record.history.length):done?1:0;if(isHard(i)){const difficulty=document.createElement('small');difficulty.className='level-hard';difficulty.textContent='Сложный';b.append(difficulty);}
   if(l.goal){const mechanic=document.createElement('small');mechanic.className='level-mechanic';mechanic.textContent='Большая цель';b.append(mechanic);}
-  const mark=document.createElement('small');mark.className='level-stars';mark.textContent='★'.repeat(earned)+'☆'.repeat(3-earned);mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);if(record){const best=document.createElement('small');best.textContent=`${record.history.length} ходов`;b.append(best);}b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
+  const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);if(record){const best=document.createElement('small');best.textContent=`${record.history.length} ходов`;b.append(best);}b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
  });body.append(grid);
- if(!won(attempt(state).board,goalFor(state))){const helpButton=document.createElement('button');helpButton.className='help-button';helpButton.textContent='Если застрял';helpButton.onclick=()=>{audio.ui();help();};body.append(helpButton);}
- const note=document.createElement('p');note.className='build-note';note.textContent='Тестовый набор · подсказки без лимита';body.append(note);
+ if(!won(attempt(state).board,goalFor(state))){const helpButton=document.createElement('button');helpButton.className='help-button gel-button';helpButton.textContent='Если застрял';helpButton.onclick=()=>{audio.ui();help();};body.append(helpButton);}
+
 }
 $('menu').onclick=()=>{audio.ui();showHome();};
 $('home-play').onclick=resumeGame;
