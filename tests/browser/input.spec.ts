@@ -9,12 +9,14 @@ async function open(page:Page,state:unknown=initial()){
  await page.addInitScript(s=>{if(sessionStorage.getItem('input-test-seeded'))return;localStorage.setItem('water-sort-v1',JSON.stringify(s));sessionStorage.setItem('input-test-seeded','1');},state);
  await startGame(page);await page.locator('canvas').waitFor();await page.waitForTimeout(120);const b=(await page.locator('#board').boundingBox())!;hitPoints.set(page,layout(b.width,b.height,4).map(p=>({x:b.x+p.x,y:b.y+p.y+p.h/2})));
 }
+// Keep the intention pending while remote pointer events/assertions travel to the browser.
+async function openFrozen(page:Page,state:unknown=initial()){await page.clock.install();await open(page,state);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));}
 async function tap(page:Page,i:number){const p=hitPoints.get(page)![i];await page.mouse.click(p.x,p.y);}
 async function history(page:Page){return page.evaluate(()=>Object.values(JSON.parse(localStorage.getItem('water-sort-v1')!).attempts).flatMap((a:any)=>a.history) as {from:number;to:number}[]);}
 async function queueFirstChain(page:Page){await tap(page,0);await tap(page,2);await tap(page,1);await tap(page,0);await expect(page.locator('#status')).toContainText('Следующий ход выбран');}
 
 for(const fast of [false,true])test(`queues a next move into the source of the current pour (${fast?'fast':'normal'})`,async({page})=>{
- const state=initial();state.settings.fast=fast;await open(page,state);await queueFirstChain(page);expect(await history(page)).toHaveLength(1);await expect.poll(async()=>(await history(page)).length).toBe(2);await expect(page.locator('#hint')).toBeEnabled();expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[0,2],[1,0]]);
+ const state=initial();state.settings.fast=fast;await openFrozen(page,state);await queueFirstChain(page);expect(await history(page)).toHaveLength(1);await page.clock.resume();await expect.poll(async()=>(await history(page)).length).toBe(2);await expect(page.locator('#hint')).toBeEnabled();expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[0,2],[1,0]]);
 });
 
 test('replacement can use the recipient of the current pour as its next source',async({page})=>{
@@ -48,7 +50,7 @@ for(const stage of ['current','queued'])test(`undo cancels all pending input dur
 });
 
 test('reload retains only accepted moves, never the pending intention',async({page})=>{
- await open(page);await queueFirstChain(page);await reloadGame(page);await page.locator('canvas').waitFor();await page.waitForTimeout(1250);expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[0,2]]);
+ await openFrozen(page);await queueFirstChain(page);expect(await history(page)).toHaveLength(1);await reloadGame(page);await page.clock.resume();await page.locator('canvas').waitFor();await page.waitForTimeout(1250);expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[0,2]]);
 });
 
 test('a queued winning move completes once and remains actionable after reload',async({page})=>{
@@ -77,7 +79,7 @@ test('restart always asks, including before the first move',async({page})=>{
 for(const dense of [false,true])test(`queue badge belongs to its source (${dense?'dense small field':'tutorial'})`,async({page})=>{
  const state=initial();state.current=dense?11:0;state.completed=dense?levels.slice(0,11).map((l:any)=>l.id):[];
  if(dense)await page.setViewportSize({width:320,height:480});
- await open(page,state);
+ await openFrozen(page,state);
  const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,await slotCount(page));
  const click=async(i:number)=>page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);
  const [first,next]=levels[state.current].witness;
@@ -85,7 +87,7 @@ for(const dense of [false,true])test(`queue badge belongs to its source (${dense
  await expect(page.locator('#status')).toContainText('Следующий ход выбран');
  await page.mouse.click(b.x+ps[next.from].x,b.y+ps[next.from].y-15);
  await expect(page.locator('#status')).toContainText('Следующий ход:');
- await click(next.to);await expect.poll(async()=>(await history(page)).length).toBe(2);
+ await click(next.to);await page.clock.resume();await expect.poll(async()=>(await history(page)).length).toBe(2);
  expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[first.from,first.to],[next.from,next.to]]);
 });
 
