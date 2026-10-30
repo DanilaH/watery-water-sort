@@ -1,0 +1,11 @@
+import {chromium} from 'playwright';import {writeFileSync} from 'node:fs';import {fresh,levels,moved,displaySlots,attempt,goalFor} from '../src/core/session.ts';import {moveFor} from '../src/core/rules.ts';import {layout,goalLayout} from '../src/game/geometry.ts';
+const browser=await chromium.launch(),results=[];
+for(const kind of ['layers','complete','goal']){
+ const page=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:3});let s={...fresh(),current:kind==='layers'?11:kind==='goal'?12:0};if(kind==='complete')s=moved(s,levels[0].witness[0]);if(kind==='goal')for(const [from,to]of [[3,0],[2,0],[1,4]])s=moved(s,moveFor(attempt(s).board,from,to,goalFor(s)));s.settings.sound=false;
+ await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('http://127.0.0.1:4178');await page.locator('#home-play').click();await page.waitForTimeout(350);
+ await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){window.profileScene=this;return fn.call(this);};});await page.locator('#symbols').click();await page.waitForTimeout(100);
+ await page.evaluate(()=>{const s=window.profileScene,fn=s.sys.sceneUpdate;window.materialTimes=[];s.sys.sceneUpdate=function(...a){const active=s.busy||s.liquid.size||s.bodyMotion.size,start=performance.now();try{return fn.apply(this,a);}finally{if(active)window.materialTimes.push(performance.now()-start);}};});
+ const b=await page.locator('#board').boundingBox(),ps=kind==='goal'?goalLayout(b.width,b.height,displaySlots(s),0):layout(b.width,b.height,displaySlots(s)),m=kind==='layers'?levels[11].witness[0]:kind==='complete'?levels[0].witness[1]:{from:1,to:0};for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);await page.waitForTimeout(1800);
+ const timing=await page.evaluate(()=>{const a=window.materialTimes.sort((a,b)=>a-b);return {frames:a.length,p95:a[Math.floor(a.length*.95)],max:a.at(-1)};});results.push({kind,...timing});await page.close();
+}
+await browser.close();writeFileSync(process.argv[2],JSON.stringify({scope:'Scene.update CPU time only; browser DPR 3; not a physical Android GPU/FPS benchmark',results},null,2));console.log(JSON.stringify(results));
