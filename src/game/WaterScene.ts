@@ -2,7 +2,8 @@ import Phaser from 'phaser';
 import {VictoryOverlay} from './VictoryOverlay';
 import { type Board, type Move, type Goal, capacityAt, sealedTube, moveFor } from '../core/rules';
 import { area, clip, layout, goalLayout, surface, planPour, pourPose, vesselPolygon, LIQUID_FILL, pourTransfer, pourTiming, pourFrame, type PourPlan, type Point } from './geometry';
-export const COLORS=[0x22d9eb,0xffb51b,0xb75bfa,0x3ce590,0xff496d,0x397bff,0xe9ef30,0xf08037];
+// Clean candy hues: amber/yellow-green and cyan/royal blue stay separate at small sizes.
+export const COLORS=[0x00d9f5,0xffd000,0xad32ff,0x16df64,0xff2447,0x2463ff,0xbcef00,0xff7e14];
 const SIGNS=['●','▲','◆','✚','♥','★','■','✦'];
 type Pose={x:number;y:number;w:number;h:number};
 type Layer={color:number;amount:number};
@@ -203,15 +204,17 @@ export class WaterScene extends Phaser.Scene {
       // Cross-section shading is clipped to the actual liquid, including on a tilted vessel.
       for(let k=0;k<28;k++){
         const t=(k+.5)/28,x0=Phaser.Math.Linear(bounds.lo,bounds.hi,k/28),x1=Phaser.Math.Linear(bounds.lo,bounds.hi,(k+1)/28)+.8;
-        let col=blend(base,0x0b2353,.20*Math.pow(Math.abs(t-.4)*1.8,1.4));
-        col=blend(col,0xffffff,Math.exp(-Math.pow((t-.22)/.22,2))*.13);
+        // A narrow glossy reflection leaves the body saturated. Neutral edge shade
+        // keeps warm liquid warm instead of mixing every hue with the blue glass.
+        let col=blend(base,0x000000,.14*Math.pow(Math.abs(t-.43)*1.75,2));
+        col=blend(col,0xffffff,Math.exp(-Math.pow((t-.18)/.065,2))*.17);
         this.polygon(clipX(clipX(band,x0,true),x1,false),col);
       }
       if(Math.abs(angle)<.09){
         
         const cap=clip(poly,high+3,true);const left=cap.length?Math.min(...cap.map(p=>p.x)):r.x-w,right=cap.length?Math.max(...cap.map(p=>p.x)):r.x+w;
-        if(Math.abs(wave)<.15){g.fillStyle(blend(base,0xffffff,.25),.82);g.fillEllipse((left+right)/2,high+.7,(right-left)-1,Math.max(3,r.w*.105));}
-        g.lineStyle(1.2,0xffffff,.28);g.beginPath();for(let k=0;k<=14;k++){const x=left+(right-left)*k/14,y=high+Math.sin(k/14*Math.PI*2)*wave;if(k===0)g.moveTo(x,y);else g.lineTo(x,y);}g.strokePath();
+        if(Math.abs(wave)<.15){g.fillStyle(blend(base,0xffffff,.10),.94);g.fillEllipse((left+right)/2,high+.7,(right-left)-1,Math.max(3,r.w*.105));}
+        g.lineStyle(1.2,0xffffff,.18);g.beginPath();for(let k=0;k<=14;k++){const x=left+(right-left)*k/14,y=high+Math.sin(k/14*Math.PI*2)*wave;if(k===0)g.moveTo(x,y);else g.lineTo(x,y);}g.strokePath();
         if(n===layers.length-1&&(receiving||age<280)){const p=(receiving?flowAge%140:age)/280;g.lineStyle(1.2,0xffffff,.55*(1-p));g.strokeEllipse(r.x,high+2,r.w*.8*p,4+3*p);}
       }
       if(this.symbols&&layer.amount>.35&&Math.abs(angle)<.1){const fontSize=Math.floor(Math.max(8,Math.min(14,(low-high)*.62,r.w*.38)));this.symbol({x:r.x,y:(low+high)/2,text:SIGNS[layer.color],size:fontSize});}
