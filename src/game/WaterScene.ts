@@ -57,10 +57,12 @@ export class WaterScene extends Phaser.Scene {
   onPhase:(phase:number,heavy:boolean)=>void=()=>{};
   onFinale:(order:number,heavy:boolean)=>void=()=>{};
   preload(){
+    for(let i=0;i<6;i++)this.load.image(`splash-${i}`,`art/vfx/splash-${i}.webp`);
     this.load.image('goal-crystal-base','art/goal-crystal-base.webp');
     for(let i=0;i<5;i++)this.load.image(`goal-crystal-shard-${i}`,`art/goal-crystal-shard-${i}.webp`);
   }
   create(){
+    this.overlay.setSprites(Array.from({length:6},(_,i)=>this.textures.get(`splash-${i}`).getSourceImage() as HTMLImageElement),COLORS);
     this.root=this.add.container(0,0).setScale(this.density);
     this.ink=this.add.graphics();this.fx=this.add.graphics().setDepth(4);this.root.add([this.ink,this.fx]);
     this.queueLabels=['2','↓'].map(text=>{const label=this.add.text(0,0,text,{fontFamily:'sans-serif',fontSize:'13px',fontStyle:'bold',color:'#402d19'}).setOrigin(.5).setDepth(6).setResolution(this.density).setVisible(false);this.root.add(label);return label;});this.root.sort('depth');

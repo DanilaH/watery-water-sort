@@ -1,0 +1,80 @@
+{
+  "sourceSha256": "32e5241ca6e5e0a06f7bc49c365103efa77f88a50418cae9130a34c19fd178fd",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "frameSize": [
+    128,
+    128
+  ],
+  "processing": "Alpha-preserving crop, aspect-preserving Lanczos downsample, lossless WebP; no artwork reconstruction",
+  "sprites": [
+    {
+      "path": "splash-0.webp",
+      "crop": [
+        147,
+        63,
+        422,
+        523
+      ],
+      "sha256": "9afb886248f84f1bfccddf4f97acc7d4b0fece5fa2f743ae2cf687d307903965",
+      "bytes": 7840
+    },
+    {
+      "path": "splash-1.webp",
+      "crop": [
+        610,
+        88,
+        962,
+        511
+      ],
+      "sha256": "9169472247e543eee222a88c653951cbf26be53ea7699e02c09a29417803247a",
+      "bytes": 10434
+    },
+    {
+      "path": "splash-2.webp",
+      "crop": [
+        1135,
+        144,
+        1469,
+        502
+      ],
+      "sha256": "11e6076f3395a0693e708acda3dd1680230cb9d859ca8ac7bed74e3e14bb37e8",
+      "bytes": 9760
+    },
+    {
+      "path": "splash-3.webp",
+      "crop": [
+        66,
+        617,
+        515,
+        949
+      ],
+      "sha256": "ab2bd1c5e66f07dc540fa9a09788da6c1a08552385b8e7484a70fbc638a4b539",
+      "bytes": 8682
+    },
+    {
+      "path": "splash-4.webp",
+      "crop": [
+        593,
+        644,
+        992,
+        930
+      ],
+      "sha256": "c1b719b6274c76d2f0819f03d78cc0f70faa41250b2c43789cd446f8466abd95",
+      "bytes": 9232
+    },
+    {
+      "path": "splash-5.webp",
+      "crop": [
+        1099,
+        597,
+        1464,
+        964
+      ],
+      "sha256": "4db7480b0fde499e0d5795455a614246be86a023c5ae391f118d9a02a933d0a4",
+      "bytes": 7290
+    }
+  ]
+}
