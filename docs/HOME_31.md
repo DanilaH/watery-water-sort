@@ -7,3 +7,5 @@
 Главное меню явно получает lifecycle из paint(): RAF отменяется в игре, за диалогом, при pagehide, document.hidden и native background. Возобновление с той же фазы, без учёта фонового времени. Reduced motion — неподвижная композиция без бликов, live изменение настройки поддерживается. Геометрия интерфейса и области нажатия не анимируются.
 
 Проверки: два браузерных сценария движения/сохранения/паузы/возобновления и reduced motion; существующие navigation/themes. Реальная GIF-запись и итоговый CI/APK — audits/home-31.
+
+Итог: [CI 41084350175](https://github.com/DanilaH/watery-water-sort/actions/runs/41084350175) — 153 browser, 42 core, 32 optimal paths, Android build success. ZIP digest, APK V2 signature/preview certificate, tamper rejection, CRC и manifest 31 / 0.31.0-menu проверены. Все 45 dist-файлов и capture-манифест побайтно совпали с APK. Реальные compositor кадры записаны с чистого 5b2a5bc; без clock manipulation или интерполяции. GIF пересохранён с delta frames: 14717024 → 3088343 bytes, все 207 декодированных кадров пиксельно сверены. Capture содержит также 223 исходных PNG кадра и замер Chrome task seconds; это не FPS/тест физического Android.

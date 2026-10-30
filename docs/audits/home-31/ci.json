@@ -1,0 +1,13 @@
+{
+  "sourceCommit": "5b2a5bcaa63e8dbce1056ac2c85b7296651fa779",
+  "run": 41084350175,
+  "job": 124161444988,
+  "conclusion": "success",
+  "core": 42,
+  "browser": 153,
+  "optimalPaths": 32,
+  "artifact": 12992155954,
+  "artifactZipSha256": "35d307f11d9c1a40b637e3a7698b752fcdaf28e63339400ae22c0b252d8317ad",
+  "captureDistFilesMatched": 45,
+  "phoneTested": false
+}
