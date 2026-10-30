@@ -1,0 +1,357 @@
+{
+  "sourceCommit": "8b8a3f2ca76464bb90dc2dc715de7176a5ed2279",
+  "dirty": false,
+  "kind": "giant",
+  "seed": "actual witness moves except last; final move performed via pointer",
+  "before": {
+    "x": 16,
+    "y": 96,
+    "width": 358,
+    "height": 538
+  },
+  "after": {
+    "x": 16,
+    "y": 96,
+    "width": 358,
+    "height": 538
+  },
+  "clip": {
+    "x": 0,
+    "y": 0,
+    "width": 390,
+    "height": 844
+  },
+  "errors": [],
+  "silent": true,
+  "dist": [
+    {
+      "path": "index.html",
+      "sha256": "6ba1668c764cb83cce305147f8de161bf676e1765681a44d492765aab80726a4"
+    },
+    {
+      "path": "art/goal-crystal-base.webp",
+      "sha256": "d0c3cb7b7da13b51300c11e9d792812dfe89094c901d8dbc197b2e1065b3a2b4"
+    },
+    {
+      "path": "art/goal-crystal-shard-0.webp",
+      "sha256": "23855587a498896aac4ef1db13c61ae7fe5585633757d97970ebf4649cdd75f2"
+    },
+    {
+      "path": "art/goal-crystal-shard-1.webp",
+      "sha256": "bba3161903d0d6ef9400541581cd1680f8c9a62b92b5ca740f0f8fcd036a38ab"
+    },
+    {
+      "path": "art/goal-crystal-shard-2.webp",
+      "sha256": "0105f6468809e6094832b57d3642431b6e4c9123c354bfcbb2dc7642eaa7f211"
+    },
+    {
+      "path": "art/goal-crystal-shard-3.webp",
+      "sha256": "078aeeda8c690f5b98e1de35e972116120fcf953f936387224a9ca54a8f288b8"
+    },
+    {
+      "path": "art/goal-crystal-shard-4.webp",
+      "sha256": "a082067abb8303760459c71474fd851b4132f8ca6d6e74210ac56a2d265bc11b"
+    },
+    {
+      "path": "art/goal-crystal.json",
+      "sha256": "188ebd2acb56ebe5f64dcd7d5af87734d9ea2206d868f2731e8d9588ce2434df"
+    },
+    {
+      "path": "art/night-shore.svg",
+      "sha256": "941fa1cb1e043fcf4aeb2ecc9a788486b32d5f878238843391c77e74244a2607"
+    },
+    {
+      "path": "assets/index-CbYT57XO.css",
+      "sha256": "151e90341f9a42b93075eeb6a7e26a94539c4a00637846d396e2530c1f3313da"
+    },
+    {
+      "path": "assets/index-Dkl7djMh.js",
+      "sha256": "5527946e3c6d603f4e97dca3401e46f5c87faedd49aa2ea3d148a7bbdbd5c173"
+    },
+    {
+      "path": "assets/phaser-DFK5Ua9d.js",
+      "sha256": "f9025c1a29bc3ae097dd886ce07717b297466da1ce8f032c8294252ce6cf5cdb"
+    },
+    {
+      "path": "assets/solver.worker-BP69J42O.js",
+      "sha256": "d3a65e98bca9773c76a975839517403479ae841b9287d6d8ffb3ed68490bec7b"
+    },
+    {
+      "path": "assets/web-frG-q6Zf.js",
+      "sha256": "fad98d4354a0d22c4a3659ffbed0dd4aab7a7d53866a32501343f06041317140"
+    },
+    {
+      "path": "audio/accept.ogg",
+      "sha256": "c70c62a52af1eccfd8bc707f15089ef2a66dd369910b7299f8a078a127c029bb"
+    },
+    {
+      "path": "audio/collect.ogg",
+      "sha256": "a99bbf77dbd37e6bf4389bf9de8bb463699d0a963e06fa40b936625453c8dca3"
+    },
+    {
+      "path": "audio/complete.ogg",
+      "sha256": "b3e100ec12a14c041d634854a4b3509f0d645dba777d93ffb9a4d5a95cdf4a68"
+    },
+    {
+      "path": "audio/cork.ogg",
+      "sha256": "a39d8974aeb0b5329692ce576d36c1894c3e3bf382732b84ac81cda6f31ad13d"
+    },
+    {
+      "path": "audio/hint.ogg",
+      "sha256": "b49a4494c240c2ad5540518ec6f1484fb30aa939f17a1ef67edaf3d9a75b5706"
+    },
+    {
+      "path": "audio/land.ogg",
+      "sha256": "8625c1350d5b210820fa0b5410f9c1d4dfbafc30579a62276e608617ea5335cd"
+    },
+    {
+      "path": "audio/material-report.json",
+      "sha256": "0e86df040d00a4065ab8d91f392923a75a73a467ebb95d7ef031fa9e4e6c1e94"
+    },
+    {
+      "path": "audio/mix-report.json",
+      "sha256": "d3b4be8ca0409d8130666f58c8c7a0a983d3c4ffbe1865ea3af5869db04eb5bf"
+    },
+    {
+      "path": "audio/pour-1.ogg",
+      "sha256": "718d64ba1234e434cc0ff1393f46a3a801c141bd12267482bde903decba7a5a9"
+    },
+    {
+      "path": "audio/pour-2.ogg",
+      "sha256": "8bd48b2c02c3e36c61e69aee7d0d0702f3518822b26069c5624c114082057fa5"
+    },
+    {
+      "path": "audio/pour-3.ogg",
+      "sha256": "94d6906a9c91c267c951cd8e1c558f0eb92dc68a278447dc4d66e59474d62ee9"
+    },
+    {
+      "path": "audio/reject.ogg",
+      "sha256": "16280f9ee8cf79988e711cb0e39e726bc4c9b391918533595d19bfb75094c4cf"
+    },
+    {
+      "path": "audio/select.ogg",
+      "sha256": "e3051890837463871425d073a8249570b22da3b000e215a1daf4472aea718df1"
+    },
+    {
+      "path": "audio/victory.ogg",
+      "sha256": "7e22b78ed658dd5d007f7d58dabbc88c69370aa5acffd3eabbafb37cd4d322ba"
+    },
+    {
+      "path": "fonts/OFL-Rubik.txt",
+      "sha256": "3cb6a6084f5d942a8f3b5fda0f6a90dde18d7f7f1798886f4043d18f8c1a811e"
+    },
+    {
+      "path": "fonts/rubik.woff",
+      "sha256": "046fdb74c56ba506461ac26e36143db27b6f3f78347487fbb6ec1a806548bde9"
+    },
+    {
+      "path": "art/glass/cork-27.webp",
+      "sha256": "da674781a74f140413c0091e8251ffece65d6c9130ac82c7e30709606555a405"
+    },
+    {
+      "path": "art/glass/material-27.json",
+      "sha256": "cd27d949228c4f3a12db8b73b0647ecacb9d8af762b3866ba464c30cbc79fad4"
+    },
+    {
+      "path": "art/glass/tube-27.webp",
+      "sha256": "8ed6eb7c3ff8b4cc936281a4a82ebb4601c6af171f6de6e21732303b3eff315e"
+    },
+    {
+      "path": "art/ui/button-blue-29.svg",
+      "sha256": "2e55ad3ad5bab1c65726650806c0d2dfbb281b8bd0412205f898c9a5871f3dd5"
+    },
+    {
+      "path": "art/ui/button-gold-29.svg",
+      "sha256": "788c36097c4017a390735862944c7f650453f2c81de7356718c8c6914c261d86"
+    },
+    {
+      "path": "art/ui/material-29.json",
+      "sha256": "fb47125553d0f25089d9edb72d08db72d642aec928448233be5941668811e9bc"
+    },
+    {
+      "path": "art/ui/star-empty-29.svg",
+      "sha256": "7ca88cf7dddd83d726fd0fd8ec0bb20c2b7f8ea1b0ca64e507225fd26b3faba3"
+    },
+    {
+      "path": "art/ui/star-gold-29.svg",
+      "sha256": "4b30e8e171efbcf5151d73b7d683f8caf455abdbce335ef095a9c332b3de0056"
+    },
+    {
+      "path": "art/vfx/splash-0.webp",
+      "sha256": "9afb886248f84f1bfccddf4f97acc7d4b0fece5fa2f743ae2cf687d307903965"
+    },
+    {
+      "path": "art/vfx/splash-1.webp",
+      "sha256": "9169472247e543eee222a88c653951cbf26be53ea7699e02c09a29417803247a"
+    },
+    {
+      "path": "art/vfx/splash-2.webp",
+      "sha256": "11e6076f3395a0693e708acda3dd1680230cb9d859ca8ac7bed74e3e14bb37e8"
+    },
+    {
+      "path": "art/vfx/splash-3.webp",
+      "sha256": "5ab1b6904a85444b25e102c501e063bd700aa396637ead176ab0f343b4ee02f0"
+    },
+    {
+      "path": "art/vfx/splash-4.webp",
+      "sha256": "c1b719b6274c76d2f0819f03d78cc0f70faa41250b2c43789cd446f8466abd95"
+    },
+    {
+      "path": "art/vfx/splash-5.webp",
+      "sha256": "4db7480b0fde499e0d5795455a614246be86a023c5ae391f118d9a02a933d0a4"
+    },
+    {
+      "path": "art/vfx/sprites.json",
+      "sha256": "fcba19566f2c46c842262974c3108f1f39574650f3bcbf44b8f2d52e824ebd87"
+    }
+  ],
+  "recording": {
+    "frames": 182,
+    "seconds": 4.0776050090789795,
+    "first": {
+      "path": "frames/0000.png",
+      "time": 1793373201.763082,
+      "sha256": "f587ee4aaeca7d47baa9743aab72baa169d4fa6bfd4b1de5a07f054fe605deb6"
+    },
+    "last": {
+      "path": "frames/0181.png",
+      "time": 1793373205.840687,
+      "sha256": "853756856e58e33ba925b172cc9b192a9d8a604a28b2ae6335c5ebaa27259397"
+    },
+    "interpolation": false
+  },
+  "packagedGif": {
+    "source": "Chromium compositor PNGs",
+    "crop": {
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 844
+    },
+    "frames": 101,
+    "durationsMs": [
+      40,
+      30,
+      40,
+      40,
+      40,
+      40,
+      30,
+      30,
+      30,
+      30,
+      50,
+      30,
+      60,
+      60,
+      30,
+      30,
+      60,
+      50,
+      50,
+      40,
+      30,
+      30,
+      30,
+      40,
+      30,
+      40,
+      30,
+      40,
+      30,
+      30,
+      30,
+      30,
+      40,
+      30,
+      40,
+      30,
+      30,
+      40,
+      30,
+      30,
+      30,
+      40,
+      30,
+      40,
+      30,
+      30,
+      40,
+      30,
+      30,
+      30,
+      40,
+      40,
+      40,
+      50,
+      40,
+      30,
+      50,
+      110,
+      50,
+      40,
+      40,
+      50,
+      30,
+      30,
+      40,
+      30,
+      30,
+      30,
+      50,
+      60,
+      30,
+      50,
+      30,
+      30,
+      40,
+      60,
+      40,
+      30,
+      30,
+      30,
+      40,
+      50,
+      30,
+      40,
+      280,
+      30,
+      40,
+      30,
+      40,
+      20,
+      40,
+      40,
+      30,
+      30,
+      40,
+      30,
+      40,
+      30,
+      30,
+      120,
+      150
+    ],
+    "interpolation": false,
+    "silent": true,
+    "reservedAccentColours": [
+      "0x916039",
+      "0xce9a59",
+      "0xe9bd7b",
+      "0x734624",
+      "0xb57c43",
+      "0x755b4c",
+      "0x3e3541",
+      "0xf1fdff",
+      "0xbef067",
+      "0xffd35d",
+      "0xf5f8ff",
+      "0xb3c9ef",
+      "0xd9f5",
+      "0xffd000",
+      "0x17386c",
+      "0x3056a7"
+    ],
+    "sha256": "3022cedb2fdb13201bf1fda9605ee6813b47d32777e4d0e989088a0132fc1213"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "ui29Initial": {
+    "run": 41072270697,
+    "browserPassed": 149,
+    "corePassed": 42,
+    "optimalPassed": 32,
+    "conclusion": "success"
+  },
+  "ui29PortraitFix": {
+    "run": 41076682089,
+    "passed": 147,
+    "failed": 3,
+    "failures": [
+      "pending replacement wall-clock race",
+      "liquid settled-state wall-clock timeout",
+      "combined retina scenario 30s timeout"
+    ]
+  },
+  "finale30Initial": {
+    "run": 41078394329,
+    "passed": 149,
+    "failed": 1,
+    "failure": "same pending replacement wall-clock race; already fixed in dc5af8623e36caaf989f31ee3cb78c6e90238dfa"
+  },
+  "fixedRun": 41079019883,
+  "policy": "No retries, skips or longer timeouts; deterministic pending state and rendered frames, independent retina cases."
+}

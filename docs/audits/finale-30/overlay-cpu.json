@@ -1,0 +1,19 @@
+{
+  "scope": "Browser overlay.draw CPU only, DPR 3, no physical Android GPU benchmark",
+  "results": [
+    {
+      "index": 0,
+      "dpr": 3,
+      "frames": 29,
+      "p95": 1.2000000029802322,
+      "max": 5.200000002980232
+    },
+    {
+      "index": 15,
+      "dpr": 3,
+      "frames": 17,
+      "p95": 5,
+      "max": 5
+    }
+  ]
+}

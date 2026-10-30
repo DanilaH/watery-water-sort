@@ -1,0 +1,20 @@
+{
+  "runtimeCommit": "8b8a3f2ca76464bb90dc2dc715de7176a5ed2279",
+  "buildCommit": "dc5af8623e36caaf989f31ee3cb78c6e90238dfa",
+  "run": 41079019883,
+  "job": 124142829513,
+  "conclusion": "success",
+  "browserPassed": 151,
+  "corePassed": 42,
+  "optimalPaths": 32,
+  "androidBuild": "success",
+  "artifact": 12988652757,
+  "artifactZipSha256": "02f42d654bec51fc0fb7842f13c3135382de0d54a7f1e65220fdc47d9e4fc13b",
+  "captureDistFilesMatched": 45,
+  "captureKinds": [
+    "tour",
+    "victory",
+    "giant"
+  ],
+  "physicalAndroidTested": false
+}

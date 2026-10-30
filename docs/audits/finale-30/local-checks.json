@@ -1,0 +1,16 @@
+{
+  "core": 42,
+  "victoryRewardBrowser": 28,
+  "inputLiquidPolishBrowser": 30,
+  "productionThemesViewports": 12,
+  "uiThemeViewportStates": 36,
+  "build": "passed",
+  "runtimeCommit": "8b8a3f2ca76464bb90dc2dc715de7176a5ed2279",
+  "testCommit": "dc5af8623e36caaf989f31ee3cb78c6e90238dfa",
+  "testChanges": {
+    "replacement": "Freeze the current pour until pending replacement is complete; assert only one accepted move before resuming, then exact two-move history.",
+    "liquid": "Advance 4000ms of rendered clock frames before exact-zero assertion, instead of depending on host wall-clock frame rate. No runtime physics changes.",
+    "retina": "Split two independent high-DPR scenarios into separate tests with normal 30s limits; both retain exact assertions."
+  },
+  "physicalPhoneTested": false
+}

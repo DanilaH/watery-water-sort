@@ -1,0 +1,23 @@
+{
+  "scope": "Scene.update CPU time only; browser DPR 3; not a physical Android GPU/FPS benchmark",
+  "results": [
+    {
+      "kind": "layers",
+      "frames": 19,
+      "p95": 18.80000000447035,
+      "max": 18.80000000447035
+    },
+    {
+      "kind": "complete",
+      "frames": 27,
+      "p95": 5.0999999940395355,
+      "max": 6.300000004470348
+    },
+    {
+      "kind": "goal",
+      "frames": 27,
+      "p95": 3.899999998509884,
+      "max": 5.899999998509884
+    }
+  ]
+}
