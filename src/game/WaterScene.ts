@@ -35,7 +35,7 @@ export class WaterScene extends Phaser.Scene {
   private activeLabels:Phaser.GameObjects.Text[]=[];
   private floatLabels:Phaser.GameObjects.Text[]=[];
   private queueLabels:Phaser.GameObjects.Text[]=[];
-  goal?:Goal;slots=5;board:Board=[];selected:number|null=null;hintMove:Move|null=null;queuedMove:Move|null=null;symbols=false;light=false;reduced=false;
+  goal?:Goal;lockedExtra=false;slots=5;board:Board=[];selected:number|null=null;hintMove:Move|null=null;queuedMove:Move|null=null;symbols=false;light=false;reduced=false;
   private flight?:Flight;
   private selectionY=new Map<number,number>();
   private hitPolygons=new Map<number,Point[]>();
@@ -123,11 +123,11 @@ export class WaterScene extends Phaser.Scene {
     this.onPhase(0,heavy);this.bodyImpulse(index,42);this.fillSplash(index,0);
   }
   private bodyImpulse(index:number,velocity:number){
-    if(this.reduced)return;const s=this.bodyMotion.get(index)??{x:0,v:0};s.v=Math.max(-90,Math.min(90,s.v+velocity*(index===this.goal?.index?1.18:1)));this.bodyMotion.set(index,s);
+    if(this.reduced)return;const s=this.bodyMotion.get(index)??{x:0,v:0};s.v=Math.max(-90,Math.min(90,s.v+velocity*(index===this.goal?.index?1.35:1)));this.bodyMotion.set(index,s);
   }
   private fillSplash(index:number,phase:number){
-    if(this.reduced)return;const r=this.positions()[index],heavy=index===this.goal?.index,color=COLORS[this.board[index]?.[0]??0],count=phase===0?(heavy?10:6):(heavy?5:3),stretch=1+.027*Math.tanh((this.bodyMotion.get(index)?.x??0)/1.5),localY=phase===0?surface(vesselPolygon(r.w,r.h),LIQUID_FILL):2,y=r.y+r.h+(localY-r.h)/stretch;
-    for(let n=0;n<count;n++){const direction=(n-(count-1)/2)/Math.max(1,(count-1)/2);this.particles.push({x:r.x+direction*r.w*.12,y,vx:direction*(phase===0?32:24),vy:-(phase===0?65:42)*(heavy?1.15:1)*(1-Math.abs(direction)*.25),age:0,life:phase===0?.36:.25,color,size:(phase===0?2.1:1.6)*(heavy?1.25:1),spin:0});}
+    if(this.reduced)return;const r=this.positions()[index],heavy=index===this.goal?.index,color=COLORS[this.board[index]?.[0]??0],count=phase===0?(heavy?14:6):(heavy?7:3),stretch=1+(heavy?.04:.027)*Math.tanh((this.bodyMotion.get(index)?.x??0)/1.5),localY=phase===0?surface(vesselPolygon(r.w,r.h),LIQUID_FILL):2,y=r.y+r.h+(localY-r.h)/stretch;
+    for(let n=0;n<count;n++){const direction=(n-(count-1)/2)/Math.max(1,(count-1)/2);this.particles.push({x:r.x+direction*r.w*.12,y,vx:direction*(phase===0?32:24),vy:-(phase===0?65:42)*(heavy?1.25:1)*(1-Math.abs(direction)*.25),age:0,life:phase===0?.36:.25,color,size:(phase===0?2.1:1.6)*(heavy?1.35:1),spin:0});}
     this.particles=this.particles.slice(-100);
   }
   private polygon(points:Point[],color:number,alpha=1,g=this.ink){if(points.length<3||area(points)<.005)return;g.fillStyle(color,alpha);g.fillPoints(points,true);}
@@ -164,7 +164,7 @@ export class WaterScene extends Phaser.Scene {
     const stable=!this.bursts.some(b=>b.index===index&&!b.final)&&!selected&&!target&&!this.busyTube(index)&&!this.liquid.has(index)&&!this.bodyMotion.has(index)&&age>=650&&shake>=220&&opening===0&&(this.selectionY.get(index)??0)===0&&now-this.entrance>=260;
     const key=stable?JSON.stringify([r,layers,this.light,this.symbols,this.goal,this.popped.has(index)]):'',cached=this.tubes.get(index);
     if(stable&&cached?.key===key){
-      if(index!==this.goal?.index)this.glass?.restore(index,cached.cork,r);
+      this.glass?.restore(index,cached.cork,r);
       for(const command of cached.commands)this.ink.commandBuffer.push(command);
       this.hitPolygons.set(index,cached.poly);for(const mark of cached.symbols)this.textMark(mark,mark.colour??'#18294a');return;
     }
@@ -184,7 +184,7 @@ export class WaterScene extends Phaser.Scene {
     const contact=landing*.7;
     const pulse=this.pulses.get(index),rejectAge=pulse===undefined?10000:now-pulse;
     const shake=rejectAge<200?Math.sin(rejectAge/13)*4*Math.exp(-rejectAge/85):0;
-    const c=Math.cos(angle),s=Math.sin(angle),stretch=1+.018*Math.tanh((this.bodyMotion.get(index)?.x??0)/1.5)*1.5;
+    const c=Math.cos(angle),s=Math.sin(angle),stretch=1+(isGoal?.04:.027)*Math.tanh((this.bodyMotion.get(index)?.x??0)/1.5);
     // Reciprocal scaling preserves the silhouette area and anchors its bottom.
     const transform=(x:number,y:number)=>{x*=stretch;y=h+(y-h)/stretch;return {x:r.x+shake+x*c-y*s,y:r.y+x*s+y*c};};
     const local=vesselPolygon(r.w,h);
@@ -241,7 +241,7 @@ export class WaterScene extends Phaser.Scene {
         }
       }
     }
-    const material=!isGoal&&this.glass?.enabled;
+    const material=this.glass?.enabled;
     if(material){const top=transform(0,0);this.glass!.vessel(index,{...top,width:r.w,height:h,angle,stretch,flying:this.flight?.from===index});}
     else {
     // Legacy glass remains for the giant goal and Canvas renderer.
@@ -263,7 +263,7 @@ export class WaterScene extends Phaser.Scene {
       // Cork arrives after the liquid seals; the receiver need not wait for the source.
       const final=burst?.final===true;
       const cork=completionCork(elapsed),drop=final||this.reduced?0:cork.drop;
-      const rim=transform(0,0),cw=r.w*(material?.96:.88)*stretch,ch=material?cw*164/290:Math.max(10,r.w*.27),cx=rim.x+opening*10,cy=rim.y-ch*.72+drop-opening*23;
+      const rim=transform(0,0),cw=r.w*(material?.96:.88)*stretch,ch=material?cw*164/290:Math.max(10,r.w*.27),cx=rim.x+opening*10,cy=rim.y-ch*.72+drop*Math.min(1,Math.max(0,rim.y-ch*.72-4)/28)-opening*23;
       const opacity=(1-opening)*(final||this.reduced?1:cork.opacity);
       g.fillStyle(0x081425,.30*opacity);g.fillEllipse(cx,rim.y+2,r.w*.92*stretch,5);
       if(material)this.glass!.cork(index,cx,cy,cw,ch,opacity);
@@ -290,7 +290,7 @@ export class WaterScene extends Phaser.Scene {
       if(Math.abs(s.x)+Math.abs(s.v)*.04>.008||force)this.liquid.set(i,s);else this.liquid.delete(i);
     }
     for(const [i,body]of this.bodyMotion){stepLiquid(body,dt);if(Math.abs(body.x)+Math.abs(body.v)*.04<.008)this.bodyMotion.delete(i);}
-    const signature=JSON.stringify([this.board,this.goal,this.selected,this.hintMove,this.queuedMove,this.symbols,this.light,this.viewWidth,this.viewHeight,now-this.entrance>=260]);
+    const signature=JSON.stringify([this.board,this.goal,this.lockedExtra,this.selected,this.hintMove,this.queuedMove,this.symbols,this.light,this.viewWidth,this.viewHeight,now-this.entrance>=260]);
     const settling=[...this.selectionY].some(([i,y])=>Math.abs(y-((this.selected===i||this.hintMove?.from===i)&&!this.busyTube(i)?-17:0))>.1);
     const activeSettle=this.liquid.size>0||this.bodyMotion.size>0||[...this.settles.values()].some(t=>now-t<650),shaking=[...this.pulses.values()].some(t=>now-t<220);
     const corkAnimating=[...this.corkOpen.values()].some(v=>v>0&&v<1);
@@ -311,6 +311,7 @@ export class WaterScene extends Phaser.Scene {
       this.restingTube(r,ls,chosen,target,i,now);
       if(target){const color=this.light?0x23649b:0xa6e8ff;this.fx.lineStyle(2,color,.8);this.fx.strokeEllipse(r.x,r.y+r.h+10,r.w*1.25,9);if(this.hintMove?.to===i){const y=r.y-12;this.fx.lineStyle(2.5,color,1);this.fx.beginPath();this.fx.moveTo(r.x,y-9);this.fx.lineTo(r.x,y+2);this.fx.moveTo(r.x-4,y-2);this.fx.lineTo(r.x,y+2);this.fx.lineTo(r.x+4,y-2);this.fx.strokePath();}}
     }
+    if(this.lockedExtra&&poses[this.board.length])this.restingTube({...poses[this.board.length]},[],false,false,this.board.length,now);
     if(f){
       const origin=poses[f.from],dest=poses[f.to];
       const r=pourPose(origin,dest,t,this.viewWidth,this.viewHeight,f.lifted,f.plan),angle=r.angle,tipX=r.tipX;

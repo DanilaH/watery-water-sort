@@ -17,14 +17,14 @@ test('generated glass and cork survive cached redraws, disappear on Undo and cle
  await page.locator('#menu').click();await expect(page.locator('#home')).toBeVisible();expect(await page.evaluate(()=>{const s=(window as any).glassScene;return [...s.glass.corks.values()].filter((v:any)=>v.visible).length+s.flyingInk.commandBuffer.length;})).toBe(0);
 });
 
-test('switching from ordinary to giant does not restore an old small glass over the goal',async({page})=>{
+test('switching from ordinary to giant fits the shared glass to the giant goal',async({page})=>{
  const s=fresh();s.completed=levels.slice(0,12).map(l=>l.id);s.settings.sound=false;
  await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');await page.locator('#home-play').click();
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).glassScene=this;return fn.call(this);};});
  await page.locator('#symbols').click();await expect.poll(()=>page.evaluate(()=>(window as any).glassScene?.glass.tubes.get(0)?.visible)).toBe(true);
  await page.locator('#menu').click();await page.locator('#home-levels').click();await page.locator('.levels button').nth(12).click();await expect(page.locator('#level-title')).toHaveText('Уровень 13');await page.waitForTimeout(900);
  await page.locator('#symbols').click();await page.waitForTimeout(100);
- expect(await page.evaluate(()=>{const s=(window as any).glassScene;return {goal:s.goal.index,oldGlass:s.glass.tubes.get(0).visible,ordinary:[...s.glass.tubes.entries()].some(([i,v]:any)=>i!==0&&v.visible)};})).toEqual({goal:0,oldGlass:false,ordinary:true});
+ expect(await page.evaluate(()=>{const s=(window as any).glassScene;return {goal:s.goal.index,oldGlass:s.glass.tubes.get(0).visible,fitted:Math.abs(s.glass.tubes.get(0).height*s.glass.tubes.get(0).scaleY-66*s.glass.tubes.get(0).scaleY-s.positions()[0].h)<.01,ordinary:[...s.glass.tubes.entries()].some(([i,v]:any)=>i!==0&&v.visible)};})).toEqual({goal:0,oldGlass:true,fitted:true,ordinary:true});
 });
 
 test('entrance returns cached glass to the exact settled pose without another input',async({page})=>{

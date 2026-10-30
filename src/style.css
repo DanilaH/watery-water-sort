@@ -191,3 +191,8 @@ body.finished #continue{animation:continue-breathe 2100ms ease-in-out 800ms infi
 body.light #star-target{color:#b66b00;filter:none}
 @media(max-width:350px),(orientation:landscape) and (max-height:550px){body #star-target{min-width:86px;font-size:25px;gap:2px}body:not(.finished) #feedback>div{gap:7px}}
 @media(prefers-reduced-motion:reduce){body.finished .victory-letter,body.finished .victory-letter-wave,body.finished .result-star .star-spark,body.finished #continue,.star-lost{animation:none!important}body #star-target,.potential-star{transition:none}body.finished .victory-letter{opacity:1;transform:none}}
+
+/* The empty rewarded vessel is rendered by the same glass material as every other vessel. */
+#extra-tube .locked-vessel{width:clamp(28px,calc(var(--vessel-width)*1.12),48px);height:auto;max-height:60px;overflow:visible;filter:drop-shadow(0 2px 2px #06152c66);pointer-events:none}
+#extra-tube .reward-video{right:0;top:0;width:24px;height:24px;color:#ffcf62;filter:drop-shadow(0 2px 1px #12255488);pointer-events:none}
+#extra-tube:active .locked-vessel{transform:scale(.94)}
