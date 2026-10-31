@@ -1,0 +1,849 @@
+{
+  "runtimeCommit": "73a0df1f259aa77e2761765c01c40922c1046498",
+  "local": {
+    "core": 52,
+    "independentOptimalPaths": 56,
+    "old22LevelsAndRatingsIdentical": true,
+    "initialFullBrowser": {
+      "passed": 166,
+      "failed": 3,
+      "failures": "Three pre-existing transient-phase checks missed intermediate frames under simultaneous capture load."
+    },
+    "revisedPhaseChecks": {
+      "passed": 5,
+      "failed": 0,
+      "assertionsPreserved": true
+    },
+    "typescript": true,
+    "productionBuild": true
+  },
+  "previews": [
+    {
+      "name": "perelevy-0.34-mini.webp",
+      "captureCommit": "73a0df1f259aa77e2761765c01c40922c1046498",
+      "dirty": false,
+      "rawFrames": 326,
+      "packed": {
+        "source": "Chromium compositor PNGs",
+        "sourceCommit": "73a0df1f259aa77e2761765c01c40922c1046498",
+        "dirty": false,
+        "lossless": true,
+        "crop": null,
+        "interpolation": false,
+        "silent": true,
+        "frames": 188,
+        "decodedFrames": 188,
+        "durationsMs": [
+          39,
+          36,
+          45,
+          38,
+          32,
+          38,
+          59,
+          33,
+          52,
+          31,
+          32,
+          59,
+          48,
+          38,
+          59,
+          72,
+          40,
+          47,
+          36,
+          84,
+          105,
+          121,
+          93,
+          38,
+          68,
+          32,
+          72,
+          73,
+          45,
+          30,
+          51,
+          30,
+          34,
+          36,
+          43,
+          110,
+          32,
+          50,
+          57,
+          72,
+          49,
+          48,
+          67,
+          66,
+          45,
+          75,
+          41,
+          79,
+          45,
+          51,
+          38,
+          104,
+          96,
+          70,
+          60,
+          90,
+          81,
+          111,
+          296,
+          53,
+          53,
+          39,
+          28,
+          74,
+          30,
+          29,
+          42,
+          53,
+          83,
+          34,
+          53,
+          49,
+          29,
+          38,
+          30,
+          55,
+          33,
+          71,
+          29,
+          63,
+          38,
+          34,
+          31,
+          34,
+          49,
+          55,
+          69,
+          36,
+          30,
+          41,
+          52,
+          48,
+          65,
+          28,
+          99,
+          68,
+          37,
+          29,
+          102,
+          88,
+          43,
+          59,
+          52,
+          38,
+          81,
+          65,
+          29,
+          35,
+          39,
+          36,
+          71,
+          56,
+          39,
+          34,
+          50,
+          56,
+          58,
+          80,
+          35,
+          28,
+          78,
+          53,
+          97,
+          76,
+          30,
+          32,
+          41,
+          47,
+          56,
+          29,
+          69,
+          56,
+          52,
+          77,
+          38,
+          42,
+          35,
+          32,
+          51,
+          31,
+          33,
+          32,
+          37,
+          69,
+          41,
+          43,
+          41,
+          41,
+          56,
+          88,
+          84,
+          45,
+          32,
+          50,
+          61,
+          47,
+          114,
+          55,
+          99,
+          49,
+          50,
+          42,
+          40,
+          124,
+          62,
+          63,
+          74,
+          30,
+          89,
+          63,
+          54,
+          38,
+          31,
+          54,
+          83,
+          62,
+          82,
+          75,
+          47,
+          95,
+          71,
+          490,
+          192,
+          67,
+          159,
+          52,
+          33,
+          150
+        ],
+        "sha256": "27366bf820a7bffb1689881988068752b0cbae29a6bea3a28ef1bce83f7b0e5a"
+      },
+      "dist": [
+        {
+          "path": "index.html",
+          "sha256": "b3158ebe12e33145ee052967d3e5979042fc61fcfecb18c669a3ca990567e778"
+        },
+        {
+          "path": "art/goal-crystal-base.webp",
+          "sha256": "d0c3cb7b7da13b51300c11e9d792812dfe89094c901d8dbc197b2e1065b3a2b4"
+        },
+        {
+          "path": "art/goal-crystal-shard-0.webp",
+          "sha256": "23855587a498896aac4ef1db13c61ae7fe5585633757d97970ebf4649cdd75f2"
+        },
+        {
+          "path": "art/goal-crystal-shard-1.webp",
+          "sha256": "bba3161903d0d6ef9400541581cd1680f8c9a62b92b5ca740f0f8fcd036a38ab"
+        },
+        {
+          "path": "art/goal-crystal-shard-2.webp",
+          "sha256": "0105f6468809e6094832b57d3642431b6e4c9123c354bfcbb2dc7642eaa7f211"
+        },
+        {
+          "path": "art/goal-crystal-shard-3.webp",
+          "sha256": "078aeeda8c690f5b98e1de35e972116120fcf953f936387224a9ca54a8f288b8"
+        },
+        {
+          "path": "art/goal-crystal-shard-4.webp",
+          "sha256": "a082067abb8303760459c71474fd851b4132f8ca6d6e74210ac56a2d265bc11b"
+        },
+        {
+          "path": "art/goal-crystal.json",
+          "sha256": "188ebd2acb56ebe5f64dcd7d5af87734d9ea2206d868f2731e8d9588ce2434df"
+        },
+        {
+          "path": "art/night-shore.svg",
+          "sha256": "941fa1cb1e043fcf4aeb2ecc9a788486b32d5f878238843391c77e74244a2607"
+        },
+        {
+          "path": "assets/index-C8hvyG3f.js",
+          "sha256": "f0f07e66002e3ca06ff7baecd7c6b00ab4e067ebae987b2d1bdb3a774410a3df"
+        },
+        {
+          "path": "assets/index-CNmYCc8b.css",
+          "sha256": "25e0937631c200d4fa980fd41470324c8398ff3a0d1248ed77f6e084a151009c"
+        },
+        {
+          "path": "assets/phaser-DFK5Ua9d.js",
+          "sha256": "f9025c1a29bc3ae097dd886ce07717b297466da1ce8f032c8294252ce6cf5cdb"
+        },
+        {
+          "path": "assets/solver.worker-C9gZSSWE.js",
+          "sha256": "3f798430f9dcd6fe80cb683288a12f792dd88319b19feada3c92c4cbdebbfddb"
+        },
+        {
+          "path": "assets/web-DCBBr8AX.js",
+          "sha256": "1d06969107d6ae4d9d7e6af8c03c96512dfe6a91a223ae53fd8b3795db685f49"
+        },
+        {
+          "path": "audio/accept.ogg",
+          "sha256": "c70c62a52af1eccfd8bc707f15089ef2a66dd369910b7299f8a078a127c029bb"
+        },
+        {
+          "path": "audio/collect.ogg",
+          "sha256": "a99bbf77dbd37e6bf4389bf9de8bb463699d0a963e06fa40b936625453c8dca3"
+        },
+        {
+          "path": "audio/complete.ogg",
+          "sha256": "b3e100ec12a14c041d634854a4b3509f0d645dba777d93ffb9a4d5a95cdf4a68"
+        },
+        {
+          "path": "audio/cork.ogg",
+          "sha256": "a39d8974aeb0b5329692ce576d36c1894c3e3bf382732b84ac81cda6f31ad13d"
+        },
+        {
+          "path": "audio/hint.ogg",
+          "sha256": "b49a4494c240c2ad5540518ec6f1484fb30aa939f17a1ef67edaf3d9a75b5706"
+        },
+        {
+          "path": "audio/land.ogg",
+          "sha256": "8625c1350d5b210820fa0b5410f9c1d4dfbafc30579a62276e608617ea5335cd"
+        },
+        {
+          "path": "audio/material-report.json",
+          "sha256": "0e86df040d00a4065ab8d91f392923a75a73a467ebb95d7ef031fa9e4e6c1e94"
+        },
+        {
+          "path": "audio/mix-report.json",
+          "sha256": "d3b4be8ca0409d8130666f58c8c7a0a983d3c4ffbe1865ea3af5869db04eb5bf"
+        },
+        {
+          "path": "audio/pour-1.ogg",
+          "sha256": "718d64ba1234e434cc0ff1393f46a3a801c141bd12267482bde903decba7a5a9"
+        },
+        {
+          "path": "audio/pour-2.ogg",
+          "sha256": "8bd48b2c02c3e36c61e69aee7d0d0702f3518822b26069c5624c114082057fa5"
+        },
+        {
+          "path": "audio/pour-3.ogg",
+          "sha256": "94d6906a9c91c267c951cd8e1c558f0eb92dc68a278447dc4d66e59474d62ee9"
+        },
+        {
+          "path": "audio/reject.ogg",
+          "sha256": "16280f9ee8cf79988e711cb0e39e726bc4c9b391918533595d19bfb75094c4cf"
+        },
+        {
+          "path": "audio/select.ogg",
+          "sha256": "e3051890837463871425d073a8249570b22da3b000e215a1daf4472aea718df1"
+        },
+        {
+          "path": "audio/victory.ogg",
+          "sha256": "7e22b78ed658dd5d007f7d58dabbc88c69370aa5acffd3eabbafb37cd4d322ba"
+        },
+        {
+          "path": "fonts/OFL-Rubik.txt",
+          "sha256": "3cb6a6084f5d942a8f3b5fda0f6a90dde18d7f7f1798886f4043d18f8c1a811e"
+        },
+        {
+          "path": "fonts/rubik.woff",
+          "sha256": "046fdb74c56ba506461ac26e36143db27b6f3f78347487fbb6ec1a806548bde9"
+        },
+        {
+          "path": "art/glass/cork-27.webp",
+          "sha256": "da674781a74f140413c0091e8251ffece65d6c9130ac82c7e30709606555a405"
+        },
+        {
+          "path": "art/glass/material-27.json",
+          "sha256": "cd27d949228c4f3a12db8b73b0647ecacb9d8af762b3866ba464c30cbc79fad4"
+        },
+        {
+          "path": "art/glass/tube-27.webp",
+          "sha256": "8ed6eb7c3ff8b4cc936281a4a82ebb4601c6af171f6de6e21732303b3eff315e"
+        },
+        {
+          "path": "art/ui/button-blue-29.svg",
+          "sha256": "2e55ad3ad5bab1c65726650806c0d2dfbb281b8bd0412205f898c9a5871f3dd5"
+        },
+        {
+          "path": "art/ui/button-gold-29.svg",
+          "sha256": "788c36097c4017a390735862944c7f650453f2c81de7356718c8c6914c261d86"
+        },
+        {
+          "path": "art/ui/material-29.json",
+          "sha256": "fb47125553d0f25089d9edb72d08db72d642aec928448233be5941668811e9bc"
+        },
+        {
+          "path": "art/ui/star-empty-29.svg",
+          "sha256": "7ca88cf7dddd83d726fd0fd8ec0bb20c2b7f8ea1b0ca64e507225fd26b3faba3"
+        },
+        {
+          "path": "art/ui/star-gold-29.svg",
+          "sha256": "4b30e8e171efbcf5151d73b7d683f8caf455abdbce335ef095a9c332b3de0056"
+        },
+        {
+          "path": "art/vfx/splash-0.webp",
+          "sha256": "9afb886248f84f1bfccddf4f97acc7d4b0fece5fa2f743ae2cf687d307903965"
+        },
+        {
+          "path": "art/vfx/splash-1.webp",
+          "sha256": "9169472247e543eee222a88c653951cbf26be53ea7699e02c09a29417803247a"
+        },
+        {
+          "path": "art/vfx/splash-2.webp",
+          "sha256": "11e6076f3395a0693e708acda3dd1680230cb9d859ca8ac7bed74e3e14bb37e8"
+        },
+        {
+          "path": "art/vfx/splash-3.webp",
+          "sha256": "5ab1b6904a85444b25e102c501e063bd700aa396637ead176ab0f343b4ee02f0"
+        },
+        {
+          "path": "art/vfx/splash-4.webp",
+          "sha256": "c1b719b6274c76d2f0819f03d78cc0f70faa41250b2c43789cd446f8466abd95"
+        },
+        {
+          "path": "art/vfx/splash-5.webp",
+          "sha256": "4db7480b0fde499e0d5795455a614246be86a023c5ae391f118d9a02a933d0a4"
+        },
+        {
+          "path": "art/vfx/sprites.json",
+          "sha256": "fcba19566f2c46c842262974c3108f1f39574650f3bcbf44b8f2d52e824ebd87"
+        }
+      ],
+      "pageErrors": []
+    },
+    {
+      "name": "perelevy-0.34-combined.webp",
+      "captureCommit": "73a0df1f259aa77e2761765c01c40922c1046498",
+      "dirty": false,
+      "rawFrames": 210,
+      "packed": {
+        "source": "Chromium compositor PNGs",
+        "sourceCommit": "73a0df1f259aa77e2761765c01c40922c1046498",
+        "dirty": false,
+        "lossless": true,
+        "crop": null,
+        "interpolation": false,
+        "silent": true,
+        "frames": 130,
+        "decodedFrames": 130,
+        "durationsMs": [
+          51,
+          59,
+          58,
+          88,
+          49,
+          62,
+          42,
+          65,
+          58,
+          111,
+          77,
+          91,
+          92,
+          28,
+          124,
+          44,
+          71,
+          88,
+          31,
+          35,
+          85,
+          103,
+          261,
+          40,
+          58,
+          66,
+          35,
+          39,
+          36,
+          52,
+          34,
+          75,
+          29,
+          65,
+          37,
+          32,
+          68,
+          57,
+          41,
+          62,
+          54,
+          83,
+          30,
+          70,
+          88,
+          39,
+          45,
+          30,
+          31,
+          62,
+          69,
+          36,
+          29,
+          29,
+          36,
+          45,
+          49,
+          31,
+          42,
+          45,
+          62,
+          57,
+          33,
+          38,
+          33,
+          37,
+          37,
+          74,
+          34,
+          61,
+          29,
+          69,
+          49,
+          51,
+          28,
+          43,
+          71,
+          33,
+          40,
+          59,
+          33,
+          35,
+          47,
+          51,
+          81,
+          62,
+          62,
+          36,
+          28,
+          146,
+          196,
+          45,
+          33,
+          31,
+          52,
+          30,
+          54,
+          68,
+          42,
+          31,
+          51,
+          44,
+          64,
+          173,
+          80,
+          61,
+          29,
+          108,
+          91,
+          82,
+          108,
+          101,
+          58,
+          37,
+          33,
+          31,
+          41,
+          80,
+          46,
+          57,
+          49,
+          602,
+          37,
+          86,
+          29,
+          73,
+          104,
+          40,
+          77,
+          150
+        ],
+        "sha256": "fae7e363f7092dfc750ac44316e2b862432853f8702ca18b013e12f1027f8719"
+      },
+      "dist": [
+        {
+          "path": "index.html",
+          "sha256": "b3158ebe12e33145ee052967d3e5979042fc61fcfecb18c669a3ca990567e778"
+        },
+        {
+          "path": "art/goal-crystal-base.webp",
+          "sha256": "d0c3cb7b7da13b51300c11e9d792812dfe89094c901d8dbc197b2e1065b3a2b4"
+        },
+        {
+          "path": "art/goal-crystal-shard-0.webp",
+          "sha256": "23855587a498896aac4ef1db13c61ae7fe5585633757d97970ebf4649cdd75f2"
+        },
+        {
+          "path": "art/goal-crystal-shard-1.webp",
+          "sha256": "bba3161903d0d6ef9400541581cd1680f8c9a62b92b5ca740f0f8fcd036a38ab"
+        },
+        {
+          "path": "art/goal-crystal-shard-2.webp",
+          "sha256": "0105f6468809e6094832b57d3642431b6e4c9123c354bfcbb2dc7642eaa7f211"
+        },
+        {
+          "path": "art/goal-crystal-shard-3.webp",
+          "sha256": "078aeeda8c690f5b98e1de35e972116120fcf953f936387224a9ca54a8f288b8"
+        },
+        {
+          "path": "art/goal-crystal-shard-4.webp",
+          "sha256": "a082067abb8303760459c71474fd851b4132f8ca6d6e74210ac56a2d265bc11b"
+        },
+        {
+          "path": "art/goal-crystal.json",
+          "sha256": "188ebd2acb56ebe5f64dcd7d5af87734d9ea2206d868f2731e8d9588ce2434df"
+        },
+        {
+          "path": "art/night-shore.svg",
+          "sha256": "941fa1cb1e043fcf4aeb2ecc9a788486b32d5f878238843391c77e74244a2607"
+        },
+        {
+          "path": "assets/index-C8hvyG3f.js",
+          "sha256": "f0f07e66002e3ca06ff7baecd7c6b00ab4e067ebae987b2d1bdb3a774410a3df"
+        },
+        {
+          "path": "assets/index-CNmYCc8b.css",
+          "sha256": "25e0937631c200d4fa980fd41470324c8398ff3a0d1248ed77f6e084a151009c"
+        },
+        {
+          "path": "assets/phaser-DFK5Ua9d.js",
+          "sha256": "f9025c1a29bc3ae097dd886ce07717b297466da1ce8f032c8294252ce6cf5cdb"
+        },
+        {
+          "path": "assets/solver.worker-C9gZSSWE.js",
+          "sha256": "3f798430f9dcd6fe80cb683288a12f792dd88319b19feada3c92c4cbdebbfddb"
+        },
+        {
+          "path": "assets/web-DCBBr8AX.js",
+          "sha256": "1d06969107d6ae4d9d7e6af8c03c96512dfe6a91a223ae53fd8b3795db685f49"
+        },
+        {
+          "path": "audio/accept.ogg",
+          "sha256": "c70c62a52af1eccfd8bc707f15089ef2a66dd369910b7299f8a078a127c029bb"
+        },
+        {
+          "path": "audio/collect.ogg",
+          "sha256": "a99bbf77dbd37e6bf4389bf9de8bb463699d0a963e06fa40b936625453c8dca3"
+        },
+        {
+          "path": "audio/complete.ogg",
+          "sha256": "b3e100ec12a14c041d634854a4b3509f0d645dba777d93ffb9a4d5a95cdf4a68"
+        },
+        {
+          "path": "audio/cork.ogg",
+          "sha256": "a39d8974aeb0b5329692ce576d36c1894c3e3bf382732b84ac81cda6f31ad13d"
+        },
+        {
+          "path": "audio/hint.ogg",
+          "sha256": "b49a4494c240c2ad5540518ec6f1484fb30aa939f17a1ef67edaf3d9a75b5706"
+        },
+        {
+          "path": "audio/land.ogg",
+          "sha256": "8625c1350d5b210820fa0b5410f9c1d4dfbafc30579a62276e608617ea5335cd"
+        },
+        {
+          "path": "audio/material-report.json",
+          "sha256": "0e86df040d00a4065ab8d91f392923a75a73a467ebb95d7ef031fa9e4e6c1e94"
+        },
+        {
+          "path": "audio/mix-report.json",
+          "sha256": "d3b4be8ca0409d8130666f58c8c7a0a983d3c4ffbe1865ea3af5869db04eb5bf"
+        },
+        {
+          "path": "audio/pour-1.ogg",
+          "sha256": "718d64ba1234e434cc0ff1393f46a3a801c141bd12267482bde903decba7a5a9"
+        },
+        {
+          "path": "audio/pour-2.ogg",
+          "sha256": "8bd48b2c02c3e36c61e69aee7d0d0702f3518822b26069c5624c114082057fa5"
+        },
+        {
+          "path": "audio/pour-3.ogg",
+          "sha256": "94d6906a9c91c267c951cd8e1c558f0eb92dc68a278447dc4d66e59474d62ee9"
+        },
+        {
+          "path": "audio/reject.ogg",
+          "sha256": "16280f9ee8cf79988e711cb0e39e726bc4c9b391918533595d19bfb75094c4cf"
+        },
+        {
+          "path": "audio/select.ogg",
+          "sha256": "e3051890837463871425d073a8249570b22da3b000e215a1daf4472aea718df1"
+        },
+        {
+          "path": "audio/victory.ogg",
+          "sha256": "7e22b78ed658dd5d007f7d58dabbc88c69370aa5acffd3eabbafb37cd4d322ba"
+        },
+        {
+          "path": "fonts/OFL-Rubik.txt",
+          "sha256": "3cb6a6084f5d942a8f3b5fda0f6a90dde18d7f7f1798886f4043d18f8c1a811e"
+        },
+        {
+          "path": "fonts/rubik.woff",
+          "sha256": "046fdb74c56ba506461ac26e36143db27b6f3f78347487fbb6ec1a806548bde9"
+        },
+        {
+          "path": "art/glass/cork-27.webp",
+          "sha256": "da674781a74f140413c0091e8251ffece65d6c9130ac82c7e30709606555a405"
+        },
+        {
+          "path": "art/glass/material-27.json",
+          "sha256": "cd27d949228c4f3a12db8b73b0647ecacb9d8af762b3866ba464c30cbc79fad4"
+        },
+        {
+          "path": "art/glass/tube-27.webp",
+          "sha256": "8ed6eb7c3ff8b4cc936281a4a82ebb4601c6af171f6de6e21732303b3eff315e"
+        },
+        {
+          "path": "art/ui/button-blue-29.svg",
+          "sha256": "2e55ad3ad5bab1c65726650806c0d2dfbb281b8bd0412205f898c9a5871f3dd5"
+        },
+        {
+          "path": "art/ui/button-gold-29.svg",
+          "sha256": "788c36097c4017a390735862944c7f650453f2c81de7356718c8c6914c261d86"
+        },
+        {
+          "path": "art/ui/material-29.json",
+          "sha256": "fb47125553d0f25089d9edb72d08db72d642aec928448233be5941668811e9bc"
+        },
+        {
+          "path": "art/ui/star-empty-29.svg",
+          "sha256": "7ca88cf7dddd83d726fd0fd8ec0bb20c2b7f8ea1b0ca64e507225fd26b3faba3"
+        },
+        {
+          "path": "art/ui/star-gold-29.svg",
+          "sha256": "4b30e8e171efbcf5151d73b7d683f8caf455abdbce335ef095a9c332b3de0056"
+        },
+        {
+          "path": "art/vfx/splash-0.webp",
+          "sha256": "9afb886248f84f1bfccddf4f97acc7d4b0fece5fa2f743ae2cf687d307903965"
+        },
+        {
+          "path": "art/vfx/splash-1.webp",
+          "sha256": "9169472247e543eee222a88c653951cbf26be53ea7699e02c09a29417803247a"
+        },
+        {
+          "path": "art/vfx/splash-2.webp",
+          "sha256": "11e6076f3395a0693e708acda3dd1680230cb9d859ca8ac7bed74e3e14bb37e8"
+        },
+        {
+          "path": "art/vfx/splash-3.webp",
+          "sha256": "5ab1b6904a85444b25e102c501e063bd700aa396637ead176ab0f343b4ee02f0"
+        },
+        {
+          "path": "art/vfx/splash-4.webp",
+          "sha256": "c1b719b6274c76d2f0819f03d78cc0f70faa41250b2c43789cd446f8466abd95"
+        },
+        {
+          "path": "art/vfx/splash-5.webp",
+          "sha256": "4db7480b0fde499e0d5795455a614246be86a023c5ae391f118d9a02a933d0a4"
+        },
+        {
+          "path": "art/vfx/sprites.json",
+          "sha256": "fcba19566f2c46c842262974c3108f1f39574650f3bcbf44b8f2d52e824ebd87"
+        }
+      ],
+      "pageErrors": []
+    }
+  ],
+  "physicalPhoneTested": false,
+  "ci": {
+    "run": 41191942746,
+    "job": 124510340295,
+    "buildCommit": "5735cb0429ed10f7a0e7bec0b9c7b9fda0ff3260",
+    "conclusion": "success",
+    "browser": 169,
+    "core": 52,
+    "optimalPaths": 56,
+    "artifact": 13038834901,
+    "artifactZipSha256": "0025a027a8b8fd9403237675bb8a6b89507f15ef5a3a195a2d803fe829d48cfc"
+  },
+  "apk": {
+    "apk": "perelevy-0.34.apk",
+    "bytes": 10840187,
+    "sha256": "5161f35317287b5533f8cfba69d3e0f28d7228e5904647b2ee4254d243c201d5",
+    "manifest": {
+      "versionCode": 34,
+      "versionName": "0.34.0-mini",
+      "compileSdkVersion": 36,
+      "compileSdkVersionCodename": "16",
+      "package": "com.danilah.waterywatersort.preview3",
+      "platformBuildVersionCode": 36,
+      "platformBuildVersionName": 16
+    },
+    "v2Signatures": [
+      {
+        "algorithm": "0x103",
+        "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+      }
+    ],
+    "publicPreviewCertificateMatches": true,
+    "tamperedProtectedByteRejected": true,
+    "distFilesMatched": [
+      "index.html",
+      "assets/index-C8hvyG3f.js",
+      "assets/phaser-DFK5Ua9d.js",
+      "assets/web-DCBBr8AX.js",
+      "assets/index-CNmYCc8b.css",
+      "assets/solver.worker-C9gZSSWE.js",
+      "art/goal-crystal-shard-3.webp",
+      "art/goal-crystal.json",
+      "art/night-shore.svg",
+      "art/goal-crystal-shard-2.webp",
+      "art/goal-crystal-shard-0.webp",
+      "art/goal-crystal-shard-4.webp",
+      "art/goal-crystal-base.webp",
+      "art/goal-crystal-shard-1.webp",
+      "fonts/OFL-Rubik.txt",
+      "fonts/rubik.woff",
+      "audio/pour-1.ogg",
+      "audio/land.ogg",
+      "audio/cork.ogg",
+      "audio/select.ogg",
+      "audio/hint.ogg",
+      "audio/material-report.json",
+      "audio/pour-3.ogg",
+      "audio/mix-report.json",
+      "audio/victory.ogg",
+      "audio/accept.ogg",
+      "audio/reject.ogg",
+      "audio/collect.ogg",
+      "audio/pour-2.ogg",
+      "audio/complete.ogg",
+      "art/vfx/splash-5.webp",
+      "art/vfx/splash-4.webp",
+      "art/vfx/splash-0.webp",
+      "art/vfx/splash-2.webp",
+      "art/vfx/splash-3.webp",
+      "art/vfx/splash-1.webp",
+      "art/vfx/sprites.json",
+      "art/ui/button-blue-29.svg",
+      "art/ui/material-29.json",
+      "art/ui/star-gold-29.svg",
+      "art/ui/star-empty-29.svg",
+      "art/ui/button-gold-29.svg",
+      "art/glass/material-27.json",
+      "art/glass/cork-27.webp",
+      "art/glass/tube-27.webp"
+    ]
+  },
+  "bothCaptureBundlesMatchApk": true,
+  "buildVsCaptureDifference": "Test-only frame-control changes; src, public, package manifests and Android source are identical.",
+  "deliverables": [
+    {
+      "file_name": "perelevy-0.34-mini.webp",
+      "library_file_id": "libfile_18db4e27b4988191b4b62c903a7f5ab3",
+      "file_id": "file_00000000d29881f5b15abba6d6013938",
+      "current_version_number": 0
+    },
+    {
+      "file_name": "perelevy-0.34-combined.webp",
+      "library_file_id": "libfile_0cd07ce331ac81919711e4436ff094a9",
+      "file_id": "file_00000000bb7481f58a8841b891d1065d",
+      "current_version_number": 0
+    },
+    {
+      "file_name": "perelevy-0.34.apk",
+      "library_file_id": "libfile_d1e309ee5f6c8191b67afcd13d99dadd",
+      "file_id": "file_000000008a8c81f5959ade0482af1f1f",
+      "current_version_number": 0
+    }
+  ]
+}
