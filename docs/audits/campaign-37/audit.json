@@ -274,7 +274,7 @@
     {
       "id": "water-019",
       "oldStage": 19,
-      "stage": 25,
+      "stage": 23,
       "colors": 3,
       "optimal": 14,
       "extraOptimal": 14,
@@ -319,7 +319,7 @@
     {
       "id": "water-022",
       "oldStage": 22,
-      "stage": 36,
+      "stage": 25,
       "colors": 3,
       "optimal": 18,
       "extraOptimal": 18,
@@ -456,7 +456,7 @@
     {
       "id": "water-031",
       "oldStage": 31,
-      "stage": 23,
+      "stage": 36,
       "colors": 3,
       "optimal": 9,
       "extraOptimal": 9,
@@ -621,7 +621,7 @@
   ],
   "sameMaskAndPhysicsGroups": [],
   "oldRoleTransitions": 12,
-  "newRoleTransitions": 33,
+  "newRoleTransitions": 34,
   "extraSlotShortensOptimum": [
     "water-033"
   ]

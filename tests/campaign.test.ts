@@ -4,7 +4,7 @@ import {fresh,levels,moved,attempt,restarted,undone,expanded,validSave,levelKey}
 import {SaveStore} from '../src/platform/storage';
 
 test('every stable puzzle appears once; tutorials precede combinations and dense fields arrive late',()=>{
- expect(campaign).toHaveLength(40);expect(new Set(campaign).size).toBe(40);expect(campaign.slice(0,4)).toEqual([0,1,2,12]);expect(campaign.at(-1)).toBe(11);
+ expect(campaign).toHaveLength(40);expect(new Set(campaign).size).toBe(40);expect(campaign.slice(0,4)).toEqual([0,1,2,12]);expect(campaign.at(-1)).toBe(11);expect(campaign[35]).toBe(30);expect(stageNumber(18)).toBeLessThan(stageNumber(21));
  const prerequisites=[['mini',23],['ice',29],['hidden',35]] as const;
  for(const [role,intro]of prerequisites)for(const i of campaign.filter(i=>levels[i][role]!==undefined))expect(stageNumber(i)).toBeGreaterThanOrEqual(stageNumber(intro-1));
  expect(stageNumber(12)).toBeLessThan(stageNumber(16));expect(stageNumber(16)).toBeLessThan(stageNumber(27));
