@@ -33,15 +33,16 @@ for row in rows:
   return False
  started=time.time();found_shorter=search(tuple(map(tuple,initial)),row['optimal']-1,ice is None);assert not found_shorter,row
  b=[list(t)for t in initial];opened=ice is None;thaw_move=None
- for m in row['path']:
+ for step,m in enumerate(row['path'],1):
   assert opened or m['from']!=ice and m['to']!=ice
   a,z=b[m['from']],b[m['to']];source_sealed=sealed(a,m['from']);c=a[-1];g=1
   while g<len(a)and a[-1-g]==c:g+=1
   limit=capacity(m['to'])
   assert m['from']>=first and (m['to']>=first or c==goals[m['to']]['color'])
   assert (not z or z[-1]==c)and m['amount']==min(g,limit-len(z))and c==m['color'];z.extend(a[-m['amount']:]);del a[-m['amount']:]
-  if not opened and not source_sealed and sealed(z,m['to']):opened=True;thaw_move=row['path'].index(m)+1
+  if not opened and not source_sealed and sealed(z,m['to']):opened=True;thaw_move=step
  assert finished(b,opened)
+ if 'thawMove' in row:assert row['thawMove']==thaw_move
  proofs.append({**row,**({'thawMove':thaw_move}if ice is not None else{}),'independentNoShorterPath':True,'proofNodes':nodes,'proofMs':round((time.time()-started)*1000,2)})
  print(row['level']+1,row['extra'],row['optimal'],nodes,flush=True)
 if '--write'in sys.argv:
