@@ -34,7 +34,7 @@ test('all twelve exact ice paths replay through durable state and preserve best 
 });
 
 test('worker search keeps earned access and fixed ice identity across arbitrary slot positions',()=>{
- for(const l of levels.slice(28)){
+ for(const l of levels.slice(28,34)){
   const spec=levelGoals(l),result=solve(l.initial,200000,2000,spec);expect(result.status).toBe('FOUND');
   if(result.status==='FOUND'){let state={board:l.initial,rules:spec};for(const m of result.path)state=transition(state.board,m,state.rules);expect(won(state.board,state.rules)).toBe(true);}
   const order=l.initial.map((_,i)=>l.initial.length-1-i),r=spec as VesselRules,shifted={goals:r.goals.map(g=>({...g,index:order.indexOf(g.index)})),...(r.mini!==undefined?{mini:order.indexOf(r.mini)}:{}),ice:order.indexOf(r.ice!),thawed:false};
@@ -43,5 +43,5 @@ test('worker search keeps earned access and fixed ice identity across arbitrary 
 });
 
 test('rewarded slot cannot win around inaccessible liquid; history replays with its original entitlement',()=>{
- for(const l of levels.slice(28)){let s=expanded({...fresh(),current:levels.indexOf(l)});for(const m of l.witness)s=moved(s,m);expect(won(attempt(s).board,goalFor(s))).toBe(true);expect(attempt(s).thawed).toBe(true);const r=restarted(s);expect(attempt(r).extra).toBe(true);expect(attempt(r).thawed).not.toBe(true);expect(validSave(r)).toBe(true);}
+ for(const l of levels.slice(28,34)){let s=expanded({...fresh(),current:levels.indexOf(l)});for(const m of l.witness)s=moved(s,m);expect(won(attempt(s).board,goalFor(s))).toBe(true);expect(attempt(s).thawed).toBe(true);const r=restarted(s);expect(attempt(r).extra).toBe(true);expect(attempt(r).thawed).not.toBe(true);expect(validSave(r)).toBe(true);}
 });

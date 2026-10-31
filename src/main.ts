@@ -1,3 +1,5 @@
+import {hasUnknown} from './core/knowledge';
+import {visibleHint} from './core/visibleHint';
 import Phaser from 'phaser';
 import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
@@ -10,7 +12,7 @@ import {mountHomeHero} from './game/HomeHero';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
 import { goalList, goalAt, miniIndex, isMini, iceIndex, iceOpen, moveFor, sealedTube, won, moves, type Move } from './core/rules';
-import { attempt, levels, moved, undone, restarted, levelKey, offerExtra, displaySlots, grantExtra, goalFor, levelGoals, type Save } from './core/session';
+import { attempt, levels, moved, undone, restarted, levelKey, offerExtra, displaySlots, grantExtra, goalFor, levelGoals, knowledgeFor, type Save } from './core/session';
 import { SaveStore } from './platform/storage';
 import {stars,targets} from './core/ratings';
 import {Rewarded,type Receipt} from './platform/rewarded';
@@ -39,7 +41,7 @@ const scene=new WaterScene('water');
 const density=Math.min(3,Math.max(2,devicePixelRatio));
 scene.setViewport($('board').clientWidth,$('board').clientHeight,density);
 const game=new Phaser.Game({type:Phaser.AUTO,parent:'board',transparent:true,antialias:true,scale:{mode:Phaser.Scale.NONE,width:Math.round($('board').clientWidth*density),height:Math.round($('board').clientHeight*density)},scene:[scene],audio:{noAudio:true}});
-let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,lastMove:Move|null=null,kind:'pour'|'undo'='pour',newColor=false,pendingIce:number|null=null;
+let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,lastMove:Move|null=null,kind:'pour'|'undo'='pour',newColor=false,pendingIce:number|null=null,pendingReveal=false;
 let deadRevision:number|null=null;
 let hintCache:{revision:number;move:Move}|null=null;
 const blockers=new Set<string>();
@@ -55,6 +57,7 @@ function guidance(){
  if(!scene.busy&&!moves(attempt(state).board,goalFor(state)).length)return 'Нет доступных ходов';
  if(scene.hintMove)return 'Перелей в колбу со стрелкой';
  if(scene.selected!==null)return scene.busy?'Следующий ход: выбери цель':'Выбери пустую или с тем же цветом сверху';
+ if(state.current===34&&attempt(state).history.length===0&&!state.completed.includes(levels[34].id)&&hasUnknown(knowledgeFor(state)))return 'Открой цвета · отмена их не спрячет';
  if(goalFor(state)&&attempt(state).history.length===0)return '';
  if(state.current===0&&attempt(state).history.length===0)return 'Выбери цветную колбу, затем пустую';
  if(state.current<2)return 'Одинаковые верхние слои льются вместе';
@@ -62,7 +65,7 @@ function guidance(){
 }
 function cancelSearch(){worker?.terminate();worker=undefined;requestId++;searching=false;}
 function clearIntent(){queued=null;scene.queuedMove=null;scene.selected=null;scene.hintMove=null;}
-function interrupt(){pendingIce=null;reward.cancel();pendingStars=undefined;scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
+function interrupt(){pendingReveal=false;pendingIce=null;reward.cancel();pendingStars=undefined;scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
 function block(reason:string,on:boolean){if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();}
 function commit(next:Save){try{store.write(next);state=next;recoveryNotice='';$('home-error').hidden=true;return true;}catch{paint();const error='Не удалось сохранить. Изменение не принято — попробуй ещё раз.';message(error,true);if(atHome&&!dialog.open){$('home-error').textContent=error;$('home-error').hidden=false;}if(dialog.open){const body=content.querySelector('.dialog-body');let note=body?.querySelector<HTMLElement>('[role=alert]');if(body&&!note){note=document.createElement('p');note.setAttribute('role','alert');body.prepend(note);}if(note)note.textContent=error;if(body)body.scrollTop=0;}return false;}}
 function paint(){
@@ -75,7 +78,7 @@ function paint(){
  $('home-summary').textContent=hasStarted()?`Уровень ${state.current+1} · ходов: ${a.history.length}`:'Собери каждый цвет в свою колбу';
  const theme=themeFor(state.settings);document.body.dataset.theme=theme.id;
  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content=theme.color;
- scene.reduced=reduced.matches;touch.enabled=state.settings.haptics!==false;reward.setTotal(totalStars(state),pendingStars?.before);
+ scene.reduced=reduced.matches;scene.setKnowledge(knowledgeFor(state));touch.enabled=state.settings.haptics!==false;reward.setTotal(totalStars(state),pendingStars?.before);
  $('star-capacity').textContent=`/ ${levels.length*3}`;
  $('hard-badge').hidden=!isHard(state.current);$('home-challenge').hidden=!isHard(state.current);$('home-play').classList.toggle('hard-level',isHard(state.current));
  scene.lockedExtra=!atHome&&offerExtra(state)&&!won(a.board,goalFor(state));scene.goal=goalFor(state);scene.slots=displaySlots(state);scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=theme.light;audio.setEnabled(state.settings.sound);
@@ -133,12 +136,12 @@ function restart(){const n=restarted(state);if(commit(n)){interrupt();hintCache=
 function drainQueue(){if(!queued)return;const q=queued;clearIntent();const m=moveFor(attempt(state).board,q.from,q.to,goalFor(state));if(m)accept(m,true);}
 function accept(m:Move,acknowledged=false){
  if(locked||blockers.size)return;
- cancelSearch();const before=attempt(state).board,beforeStars=totalStars(state),beforeRules=goalFor(state);const next=moved(state,m);
+ cancelSearch();const before=attempt(state).board,beforeStars=totalStars(state),beforeRules=goalFor(state),beforeKnowledge=knowledgeFor(state);const next=moved(state,m);
  if(won(attempt(next).board,goalFor(next))&&!next.completed.includes(levels[next.current].id))next.completed.push(levels[next.current].id);
  if(!commit(next))return;
- hintCache=null;clearIntent();lastMove=m;kind='pour';pendingIce=!iceOpen(beforeRules)&&iceOpen(goalFor(next))?iceIndex(goalFor(next))!:null;scene.iceHeld=pendingIce;newColor=!sealedTube(before,m.from,goalFor(state))&&sealedTube(attempt(next).board,m.to,goalFor(state));
+ hintCache=null;clearIntent();lastMove=m;kind='pour';pendingReveal=(knowledgeFor(next)?.known.length??0)>(beforeKnowledge?.known.length??0);pendingIce=!iceOpen(beforeRules)&&iceOpen(goalFor(next))?iceIndex(goalFor(next))!:null;scene.iceHeld=pendingIce;newColor=!sealedTube(before,m.from,goalFor(state))&&sealedTube(attempt(next).board,m.to,goalFor(state));
  if(won(attempt(next).board,goalFor(next)))pendingStars={before:beforeStars,total:totalStars(next),delta:totalStars(next)-beforeStars,earned:stars(levelKey(next.current),attempt(next).history.length)};
- if(!acknowledged){audio.accept();haptic('accept');}scene.setBoard(attempt(state).board);scene.animate(before,m,state.settings.fast);paint();message('');
+ if(!acknowledged){audio.accept();haptic('accept');}scene.setBoard(attempt(state).board);scene.animate(before,m,state.settings.fast,beforeKnowledge);paint();message('');
 }
 scene.onTap=(i)=>{
  if(locked||blockers.size||won(attempt(state).board,goalFor(state)))return;
@@ -165,6 +168,7 @@ scene.onTap=(i)=>{
 scene.onPour=(remainingMs,fill,endFill)=>{if(lastMove&&kind==='pour')audio.pour(remainingMs,lastMove.amount,fill,endFill,isMini(goalFor(state),lastMove.from));};
 scene.onReceive=()=>{
  if(kind==='undo')return;
+ if(pendingReveal&&lastMove){scene.land(lastMove.from,1);if(!newColor&&pendingIce===null){audio.reveal();haptic('reveal');}}pendingReveal=false;
  if(pendingIce!==null){scene.thaw(pendingIce);audio.ice();}
  if(!lastMove||!newColor){if(pendingIce!==null)haptic('ice');pendingIce=null;return;}
  scene.celebrate(lastMove.to);pendingIce=null;
@@ -185,9 +189,9 @@ scene.onComplete=()=>{
  paint();message(guidance());drainQueue();
 };
 function undo(){
- const a=attempt(state),m=a.history.at(-1);if(!m)return;const before=a.board;
+ const a=attempt(state),m=a.history.at(-1);if(!m)return;const before=a.board,beforeKnowledge=knowledgeFor(state);
  interrupt();if(commit(undone(state))){hintCache=null;kind='undo';lastMove=null;scene.setBoard(attempt(state).board);
-  if(goalAt(goalFor(state),m.to)){scene.land(m.from,m.amount);scene.land(m.to,m.amount);}else scene.animate(before,{from:m.to,to:m.from,amount:m.amount,color:m.color},true);
+  if(goalAt(goalFor(state),m.to)){scene.land(m.from,m.amount);scene.land(m.to,m.amount);}else scene.animate(before,{from:m.to,to:m.from,amount:m.amount,color:m.color},true,beforeKnowledge);
   audio.undo();paint();message(goalAt(goalFor(state),m.to)?'Ход отменён · большая бутылка остаётся на месте':'Возвращаем предыдущий ход');}
 }
 $('undo').onclick=undo;
@@ -197,6 +201,7 @@ $('continue').onclick=()=>{audio.ui();if(state.current===levels.length-1)menu();
 function showHint(m:Move){clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
 $('hint').onclick=()=>{
  if(scene.busy||blockers.size||locked||won(attempt(state).board,goalFor(state)))return;audio.prime();
+ const view=knowledgeFor(state);if(hasUnknown(view)){const m=visibleHint(attempt(state).board,view!,goalFor(state));if(m){showHint(m);message('Открой следующий слой · отмена доступна');}else message('Нет доступного перелива · можно отменить ход');return;}
  if(hintCache?.revision===state.revision){showHint(hintCache.move);return;}
  cancelSearch();const id=++requestId,revision=state.revision;searching=true;paint();message('Ищу продолжение…');
  const failed=()=>{if(id!==requestId)return;cancelSearch();paint();message('Подсказка недоступна. Можно продолжить или отменить ход.');};

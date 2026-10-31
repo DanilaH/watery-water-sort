@@ -54,6 +54,7 @@ export class Sound {
   finish(won:boolean){this.play(won?'victory':'complete',won?.58:.42,3);}
   fill(){this.play('complete',.3,2,1,180);}
   seal(){this.play('cork',.56,2);}
+  reveal(){this.play('select',.40,1,1.05,100);}
   ice(){this.play('ice',.72,3);}
   collect(index=0){this.play('collect',.32,1,1+Math.min(2,index)*.025);}
   ui(){this.play('select',.25,0,1.12);}

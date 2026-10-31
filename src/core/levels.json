@@ -4288,5 +4288,722 @@
       ],
       []
     ]
+  },
+  {
+    "id": "water-035",
+    "version": 1,
+    "colors": 3,
+    "seed": 36001,
+    "initial": [
+      [
+        1,
+        1,
+        0,
+        2
+      ],
+      [
+        0,
+        2,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        2,
+        2
+      ],
+      [],
+      []
+    ],
+    "witness": [
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 3,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      }
+    ],
+    "hidden": [
+      {
+        "index": 0,
+        "layers": [
+          0,
+          1
+        ]
+      },
+      {
+        "index": 1,
+        "layers": [
+          0,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "id": "water-036",
+    "version": 1,
+    "colors": 3,
+    "seed": 36002,
+    "initial": [
+      [
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        2,
+        0,
+        2
+      ],
+      [
+        2,
+        2,
+        1,
+        0
+      ],
+      [],
+      []
+    ],
+    "witness": [
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      }
+    ],
+    "hidden": [
+      {
+        "index": 0,
+        "layers": [
+          1,
+          2
+        ]
+      },
+      {
+        "index": 1,
+        "layers": [
+          1,
+          2
+        ]
+      },
+      {
+        "index": 2,
+        "layers": [
+          1,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "id": "water-037",
+    "version": 1,
+    "colors": 4,
+    "seed": 36003,
+    "initial": [
+      [
+        1,
+        1,
+        2,
+        0
+      ],
+      [
+        0,
+        3,
+        3,
+        2
+      ],
+      [
+        2,
+        0,
+        3,
+        0
+      ],
+      [
+        2,
+        3,
+        1,
+        1
+      ],
+      [],
+      []
+    ],
+    "witness": [
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 0,
+        "to": 2,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 5,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 3,
+        "to": 2,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 5,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 0
+      }
+    ],
+    "hidden": [
+      {
+        "index": 0,
+        "layers": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "index": 1,
+        "layers": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "index": 3,
+        "layers": [
+          1,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "id": "water-038",
+    "version": 1,
+    "colors": 4,
+    "seed": 36004,
+    "initial": [
+      [
+        2,
+        2,
+        2,
+        3
+      ],
+      [
+        2,
+        3,
+        1,
+        3
+      ],
+      [
+        0,
+        1,
+        0,
+        3
+      ],
+      [
+        0,
+        1,
+        0,
+        1
+      ],
+      [],
+      []
+    ],
+    "witness": [
+      {
+        "from": 0,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 2,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 3,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 0
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 1,
+        "amount": 3,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 2,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 3,
+        "to": 1,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 2,
+        "amount": 1,
+        "color": 0
+      }
+    ],
+    "hidden": [
+      {
+        "index": 0,
+        "layers": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "index": 1,
+        "layers": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "index": 2,
+        "layers": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "index": 3,
+        "layers": [
+          0,
+          1,
+          2
+        ]
+      }
+    ]
+  },
+  {
+    "id": "water-039",
+    "version": 1,
+    "colors": 4,
+    "seed": 36005,
+    "initial": [
+      [],
+      [
+        4,
+        4,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        2,
+        2
+      ],
+      [
+        2,
+        2,
+        1,
+        4
+      ],
+      [
+        1,
+        1,
+        4,
+        1
+      ]
+    ],
+    "witness": [
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 2,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 2,
+        "color": 0
+      },
+      {
+        "from": 3,
+        "to": 1,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 4,
+        "to": 1,
+        "amount": 1,
+        "color": 4
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 0,
+        "to": 3,
+        "amount": 2,
+        "color": 2
+      }
+    ],
+    "hidden": [
+      {
+        "index": 1,
+        "layers": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "index": 2,
+        "layers": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "index": 3,
+        "layers": [
+          1,
+          2
+        ]
+      },
+      {
+        "index": 4,
+        "layers": [
+          1,
+          2
+        ]
+      }
+    ],
+    "mini": 0
+  },
+  {
+    "id": "water-040",
+    "version": 1,
+    "colors": 3,
+    "seed": 36006,
+    "initial": [
+      [],
+      [
+        1,
+        3,
+        1,
+        2
+      ],
+      [
+        3,
+        1,
+        2,
+        1
+      ],
+      [
+        2,
+        3,
+        1,
+        1
+      ],
+      [
+        1,
+        2,
+        3,
+        1
+      ],
+      []
+    ],
+    "witness": [
+      {
+        "from": 4,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 0,
+        "amount": 2,
+        "color": 1
+      },
+      {
+        "from": 3,
+        "to": 4,
+        "amount": 1,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 4,
+        "to": 1,
+        "amount": 2,
+        "color": 3
+      },
+      {
+        "from": 4,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 4,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 2,
+        "to": 3,
+        "amount": 1,
+        "color": 2
+      },
+      {
+        "from": 2,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      },
+      {
+        "from": 1,
+        "to": 2,
+        "amount": 3,
+        "color": 3
+      },
+      {
+        "from": 1,
+        "to": 0,
+        "amount": 1,
+        "color": 1
+      }
+    ],
+    "hidden": [
+      {
+        "index": 1,
+        "layers": [
+          0,
+          1
+        ]
+      },
+      {
+        "index": 2,
+        "layers": [
+          1,
+          2
+        ]
+      },
+      {
+        "index": 3,
+        "layers": [
+          0,
+          1
+        ]
+      },
+      {
+        "index": 4,
+        "layers": [
+          1,
+          2
+        ]
+      }
+    ],
+    "goal": {
+      "index": 0,
+      "color": 1,
+      "capacity": 8
+    }
   }
 ]

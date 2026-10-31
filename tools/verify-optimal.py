@@ -1,7 +1,7 @@
 """Independent bounded search: own transitions, tuple states, no production solver."""
 import json,time,math,sys
 from pathlib import Path
-levels=json.loads(Path('src/core/levels.json').read_text());source=Path(next((s for s in sys.argv[1:]if s!='--write'),('docs/audits/ice-35/optimal.json' if Path('docs/audits/ice-35/optimal.json').exists() else 'docs/audits/mini-34/optimal.json' if Path('docs/audits/mini-34/optimal.json').exists() else 'docs/audits/dual-goals-33/optimal.json' if Path('docs/audits/dual-goals-33/optimal.json').exists() else 'docs/audits/giant-17/optimal.json' if Path('docs/audits/giant-17/optimal.json').exists() else 'docs/audits/stars-14/optimal.json')));rows=[json.loads(s)for s in source.read_text().splitlines()]if source.suffix=='.jsonl'else json.loads(source.read_text());proofs=[]
+levels=json.loads(Path('src/core/levels.json').read_text());source=Path(next((s for s in sys.argv[1:]if s!='--write'),('docs/audits/hidden-36/optimal.json' if Path('docs/audits/hidden-36/optimal.json').exists() else 'docs/audits/ice-35/optimal.json' if Path('docs/audits/ice-35/optimal.json').exists() else 'docs/audits/mini-34/optimal.json' if Path('docs/audits/mini-34/optimal.json').exists() else 'docs/audits/dual-goals-33/optimal.json' if Path('docs/audits/dual-goals-33/optimal.json').exists() else 'docs/audits/giant-17/optimal.json' if Path('docs/audits/giant-17/optimal.json').exists() else 'docs/audits/stars-14/optimal.json')));rows=[json.loads(s)for s in source.read_text().splitlines()]if source.suffix=='.jsonl'else json.loads(source.read_text());proofs=[]
 assert len(rows)==len(levels)*2 and {(r['level'],int(r['extra'])) for r in rows}=={(i,extra) for i in range(len(levels)) for extra in [0,1]}, 'Incomplete optimal proof bank'
 for row in rows:
  initial=levels[row['level']]['initial']+([[]]if row['extra']else[]);colors=levels[row['level']]['colors'];level=levels[row['level']];goals=level.get('goals',[level['goal']] if level.get('goal') else []);first=len(goals);mini=level.get('mini');ice=level.get('ice');fixed=first+int(mini is not None)+int(ice is not None);goal_colors={g['color'] for g in goals};seen={};nodes=0
@@ -46,7 +46,7 @@ for row in rows:
  proofs.append({**row,**({'thawMove':thaw_move}if ice is not None else{}),'independentNoShorterPath':True,'proofNodes':nodes,'proofMs':round((time.time()-started)*1000,2)})
  print(row['level']+1,row['extra'],row['optimal'],nodes,flush=True)
 if '--write'in sys.argv:
- Path('docs/audits/ice-35').mkdir(parents=True,exist_ok=True);Path('docs/audits/ice-35/optimal.json').write_text(json.dumps(proofs,indent=2)+'\n')
+ Path('docs/audits/hidden-36').mkdir(parents=True,exist_ok=True);Path('docs/audits/hidden-36/optimal.json').write_text(json.dumps(proofs,indent=2)+'\n')
 ratings={levels[r['level']]['id']+'@'+str(levels[r['level']]['version']):{'three':r['optimal'],'two':r['optimal']+max(2,math.ceil(r['optimal']*.2))}for r in rows if not r['extra']}
 if '--write'in sys.argv:Path('src/core/ratings.json').write_text(json.dumps(ratings,indent=2)+'\n')
 else:assert json.loads(Path('src/core/ratings.json').read_text())==ratings

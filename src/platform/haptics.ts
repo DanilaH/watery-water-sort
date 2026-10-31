@@ -1,5 +1,5 @@
 import {Capacitor,registerPlugin} from '@capacitor/core';
-export type Touch='ui'|'select'|'accept'|'color'|'victory'|'collect'|'land'|'colorRise'|'colorSeal'|'victoryRise'|'victoryPeak'|'ice';
+export type Touch='ui'|'select'|'accept'|'color'|'victory'|'collect'|'land'|'colorRise'|'colorSeal'|'victoryRise'|'victoryPeak'|'ice'|'reveal';
 const native=registerPlugin<{impact(options:{event:Touch;heavy:boolean}):Promise<void>;cancel():Promise<void>}>('FeelHaptics');
 /** No scheduled patterns: each tick belongs to a visible event, never to a backlog. */
 export class TouchFeedback{

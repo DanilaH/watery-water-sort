@@ -20,7 +20,7 @@ describe('rules',()=>{
 });
 describe('bank and solver',()=>{
  it('independently replays all campaign witnesses with their actual capacities and goals',()=>{
-  expect(levels).toHaveLength(34);
+  expect(levels).toHaveLength(40);
   for(const l of levels){const gs=l.goals??(l.goal?[l.goal]:[]);let opened=l.ice===undefined,b:Board=l.initial.map(t=>[...t]);for(const m of l.witness){
    expect(opened||m.from!==l.ice&&m.to!==l.ice).toBe(true);const source=b[m.from],target=b[m.to],sourceSealed=m.from!==l.mini&&source.length===4&&source.every(c=>c===source[0])&&!gs.some(g=>g.color===source[0]),capacity=m.to===l.mini?2:gs.some(g=>g.index===m.to)?8:4;
    expect(gs.some(g=>g.index===m.from)).toBe(false);expect(source.length).toBeGreaterThan(0);expect(target.length+m.amount).toBeLessThanOrEqual(capacity);
