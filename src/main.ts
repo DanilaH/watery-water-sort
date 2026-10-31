@@ -9,7 +9,7 @@ import {mountAmbient} from './game/Ambient';
 import {mountHomeHero} from './game/HomeHero';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
-import { goalList, goalAt, moveFor, sealedTube, won, moves, type Move } from './core/rules';
+import { goalList, goalAt, miniIndex, isMini, moveFor, sealedTube, won, moves, type Move } from './core/rules';
 import { attempt, levels, moved, undone, restarted, levelKey, offerExtra, displaySlots, grantExtra, goalFor, levelGoals, type Save } from './core/session';
 import { SaveStore } from './platform/storage';
 import {stars,targets} from './core/ratings';
@@ -79,7 +79,7 @@ function paint(){
  $('star-capacity').textContent=`/ ${levels.length*3}`;
  $('hard-badge').hidden=!isHard(state.current);$('home-challenge').hidden=!isHard(state.current);$('home-play').classList.toggle('hard-level',isHard(state.current));
  scene.lockedExtra=!atHome&&offerExtra(state)&&!won(a.board,goalFor(state));scene.goal=goalFor(state);scene.slots=displaySlots(state);scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=theme.light;audio.setEnabled(state.settings.sound);
- document.body.classList.toggle('packed-board',displaySlots(state)>=10);document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',displaySlots(state)>10);document.body.classList.toggle('goal-board',!!goalFor(state));document.body.classList.toggle('light',theme.light);document.body.classList.toggle('finished',finished);
+ document.body.classList.toggle('packed-board',displaySlots(state)>=10);document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',displaySlots(state)>10);document.body.classList.toggle('goal-board',goalList(goalFor(state)).length>0);document.body.classList.toggle('light',theme.light);document.body.classList.toggle('finished',finished);
  $('level-title').innerHTML=`<span>Уровень</span> <strong>${state.current+1}</strong>`;$('moves').textContent=`Ходов: ${a.history.length}`;$('progress').textContent=`${levels.length} уровней`;
  ($('undo') as HTMLButtonElement).disabled=!a.history.length;
  ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
@@ -87,7 +87,7 @@ function paint(){
  const objective=goalFor(state),goals=goalList(objective),remaining=goals.filter(g=>!sealedTube(a.board,g.index,objective));
  $('objective').hidden=finished||!objective||!!$('status').textContent;
  const names=['голубую','жёлтую','фиолетовую','зелёную','розовую','синюю','лимонную','оранжевую'];
- $('objective').textContent=!goals.length?'':!remaining.length?(goals.length>1?'Большие колбы готовы · собери остальные цвета':'Большая колба готова · собери остальные цвета'):remaining.length>1?'Собери каждый цвет в свою большую колбу':`Собери ${names[remaining[0].color]} жидкость в большую колбу`;
+ $('objective').textContent=miniIndex(objective)!==undefined&&(!goals.length||!remaining.length)?'Собери цвета · мини-колбу оставь пустой':!goals.length?'':!remaining.length?(goals.length>1?'Большие колбы готовы · собери остальные цвета':'Большая колба готова · собери остальные цвета'):remaining.length>1?'Собери каждый цвет в свою большую колбу':`Собери ${names[remaining[0].color]} жидкость в большую колбу`;
  $('star-target').hidden=finished;($('star-target') as HTMLButtonElement).disabled=scene.busy;renderPotentialStars($('star-target'),stars(levelKey(state.current),a.history.length));
  $('earned-stars').hidden=!finished;const earned=stars(levelKey(state.current),a.history.length);if(!finished||!$('earned-stars').classList.contains('revealing-stars'))renderResultStars($('earned-stars'),earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
  const extra=$('extra-tube');extra.hidden=atHome||!offerExtra(state)||won(a.board,goalFor(state));(extra as HTMLButtonElement).disabled=scene.busy||rewardBusy;
@@ -161,7 +161,7 @@ scene.onTap=(i)=>{
  if(board[i].length){scene.selected=i;audio.tap();haptic();message(guidance());}
  else{scene.selected=null;scene.reject(i);audio.reject();message('Сначала выбери цветную колбу');}
 };
-scene.onPour=(remainingMs,fill,endFill)=>{if(lastMove&&kind==='pour')audio.pour(remainingMs,lastMove.amount,fill,endFill);};
+scene.onPour=(remainingMs,fill,endFill)=>{if(lastMove&&kind==='pour')audio.pour(remainingMs,lastMove.amount,fill,endFill,isMini(goalFor(state),lastMove.from));};
 scene.onReceive=()=>{
  if(kind==='undo'||!lastMove||!newColor)return;
  scene.celebrate(lastMove.to);
@@ -257,9 +257,9 @@ function menu(){
  const grid=document.createElement('div');grid.className='levels';
  levels.forEach((l,i)=>{const b=document.createElement('button'),done=state.completed.includes(l.id),available=done||i===0||i===state.current||state.completed.includes(levels[i-1].id);
   b.disabled=!available;b.classList.add('gel-button');if(i===state.current)b.classList.add('gel-primary');b.textContent=String(i+1);b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
-  b.setAttribute('aria-label',`Уровень ${i+1}${l.goals?', две большие колбы':l.goal?', большая бутылка':''}${done?', пройден':!available?', закрыт':''}`);
+  b.setAttribute('aria-label',`Уровень ${i+1}${l.goals?', две большие колбы':l.goal?', большая бутылка':''}${l.mini!==undefined?', мини-колба':''}${done?', пройден':!available?', закрыт':''}`);
   const record=state.best?.[levelKey(i)],earned=record?stars(levelKey(i),record.history.length):done?1:0;if(isHard(i)){const difficulty=document.createElement('small');difficulty.className='level-hard';difficulty.textContent='Сложный';b.append(difficulty);}
-  if(levelGoals(l)){const mechanic=document.createElement('small');mechanic.className='level-mechanic';mechanic.textContent=l.goals?'Две цели':'Большая цель';b.append(mechanic);}
+  if(levelGoals(l)){const mechanic=document.createElement('small');mechanic.className='level-mechanic';mechanic.textContent=l.mini!==undefined?(l.goal||l.goals?'Цель + мини':'Мини-колба'):l.goals?'Две цели':'Большая цель';b.append(mechanic);}
   const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);if(record){const best=document.createElement('small');best.textContent=`${record.history.length} ходов`;b.append(best);}b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
  });body.append(grid);
  if(!won(attempt(state).board,goalFor(state))){const helpButton=document.createElement('button');helpButton.className='help-button gel-button';helpButton.textContent='Если застрял';helpButton.onclick=()=>{audio.ui();help();};body.append(helpButton);}

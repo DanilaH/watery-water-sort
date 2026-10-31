@@ -3,8 +3,8 @@ import {VictoryOverlay} from './VictoryOverlay';
 import {GlassMaterial} from './GlassMaterial';
 import {liquidMesh,liquidContour,boundaryY,cutBoundary} from './liquidSurface';
 import {stepLiquid,smooth,streamEnvelope,completionCork,FILL_BEATS,type LiquidMotion} from './liquid';
-import { type Board, type Move, type Goals, goalAt, goalList, capacityAt, sealedTube, moveFor } from '../core/rules';
-import { area, clip, layout, goalLayout, surface, planPour, pourPose, vesselPolygon, LIQUID_FILL, pourTransfer, pourTiming, pourFrame, type PourPlan, type Point } from './geometry';
+import { type Board, type Move, type Goals, goalAt, goalList, miniIndex, isMini, capacityAt, sealedTube, moveFor } from '../core/rules';
+import { area, clip, layout, goalLayout, miniLayout, surface, planPour, pourPose, vesselPolygon, LIQUID_FILL, pourTransfer, pourTiming, pourFrame, type PourPlan, type Point } from './geometry';
 // Clean candy hues: amber/yellow-green and cyan/royal blue stay separate at small sizes.
 export const COLORS=[0x00d9f5,0xffd000,0xad32ff,0x16df64,0xff2447,0x2463ff,0xbcef00,0xff7e14];
 const SIGNS=['●','▲','◆','✚','♥','★','■','✦'];
@@ -91,7 +91,7 @@ export class WaterScene extends Phaser.Scene {
     for(const index of [source,this.queuedMove?.to??null]){
       if(index!==null&&poses[index]&&Math.hypot(x-poses[index].x,y-(poses[index].y-15))<=14)return index;
     }
-    const slot=poses.findIndex(r=>Math.abs(x-r.x)<r.hitW/2&&Math.abs(y-(r.y+r.h/2))<r.hitH/2);
+    const slot=poses.findIndex(r=>Math.abs(x-r.x)<r.hitW/2&&Math.abs(y-(r.hitY??r.y+r.h/2))<r.hitH/2);
     if(slot>=0)return slot;
     for(const [index,poly]of [...this.hitPolygons].reverse()){
       let inside=false;
@@ -104,10 +104,10 @@ export class WaterScene extends Phaser.Scene {
     return null;
   }
   setViewport(width:number,height:number,density:number){this.viewWidth=Math.max(1,width);this.viewHeight=Math.max(1,height);this.density=density;this.root?.setScale(density);for(const label of [...this.labels,...this.activeLabels,...this.queueLabels])label.setResolution(density);this.previousSignature='';this.tubes.clear();}
-  positions(){const key=`${this.viewWidth}:${this.viewHeight}:${this.slots}:${goalList(this.goal).map(g=>g.index).join(',')}`;if(key!==this.layoutKey){this.layoutKey=key;this.layoutCache=this.goal?goalLayout(this.viewWidth,this.viewHeight,this.slots,goalList(this.goal).map(g=>g.index)):layout(this.viewWidth,this.viewHeight,this.slots);}return this.layoutCache;}
+  positions(){const key=`${this.viewWidth}:${this.viewHeight}:${this.slots}:${goalList(this.goal).map(g=>g.index).join(',')}:${miniIndex(this.goal)??-1}`;if(key!==this.layoutKey){this.layoutKey=key;this.layoutCache=miniLayout(goalList(this.goal).length?goalLayout(this.viewWidth,this.viewHeight,this.slots,goalList(this.goal).map(g=>g.index)):layout(this.viewWidth,this.viewHeight,this.slots),miniIndex(this.goal));}return this.layoutCache;}
   reveal(){this.entrance=performance.now();this.previousSignature='';}
   setBoard(b:Board){this.board=b;}
-  animate(before:Board,m:Move,fast:boolean){this.flight={...m,before,start:performance.now(),duration:pourTiming(m.amount,fast).duration,timing:pourTiming(m.amount,fast),received:false,lifted:(this.selectionY.get(m.from)??0)+12*Math.max(0,1-(performance.now()-this.entrance)/240)**2,plan:planPour(this.positions()[m.from],this.positions()[m.to],this.viewWidth,this.viewHeight,before[m.from].length,before[m.from].length-m.amount)};this.startedSound=false;this.selectionY.set(m.from,0);this.selectionV.set(m.from,0);this.selectionY.set(m.to,0);this.selectionV.set(m.to,0);}
+  animate(before:Board,m:Move,fast:boolean){this.flight={...m,before,start:performance.now(),duration:pourTiming(m.amount,fast).duration,timing:pourTiming(m.amount,fast),received:false,lifted:(this.selectionY.get(m.from)??0)+12*Math.max(0,1-(performance.now()-this.entrance)/240)**2,plan:planPour(this.positions()[m.from],this.positions()[m.to],this.viewWidth,this.viewHeight,before[m.from].length*4/capacityAt(this.goal,m.from),(before[m.from].length-m.amount)*4/capacityAt(this.goal,m.from))};this.startedSound=false;this.selectionY.set(m.from,0);this.selectionV.set(m.from,0);this.selectionY.set(m.to,0);this.selectionV.set(m.to,0);}
   get busy(){return !!this.flight;}
   busyTube(i:number){return this.flight?.from===i||this.flight?.to===i;}
   skip(){this.flight=undefined;this.startedSound=false;this.previousSignature='';}
@@ -204,6 +204,10 @@ export class WaterScene extends Phaser.Scene {
       if(!completed&&r.y>=40)this.textMark({x:r.x,y:r.y-19,text:'ЦЕЛЬ',size:10},this.light?'#35527b':'#c6ddff');
       for(let k=1;k<8;k++){const y=r.y+h*(1-k*LIQUID_FILL/8);g.lineStyle(1,0xffffff,.3);g.lineBetween(r.x+r.w*.28,y,r.x+r.w*.43,y);}
 
+    }
+    if(isMini(this.goal,index)&&Math.abs(angle)<.05){
+      if(r.y>=24)this.textMark({x:r.x,y:r.y-16,text:'МИНИ',size:10},this.light?'#35527b':'#c6ddff');
+      const y=r.y+surface(local,LIQUID_FILL*.5);g.lineStyle(1.3,this.light?0x416b94:0xd7f6ff,.6);g.lineBetween(r.x+r.w*.29,y,r.x+r.w*.43,y);
     }
     const total=layers.reduce((v,l)=>v+l.amount,0);
     const bounds={lo:Math.min(...poly.map(p=>p.x)),hi:Math.max(...poly.map(p=>p.x))},fractions=[0];

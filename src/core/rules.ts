@@ -2,15 +2,22 @@ export type Board = number[][];
 export type Move = { from: number; to: number; amount: number; color: number };
 export const CAPACITY = 4;
 export type Goal={index:number;color:number;capacity:8};
-/** Legacy single-goal saves remain valid; new levels may declare two distinct receivers. */
-export type Goals=Goal|readonly Goal[];
-export const goalList=(goal?:Goals):readonly Goal[]=>goal===undefined?[]:Array.isArray(goal)?goal: [goal as Goal];
+/** Legacy single/paired goals remain accepted. A mini is a buffer, never a final vessel. */
+export type VesselRules={goals:readonly Goal[];mini:number};
+export type Goals=Goal|readonly Goal[]|VesselRules;
+const isVesselRules=(goal:Goals|undefined):goal is VesselRules=>!!goal&&!Array.isArray(goal)&&'mini' in goal;
+export const goalList=(goal?:Goals):readonly Goal[]=>goal===undefined?[]:Array.isArray(goal)?goal:isVesselRules(goal)?goal.goals:[goal as Goal];
+export const miniIndex=(goal?:Goals)=>isVesselRules(goal)?goal.mini:undefined;
+export const isMini=(goal:Goals|undefined,index:number)=>miniIndex(goal)===index;
 export const goalAt=(goal:Goals|undefined,index:number)=>goalList(goal).find(g=>g.index===index);
-export const capacityAt=(goal:Goals|undefined,index:number)=>goalAt(goal,index)?.capacity??CAPACITY;
+export const capacityAt=(goal:Goals|undefined,index:number)=>isMini(goal,index)?2:goalAt(goal,index)?.capacity??CAPACITY;
 export const validGoal=(goal:Goals|undefined,count:number)=>goal===undefined||(()=>{
- const goals=goalList(goal);
- return goals.length>=1&&goals.length<=2&&goals.every(g=>!!g&&Number.isInteger(g.index)&&g.index>=0&&g.index<count&&Number.isInteger(g.color)&&g.color>=0&&g.color<8&&g.capacity===8)
-  &&new Set(goals.map(g=>g.index)).size===goals.length&&new Set(goals.map(g=>g.color)).size===goals.length;
+ const goals=goalList(goal),mini=miniIndex(goal);
+ if(isVesselRules(goal)&&!Number.isInteger(goal.mini))return false;
+ return Array.isArray(goals)&&goals.length<=(2)&& (goals.length>=1||mini!==undefined)
+  &&goals.every(g=>!!g&&Number.isInteger(g.index)&&g.index>=0&&g.index<count&&Number.isInteger(g.color)&&g.color>=0&&g.color<8&&g.capacity===8)
+  &&new Set(goals.map(g=>g.index)).size===goals.length&&new Set(goals.map(g=>g.color)).size===goals.length
+  &&(mini===undefined||Number.isInteger(mini)&&mini>=0&&mini<count&&!goals.some(g=>g.index===mini));
 })();
 export const clone = (b: Board): Board => b.map(t => [...t]);
 export function moveFor(b: Board, from: number, to: number, goal?:Goals): Move | null {
@@ -36,7 +43,7 @@ export function reverse(b: Board, m: Move, goal?:Goals): Board {
 }
 export const completeTube = (t: number[],capacity=4) => t.length === capacity && t.every(c => c === t[0]);
 /** Four units of the goal colour in a small vessel still have to reach the large goal. */
-export const sealedTube=(b:Board,index:number,goal?:Goals)=>completeTube(b[index],capacityAt(goal,index))&&(!goalList(goal).some(g=>g.color===b[index][0])||!!goalAt(goal,index));
+export const sealedTube=(b:Board,index:number,goal?:Goals)=>!isMini(goal,index)&&completeTube(b[index],capacityAt(goal,index))&&(!goalList(goal).some(g=>g.color===b[index][0])||!!goalAt(goal,index));
 export const won = (b: Board,goal?:Goals) => validGoal(goal,b.length)&&goalList(goal).every(g=>sealedTube(b,g.index,goal))&&b.some(t=>t.length)&&b.every((t,i)=>!t.length||sealedTube(b,i,goal))&&validBoard(b,goal);
 export function validBoard(value: unknown,goal?:Goals): value is Board {
   if (!Array.isArray(value) || value.length < 4 || value.length > 11 || !validGoal(goal,value.length)) return false;

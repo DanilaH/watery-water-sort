@@ -27,7 +27,7 @@ test('all twelve new exact solutions survive save/reload, reward entitlement, fu
 });
 
 test('worker solver handles partial goals and arbitrary goal positions without merging their roles',()=>{
- for(const l of levels.slice(16)){
+ for(const l of levels.slice(16,22)){
   const g=l.goals!,b=apply(l.initial,l.witness[0],g),r=solve(b,200000,2000,g);expect(r.status).toBe('FOUND');if(r.status==='FOUND')expect(won(r.path.reduce((b,m)=>apply(b,m,g),b),g)).toBe(true);
   const permutation=[2,1,0,...l.initial.slice(3).map((_,i)=>i+3)],shifted=permutation.map(i=>b[i]),gs=g.map(x=>({...x,index:permutation.indexOf(x.index)}));
   const other=solve(shifted,200000,2000,gs);expect(other.status).toBe('FOUND');if(other.status==='FOUND')expect(won(other.path.reduce((b,m)=>apply(b,m,gs),shifted),gs)).toBe(true);
@@ -35,7 +35,7 @@ test('worker solver handles partial goals and arbitrary goal positions without m
 });
 
 test('two-goal exploratory transfers conserve every colour and reverse exactly',()=>{
- for(const l of levels.slice(16)){let b=l.initial,seed=33;const initial=b.flat().sort().join(),g=levelGoals(l);
+ for(const l of levels.slice(16,22)){let b=l.initial,seed=33;const initial=b.flat().sort().join(),g=levelGoals(l);
   for(let i=0;i<300;i++){const options=moves(b,g);if(!options.length||won(b,g)){b=l.initial;continue;}seed=(Math.imul(seed,1664525)+1013904223)>>>0;const m=options[seed%options.length],n=apply(b,m,g);expect(validBoard(n,g)).toBe(true);expect(n.flat().sort().join()).toBe(initial);expect(reverse(n,m,g)).toEqual(b);b=n;}
  }
 });

@@ -1,9 +1,9 @@
 import levelData from './levels.json' with {type:'json'};
-import { apply, clone, reverse, validBoard, won, type Board, type Move, type Goal } from './rules';
+import { apply, clone, reverse, validBoard, won, type Board, type Move, type Goal, goalList, type Goals } from './rules';
 import {isTheme,type ThemeId} from './themes';
-export type Level={id:string;version:number;colors:number;seed:number;initial:Board;witness:Move[];goal?:Goal;goals?:Goal[]};
+export type Level={id:string;version:number;colors:number;seed:number;initial:Board;witness:Move[];goal?:Goal;goals?:Goal[];mini?:number};
 export const levels=levelData as Level[];
-export const levelGoals=(l:Level)=>l.goals??l.goal;
+export const levelGoals=(l:Level):Goals|undefined=>l.mini===undefined?l.goals??l.goal:{goals:goalList(l.goals??l.goal),mini:l.mini};
 export const goalFor=(s:Pick<Save,'current'>)=>levelGoals(levels[s.current]);
 export type Attempt = { board: Board; history: Move[]; extra: boolean };
 export type Settings = { sound: boolean; fast: boolean; symbols: boolean; light: boolean; haptics?: boolean; theme?:ThemeId };

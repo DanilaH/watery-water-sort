@@ -56,5 +56,5 @@ export class Sound {
   collect(index=0){this.play('collect',.32,1,1+Math.min(2,index)*.025);}
   ui(){this.play('select',.25,0,1.12);}
   undo(){this.play('land',.45,1,.85);}
-  pour(durationMs:number,amount:number,fill=0,endFill=Math.min(1,fill+amount/4)){if(durationMs<=12)return;this.variant=(this.variant+1+Math.floor(Math.random()*2))%3;this.play(`pour-${this.variant+1}` as Cue,.80+amount*.025,2,.985+Math.random()*.03,durationMs,{from:fill,to:endFill});}
+  pour(durationMs:number,amount:number,fill=0,endFill=Math.min(1,fill+amount/4),mini=false){if(durationMs<=12)return;this.variant=(this.variant+1+Math.floor(Math.random()*2))%3;this.play(`pour-${this.variant+1}` as Cue,(.80+amount*.025)*(mini?.86:1),2,(mini?1.035:.985)+Math.random()*.03,durationMs,{from:fill,to:endFill});}
 }

@@ -12,7 +12,7 @@ export function surface(poly:Point[],fraction:number):number{
   let lo=Math.min(...poly.map(p=>p.y)),hi=Math.max(...poly.map(p=>p.y));const target=area(poly)*Math.max(0,Math.min(1,fraction));
   for(let i=0;i<18;i++){const mid=(lo+hi)/2;if(area(clip(poly,mid,true))>target)lo=mid;else hi=mid;}return (lo+hi)/2;
 }
-export type TubePose={x:number;y:number;w:number;h:number;hitW:number;hitH:number};
+export type TubePose={x:number;y:number;w:number;h:number;hitW:number;hitH:number;hitY?:number};
 export function layout(width:number,height:number,count:number,touchGap?:number):TubePose[]{
   const padding=8,headroom=Math.min(62,Math.max(24,height*.09));
   const usableW=Math.max(1,width-padding*2),usableH=Math.max(1,height-headroom-padding*2);
@@ -118,4 +118,10 @@ function dualGoalLayout(width:number,height:number,count:number,indices:readonly
  const top=Math.min(...normal.map(r=>r.y)),bottom=Math.max(...normal.map(r=>r.y+r.h)),h=bottom-top;
  const receiver=(right:boolean):TubePose=>({x:right?width-column/2:column/2,y:top,w:Math.min(column-18,68,h*.5),h,hitW:column-8,hitH:Math.max(48,h+18)});
  let n=0;return Array.from({length:count},(_,i)=>indices.includes(i)?receiver(i===indices[1]):normal[n++]);
+}
+
+/** Keep the old cell's hit area; only the two-unit glass becomes shorter, anchored to its row. */
+export function miniLayout(poses:TubePose[],index:number|undefined):TubePose[]{
+ if(index===undefined||!poses[index])return poses;
+ return poses.map((r,i)=>{if(i!==index)return r;const h=Math.min(r.h,Math.max(20,r.h*.5+r.w*.054));return {...r,y:r.y+r.h-h,h,hitY:r.y+r.h/2};});
 }

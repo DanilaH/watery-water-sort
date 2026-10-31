@@ -1,7 +1,7 @@
-import { type Board, type Move, type Goals, goalList, goalAt, apply, sealedTube, moves, won } from './rules';
+import { type Board, type Move, type Goals, goalList, goalAt, miniIndex, isMini, apply, sealedTube, moves, won } from './rules';
 export type Result = { status: 'FOUND'; path: Move[]; nodes: number } | { status: 'UNKNOWN' | 'UNSOLVABLE'; nodes: number };
 // Only ordinary tube permutations are canonicalized. The fixed goal retains its identity.
-const key = (b:Board,goal?:Goals) => goalList(goal).map(g=>`${g.index}:${g.color}:${b[g.index].join('')}`).join(';')+'#'+b.filter((_,i)=>!goalAt(goal,i)).map(t=>t.join('')).sort().join('|');
+const key = (b:Board,goal?:Goals) => goalList(goal).map(g=>`${g.index}:${g.color}:${b[g.index].join('')}`).join(';')+'@'+(miniIndex(goal)===undefined?'':b[miniIndex(goal)!].join(''))+'#'+b.filter((_,i)=>!goalAt(goal,i)&&!isMini(goal,i)).map(t=>t.join('')).sort().join('|');
 export function solve(initial: Board, maxNodes = 200_000, maxMs = 750, goal?:Goals): Result {
   const start = performance.now(), seen = new Set<string>();
   const stack: { b: Board; path: Move[] }[] = [{ b: initial, path: [] }];

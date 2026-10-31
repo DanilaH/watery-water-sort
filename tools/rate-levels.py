@@ -7,12 +7,13 @@ with tempfile.TemporaryDirectory()as d:
  for i,l in enumerate(json.loads(Path('src/core/levels.json').read_text())):
   goals=l.get('goals', [l['goal']] if l.get('goal') else [])
   assert [g['index'] for g in goals]==list(range(len(goals))), 'Offline goal canonicalization expects fixed prefix slots'
+  assert l.get('mini',len(goals))==len(goals), 'Offline mini slot follows goal prefix'
   for extra in [0,1]:
    b=l['initial']+[[]]*extra;codes=[]
    for tube in b:
     code=1
     for c in tube:code=(code<<3)|c
     codes.append(code)
-   lines.append(' '.join(map(str,[i,extra,len(b),l['colors'],len(goals),*[g['color'] for g in goals],*codes])))
+   lines.append(' '.join(map(str,[i,extra,len(b),l['colors'],len(goals),int('mini' in l),*[g['color'] for g in goals],*codes])))
  output=Path(d)/'optimal.jsonl';output.write_text(subprocess.check_output([str(binary)],input='\n'.join(lines)+'\n',text=True))
  subprocess.run([sys.executable,'tools/verify-optimal.py',str(output),'--write'],check=True)
