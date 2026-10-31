@@ -1,4 +1,5 @@
 import {test,expect,type Page} from '@playwright/test';
+import {advanceFrames} from './controlled-frames';
 import {fresh,levels,moved,attempt,goalFor,displaySlots,levelKey} from '../../src/core/session';
 import {moveFor,won} from '../../src/core/rules';
 import {goalLayout} from '../../src/game/geometry';
@@ -24,12 +25,12 @@ test('two targets teach colour matching, reject wrong receiver, preserve fixed U
 });
 
 test('first finished receiver has its own pedestal and heavy beats without winning the whole level',async({page})=>{
- let s={...fresh(),current:16},cut=0,index=0;for(const m of levels[16].witness){s=moved(s,m);cut++;if(attempt(s).board.some((t,i)=>i<2&&t.length===8)){index=m.to;break;}}
- await open(page,16,cut-1);await page.evaluate(()=>{const s=(window as any).dualScene;(window as any).dualBeats=[];const f=s.onPhase;s.onPhase=(phase:number,heavy:boolean)=>{(window as any).dualBeats.push({phase,heavy});f(phase,heavy);};});
- const m=levels[16].witness[cut-1];await move(page,m.from,m.to);await expect(page.locator('#continue')).toBeHidden();
+ await page.clock.install();let s={...fresh(),current:16},cut=0,index=0;for(const m of levels[16].witness){s=moved(s,m);cut++;if(attempt(s).board.some((t,i)=>i<2&&t.length===8)){index=m.to;break;}}
+ await open(page,16,cut-1);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await page.evaluate(()=>{const s=(window as any).dualScene;(window as any).dualBeats=[];const f=s.onPhase;s.onPhase=(phase:number,heavy:boolean)=>{(window as any).dualBeats.push({phase,heavy});f(phase,heavy);};});
+ const m=levels[16].witness[cut-1];await tap(page,m.from);await tap(page,m.to);await advanceFrames(page,'dualScene',1600);await expect(page.locator('#hint')).toBeEnabled();await expect(page.locator('#continue')).toBeHidden();
  await expect.poll(()=>page.evaluate(()=>(window as any).dualBeats.length)).toBe(3);expect(await page.evaluate(()=>(window as any).dualBeats.every((b:any)=>b.heavy))).toBe(true);
  await expect.poll(()=>page.evaluate(()=>{const s=(window as any).dualScene;return [s.crystalBase.visible,s.secondCrystalBase.visible];})).toEqual(index===0?[false,true]:[true,false]);
- expect(won(attempt(await saved(page)).board,goalFor(await saved(page)))).toBe(false);
+ expect(won(attempt(await saved(page)).board,goalFor(await saved(page)))).toBe(false);await page.clock.resume();
  await page.locator('#undo').click();await expect.poll(()=>page.evaluate(()=>{const s=(window as any).dualScene;return s.crystalBase.visible&&s.secondCrystalBase.visible;})).toBe(true);
 });
 

@@ -1,5 +1,6 @@
 import {startGame,reloadGame,openLevels,resumeGame} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
+import {advanceFrames} from './controlled-frames';
 import {readFileSync} from 'node:fs';
 import {layout} from '../../src/game/geometry';
 const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
@@ -36,9 +37,9 @@ test('layered audio keeps its voice budget and stops every owned voice',async({p
 });
 
 test('incoming liquid reacts during the real flow, without a flashing hint button',async({page})=>{
- await open(page);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.surfaceWave;(window as any).waterWaves=[];m.WaterScene.prototype.surfaceWave=function(i:number,now:number,...rest:any[]){const value=fn.call(this,i,now,...rest),f=this.flight;if(f?.to===i&&!f.received&&now>=f.start+f.timing.lift)(window as any).waterWaves.push(value);return value;};});
- await tap(page,0);await tap(page,2);await expect(page.locator('body')).toHaveClass(/pouring/);await expect(page.locator('#hint')).toBeDisabled();expect(Number(await page.locator('#hint').evaluate(e=>getComputedStyle(e).opacity))).toBeGreaterThan(.7);await expect(page.locator('#hint')).toBeEnabled();
- const samples=await page.evaluate(()=>(window as any).waterWaves as number[]);expect(samples.some(x=>Math.abs(x)>.2)).toBe(true);await expect(page.locator('body')).not.toHaveClass(/pouring/);
+ await page.clock.install();await open(page);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.surfaceWave;(window as any).waterWaves=[];m.WaterScene.prototype.surfaceWave=function(i:number,now:number,...rest:any[]){const value=fn.call(this,i,now,...rest),f=this.flight;(window as any).waveScene=this;if(f?.to===i&&!f.received&&now>=f.start+f.timing.lift)(window as any).waterWaves.push(value);return value;};});
+ await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await tap(page,0);await tap(page,2);await expect(page.locator('body')).toHaveClass(/pouring/);await expect(page.locator('#hint')).toBeDisabled();expect(Number(await page.locator('#hint').evaluate(e=>getComputedStyle(e).opacity))).toBeGreaterThan(.7);await advanceFrames(page,'waveScene',800);await expect(page.locator('#hint')).toBeEnabled();
+ const samples=await page.evaluate(()=>(window as any).waterWaves as number[]);expect(samples.some(x=>Math.abs(x)>.2)).toBe(true);await expect(page.locator('body')).not.toHaveClass(/pouring/);await page.clock.resume();
 });
 
 test('victory accents every completed color and next level cancels the accent immediately',async({page})=>{

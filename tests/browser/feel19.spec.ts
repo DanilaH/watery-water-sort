@@ -1,4 +1,5 @@
 import {test,expect,type Page} from '@playwright/test';
+import {advanceFrames} from './controlled-frames';
 import {fresh,levels,moved,displaySlots} from '../../src/core/session';
 import {layout,goalLayout} from '../../src/game/geometry';
 async function open(page:Page,index=0,last=false){
@@ -27,9 +28,9 @@ test('word, stars, fountains and breathing next button coexist, with continuing 
  await page.locator('#continue').click();await expect(page.locator('#victory-effects')).toHaveCount(0);
 });
 test('large bottle supplies heavy fill and pop events while small bottles stay ordinary',async({page})=>{
- await open(page,12,true);await tap(page,1);await page.evaluate(()=>{const s=(window as any).scene19,w=window as any;w.heavyBeats=[];w.heavyPops=[];const phase=s.onPhase,pop=s.onFinale;s.onPhase=(n:number,heavy:boolean)=>{w.heavyBeats.push({n,heavy});phase(n,heavy);};s.onFinale=(n:number,heavy:boolean)=>{w.heavyPops.push({n,heavy});pop(n,heavy);};});
- await tap(page,0);await expect(page.locator('#continue')).toBeVisible();await expect.poll(()=>page.evaluate(()=>(window as any).heavyPops.length)).toBe(2);
- const data=await page.evaluate(()=>({beats:(window as any).heavyBeats,pops:(window as any).heavyPops}));expect(data.beats).toEqual([{n:0,heavy:true},{n:1,heavy:true},{n:2,heavy:true}]);expect(data.pops.filter((b:any)=>b.heavy)).toHaveLength(1);expect(data.pops.filter((b:any)=>!b.heavy)).toHaveLength(1);
+ await page.clock.install();await open(page,12,true);await tap(page,1);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await page.evaluate(()=>{const s=(window as any).scene19,w=window as any;w.heavyBeats=[];w.heavyPops=[];const phase=s.onPhase,pop=s.onFinale;s.onPhase=(n:number,heavy:boolean)=>{w.heavyBeats.push({n,heavy});phase(n,heavy);};s.onFinale=(n:number,heavy:boolean)=>{w.heavyPops.push({n,heavy});pop(n,heavy);};});
+ await tap(page,0);await advanceFrames(page,'scene19',1900);await expect(page.locator('#continue')).toBeVisible();await expect.poll(()=>page.evaluate(()=>(window as any).heavyPops.length)).toBe(2);
+ const data=await page.evaluate(()=>({beats:(window as any).heavyBeats,pops:(window as any).heavyPops}));expect(data.beats).toEqual([{n:0,heavy:true},{n:1,heavy:true},{n:2,heavy:true}]);expect(data.pops.filter((b:any)=>b.heavy)).toHaveLength(1);expect(data.pops.filter((b:any)=>!b.heavy)).toHaveLength(1);await page.clock.resume();
 });
 test('reduced motion disables letter, star and button loops while preserving readable rewards',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});await open(page,0,true);const m=levels[0].witness.at(-1)!;await move(page,m.from,m.to);await expect(page.locator('#continue')).toBeVisible();await expect.poll(()=>page.locator('#earned-stars .lit').count()).toBe(3);

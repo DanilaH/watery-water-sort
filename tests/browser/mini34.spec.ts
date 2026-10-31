@@ -22,8 +22,8 @@ test('full mini is a two-unit buffer, never a finished colour; save, Undo and re
 });
 
 test('mini pours with full-volume tilt and a lighter material cue; final transfer earns stars without popping the empty buffer',async({page})=>{
- await open(page,22,3);await page.evaluate(async()=>{const p='/src/audio/sound.ts',m=await import(p),fn=m.Sound.prototype.pour;(window as any).miniPour=[];m.Sound.prototype.pour=function(...args:any[]){(window as any).miniPour.push(args);return fn.apply(this,args);};});
- await tap(page,0);await tap(page,2);await expect.poll(()=>page.evaluate(()=>(window as any).miniScene.flight?.plan.startUnits)).toBe(4);await expect(page.locator('#continue')).toBeVisible();await expect(page.locator('#earned-stars')).toHaveText('★★★');
+ await open(page,22,3);await page.evaluate(()=>{const s=(window as any).miniScene,fn=s.animate;s.animate=function(...a:any[]){const r=fn.apply(this,a);(window as any).miniStartUnits=this.flight.plan.startUnits;return r;};});await page.evaluate(async()=>{const p='/src/audio/sound.ts',m=await import(p),fn=m.Sound.prototype.pour;(window as any).miniPour=[];m.Sound.prototype.pour=function(...args:any[]){(window as any).miniPour.push(args);return fn.apply(this,args);};});
+ await tap(page,0);await tap(page,2);expect(await page.evaluate(()=>(window as any).miniStartUnits)).toBe(4);await expect(page.locator('#continue')).toBeVisible();await expect(page.locator('#earned-stars')).toHaveText('★★★');
  const s=await saved(page);expect(attempt(s).board[0]).toEqual([]);expect(s.best[levelKey(22)].history).toHaveLength(4);expect(await page.evaluate(()=>(window as any).miniPour.some((a:any[])=>a[4]===true))).toBe(true);expect(await page.evaluate(()=>(window as any).miniScene.popped.has(0))).toBe(false);
  await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 24');
 });
