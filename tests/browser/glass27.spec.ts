@@ -34,7 +34,10 @@ test('entrance returns cached glass to the exact settled pose without another in
  await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).glassScene=this;return fn.call(this);};});
  for(let n=0;n<2;n++){
-  await page.locator('#home-play').click();await page.waitForTimeout(700);
+  await page.locator('#home-play').click();
+  // A real rendered settled frame is the condition; host GPU scheduling is not a game timer.
+  await expect.poll(()=>page.evaluate(()=>{const s=(window as any).glassScene;if(!s?.glass||performance.now()-s.entrance<260)return Infinity;const ps=s.positions().slice(0,s.board.length);return Math.max(...ps.map((r:any,i:number)=>{const t=s.glass.tubes.get(i);return t?.visible?Math.abs(t.y-r.y)+Math.abs(t.x-r.x)+Math.abs(t.rotation):Infinity;}));})).toBeLessThan(.01);
+  await page.waitForTimeout(120);
   const offsets=await page.evaluate(()=>{const s=(window as any).glassScene;return s.positions().slice(0,s.board.length).map((r:any,i:number)=>{const t=s.glass.tubes.get(i);return Math.abs(t.y-r.y)+Math.abs(t.x-r.x)+Math.abs(t.rotation);});});
   for(const d of offsets)expect(d).toBeLessThan(.01);
   await page.locator('#menu').click();

@@ -14,8 +14,8 @@ async function open(page:Page,fast=false){
 async function tap(page:Page,i:number){const p=points.get(page)![i];await page.mouse.click(p.x,p.y);}
 async function cues(page:Page){return page.evaluate(()=>(window as any).cues as {key:string;args:any[];time:number}[]);}
 for(const fast of [false,true])test(`ordinary and queued acceptance acknowledge once (${fast?'fast':'normal'})`,async({page})=>{
- await open(page,fast);await tap(page,0);await tap(page,2);await tap(page,1);await tap(page,0);expect(await page.evaluate(()=>(window as any).hadQueue)).toBe(true);
- expect((await cues(page)).filter(c=>c.key==='accept')).toHaveLength(2);await expect(page.locator('#moves')).toHaveText('Ходов: 2');await expect(page.locator('#hint')).toBeEnabled();
+ await page.clock.install();await open(page,fast);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.animate;m.WaterScene.prototype.animate=function(...a:any[]){(window as any).feelQueueScene=this;return fn.apply(this,a);};});await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await tap(page,0);await tap(page,2);await tap(page,1);await tap(page,0);expect(await page.evaluate(()=>(window as any).hadQueue)).toBe(true);
+ expect((await cues(page)).filter(c=>c.key==='accept')).toHaveLength(2);await advanceFrames(page,'feelQueueScene',1800);await page.clock.resume();await expect(page.locator('#moves')).toHaveText('Ходов: 2');await expect(page.locator('#hint')).toBeEnabled();
  const log=await cues(page);expect(log.filter(c=>c.key==='accept')).toHaveLength(2);expect(log.filter(c=>c.key==='pour')).toHaveLength(2);expect(log.findIndex(c=>c.key==='accept')).toBeLessThan(log.findIndex(c=>c.key==='pour'));
 });
 test('new color rewards once, relocation only lands, victory has one final accent',async({page})=>{

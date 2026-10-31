@@ -1,3 +1,4 @@
+import {advanceFrames} from './controlled-frames';
 import {startGame,reloadGame,openLevels,resumeGame,slotCount} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
@@ -24,11 +25,11 @@ test('replacement can use the recipient of the current pour as its next source',
 });
 
 test('a half-selected next move survives the end of the current animation',async({page})=>{
- await open(page);await tap(page,0);await tap(page,2);await tap(page,1);await expect(page.locator('#status')).toContainText('Следующий ход:');await expect(page.locator('#hint')).toBeEnabled();await tap(page,0);expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[0,2],[1,0]]);
+ await openFrozen(page);await tap(page,0);await tap(page,2);await tap(page,1);await expect(page.locator('#status')).toContainText('Следующий ход:');await page.clock.resume();await expect(page.locator('#hint')).toBeEnabled();await tap(page,0);expect((await history(page)).map(m=>[m.from,m.to])).toEqual([[0,2],[1,0]]);
 });
 
 for(const stage of ['current','queued'])test(`undo cancels all pending input during the ${stage} move`,async({page})=>{
- await open(page);
+ await openFrozen(page);
  // Trigger in the same event-loop turn as the target state. A remote click may arrive
  // after the first flight has ended, especially with the shorter material rhythm.
  await page.evaluate(stage=>{
@@ -42,7 +43,7 @@ for(const stage of ['current','queued'])test(`undo cancels all pending input dur
    document.getElementById('undo')!.click();
   });observer.observe(target,{subtree:true,childList:true,characterData:true});
  },stage);
- await tap(page,0);await tap(page,2);await tap(page,1);await tap(page,0);
+ await tap(page,0);await tap(page,2);await tap(page,1);await tap(page,0);await page.clock.resume();
  await expect.poll(()=>page.evaluate(()=>(window as any).autoUndo)).not.toBeNull();
  expect(await page.evaluate(()=>(window as any).autoUndo)).toEqual({before:stage==='queued'?2:1,busy:true});
  await expect(page.locator('#hint')).toBeEnabled();expect(await history(page)).toHaveLength(stage==='queued'?1:0);
@@ -54,10 +55,10 @@ test('reload retains only accepted moves, never the pending intention',async({pa
 });
 
 test('a queued winning move completes once and remains actionable after reload',async({page})=>{
- await open(page,initial());await page.evaluate(async()=>{const path='/src/audio/sound.ts',m=await import(path),original=m.Sound.prototype.finish;(window as any).__wins=0;m.Sound.prototype.finish=function(won:boolean,sequence:number){if(won)(window as any).__wins++;return original.call(this,won,sequence);};});
- const first=levels[0].witness[0];await tap(page,first.from);await tap(page,first.to);await expect(page.locator('#hint')).toBeEnabled();
+ await page.clock.install();await open(page,initial());await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.animate;m.WaterScene.prototype.animate=function(...a:any[]){(window as any).queuedWinScene=this;return fn.apply(this,a);};});await page.evaluate(async()=>{const path='/src/audio/sound.ts',m=await import(path),original=m.Sound.prototype.finish;(window as any).__wins=0;m.Sound.prototype.finish=function(won:boolean,sequence:number){if(won)(window as any).__wins++;return original.call(this,won,sequence);};});
+ const first=levels[0].witness[0];await tap(page,first.from);await tap(page,first.to);await expect(page.locator('#hint')).toBeEnabled();await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));
  for(const m of levels[0].witness.slice(1)){await tap(page,m.from);await tap(page,m.to);}
- await expect(page.locator('#status')).toContainText('Следующий ход выбран');await expect(page.locator('#continue')).not.toBeVisible();await expect(page.locator('#continue')).toBeVisible();expect(await history(page)).toHaveLength(3);expect(await page.evaluate(()=>(window as any).__wins)).toBe(1);
+ await expect(page.locator('#status')).toContainText('Следующий ход выбран');await expect(page.locator('#continue')).not.toBeVisible();await advanceFrames(page,'queuedWinScene',3000);await page.clock.resume();await expect(page.locator('#continue')).toBeVisible();expect(await history(page)).toHaveLength(3);expect(await page.evaluate(()=>(window as any).__wins)).toBe(1);
  await reloadGame(page);await page.locator('canvas').waitFor();await expect(page.locator('#continue')).toBeVisible();await page.locator('#continue').click({force:true});await expect(page.locator('#level-title')).toHaveText('Уровень 2');
 });
 
