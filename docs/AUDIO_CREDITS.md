@@ -1,3 +1,7 @@
+# Ice release — revision 0.35
+
+`src/audio/ice.ts` embeds a Vorbis buffer assembled from the existing CC0 recorded glass landing sample. `tools/build-ice-audio.py` uses seven short faded grains at different rates, high/low-pass filtering and a final decay; no oscillators or generated noise. It is one owned voice in the existing four-voice budget and stops with all other cues. Source/output hashes and decoded peak/RMS/duration: `docs/audits/ice-35/audio.json`. This is a processed glass fracture texture, not a claim that the original recording was actual ice. Listening on a physical phone remains unverified.
+
 # Current bank — revision 0.16
 
 Completion/victory no longer use the rejected Kenney pluck. `complete.ogg`, `cork.ogg`, `victory.ogg` and new `collect.ogg` are built from the following **Vehicle / Jan Schupke — Tinysized SFX, CC0** originals (source/license link below, reconfirmed 2026-10-28):

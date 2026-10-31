@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { apply, moveFor, moves, reverse, validBoard, won, type Board, capacityAt } from '../src/core/rules';
+import { apply, moveFor, moves, reverse, validBoard, won, type Board, capacityAt, transition } from '../src/core/rules';
 import { solve } from '../src/core/solver';
 import { levels, fresh, moved, undone, restarted, expanded, validSave, attempt, levelKey, levelGoals } from '../src/core/session';
 import { SaveStore } from '../src/platform/storage';
@@ -20,14 +20,14 @@ describe('rules',()=>{
 });
 describe('bank and solver',()=>{
  it('independently replays all campaign witnesses with their actual capacities and goals',()=>{
-  expect(levels).toHaveLength(28);
-  for(const l of levels){const gs=l.goals??(l.goal?[l.goal]:[]);let b:Board=l.initial.map(t=>[...t]);for(const m of l.witness){
-   const source=b[m.from],target=b[m.to],capacity=m.to===l.mini?2:gs.some(g=>g.index===m.to)?8:4;
+  expect(levels).toHaveLength(34);
+  for(const l of levels){const gs=l.goals??(l.goal?[l.goal]:[]);let opened=l.ice===undefined,b:Board=l.initial.map(t=>[...t]);for(const m of l.witness){
+   expect(opened||m.from!==l.ice&&m.to!==l.ice).toBe(true);const source=b[m.from],target=b[m.to],sourceSealed=m.from!==l.mini&&source.length===4&&source.every(c=>c===source[0])&&!gs.some(g=>g.color===source[0]),capacity=m.to===l.mini?2:gs.some(g=>g.index===m.to)?8:4;
    expect(gs.some(g=>g.index===m.from)).toBe(false);expect(source.length).toBeGreaterThan(0);expect(target.length+m.amount).toBeLessThanOrEqual(capacity);
    const color=source.at(-1)!;if(gs.some(g=>g.index===m.to))expect(color).toBe(gs.find(g=>g.index===m.to)!.color);
    expect(target.length===0||target.at(-1)===color).toBe(true);let group=0;for(let j=source.length-1;j>=0&&source[j]===color;j--)group++;
-   const q=Math.min(group,capacity-target.length);expect(q).toBe(m.amount);target.push(...source.splice(-q));
-  }expect(b.every((t,i)=>i===l.mini?!t.length:gs.some(g=>g.index===i)?t.length===8&&t.every(c=>c===gs.find(g=>g.index===i)!.color):!t.length||t.length===4&&t.every(c=>c===t[0])&&!gs.some(g=>g.color===t[0]))).toBe(true);}
+   const q=Math.min(group,capacity-target.length);expect(q).toBe(m.amount);target.push(...source.splice(-q));if(!opened&&!sourceSealed&&m.to!==l.mini&&target.length===capacity&&target.every(c=>c===target[0])&&(gs.some(g=>g.index===m.to)||!gs.some(g=>g.color===target[0])))opened=true;
+  }expect(opened).toBe(true);expect(b.every((t,i)=>i===l.mini?!t.length:gs.some(g=>g.index===i)?t.length===8&&t.every(c=>c===gs.find(g=>g.index===i)!.color):!t.length||t.length===4&&t.every(c=>c===t[0])&&!gs.some(g=>g.color===t[0]))).toBe(true);}
  });
  it('solves current positions and distinguishes unknown from proven dead ends',()=>{
   const b=apply(levels[3].initial,levels[3].witness[0]);const r=solve(b,200000,2000);expect(r.status).toBe('FOUND');if(r.status==='FOUND'){let next=b;for(const m of r.path)next=apply(next,m);expect(won(next)).toBe(true);}
@@ -78,13 +78,13 @@ describe('night art upgrade',()=>{
 describe('connected pouring',()=>{
  it('keeps the liquid at the outlet throughout legal pours, including the last partial unit',()=>{
   for(const [width,height] of [[288,263],[358,582],[452,176],[736,762]])for(const level of levels){
-   let board:Board=level.initial;const gs=level.goals??(level.goal?[level.goal]:[]),ps=miniLayout(gs.length?goalLayout(width,height,board.length,gs.map(g=>g.index)):layout(width,height,board.length),level.mini);
+   let board:Board=level.initial,rules=levelGoals(level);const gs=level.goals??(level.goal?[level.goal]:[]),ps=miniLayout(gs.length?goalLayout(width,height,board.length,gs.map(g=>g.index)):layout(width,height,board.length),level.mini);
    for(const m of level.witness){const before=board[m.from].length,capacity=capacityAt(levelGoals(level),m.from),plan=planPour(ps[m.from],ps[m.to],width,height,before*4/capacity,(before-m.amount)*4/capacity);
     for(const t of [.25,.35,.5,.65,.729]){const r=pourPose(ps[m.from],ps[m.to],t,width,height,0,plan),c=Math.cos(r.angle),s=Math.sin(r.angle);
      const poly=vesselPolygon(r.w,r.h).map(p=>({x:r.x+p.x*c-p.y*s,y:r.y+p.x*s+p.y*c})),units=before-m.amount*pourTransfer(t),lip=r.y+r.tipX*s;
      expect(Math.abs(surface(poly,units/capacity*LIQUID_FILL)-lip)).toBeLessThan(.02);
      const b=bounds(r,r.angle);expect(b.left).toBeGreaterThanOrEqual(4.99);expect(b.right).toBeLessThanOrEqual(width-4.99);expect(b.top).toBeGreaterThanOrEqual(4.99);expect(b.bottom).toBeLessThanOrEqual(height-4.99);
-    }board=apply(board,m,levelGoals(level));
+    }const next=transition(board,m,rules);board=next.board;rules=next.rules;
    }
   }
  });

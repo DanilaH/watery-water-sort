@@ -1,3 +1,4 @@
+import {toggleSymbols} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,moved,attempt,goalFor,displaySlots,levelKey} from '../../src/core/session';
 import {moveFor,capacityAt,goalList,won} from '../../src/core/rules';
@@ -16,7 +17,7 @@ test('full mini is a two-unit buffer, never a finished colour; save, Undo and re
  await open(page);await expect(page.locator('#objective')).toHaveText('Собери цвета · мини-колбу оставь пустой');
  await page.evaluate(()=>{const s=(window as any).miniScene;(window as any).miniPhases=[];s.onPhase=(...a:any[])=>(window as any).miniPhases.push(a);});
  await move(page,1,0);const s=await saved(page);expect(attempt(s).board[0]).toHaveLength(2);expect(capacityAt(goalFor(s),0)).toBe(2);await expect(page.locator('#continue')).toBeHidden();
- expect(await page.evaluate(()=>{const s=(window as any).miniScene;return {phases:(window as any).miniPhases,cork:s.glass.corkVisible(0),label:s.activeLabels.some((l:any)=>l.text==='МИНИ')};})).toEqual({phases:[],cork:false,label:true});
+ expect(await page.evaluate(()=>{const s=(window as any).miniScene;return {phases:(window as any).miniPhases,cork:s.glass.corkVisible(0),label:s.activeLabels.some((l:any)=>l.text==='МИНИ')};})).toEqual({phases:[],cork:false,label:false});
  await page.reload();await page.locator('#home-play').click();expect(attempt(await saved(page)).board[0]).toHaveLength(2);await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).board).toEqual(levels[22].initial);
  await page.locator('#restart').click();await page.getByRole('button',{name:'Начать заново',exact:true}).click();expect(attempt(await saved(page)).board[0]).toEqual([]);
 });
@@ -34,10 +35,10 @@ test('real worker may choose the mini as a source and cannot treat it as a norma
 
 for(const [width,height]of [[320,480],[390,844],[568,320]])test(`mini plus paired goals fit ${width}x${height}; final buffer stays empty and replay starts fresh`,async({page})=>{
  await page.setViewportSize({width,height});await open(page,27,levels[27].witness.length-1);
- const data=await page.evaluate(()=>{const s=(window as any).miniScene,ps=s.positions();return {ps,small:ps[2],label:s.activeLabels.some((l:any)=>l.text==='МИНИ')};});expect(data.label).toBe(true);expect(data.small.h).toBeLessThan(data.ps[3].h);for(const p of data.ps){expect(p.hitW).toBeGreaterThanOrEqual(48);expect(p.hitH).toBeGreaterThanOrEqual(48);}
+ const data=await page.evaluate(()=>{const s=(window as any).miniScene,ps=s.positions();return {ps,small:ps[2],label:s.activeLabels.some((l:any)=>l.text==='МИНИ')};});expect(data.label).toBe(false);expect(data.small.h).toBeLessThan(data.ps[3].h);for(const p of data.ps){expect(p.hitW).toBeGreaterThanOrEqual(48);expect(p.hitH).toBeGreaterThanOrEqual(48);}
  const m=levels[27].witness.at(-1)!;await tap(page,m.from);await tap(page,m.to);await expect(page.locator('#continue')).toBeVisible();await expect(page.locator('#earned-stars')).toHaveText('★★★');const s=await saved(page);expect(won(attempt(s).board,goalFor(s))).toBe(true);expect(attempt(s).board[2]).toEqual([]);
  const boxes=await page.evaluate(()=>['board','continue'].map(id=>{const r=document.getElementById(id)!.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom};}));for(const r of boxes){expect(r.x).toBeGreaterThanOrEqual(0);expect(r.right).toBeLessThanOrEqual(width);expect(r.bottom).toBeLessThanOrEqual(height);}expect(boxes[1].y).toBeGreaterThanOrEqual(boxes[0].bottom);
- await page.locator('#continue').click();await expect(page.getByRole('heading',{name:'Уровни',exact:true})).toBeVisible();await page.locator('.levels button').nth(27).click();expect(attempt(await saved(page)).board).toEqual(levels[27].initial);
+ await page.locator('#menu').click();await page.locator('#home-levels').click();await page.locator('.levels button').nth(27).click();expect(attempt(await saved(page)).board).toEqual(levels[27].initial);
 });
 
 test('reward grants a full-size four-unit tube beside the mini; actual transfer, reload and restart keep them separate',async({page})=>{
@@ -48,5 +49,5 @@ test('reward grants a full-size four-unit tube beside the mini; actual transfer,
 });
 
 test('reduced motion and symbols keep the mini readable and fully playable',async({page})=>{
- await page.setViewportSize({width:320,height:480});await page.emulateMedia({reducedMotion:'reduce'});await open(page);await page.locator('#symbols').click();await move(page,1,0);expect(attempt(await saved(page)).board[0]).toHaveLength(2);expect(await page.evaluate(()=>{const s=(window as any).miniScene;return {reduced:s.reduced,label:s.activeLabels.some((l:any)=>l.text==='МИНИ'),cork:s.glass.corkVisible(0)};})).toEqual({reduced:true,label:true,cork:false});
+ await page.setViewportSize({width:320,height:480});await page.emulateMedia({reducedMotion:'reduce'});await open(page);await toggleSymbols(page);await move(page,1,0);expect(attempt(await saved(page)).board[0]).toHaveLength(2);expect(await page.evaluate(()=>{const s=(window as any).miniScene;return {reduced:s.reduced,label:s.activeLabels.some((l:any)=>l.text==='МИНИ'),cork:s.glass.corkVisible(0)};})).toEqual({reduced:true,label:false,cork:false});
 });

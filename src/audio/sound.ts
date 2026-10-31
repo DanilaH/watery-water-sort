@@ -1,5 +1,6 @@
+import {ICE_AUDIO} from './ice';
 // Sample-based foley. Source licenses and processing are recorded in docs/AUDIO_CREDITS.md.
-const FILES=['select','accept','cork','land','reject','hint','complete','victory','pour-1','pour-2','pour-3','collect'] as const;
+const FILES=['select','accept','cork','land','reject','hint','complete','victory','pour-1','pour-2','pour-3','collect','ice'] as const;
 type Cue=typeof FILES[number];
 export class Sound {
   private context?:AudioContext;
@@ -24,7 +25,7 @@ export class Sound {
       return Promise.resolve();
     }
     const c=this.context;
-    this.loading=Promise.all(FILES.map(async name=>{try{const response=await fetch(`${import.meta.env.BASE_URL}audio/${name}.ogg`);if(!response.ok)throw Error('Audio unavailable');const buffer=await c.decodeAudioData(await response.arrayBuffer());this.buffers.set(name,buffer);}catch{/* Missing audio must never block a move. */}})).then(()=>{});
+    this.loading=Promise.all(FILES.map(async name=>{try{const response=await fetch(name==='ice'?ICE_AUDIO:`${import.meta.env.BASE_URL}audio/${name}.ogg`);if(!response.ok)throw Error('Audio unavailable');const buffer=await c.decodeAudioData(await response.arrayBuffer());this.buffers.set(name,buffer);}catch{/* Missing audio must never block a move. */}})).then(()=>{});
     return this.loading;
   }
   prime(){if(this.blocked||!this.enabled)return;void this.load();if(this.context?.state==='suspended')void this.context.resume().catch(()=>{});}
@@ -53,6 +54,7 @@ export class Sound {
   finish(won:boolean){this.play(won?'victory':'complete',won?.58:.42,3);}
   fill(){this.play('complete',.3,2,1,180);}
   seal(){this.play('cork',.56,2);}
+  ice(){this.play('ice',.72,3);}
   collect(index=0){this.play('collect',.32,1,1+Math.min(2,index)*.025);}
   ui(){this.play('select',.25,0,1.12);}
   undo(){this.play('land',.45,1,.85);}

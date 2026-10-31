@@ -30,6 +30,7 @@ public class FeelHapticsPlugin extends Plugin {
             if (v == null || !v.hasVibrator()) {call.resolve();return;}
             int duration=22, amplitude=155;
             switch (event) {
+                case "ice": duration=45;amplitude=220;break;
                 case "collect": duration=15;amplitude=125;break;
                 case "land": duration=24;amplitude=165;break;
                 case "accept": duration=26;amplitude=175;break;

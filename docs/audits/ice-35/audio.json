@@ -1,0 +1,11 @@
+{
+  "source": "public/audio/land.ogg",
+  "sourceSha256": "8625c1350d5b210820fa0b5410f9c1d4dfbafc30579a62276e608617ea5335cd",
+  "oggSha256": "8de5d7f5fca92e637d7f9bb6dbc9bec89916a09aaff6096aa0e6747b621f20e8",
+  "bytes": 7394,
+  "duration": 0.33709750566893426,
+  "peak": 0.8321918845176697,
+  "rms": 0.12678346037864685,
+  "license": "CC0; same recorded glass as the existing landing sample",
+  "method": "Seven short faded grains of the recorded glass; no generated noise or oscillators"
+}

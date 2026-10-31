@@ -3,26 +3,31 @@ export type Move = { from: number; to: number; amount: number; color: number };
 export const CAPACITY = 4;
 export type Goal={index:number;color:number;capacity:8};
 /** Legacy single/paired goals remain accepted. A mini is a buffer, never a final vessel. */
-export type VesselRules={goals:readonly Goal[];mini:number};
+export type VesselRules={goals:readonly Goal[];mini?:number;ice?:number;thawed?:boolean};
 export type Goals=Goal|readonly Goal[]|VesselRules;
-const isVesselRules=(goal:Goals|undefined):goal is VesselRules=>!!goal&&!Array.isArray(goal)&&'mini' in goal;
+const isVesselRules=(goal:Goals|undefined):goal is VesselRules=>!!goal&&!Array.isArray(goal)&&'goals' in goal;
 export const goalList=(goal?:Goals):readonly Goal[]=>goal===undefined?[]:Array.isArray(goal)?goal:isVesselRules(goal)?goal.goals:[goal as Goal];
 export const miniIndex=(goal?:Goals)=>isVesselRules(goal)?goal.mini:undefined;
+export const iceIndex=(goal?:Goals)=>isVesselRules(goal)?goal.ice:undefined;
+export const isFrozen=(goal:Goals|undefined,index:number)=>iceIndex(goal)===index&&!(isVesselRules(goal)&&goal.thawed);
+export const iceOpen=(goal?:Goals)=>iceIndex(goal)!==undefined&&isVesselRules(goal)&&goal.thawed===true;
 export const isMini=(goal:Goals|undefined,index:number)=>miniIndex(goal)===index;
 export const goalAt=(goal:Goals|undefined,index:number)=>goalList(goal).find(g=>g.index===index);
 export const capacityAt=(goal:Goals|undefined,index:number)=>isMini(goal,index)?2:goalAt(goal,index)?.capacity??CAPACITY;
 export const validGoal=(goal:Goals|undefined,count:number)=>goal===undefined||(()=>{
- const goals=goalList(goal),mini=miniIndex(goal);
- if(isVesselRules(goal)&&!Number.isInteger(goal.mini))return false;
- return Array.isArray(goals)&&goals.length<=(2)&& (goals.length>=1||mini!==undefined)
+ const goals=goalList(goal),mini=miniIndex(goal),ice=iceIndex(goal);
+ if(isVesselRules(goal)&&(goal.mini!==undefined&&!Number.isInteger(goal.mini)||goal.thawed!==undefined&&(typeof goal.thawed!=='boolean'||ice===undefined)))return false;
+ return Array.isArray(goals)&&goals.length<=(2)&& (goals.length>=1||mini!==undefined||ice!==undefined)
   &&goals.every(g=>!!g&&Number.isInteger(g.index)&&g.index>=0&&g.index<count&&Number.isInteger(g.color)&&g.color>=0&&g.color<8&&g.capacity===8)
   &&new Set(goals.map(g=>g.index)).size===goals.length&&new Set(goals.map(g=>g.color)).size===goals.length
-  &&(mini===undefined||Number.isInteger(mini)&&mini>=0&&mini<count&&!goals.some(g=>g.index===mini));
+  &&(mini===undefined||Number.isInteger(mini)&&mini>=0&&mini<count&&!goals.some(g=>g.index===mini))
+  &&(ice===undefined||Number.isInteger(ice)&&ice>=0&&ice<count&&ice!==mini&&!goals.some(g=>g.index===ice));
 })();
 export const clone = (b: Board): Board => b.map(t => [...t]);
 export function moveFor(b: Board, from: number, to: number, goal?:Goals): Move | null {
+  if(!Number.isInteger(from)||!Number.isInteger(to)||from<0||to<0||from>=b.length||to>=b.length)return null;
   const a = b[from], z = b[to];
-  if (from === to || goalAt(goal,from) || !a?.length || !z || z.length >= capacityAt(goal,to)) return null;
+  if (from === to || isFrozen(goal,from)||isFrozen(goal,to)||goalAt(goal,from) || !a?.length || !z || z.length >= capacityAt(goal,to)) return null;
   const color = a[a.length - 1];
   if (goalAt(goal,to)&&color!==goalAt(goal,to)!.color || z.length && z[z.length - 1] !== color) return null;
   let group = 1;
@@ -43,8 +48,8 @@ export function reverse(b: Board, m: Move, goal?:Goals): Board {
 }
 export const completeTube = (t: number[],capacity=4) => t.length === capacity && t.every(c => c === t[0]);
 /** Four units of the goal colour in a small vessel still have to reach the large goal. */
-export const sealedTube=(b:Board,index:number,goal?:Goals)=>!isMini(goal,index)&&completeTube(b[index],capacityAt(goal,index))&&(!goalList(goal).some(g=>g.color===b[index][0])||!!goalAt(goal,index));
-export const won = (b: Board,goal?:Goals) => validGoal(goal,b.length)&&goalList(goal).every(g=>sealedTube(b,g.index,goal))&&b.some(t=>t.length)&&b.every((t,i)=>!t.length||sealedTube(b,i,goal))&&validBoard(b,goal);
+export const sealedTube=(b:Board,index:number,goal?:Goals)=>!isFrozen(goal,index)&&!isMini(goal,index)&&completeTube(b[index],capacityAt(goal,index))&&(!goalList(goal).some(g=>g.color===b[index][0])||!!goalAt(goal,index));
+export const won = (b: Board,goal?:Goals) => validGoal(goal,b.length)&&(iceIndex(goal)===undefined||iceOpen(goal))&&goalList(goal).every(g=>sealedTube(b,g.index,goal))&&b.some(t=>t.length)&&b.every((t,i)=>!t.length||sealedTube(b,i,goal))&&validBoard(b,goal);
 export function validBoard(value: unknown,goal?:Goals): value is Board {
   if (!Array.isArray(value) || value.length < 4 || value.length > 11 || !validGoal(goal,value.length)) return false;
   const counts = new Map<number, number>();
@@ -59,4 +64,11 @@ export function validBoard(value: unknown,goal?:Goals): value is Board {
 }
 export function moves(b: Board,goal?:Goals): Move[] {
   return b.flatMap((_, from) => b.flatMap((__, to) => { const m = moveFor(b, from, to,goal); return m ? [m] : []; }));
+}
+
+/** The gate opens once per attempt; moving an already completed bottle never earns it. */
+export function transition(b:Board,m:Move,rules?:Goals):{board:Board;rules:Goals|undefined}{
+ const board=apply(b,m,rules);
+ const unlocked=iceIndex(rules)!==undefined&&!iceOpen(rules)&&!sealedTube(b,m.from,rules)&&sealedTube(board,m.to,rules);
+ return {board,rules:unlocked?{...(rules as VesselRules),thawed:true}:rules};
 }

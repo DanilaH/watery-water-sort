@@ -1,3 +1,4 @@
+import {toggleSymbols} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,moved,displaySlots} from '../../src/core/session';
 import {layout} from '../../src/game/geometry';
@@ -5,7 +6,7 @@ async function open(page:Page,fast=false){const s=moved(fresh(),levels[0].witnes
  await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');await page.locator('#home-play').click();await page.waitForTimeout(300);
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),g='/src/game/geometry.ts',geo=await import(g),fn=m.WaterScene.prototype.tube;(window as any).bodyFrames=[];
   m.WaterScene.prototype.tube=function(...args:any[]){const result=fn.apply(this,args),r=args[0],index=args[5];(window as any).materialScene=this;(window as any).bodyFrames.push({index,motion:this.bodyMotion.get(index)?.x??0,area:geo.area(result.poly),reference:geo.area(geo.vesselPolygon(r.w,r.h))});return result;};});
- await page.locator('#symbols').click();await expect.poll(()=>page.evaluate(()=>!!(window as any).materialScene)).toBe(true);
+ await toggleSymbols(page);await expect.poll(()=>page.evaluate(()=>!!(window as any).materialScene)).toBe(true);
  await page.evaluate(()=>{const s=(window as any).materialScene,phase=s.onPhase,seal=s.onSeal;(window as any).materialBeats=[];(window as any).materialSeats=[];s.onPhase=(n:number,heavy:boolean)=>{(window as any).materialBeats.push(n);phase(n,heavy);};s.onSeal=()=>{(window as any).materialSeats.push(performance.now());seal();};});return s;
 }
 async function finishColour(page:Page,s:ReturnType<typeof fresh>){const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,displaySlots(s)),m=levels[0].witness[1];for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);return m.to;}

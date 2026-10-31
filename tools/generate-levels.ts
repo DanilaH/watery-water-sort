@@ -20,6 +20,6 @@ for (let i=0;i<12;i++) {
     levels.push({id:'water-'+String(i+1).padStart(3,'0'),version:1,colors,initial,witness:result.path,seed:usedSeed});break;
   }
 }
-const authored=JSON.parse(readFileSync('src/core/levels.json','utf8')).filter((l:{goal?:unknown;goals?:unknown;mini?:number})=>l.goal||l.goals||l.mini!==undefined);
+const authored=JSON.parse(readFileSync('src/core/levels.json','utf8')).filter((l:{goal?:unknown;goals?:unknown;mini?:number;ice?:number})=>l.goal||l.goals||l.mini!==undefined||l.ice!==undefined);
 writeFileSync('src/core/levels.json',JSON.stringify([...levels,...authored],null,2)+'\n');
 console.log(`Generated ${levels.length} witnessed prototype levels. Human difficulty calibration pending.`);

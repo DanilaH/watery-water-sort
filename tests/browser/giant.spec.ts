@@ -1,3 +1,4 @@
+import {toggleSymbols} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,moved,attempt,goalFor,displaySlots,levelKey} from '../../src/core/session';
 import {goalLayout} from '../../src/game/geometry';
@@ -60,5 +61,5 @@ test('queued deliveries fill only their accepted portions without a premature co
 });
 test('symbol mode identifies an empty goal by the same mark as its required colour',async({page})=>{
  await seed(page,13);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).symbolGoalScene=this;return fn.call(this);};});
- await page.locator('#symbols').click();await expect.poll(()=>page.evaluate(()=>{const s=(window as any).symbolGoalScene;if(!s)return false;return s.activeLabels.some((l:any)=>l.text==='◆'&&Math.abs(l.x-s.positions()[0].x)<1);})).toBe(true);
+ await toggleSymbols(page);await expect.poll(()=>page.evaluate(()=>{const s=(window as any).symbolGoalScene;if(!s)return false;return s.activeLabels.some((l:any)=>l.text==='◆'&&Math.abs(l.x-s.positions()[0].x)<1);})).toBe(true);
 });
