@@ -1,3 +1,4 @@
+import {levelButton} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,levelKey,moved,expanded,attempt,type Save} from '../../src/core/session';
 import {layout} from '../../src/game/geometry';
@@ -25,7 +26,7 @@ for(const solved of [false,true])test(`selecting the current ${solved?'completed
 });
 
 test('choosing another previously played level resets that level, not the attempt being left',async({page})=>{
- let state=moved(fresh(),levels[0].witness[0]);state.completed=[levels[0].id];state.current=1;state=moved(state,levels[1].witness[0]);state=expanded(state);state.current=0;const old=structuredClone(attempt(state));await seed(page,state);await page.goto('/');await page.locator('#home-levels').click();await page.locator('.levels button').nth(1).click();const next=await saved(page);
+ let state=moved(fresh(),levels[0].witness[0]);state.completed=[levels[0].id];state.current=1;state=moved(state,levels[1].witness[0]);state=expanded(state);state.current=0;const old=structuredClone(attempt(state));await seed(page,state);await page.goto('/');await page.locator('#home-levels').click();await levelButton(page,1).click();const next=await saved(page);
  expect(next.current).toBe(1);expect(next.attempts[levelKey(0)]).toEqual(old);expect(attempt(next).board).toEqual([...levels[1].initial,[]]);expect(attempt(next).history).toHaveLength(0);expect(attempt(next).extra).toBe(true);
 });
 

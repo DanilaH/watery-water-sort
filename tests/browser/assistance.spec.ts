@@ -1,3 +1,4 @@
+import {levelButton} from './navigation';
 import {startGame,reloadGame,openLevels,resumeGame,slotCount,mockReward,unlockReward} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
@@ -48,7 +49,7 @@ test('earned extra tube survives restart, help and level switching',async({page}
  const seeded=expanded(structuredClone(dead));seeded.completed=levels.slice(0,6).map((l:any)=>l.id);await open(page,seeded);let s=await saved(page);expect(attempt(s).extra).toBe(true);
  await page.locator('#restart').click();await page.getByRole('button',{name:'Начать заново',exact:true}).click();s=await saved(page);expect(attempt(s).board).toEqual([...levels[6].initial,[]]);expect(attempt(s).history).toHaveLength(0);
  await help(page);await expect(page.getByRole('button',{name:'Добавить колбу',exact:true})).toHaveCount(0);await expect(page.locator('.dialog-body')).toContainText('уже добавлена');await page.getByRole('button',{name:'Закрыть',exact:true}).click();
- await openLevels(page);await page.locator('.levels button').nth(0).click();expect(attempt(await saved(page)).extra).toBe(false);await openLevels(page);await page.locator('.levels button').nth(6).click();expect(attempt(await saved(page)).extra).toBe(true);
+ await openLevels(page);await levelButton(page,0).click();expect(attempt(await saved(page)).extra).toBe(false);await openLevels(page);await levelButton(page,6).click();expect(attempt(await saved(page)).extra).toBe(true);
 });
 test('failed extra-tube save keeps the old board and offers retry',async({page})=>{
  await open(page,dead);await page.locator('#rescue').click();const original=await saved(page);

@@ -1,3 +1,4 @@
+import {levelButton} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,levelKey,moved,attempt,displaySlots,type Save} from '../../src/core/session';
 import {layout} from '../../src/game/geometry';import proof from '../../docs/audits/stars-14/optimal.json' with {type:'json'};
@@ -35,7 +36,7 @@ test('loading is single-flight and can be cancelled without granting a reward',a
 });
 test('three stars and the best move record survive replay and show in level selection',async({page})=>{
  const p=proof.find(p=>p.level===2&&!p.extra)!,state=p.path.slice(0,-1).reduce((s,m)=>moved(s,m),level(2));await open(page,state);const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,displaySlots(state)),m=p.path.at(-1)!;for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);await expect(page.locator('#earned-stars')).toHaveText('★★★');await expect(page.locator('#status')).toContainText('рекорд: 9');
- await page.locator('#menu').click();await page.locator('#home-levels').click();await expect(page.locator('.levels button').nth(2)).toContainText('★★★');await expect(page.locator('.levels button').nth(2)).toContainText('9 ходов');await page.locator('.levels button').nth(2).click();await expect(page.locator('#moves')).toHaveText('Ходов: 0');expect((await saved(page)).best?.[levelKey(2)].history).toHaveLength(9);await page.reload();expect((await saved(page)).best?.[levelKey(2)].history).toHaveLength(9);
+ await page.locator('#menu').click();await page.locator('#home-levels').click();await expect(levelButton(page,2)).toContainText('★★★');await expect(levelButton(page,2)).toContainText('9 ходов');await levelButton(page,2).click();await expect(page.locator('#moves')).toHaveText('Ходов: 0');expect((await saved(page)).best?.[levelKey(2)].history).toHaveLength(9);await page.reload();expect((await saved(page)).best?.[levelKey(2)].history).toHaveLength(9);
 });
 for(const [width,height]of [[320,480],[568,320],[390,844]])test(`locked maximum field fits ${width}x${height} without overlapping hit areas`,async({page})=>{
  await page.setViewportSize({width,height});await open(page,level(11));const b=(await page.locator('#board').boundingBox())!,lock=(await page.locator('#extra-tube').boundingBox())!;expect(lock.width).toBeGreaterThanOrEqual(48);expect(lock.height).toBeGreaterThanOrEqual(48);expect(lock.x).toBeGreaterThanOrEqual(b.x);expect(lock.y+lock.height).toBeLessThanOrEqual(b.y+b.height+.1);await watch(page);await expect(page.locator('#extra-tube')).toBeHidden();expect(attempt(await saved(page)).board).toHaveLength(11);

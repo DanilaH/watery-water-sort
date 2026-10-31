@@ -1,3 +1,4 @@
+import {migrateCampaign} from '../core/campaign';
 import { fresh, validSave, migrateBest, type Save } from '../core/session';
 export interface StorageLike {getItem(k:string):string|null;setItem(k:string,v:string):void;}
 const PRIMARY='water-sort-v1', BACKUP=PRIMARY+'-backup';
@@ -13,7 +14,7 @@ export class SaveStore {
       try {const state:unknown=JSON.parse(raw);if(validSave(state)){
         // Enter the new art direction once; subsequent explicit theme choices survive.
         if(state.artVersion===undefined){state.artVersion=4;state.settings.light=false;}
-        return {state:migrateBest(state),recovered:!unreadable&&key===BACKUP,corrupt:false,unavailable:unreadable};
+        return {state:migrateBest(migrateCampaign(state)),recovered:!unreadable&&key===BACKUP,corrupt:false,unavailable:unreadable};
       }}catch{/* Try backup, never accept an invalid snapshot. */}
     }
     return {state:fresh(),recovered:false,corrupt:!unreadable&&hadData,unavailable:unreadable};

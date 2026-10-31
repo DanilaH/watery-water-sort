@@ -9,3 +9,6 @@ export async function mockReward(page:Page){await page.evaluate(async()=>{const 
 export async function unlockReward(page:Page){await page.getByRole('button',{name:'Добавить колбу',exact:true}).click();await page.getByRole('button',{name:'Смотреть рекламу',exact:true}).click();}
 
 export async function toggleSymbols(page:Page){await page.locator('#settings').click();await page.getByRole('switch',{name:'Символы на цветах',exact:true}).click();await page.getByRole('button',{name:'Готово',exact:true}).click();}
+
+/** Select stable content identity when a test targets a particular mechanic. */
+export function levelButton(page:Page,index:number){return page.locator('.levels button[data-level="water-'+String(index+1).padStart(3,'0')+'"]');}

@@ -1,3 +1,4 @@
+import {levelButton} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {advanceFrames} from './controlled-frames';
 import {fresh,levels,moved,attempt,goalFor,displaySlots,levelKey} from '../../src/core/session';
@@ -40,7 +41,7 @@ for(const [width,height]of [[320,480],[390,844],[568,320]])test(`two-goal field 
  const last=levels[21].witness.at(-1)!;await tap(page,last.from);await tap(page,last.to);await expect(page.locator('#continue')).toBeVisible();await expect(page.locator('#earned-stars')).toHaveText('★★★');
  const s=await saved(page);expect(attempt(s).board.slice(0,2).map(t=>t.length)).toEqual([8,8]);expect(s.best[levelKey(21)].history).toHaveLength(levels[21].witness.length);
  const boxes=await page.evaluate(()=>['board','feedback','continue'].map(id=>{const r=document.getElementById(id)!.getBoundingClientRect();return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,h:r.height};}));for(const r of boxes){expect(r.x).toBeGreaterThanOrEqual(0);expect(r.right).toBeLessThanOrEqual(width);expect(r.bottom).toBeLessThanOrEqual(height);}expect(boxes[2].y).toBeGreaterThanOrEqual(boxes[0].bottom);
- await page.locator('#menu').click();await page.locator('#home-levels').click();await page.locator('.levels button').nth(21).click();expect(attempt(await saved(page)).board).toEqual(levels[21].initial);
+ await page.locator('#menu').click();await page.locator('#home-levels').click();await levelButton(page,21).click();expect(attempt(await saved(page)).board).toEqual(levels[21].initial);
 });
 
 test('reward appends ordinary buffer, survives reload and restart without changing either receiver',async({page})=>{

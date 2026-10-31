@@ -1,3 +1,4 @@
+import {levelButton} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,moved,attempt,levelKey,knowledgeFor,goalFor} from '../../src/core/session';
 import {hasUnknown} from '../../src/core/knowledge';
@@ -40,7 +41,7 @@ test('learned route restarts with no question marks and uses worker hints',async
 for(const [width,height]of [[320,480],[390,844],[568,320]])for(const index of [38,39])test(`hidden combination ${index+1} wins and reselects at ${width}x${height}`,async({page})=>{
  await page.setViewportSize({width,height});await open(page,index,levels[index].witness.length-1);const m=levels[index].witness.at(-1)!;await tap(page,m.from);await tap(page,m.to);await expect(page.locator('#continue')).toBeVisible();await expect(page.locator('#earned-stars')).toHaveText('★★★');expect(hasUnknown(knowledgeFor(await saved(page)))).toBe(false);expect(await questions(page)).toBe(0);
  for(const id of ['board','continue']){const r=(await page.locator('#'+id).boundingBox())!;expect(r.x).toBeGreaterThanOrEqual(0);expect(r.x+r.width).toBeLessThanOrEqual(width);expect(r.y+r.height).toBeLessThanOrEqual(height);}
- await openLevels(page);await page.locator('.levels button').nth(index).click();expect(attempt(await saved(page)).history).toEqual([]);expect(hasUnknown(knowledgeFor(await saved(page)))).toBe(false);
+ await openLevels(page);await levelButton(page,index).click();expect(attempt(await saved(page)).history).toEqual([]);expect(hasUnknown(knowledgeFor(await saved(page)))).toBe(false);
 });
 
 test('reward preserves knowledge and restarting keeps both reward and discovery',async({page})=>{

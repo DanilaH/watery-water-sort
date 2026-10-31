@@ -1,3 +1,4 @@
+import {campaign,stageNumber,continuation,available as levelAvailable} from './core/campaign';
 import {hasUnknown} from './core/knowledge';
 import {visibleHint} from './core/visibleHint';
 import Phaser from 'phaser';
@@ -75,7 +76,7 @@ function paint(){
  ambient.setActive(!document.hidden&&![...blockers].some(x=>x!=='home')&&!reduced.matches);
  $('app').setAttribute('aria-hidden',String(atHome));
  $('home-play').textContent=hasStarted()?'Продолжить':'Играть';
- $('home-summary').textContent=hasStarted()?`Уровень ${state.current+1} · ходов: ${a.history.length}`:'Собери каждый цвет в свою колбу';
+ $('home-summary').textContent=hasStarted()?`Уровень ${stageNumber(state.current)} · ходов: ${a.history.length}`:'Собери каждый цвет в свою колбу';
  const theme=themeFor(state.settings);document.body.dataset.theme=theme.id;
  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content=theme.color;
  scene.reduced=reduced.matches;scene.setKnowledge(knowledgeFor(state));touch.enabled=state.settings.haptics!==false;reward.setTotal(totalStars(state),pendingStars?.before);
@@ -83,7 +84,7 @@ function paint(){
  $('hard-badge').hidden=!isHard(state.current);$('home-challenge').hidden=!isHard(state.current);$('home-play').classList.toggle('hard-level',isHard(state.current));
  scene.lockedExtra=!atHome&&offerExtra(state)&&!won(a.board,goalFor(state));scene.goal=goalFor(state);scene.slots=displaySlots(state);scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=theme.light;audio.setEnabled(state.settings.sound);
  document.body.classList.toggle('packed-board',displaySlots(state)>=10);document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',displaySlots(state)>10);document.body.classList.toggle('goal-board',goalList(goalFor(state)).length>0);document.body.classList.toggle('light',theme.light);document.body.classList.toggle('finished',finished);
- $('level-title').innerHTML=`<span>Уровень</span> <strong>${state.current+1}</strong>`;$('moves').textContent=`Ходов: ${a.history.length}`;$('progress').textContent=`${levels.length} уровней`;
+ $('level-title').innerHTML=`<span>Уровень</span> <strong>${stageNumber(state.current)}</strong>`;$('moves').textContent=`Ходов: ${a.history.length}`;$('progress').textContent=`${levels.length} уровней`;
  ($('undo') as HTMLButtonElement).disabled=!a.history.length;
  ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
  const objective=goalFor(state),goals=goalList(objective),remaining=goals.filter(g=>!sealedTube(a.board,g.index,objective));
@@ -97,8 +98,8 @@ function paint(){
  if(offerExtra(state)){const r=scene.positions().at(-1)!;Object.assign(extra.style,{left:`${r.x-r.hitW/2}px`,top:`${r.y+r.h/2-r.hitH/2}px`,width:`${r.hitW}px`,height:`${r.hitH}px`});extra.style.setProperty('--vessel-width',r.w+'px');extra.style.setProperty('--vessel-height',r.h+'px');}
  $('continue').hidden=!finished;
  $('rescue').hidden=finished||scene.busy||!(deadRevision===state.revision||!moves(a.board,goalFor(state)).length);
- $('continue').textContent=state.current===levels.length-1?'К уровням →':'Дальше →';
- $('finish-title').hidden=!finished;renderVictoryTitle($('finish-title'),state.current===levels.length-1?'Пройдено!':earned===3?'Идеально!':'Получилось!');
+ $('continue').textContent=continuation(state)===undefined?'К уровням →':'Дальше →';
+ $('finish-title').hidden=!finished;renderVictoryTitle($('finish-title'),continuation(state)===undefined?'Пройдено!':earned===3?'Идеально!':'Получилось!');
  if(finished)message(`Ходов: ${a.history.length} · рекорд: ${state.best?.[levelKey(state.current)]?.history.length??a.history.length}`);
 }
 function close(){if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;dialog.close();block('dialog',false);message(guidance());}
@@ -197,7 +198,7 @@ function undo(){
 $('undo').onclick=undo;
 function askRestart(){audio.ui();modal('Начать заново?','Текущие ходы будут сброшены. Открытая дополнительная колба сохранится.',[{label:'Продолжить игру',primary:true,action:close},{label:'Начать заново',action:restart}]);}
 $('restart').onclick=askRestart;
-$('continue').onclick=()=>{audio.ui();if(state.current===levels.length-1)menu();else switchLevel(state.current+1);};
+$('continue').onclick=()=>{audio.ui();if(continuation(state)===undefined)menu();else switchLevel(continuation(state)!);};
 function showHint(m:Move){clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
 $('hint').onclick=()=>{
  if(scene.busy||blockers.size||locked||won(attempt(state).board,goalFor(state)))return;audio.prime();
@@ -262,9 +263,9 @@ $('rescue').onclick=()=>{audio.ui();help();};
 function menu(){
  audio.ui();const body=modal('Уровни',`Пройдено ${state.completed.length} из ${levels.length}`,[{label:atHome?'В главное меню':'Продолжить игру',primary:true,action:close}]);
  const grid=document.createElement('div');grid.className='levels';
- levels.forEach((l,i)=>{const b=document.createElement('button'),done=state.completed.includes(l.id),available=done||i===0||i===state.current||state.completed.includes(levels[i-1].id);
-  b.disabled=!available;b.classList.add('gel-button');if(i===state.current)b.classList.add('gel-primary');b.textContent=String(i+1);b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
-  b.setAttribute('aria-label',`Уровень ${i+1}${l.goals?', две большие колбы':l.goal?', большая бутылка':''}${l.mini!==undefined?', мини-колба':''}${l.ice!==undefined?', лёд':''}${done?', пройден':!available?', закрыт':''}`);
+ campaign.forEach(i=>{const l=levels[i],b=document.createElement('button'),done=state.completed.includes(l.id),available=levelAvailable(state,i);b.dataset.level=l.id;
+  b.disabled=!available;b.classList.add('gel-button');if(i===state.current)b.classList.add('gel-primary');b.textContent=String(stageNumber(i));b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
+  b.setAttribute('aria-label',`Уровень ${stageNumber(i)}${l.goals?', две большие колбы':l.goal?', большая бутылка':''}${l.mini!==undefined?', мини-колба':''}${l.ice!==undefined?', лёд':''}${l.hidden?', скрытые слои':''}${done?', пройден':!available?', закрыт':''}`);
   const record=state.best?.[levelKey(i)],earned=record?stars(levelKey(i),record.history.length):done?1:0;if(isHard(i)){const difficulty=document.createElement('small');difficulty.className='level-hard';difficulty.textContent='Сложный';b.append(difficulty);}
   if(levelGoals(l)){const mechanic=document.createElement('small');mechanic.className='level-mechanic';mechanic.textContent=l.ice!==undefined?'Лёд':l.mini!==undefined?(l.goal||l.goals?'Цель + мини':'Мини-колба'):l.goals?'Две цели':'Большая цель';b.append(mechanic);}
   const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);if(record){const best=document.createElement('small');best.textContent=`${record.history.length} ходов`;b.append(best);}b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);

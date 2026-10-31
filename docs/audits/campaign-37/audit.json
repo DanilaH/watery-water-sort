@@ -1,0 +1,628 @@
+{
+  "method": "Exact physical canonicalization across colour renaming and ordinary/goal slot permutation; role identities and unit order preserved. Masked fingerprint also preserves authored question positions. These are structural metrics, not player difficulty.",
+  "levels": [
+    {
+      "id": "water-001",
+      "oldStage": 1,
+      "stage": 1,
+      "colors": 2,
+      "optimal": 3,
+      "extraOptimal": 3,
+      "runs": 4,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "8af9852154c1d40e7498869d0dabfe17b8cb75b0363a5b1b0bad1829cd2d9be0",
+      "maskedFingerprint": "8af9852154c1d40e7498869d0dabfe17b8cb75b0363a5b1b0bad1829cd2d9be0"
+    },
+    {
+      "id": "water-002",
+      "oldStage": 2,
+      "stage": 2,
+      "colors": 2,
+      "optimal": 7,
+      "extraOptimal": 7,
+      "runs": 8,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "3310853efdd961fe3cd2f56312795ebc264d808cc38f176ee20c23ee3f7dc98c",
+      "maskedFingerprint": "3310853efdd961fe3cd2f56312795ebc264d808cc38f176ee20c23ee3f7dc98c"
+    },
+    {
+      "id": "water-003",
+      "oldStage": 3,
+      "stage": 3,
+      "colors": 3,
+      "optimal": 9,
+      "extraOptimal": 9,
+      "runs": 11,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "6d32c61d1a18955908b6a41e3a1d509bf9fbd54f11b265da1af806c9cd9eb8eb",
+      "maskedFingerprint": "6d32c61d1a18955908b6a41e3a1d509bf9fbd54f11b265da1af806c9cd9eb8eb"
+    },
+    {
+      "id": "water-004",
+      "oldStage": 4,
+      "stage": 5,
+      "colors": 3,
+      "optimal": 10,
+      "extraOptimal": 10,
+      "runs": 11,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "530c169d9cdb0011e78de1e2c7173336994865fec0ef9294610d163c1a572f37",
+      "maskedFingerprint": "530c169d9cdb0011e78de1e2c7173336994865fec0ef9294610d163c1a572f37"
+    },
+    {
+      "id": "water-005",
+      "oldStage": 5,
+      "stage": 9,
+      "colors": 4,
+      "optimal": 12,
+      "extraOptimal": 12,
+      "runs": 14,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "02343be9ffc90ff2d785cb6aaf60bc6867d543004f567d3e2d0cb87067db9458",
+      "maskedFingerprint": "02343be9ffc90ff2d785cb6aaf60bc6867d543004f567d3e2d0cb87067db9458"
+    },
+    {
+      "id": "water-006",
+      "oldStage": 6,
+      "stage": 13,
+      "colors": 4,
+      "optimal": 14,
+      "extraOptimal": 14,
+      "runs": 16,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "274e5f9f3bc47b89bf2bae4ab061b6be1e6067a13a09c8ea07873ce7b16ed4f6",
+      "maskedFingerprint": "274e5f9f3bc47b89bf2bae4ab061b6be1e6067a13a09c8ea07873ce7b16ed4f6"
+    },
+    {
+      "id": "water-007",
+      "oldStage": 7,
+      "stage": 18,
+      "colors": 5,
+      "optimal": 16,
+      "extraOptimal": 16,
+      "runs": 19,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "db5ae6b019e7f66ca0796296b2a5daf1101935f79cbcce914625f28eedef7966",
+      "maskedFingerprint": "db5ae6b019e7f66ca0796296b2a5daf1101935f79cbcce914625f28eedef7966"
+    },
+    {
+      "id": "water-008",
+      "oldStage": 8,
+      "stage": 26,
+      "colors": 6,
+      "optimal": 19,
+      "extraOptimal": 19,
+      "runs": 22,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "5cf25536c766c048886086c91fbf6f0e7fd7ec8145d457e0127ded694b5fa378",
+      "maskedFingerprint": "5cf25536c766c048886086c91fbf6f0e7fd7ec8145d457e0127ded694b5fa378"
+    },
+    {
+      "id": "water-009",
+      "oldStage": 9,
+      "stage": 30,
+      "colors": 6,
+      "optimal": 18,
+      "extraOptimal": 18,
+      "runs": 22,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "c1e76e87e721697509b39ddf66520e60eeffd2ded37e220e9e0122d13faf2de0",
+      "maskedFingerprint": "c1e76e87e721697509b39ddf66520e60eeffd2ded37e220e9e0122d13faf2de0"
+    },
+    {
+      "id": "water-010",
+      "oldStage": 10,
+      "stage": 35,
+      "colors": 7,
+      "optimal": 20,
+      "extraOptimal": 20,
+      "runs": 24,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "9732a73f8be67f4516f6d364b65d380bad382ee39d5e020ad9b333c58b0408c5",
+      "maskedFingerprint": "9732a73f8be67f4516f6d364b65d380bad382ee39d5e020ad9b333c58b0408c5"
+    },
+    {
+      "id": "water-011",
+      "oldStage": 11,
+      "stage": 38,
+      "colors": 7,
+      "optimal": 22,
+      "extraOptimal": 22,
+      "runs": 26,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "43e0c2f167d5e496bf89220dfd9e4fe153901793c068311aac3217bccc70f3df",
+      "maskedFingerprint": "43e0c2f167d5e496bf89220dfd9e4fe153901793c068311aac3217bccc70f3df"
+    },
+    {
+      "id": "water-012",
+      "oldStage": 12,
+      "stage": 40,
+      "colors": 8,
+      "optimal": 23,
+      "extraOptimal": 23,
+      "runs": 29,
+      "maskedUnits": 0,
+      "roles": [
+        "ordinary"
+      ],
+      "physicalFingerprint": "23e7d9f64365a89fe3a934620664d54003af850306a860935b5d39c363a443ee",
+      "maskedFingerprint": "23e7d9f64365a89fe3a934620664d54003af850306a860935b5d39c363a443ee"
+    },
+    {
+      "id": "water-013",
+      "oldStage": 13,
+      "stage": 4,
+      "colors": 2,
+      "optimal": 4,
+      "extraOptimal": 4,
+      "runs": 5,
+      "maskedUnits": 0,
+      "roles": [
+        "goal"
+      ],
+      "physicalFingerprint": "1ae085c205916c93ea1b8b46be6e1d816cf2de31fc0860f759e2f61029ee1b6f",
+      "maskedFingerprint": "1ae085c205916c93ea1b8b46be6e1d816cf2de31fc0860f759e2f61029ee1b6f"
+    },
+    {
+      "id": "water-014",
+      "oldStage": 14,
+      "stage": 22,
+      "colors": 3,
+      "optimal": 13,
+      "extraOptimal": 13,
+      "runs": 15,
+      "maskedUnits": 0,
+      "roles": [
+        "goal"
+      ],
+      "physicalFingerprint": "d06f7495cd62be3daad0a4350ce14d220ddbb797d6115e273b9a881988056d38",
+      "maskedFingerprint": "d06f7495cd62be3daad0a4350ce14d220ddbb797d6115e273b9a881988056d38"
+    },
+    {
+      "id": "water-015",
+      "oldStage": 15,
+      "stage": 28,
+      "colors": 4,
+      "optimal": 17,
+      "extraOptimal": 17,
+      "runs": 20,
+      "maskedUnits": 0,
+      "roles": [
+        "goal"
+      ],
+      "physicalFingerprint": "8f65d39bae702db23b6d2a2180ea3e2f0552bb096d4ac2952ed918083217d340",
+      "maskedFingerprint": "8f65d39bae702db23b6d2a2180ea3e2f0552bb096d4ac2952ed918083217d340"
+    },
+    {
+      "id": "water-016",
+      "oldStage": 16,
+      "stage": 33,
+      "colors": 4,
+      "optimal": 17,
+      "extraOptimal": 17,
+      "runs": 20,
+      "maskedUnits": 0,
+      "roles": [
+        "goal"
+      ],
+      "physicalFingerprint": "4055a494fb95fa91c122fe1c390c13aba50a18bed104648b44cdf80b348e1caf",
+      "maskedFingerprint": "4055a494fb95fa91c122fe1c390c13aba50a18bed104648b44cdf80b348e1caf"
+    },
+    {
+      "id": "water-017",
+      "oldStage": 17,
+      "stage": 8,
+      "colors": 2,
+      "optimal": 6,
+      "extraOptimal": 6,
+      "runs": 6,
+      "maskedUnits": 0,
+      "roles": [
+        "two-goals"
+      ],
+      "physicalFingerprint": "fc7b7844bceef41eb8a6569bbb2117200984b13dbc242677cf1771b77ce21148",
+      "maskedFingerprint": "fc7b7844bceef41eb8a6569bbb2117200984b13dbc242677cf1771b77ce21148"
+    },
+    {
+      "id": "water-018",
+      "oldStage": 18,
+      "stage": 17,
+      "colors": 2,
+      "optimal": 12,
+      "extraOptimal": 12,
+      "runs": 12,
+      "maskedUnits": 0,
+      "roles": [
+        "two-goals"
+      ],
+      "physicalFingerprint": "aea3a2d67ff2196f66b2e1e9aa117096bbdcb2a6509d5115478ddf1a3cc47003",
+      "maskedFingerprint": "aea3a2d67ff2196f66b2e1e9aa117096bbdcb2a6509d5115478ddf1a3cc47003"
+    },
+    {
+      "id": "water-019",
+      "oldStage": 19,
+      "stage": 25,
+      "colors": 3,
+      "optimal": 14,
+      "extraOptimal": 14,
+      "runs": 14,
+      "maskedUnits": 0,
+      "roles": [
+        "two-goals"
+      ],
+      "physicalFingerprint": "e7d37d3fd499dc5db3c96c41bdb99ce6b27d1bea865782bc6da7538684a62b69",
+      "maskedFingerprint": "e7d37d3fd499dc5db3c96c41bdb99ce6b27d1bea865782bc6da7538684a62b69"
+    },
+    {
+      "id": "water-020",
+      "oldStage": 20,
+      "stage": 37,
+      "colors": 3,
+      "optimal": 19,
+      "extraOptimal": 19,
+      "runs": 20,
+      "maskedUnits": 0,
+      "roles": [
+        "two-goals"
+      ],
+      "physicalFingerprint": "d8b10075e918fc88a89acc33e9976c342ff992a6a5f834a565332c591e09e8eb",
+      "maskedFingerprint": "d8b10075e918fc88a89acc33e9976c342ff992a6a5f834a565332c591e09e8eb"
+    },
+    {
+      "id": "water-021",
+      "oldStage": 21,
+      "stage": 39,
+      "colors": 3,
+      "optimal": 20,
+      "extraOptimal": 20,
+      "runs": 20,
+      "maskedUnits": 0,
+      "roles": [
+        "two-goals"
+      ],
+      "physicalFingerprint": "9471c831dd539b3a50ffe42de0ccb9ff5c4f60856ca168e22bb6511d891f9457",
+      "maskedFingerprint": "9471c831dd539b3a50ffe42de0ccb9ff5c4f60856ca168e22bb6511d891f9457"
+    },
+    {
+      "id": "water-022",
+      "oldStage": 22,
+      "stage": 36,
+      "colors": 3,
+      "optimal": 18,
+      "extraOptimal": 18,
+      "runs": 19,
+      "maskedUnits": 0,
+      "roles": [
+        "two-goals"
+      ],
+      "physicalFingerprint": "a25ddaa41051db55257cdddc8182ba283ee378c023205904a3d582721ce61f2b",
+      "maskedFingerprint": "a25ddaa41051db55257cdddc8182ba283ee378c023205904a3d582721ce61f2b"
+    },
+    {
+      "id": "water-023",
+      "oldStage": 23,
+      "stage": 6,
+      "colors": 3,
+      "optimal": 4,
+      "extraOptimal": 4,
+      "runs": 6,
+      "maskedUnits": 0,
+      "roles": [
+        "mini"
+      ],
+      "physicalFingerprint": "b7c9e08cc365151aadc6aaf8a7017f8a768c0d29fef3a511ff9fc9dda88f2720",
+      "maskedFingerprint": "b7c9e08cc365151aadc6aaf8a7017f8a768c0d29fef3a511ff9fc9dda88f2720"
+    },
+    {
+      "id": "water-024",
+      "oldStage": 24,
+      "stage": 7,
+      "colors": 3,
+      "optimal": 7,
+      "extraOptimal": 7,
+      "runs": 9,
+      "maskedUnits": 0,
+      "roles": [
+        "mini"
+      ],
+      "physicalFingerprint": "d48c8ab77a61ae00b26f249b383528e969eb20f3f734ee2fde9d97c1ba6dfe30",
+      "maskedFingerprint": "d48c8ab77a61ae00b26f249b383528e969eb20f3f734ee2fde9d97c1ba6dfe30"
+    },
+    {
+      "id": "water-025",
+      "oldStage": 25,
+      "stage": 16,
+      "colors": 4,
+      "optimal": 5,
+      "extraOptimal": 5,
+      "runs": 8,
+      "maskedUnits": 0,
+      "roles": [
+        "mini"
+      ],
+      "physicalFingerprint": "3a667f11fd0d59f2db75d7ba4daa45d8c5e9475a7cc9c455a68614ae5b14827f",
+      "maskedFingerprint": "3a667f11fd0d59f2db75d7ba4daa45d8c5e9475a7cc9c455a68614ae5b14827f"
+    },
+    {
+      "id": "water-026",
+      "oldStage": 26,
+      "stage": 21,
+      "colors": 4,
+      "optimal": 7,
+      "extraOptimal": 7,
+      "runs": 10,
+      "maskedUnits": 0,
+      "roles": [
+        "mini"
+      ],
+      "physicalFingerprint": "268fdd306619318bcb766d06a1b5b33fd6aa040fa3ef98ea301dddcf9b5968a6",
+      "maskedFingerprint": "268fdd306619318bcb766d06a1b5b33fd6aa040fa3ef98ea301dddcf9b5968a6"
+    },
+    {
+      "id": "water-027",
+      "oldStage": 27,
+      "stage": 10,
+      "colors": 3,
+      "optimal": 5,
+      "extraOptimal": 5,
+      "runs": 7,
+      "maskedUnits": 0,
+      "roles": [
+        "goal",
+        "mini"
+      ],
+      "physicalFingerprint": "0f4fe959573335ab299bd9fa0933cdfed559ef6ad9a021323891ac738236669c",
+      "maskedFingerprint": "0f4fe959573335ab299bd9fa0933cdfed559ef6ad9a021323891ac738236669c"
+    },
+    {
+      "id": "water-028",
+      "oldStage": 28,
+      "stage": 31,
+      "colors": 3,
+      "optimal": 14,
+      "extraOptimal": 14,
+      "runs": 14,
+      "maskedUnits": 0,
+      "roles": [
+        "two-goals",
+        "mini"
+      ],
+      "physicalFingerprint": "40d37d578b65537be8955676e414a1ddf5805fc92b7d57ea01c575cef170d98a",
+      "maskedFingerprint": "40d37d578b65537be8955676e414a1ddf5805fc92b7d57ea01c575cef170d98a"
+    },
+    {
+      "id": "water-029",
+      "oldStage": 29,
+      "stage": 11,
+      "colors": 2,
+      "optimal": 4,
+      "extraOptimal": 4,
+      "runs": 5,
+      "maskedUnits": 0,
+      "roles": [
+        "ice"
+      ],
+      "physicalFingerprint": "1d5398b3c428a3d6f043eb69c953ea7221f2f8e47c34a83ea096bb7d5d17ee2e",
+      "maskedFingerprint": "1d5398b3c428a3d6f043eb69c953ea7221f2f8e47c34a83ea096bb7d5d17ee2e"
+    },
+    {
+      "id": "water-030",
+      "oldStage": 30,
+      "stage": 12,
+      "colors": 3,
+      "optimal": 7,
+      "extraOptimal": 7,
+      "runs": 8,
+      "maskedUnits": 0,
+      "roles": [
+        "ice"
+      ],
+      "physicalFingerprint": "2ffcdbc5ca686706282319a299cd1b8b8a76b1517aa7543b7a1019f8509bd96f",
+      "maskedFingerprint": "2ffcdbc5ca686706282319a299cd1b8b8a76b1517aa7543b7a1019f8509bd96f"
+    },
+    {
+      "id": "water-031",
+      "oldStage": 31,
+      "stage": 23,
+      "colors": 3,
+      "optimal": 9,
+      "extraOptimal": 9,
+      "runs": 10,
+      "maskedUnits": 0,
+      "roles": [
+        "ice"
+      ],
+      "physicalFingerprint": "2c04d8a1a3ed6fff533da257ff28ea9480fca2104ffa161ebdff41ebb059d0e6",
+      "maskedFingerprint": "2c04d8a1a3ed6fff533da257ff28ea9480fca2104ffa161ebdff41ebb059d0e6"
+    },
+    {
+      "id": "water-032",
+      "oldStage": 32,
+      "stage": 19,
+      "colors": 3,
+      "optimal": 7,
+      "extraOptimal": 7,
+      "runs": 7,
+      "maskedUnits": 0,
+      "roles": [
+        "goal",
+        "ice"
+      ],
+      "physicalFingerprint": "051053a36121fd6e7731c4b41876dce37541528f4ed7f6635b4a7b8ec8d0bb9d",
+      "maskedFingerprint": "051053a36121fd6e7731c4b41876dce37541528f4ed7f6635b4a7b8ec8d0bb9d"
+    },
+    {
+      "id": "water-033",
+      "oldStage": 33,
+      "stage": 27,
+      "colors": 3,
+      "optimal": 8,
+      "extraOptimal": 7,
+      "runs": 8,
+      "maskedUnits": 0,
+      "roles": [
+        "mini",
+        "ice"
+      ],
+      "physicalFingerprint": "a841a760cff771a1bcc9360b1aad70cb751d34ba0bbc595de3a922183f74b89d",
+      "maskedFingerprint": "a841a760cff771a1bcc9360b1aad70cb751d34ba0bbc595de3a922183f74b89d"
+    },
+    {
+      "id": "water-034",
+      "oldStage": 34,
+      "stage": 34,
+      "colors": 3,
+      "optimal": 13,
+      "extraOptimal": 13,
+      "runs": 14,
+      "maskedUnits": 0,
+      "roles": [
+        "two-goals",
+        "ice"
+      ],
+      "physicalFingerprint": "fbb91c18e7d15b79d314bfac7b4024071376ec075ee55f37ce25c3216845c64b",
+      "maskedFingerprint": "fbb91c18e7d15b79d314bfac7b4024071376ec075ee55f37ce25c3216845c64b"
+    },
+    {
+      "id": "water-035",
+      "oldStage": 35,
+      "stage": 14,
+      "colors": 3,
+      "optimal": 8,
+      "extraOptimal": 8,
+      "runs": 10,
+      "maskedUnits": 4,
+      "roles": [
+        "hidden"
+      ],
+      "physicalFingerprint": "b49da5a12e6f6e5468208dfc6ea14835dda24767eb1aa3b2b6ca8d74495d3cb1",
+      "maskedFingerprint": "cfae5cfe043ead895225b2da12099304c2c8b3d3e71b48348c64b719792932e1"
+    },
+    {
+      "id": "water-036",
+      "oldStage": 36,
+      "stage": 15,
+      "colors": 3,
+      "optimal": 7,
+      "extraOptimal": 7,
+      "runs": 9,
+      "maskedUnits": 6,
+      "roles": [
+        "hidden"
+      ],
+      "physicalFingerprint": "a9d5be851ff06a3cc2e5b75aebb5d028112a6a311c1a221aecef6ce88e8378f4",
+      "maskedFingerprint": "db362cbe36db670af12554feb20853a2e9def3add70878fedaa733d83e2d5ddc"
+    },
+    {
+      "id": "water-037",
+      "oldStage": 37,
+      "stage": 20,
+      "colors": 4,
+      "optimal": 11,
+      "extraOptimal": 11,
+      "runs": 13,
+      "maskedUnits": 8,
+      "roles": [
+        "hidden"
+      ],
+      "physicalFingerprint": "d86b13872e9b1aafcfbdb1f9f8b4e1ad49567e59a1c65290e874af8ba9c1c5c6",
+      "maskedFingerprint": "a5773895af55778ed41220fb5c62324220eccd942f5c8f284db0b7a2e9bc0af8"
+    },
+    {
+      "id": "water-038",
+      "oldStage": 38,
+      "stage": 29,
+      "colors": 4,
+      "optimal": 12,
+      "extraOptimal": 12,
+      "runs": 14,
+      "maskedUnits": 12,
+      "roles": [
+        "hidden"
+      ],
+      "physicalFingerprint": "37a7695621db6e8b6278308f92d18a9c9773be574264e8fa373ed6abcf45c448",
+      "maskedFingerprint": "eff1179d2e24706cb3de08683c75f16b3deb9ba1d06dc9c6659b9a13afb16b63"
+    },
+    {
+      "id": "water-039",
+      "oldStage": 39,
+      "stage": 24,
+      "colors": 4,
+      "optimal": 7,
+      "extraOptimal": 7,
+      "runs": 10,
+      "maskedUnits": 10,
+      "roles": [
+        "mini",
+        "hidden"
+      ],
+      "physicalFingerprint": "268fdd306619318bcb766d06a1b5b33fd6aa040fa3ef98ea301dddcf9b5968a6",
+      "maskedFingerprint": "d6b3c5c0025486eea19d670322067c44481f9e83f1e4e772a25b387e8aae3a6a"
+    },
+    {
+      "id": "water-040",
+      "oldStage": 40,
+      "stage": 32,
+      "colors": 3,
+      "optimal": 13,
+      "extraOptimal": 13,
+      "runs": 15,
+      "maskedUnits": 8,
+      "roles": [
+        "goal",
+        "hidden"
+      ],
+      "physicalFingerprint": "d06f7495cd62be3daad0a4350ce14d220ddbb797d6115e273b9a881988056d38",
+      "maskedFingerprint": "a792e594a61a77ef5d55adebcec7793a1b042ba93eea774d572f11e9b472e2ba"
+    }
+  ],
+  "samePhysicsGroups": [
+    [
+      "water-014",
+      "water-040"
+    ],
+    [
+      "water-026",
+      "water-039"
+    ]
+  ],
+  "sameMaskAndPhysicsGroups": [],
+  "oldRoleTransitions": 12,
+  "newRoleTransitions": 33,
+  "extraSlotShortensOptimum": [
+    "water-033"
+  ]
+}
