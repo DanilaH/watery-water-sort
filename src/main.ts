@@ -9,8 +9,8 @@ import {mountAmbient} from './game/Ambient';
 import {mountHomeHero} from './game/HomeHero';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
-import { moveFor, sealedTube, won, moves, type Move } from './core/rules';
-import { attempt, levels, moved, undone, restarted, levelKey, offerExtra, displaySlots, grantExtra, goalFor, type Save } from './core/session';
+import { goalList, goalAt, moveFor, sealedTube, won, moves, type Move } from './core/rules';
+import { attempt, levels, moved, undone, restarted, levelKey, offerExtra, displaySlots, grantExtra, goalFor, levelGoals, type Save } from './core/session';
 import { SaveStore } from './platform/storage';
 import {stars,targets} from './core/ratings';
 import {Rewarded,type Receipt} from './platform/rewarded';
@@ -84,7 +84,10 @@ function paint(){
  ($('undo') as HTMLButtonElement).disabled=!a.history.length;
  ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
  $('symbols').setAttribute('aria-pressed',String(state.settings.symbols));
- const objective=goalFor(state);$('objective').hidden=finished||!objective||!!$('status').textContent;$('objective').textContent=objective&&sealedTube(a.board,objective.index,objective)?'Большая колба готова · собери остальные цвета':objective?`Собери ${['голубую','жёлтую','фиолетовую','зелёную','розовую','синюю','лимонную','оранжевую'][objective.color]} жидкость в большую колбу`:'';
+ const objective=goalFor(state),goals=goalList(objective),remaining=goals.filter(g=>!sealedTube(a.board,g.index,objective));
+ $('objective').hidden=finished||!objective||!!$('status').textContent;
+ const names=['голубую','жёлтую','фиолетовую','зелёную','розовую','синюю','лимонную','оранжевую'];
+ $('objective').textContent=!goals.length?'':!remaining.length?(goals.length>1?'Большие колбы готовы · собери остальные цвета':'Большая колба готова · собери остальные цвета'):remaining.length>1?'Собери каждый цвет в свою большую колбу':`Собери ${names[remaining[0].color]} жидкость в большую колбу`;
  $('star-target').hidden=finished;($('star-target') as HTMLButtonElement).disabled=scene.busy;renderPotentialStars($('star-target'),stars(levelKey(state.current),a.history.length));
  $('earned-stars').hidden=!finished;const earned=stars(levelKey(state.current),a.history.length);if(!finished||!$('earned-stars').classList.contains('revealing-stars'))renderResultStars($('earned-stars'),earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
  const extra=$('extra-tube');extra.hidden=atHome||!offerExtra(state)||won(a.board,goalFor(state));(extra as HTMLButtonElement).disabled=scene.busy||rewardBusy;
@@ -154,7 +157,7 @@ scene.onTap=(i)=>{
   }
  }
  scene.hintMove=null;scene.queuedMove=null;
- if(goalFor(state)?.index===i){scene.reject(i);audio.reject();message('Цель принимает только свой цвет. Выбери обычную колбу.');return;}
+ if(goalAt(goalFor(state),i)){scene.reject(i);audio.reject();message('Цель принимает только свой цвет. Выбери обычную колбу.');return;}
  if(board[i].length){scene.selected=i;audio.tap();haptic();message(guidance());}
  else{scene.selected=null;scene.reject(i);audio.reject();message('Сначала выбери цветную колбу');}
 };
@@ -181,8 +184,8 @@ scene.onComplete=()=>{
 function undo(){
  const a=attempt(state),m=a.history.at(-1);if(!m)return;const before=a.board;
  interrupt();if(commit(undone(state))){hintCache=null;kind='undo';lastMove=null;scene.setBoard(attempt(state).board);
-  if(goalFor(state)?.index===m.to){scene.land(m.from,m.amount);scene.land(m.to,m.amount);}else scene.animate(before,{from:m.to,to:m.from,amount:m.amount,color:m.color},true);
-  audio.undo();paint();message(goalFor(state)?.index===m.to?'Ход отменён · большая бутылка остаётся на месте':'Возвращаем предыдущий ход');}
+  if(goalAt(goalFor(state),m.to)){scene.land(m.from,m.amount);scene.land(m.to,m.amount);}else scene.animate(before,{from:m.to,to:m.from,amount:m.amount,color:m.color},true);
+  audio.undo();paint();message(goalAt(goalFor(state),m.to)?'Ход отменён · большая бутылка остаётся на месте':'Возвращаем предыдущий ход');}
 }
 $('undo').onclick=undo;
 function askRestart(){audio.ui();modal('Начать заново?','Текущие ходы будут сброшены. Открытая дополнительная колба сохранится.',[{label:'Продолжить игру',primary:true,action:close},{label:'Начать заново',action:restart}]);}
@@ -254,9 +257,9 @@ function menu(){
  const grid=document.createElement('div');grid.className='levels';
  levels.forEach((l,i)=>{const b=document.createElement('button'),done=state.completed.includes(l.id),available=done||i===0||i===state.current||state.completed.includes(levels[i-1].id);
   b.disabled=!available;b.classList.add('gel-button');if(i===state.current)b.classList.add('gel-primary');b.textContent=String(i+1);b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
-  b.setAttribute('aria-label',`Уровень ${i+1}${l.goal?', большая бутылка':''}${done?', пройден':!available?', закрыт':''}`);
+  b.setAttribute('aria-label',`Уровень ${i+1}${l.goals?', две большие колбы':l.goal?', большая бутылка':''}${done?', пройден':!available?', закрыт':''}`);
   const record=state.best?.[levelKey(i)],earned=record?stars(levelKey(i),record.history.length):done?1:0;if(isHard(i)){const difficulty=document.createElement('small');difficulty.className='level-hard';difficulty.textContent='Сложный';b.append(difficulty);}
-  if(l.goal){const mechanic=document.createElement('small');mechanic.className='level-mechanic';mechanic.textContent='Большая цель';b.append(mechanic);}
+  if(levelGoals(l)){const mechanic=document.createElement('small');mechanic.className='level-mechanic';mechanic.textContent=l.goals?'Две цели':'Большая цель';b.append(mechanic);}
   const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);if(record){const best=document.createElement('small');best.textContent=`${record.history.length} ходов`;b.append(best);}b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
  });body.append(grid);
  if(!won(attempt(state).board,goalFor(state))){const helpButton=document.createElement('button');helpButton.className='help-button gel-button';helpButton.textContent='Если застрял';helpButton.onclick=()=>{audio.ui();help();};body.append(helpButton);}

@@ -1,9 +1,10 @@
 import levelData from './levels.json' with {type:'json'};
 import { apply, clone, reverse, validBoard, won, type Board, type Move, type Goal } from './rules';
 import {isTheme,type ThemeId} from './themes';
-export type Level={id:string;version:number;colors:number;seed:number;initial:Board;witness:Move[];goal?:Goal};
+export type Level={id:string;version:number;colors:number;seed:number;initial:Board;witness:Move[];goal?:Goal;goals?:Goal[]};
 export const levels=levelData as Level[];
-export const goalFor=(s:Pick<Save,'current'>)=>levels[s.current].goal;
+export const levelGoals=(l:Level)=>l.goals??l.goal;
+export const goalFor=(s:Pick<Save,'current'>)=>levelGoals(levels[s.current]);
 export type Attempt = { board: Board; history: Move[]; extra: boolean };
 export type Settings = { sound: boolean; fast: boolean; symbols: boolean; light: boolean; haptics?: boolean; theme?:ThemeId };
 export type Best = {history:Move[];extra:boolean};
@@ -21,16 +22,16 @@ export function validSave(value: unknown): value is Save {
     if(!s.settings || !['sound','fast','symbols','light'].every(k=>typeof s.settings[k as keyof Settings]==='boolean'))return false;
     if(!s.attempts || typeof s.attempts!=='object')return false;
     for(const [key,a] of Object.entries(s.attempts)) {
-      const l=levels.find(l=>`${l.id}@${l.version}`===key); if(!l || !validBoard(a.board,l.goal) || typeof a.extra!=='boolean' || !Array.isArray(a.history))return false;
+      const l=levels.find(l=>`${l.id}@${l.version}`===key); if(!l || !validBoard(a.board,levelGoals(l)) || typeof a.extra!=='boolean' || !Array.isArray(a.history))return false;
       let b:Board=clone(l.initial);if(a.extra)b.push([]);
-      for(const m of a.history)b=apply(b,m,l.goal);
+      for(const m of a.history)b=apply(b,m,levelGoals(l));
       if(JSON.stringify(b)!==JSON.stringify(a.board))return false;
     }
     if(s.best!==undefined){
       if(!s.best||typeof s.best!=='object'||Array.isArray(s.best))return false;
       for(const [key,r]of Object.entries(s.best)){
         const l=levels.find(l=>`${l.id}@${l.version}`===key);if(!l||!r||typeof r.extra!=='boolean'||!Array.isArray(r.history))return false;
-        let b:Board=clone(l.initial);if(r.extra)b.push([]);for(const m of r.history)b=apply(b,m,l.goal);if(!won(b,l.goal))return false;
+        let b:Board=clone(l.initial);if(r.extra)b.push([]);for(const m of r.history)b=apply(b,m,levelGoals(l));if(!won(b,levelGoals(l)))return false;
       }
     }
     return true;
@@ -59,6 +60,6 @@ export function grantExtra(s:Save,key:string):Save{
 /** Recover only provable previous results; completion without a retained path earns no invented record. */
 export function migrateBest(s:Save):Save{
  const n=structuredClone(s);n.best??={};
- for(const [key,a]of Object.entries(n.attempts))if(won(a.board,levels.find(l=>`${l.id}@${l.version}`===key)?.goal)&&(!n.best[key]||n.best[key].history.length>a.history.length))n.best[key]={history:structuredClone(a.history),extra:a.extra};
+ for(const [key,a]of Object.entries(n.attempts))if(won(a.board,levelGoals(levels.find(l=>`${l.id}@${l.version}`===key)!))&&(!n.best[key]||n.best[key].history.length>a.history.length))n.best[key]={history:structuredClone(a.history),extra:a.extra};
  return n;
 }

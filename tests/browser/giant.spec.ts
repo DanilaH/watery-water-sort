@@ -42,7 +42,7 @@ for(const [width,height]of [[320,480],[568,320],[390,844]])test(`large-goal fiel
  const boxes=await page.evaluate(()=>['board','feedback','continue'].map(id=>{const r=document.getElementById(id)!.getBoundingClientRect();return {id,x:r.x,y:r.y,right:r.right,bottom:r.bottom,h:r.height};}));
  for(const r of boxes){expect(r.x).toBeGreaterThanOrEqual(0);expect(r.right).toBeLessThanOrEqual(width);expect(r.bottom).toBeLessThanOrEqual(height);}
  const button=boxes[2],board=boxes[0];expect(button.h).toBeGreaterThanOrEqual(48);expect(button.y).toBeGreaterThanOrEqual(board.bottom);
- await page.locator('#continue').click();await expect(page.getByRole('heading',{name:'Уровни',exact:true})).toBeVisible();
+ await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 17');
 });
 test('Undo out of the goal restores layers without lifting the fixed receiver',async({page})=>{
  await seed(page,12,1);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.animate;(window as any).goalFlights=[];m.WaterScene.prototype.animate=function(...args:any[]){(window as any).goalFlights.push(args[1]);return fn.apply(this,args);};});

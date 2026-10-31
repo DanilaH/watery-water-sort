@@ -3,7 +3,7 @@ import {VictoryOverlay} from './VictoryOverlay';
 import {GlassMaterial} from './GlassMaterial';
 import {liquidMesh,liquidContour,boundaryY,cutBoundary} from './liquidSurface';
 import {stepLiquid,smooth,streamEnvelope,completionCork,FILL_BEATS,type LiquidMotion} from './liquid';
-import { type Board, type Move, type Goal, capacityAt, sealedTube, moveFor } from '../core/rules';
+import { type Board, type Move, type Goals, goalAt, goalList, capacityAt, sealedTube, moveFor } from '../core/rules';
 import { area, clip, layout, goalLayout, surface, planPour, pourPose, vesselPolygon, LIQUID_FILL, pourTransfer, pourTiming, pourFrame, type PourPlan, type Point } from './geometry';
 // Clean candy hues: amber/yellow-green and cyan/royal blue stay separate at small sizes.
 export const COLORS=[0x00d9f5,0xffd000,0xad32ff,0x16df64,0xff2447,0x2463ff,0xbcef00,0xff7e14];
@@ -31,11 +31,13 @@ export class WaterScene extends Phaser.Scene {
   private glass?:GlassMaterial;
   private crystalBase?:Phaser.GameObjects.Image;
   private crystalShards:Phaser.GameObjects.Image[]=[];
+  private secondCrystalBase?:Phaser.GameObjects.Image;
+  private secondCrystalShards:Phaser.GameObjects.Image[]=[];
   private labels:Phaser.GameObjects.Text[]=[];
   private activeLabels:Phaser.GameObjects.Text[]=[];
   private floatLabels:Phaser.GameObjects.Text[]=[];
   private queueLabels:Phaser.GameObjects.Text[]=[];
-  goal?:Goal;lockedExtra=false;slots=5;board:Board=[];selected:number|null=null;hintMove:Move|null=null;queuedMove:Move|null=null;symbols=false;light=false;reduced=false;
+  goal?:Goals;lockedExtra=false;slots=5;board:Board=[];selected:number|null=null;hintMove:Move|null=null;queuedMove:Move|null=null;symbols=false;light=false;reduced=false;
   private flight?:Flight;
   private selectionY=new Map<number,number>();
   private hitPolygons=new Map<number,Point[]>();
@@ -76,6 +78,8 @@ export class WaterScene extends Phaser.Scene {
     this.queueLabels=['2','↓'].map(text=>{const label=this.add.text(0,0,text,{fontFamily:'sans-serif',fontSize:'13px',fontStyle:'bold',color:'#402d19'}).setOrigin(.5).setDepth(6).setResolution(this.density).setVisible(false);this.root.add(label);return label;});this.root.sort('depth');
     this.crystalBase=this.add.image(0,0,'goal-crystal-base').setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(this.crystalBase);
     this.crystalShards=Array.from({length:5},(_,i)=>{const shard=this.add.image(0,0,`goal-crystal-shard-${i}`).setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(shard);return shard;});this.root.sort('depth');
+    this.secondCrystalBase=this.add.image(0,0,'goal-crystal-base').setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(this.secondCrystalBase);
+    this.secondCrystalShards=Array.from({length:5},(_,i)=>{const shard=this.add.image(0,0,`goal-crystal-shard-${i}`).setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(shard);return shard;});this.root.sort('depth');
     this.input.on('pointerdown',(p:Phaser.Input.Pointer)=>{
       if(!p.primaryDown)return;
       this.onTap(this.hitTube(p.x/this.density,p.y/this.density));
@@ -100,33 +104,33 @@ export class WaterScene extends Phaser.Scene {
     return null;
   }
   setViewport(width:number,height:number,density:number){this.viewWidth=Math.max(1,width);this.viewHeight=Math.max(1,height);this.density=density;this.root?.setScale(density);for(const label of [...this.labels,...this.activeLabels,...this.queueLabels])label.setResolution(density);this.previousSignature='';this.tubes.clear();}
-  positions(){const key=`${this.viewWidth}:${this.viewHeight}:${this.slots}:${this.goal?.index??-1}`;if(key!==this.layoutKey){this.layoutKey=key;this.layoutCache=this.goal?goalLayout(this.viewWidth,this.viewHeight,this.slots,this.goal.index):layout(this.viewWidth,this.viewHeight,this.slots);}return this.layoutCache;}
+  positions(){const key=`${this.viewWidth}:${this.viewHeight}:${this.slots}:${goalList(this.goal).map(g=>g.index).join(',')}`;if(key!==this.layoutKey){this.layoutKey=key;this.layoutCache=this.goal?goalLayout(this.viewWidth,this.viewHeight,this.slots,goalList(this.goal).map(g=>g.index)):layout(this.viewWidth,this.viewHeight,this.slots);}return this.layoutCache;}
   reveal(){this.entrance=performance.now();this.previousSignature='';}
   setBoard(b:Board){this.board=b;}
   animate(before:Board,m:Move,fast:boolean){this.flight={...m,before,start:performance.now(),duration:pourTiming(m.amount,fast).duration,timing:pourTiming(m.amount,fast),received:false,lifted:(this.selectionY.get(m.from)??0)+12*Math.max(0,1-(performance.now()-this.entrance)/240)**2,plan:planPour(this.positions()[m.from],this.positions()[m.to],this.viewWidth,this.viewHeight,before[m.from].length,before[m.from].length-m.amount)};this.startedSound=false;this.selectionY.set(m.from,0);this.selectionV.set(m.from,0);this.selectionY.set(m.to,0);this.selectionV.set(m.to,0);}
   get busy(){return !!this.flight;}
   busyTube(i:number){return this.flight?.from===i||this.flight?.to===i;}
   skip(){this.flight=undefined;this.startedSound=false;this.previousSignature='';}
-  resetEffects(){this.glass?.reset();this.crystalBase?.setVisible(false);this.crystalShards.forEach(s=>s.setVisible(false));this.overlay.clear();this.popped.clear();this.lastSelected=null;this.skip();this.tubes.clear();this.hitPolygons.clear();this.corkOpen.clear();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.impulses.clear();this.liquid.clear();this.bodyMotion.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.flyingInk?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
+  resetEffects(){this.glass?.reset();this.crystalBase?.setVisible(false);this.crystalShards.forEach(s=>s.setVisible(false));this.secondCrystalBase?.setVisible(false);this.secondCrystalShards.forEach(s=>s.setVisible(false));this.overlay.clear();this.popped.clear();this.lastSelected=null;this.skip();this.tubes.clear();this.hitPolygons.clear();this.corkOpen.clear();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.impulses.clear();this.liquid.clear();this.bodyMotion.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.flyingInk?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
   reject(i:number){this.pulses.set(i,performance.now());}
-  land(i:number,amount=1){this.settles.set(i,performance.now());this.impulses.set(i,.55+amount*.16);if(!this.reduced){const s=this.liquid.get(i)??{x:0,v:0};s.v=Math.min(120,s.v+(34+amount*14)*(i===this.goal?.index?1.18:1));this.liquid.set(i,s);}}
+  land(i:number,amount=1){this.settles.set(i,performance.now());this.impulses.set(i,.55+amount*.16);if(!this.reduced){const s=this.liquid.get(i)??{x:0,v:0};s.v=Math.min(120,s.v+(34+amount*14)*(!!goalAt(this.goal,i)?1.18:1));this.liquid.set(i,s);}}
   celebrate(index:number,final=false){
     const r=this.positions()[index];if(!r)return;
     const color=COLORS[this.board[index]?.[0]??0],now=performance.now();this.corkOpen.set(index,0);
     if(final){
       // Other bottles begin while the receiver seals. Its own pop follows its third beat.
       const order=this.board.map((_,i)=>i).filter(i=>i!==index&&sealedTube(this.board,i,this.goal)).sort((a,b)=>this.positions()[a].y-this.positions()[b].y||this.positions()[a].x-this.positions()[b].x);order.push(index);
-      order.forEach((i,n)=>this.bursts.push({index:i,start:now+Math.max(i===index?620:0,220+n*150),color:COLORS[this.board[i][0]],final:true,order:n,heavy:i===this.goal?.index}));
+      order.forEach((i,n)=>this.bursts.push({index:i,start:now+Math.max(i===index?620:0,220+n*150),color:COLORS[this.board[i][0]],final:true,order:n,heavy:!!goalAt(this.goal,i)}));
       return;
     }
-    const heavy=index===this.goal?.index;this.bursts.push({index,start:now,color,final,phase:0,heavy});
+    const heavy=!!goalAt(this.goal,index);this.bursts.push({index,start:now,color,final,phase:0,heavy});
     this.onPhase(0,heavy);this.bodyImpulse(index,42);this.fillSplash(index,0);
   }
   private bodyImpulse(index:number,velocity:number){
-    if(this.reduced)return;const s=this.bodyMotion.get(index)??{x:0,v:0};s.v=Math.max(-90,Math.min(90,s.v+velocity*(index===this.goal?.index?1.35:1)));this.bodyMotion.set(index,s);
+    if(this.reduced)return;const s=this.bodyMotion.get(index)??{x:0,v:0};s.v=Math.max(-90,Math.min(90,s.v+velocity*(!!goalAt(this.goal,index)?1.35:1)));this.bodyMotion.set(index,s);
   }
   private fillSplash(index:number,phase:number){
-    if(this.reduced)return;const r=this.positions()[index],heavy=index===this.goal?.index,color=COLORS[this.board[index]?.[0]??0],count=phase===0?(heavy?14:6):(heavy?7:3),stretch=1+(heavy?.04:.027)*Math.tanh((this.bodyMotion.get(index)?.x??0)/1.5),localY=phase===0?surface(vesselPolygon(r.w,r.h),LIQUID_FILL):2,y=r.y+r.h+(localY-r.h)/stretch;
+    if(this.reduced)return;const r=this.positions()[index],heavy=!!goalAt(this.goal,index),color=COLORS[this.board[index]?.[0]??0],count=phase===0?(heavy?14:6):(heavy?7:3),stretch=1+(heavy?.04:.027)*Math.tanh((this.bodyMotion.get(index)?.x??0)/1.5),localY=phase===0?surface(vesselPolygon(r.w,r.h),LIQUID_FILL):2,y=r.y+r.h+(localY-r.h)/stretch;
     for(let n=0;n<count;n++){const direction=(n-(count-1)/2)/Math.max(1,(count-1)/2);this.particles.push({x:r.x+direction*r.w*.12,y,vx:direction*(phase===0?32:24),vy:-(phase===0?65:42)*(heavy?1.25:1)*(1-Math.abs(direction)*.25),age:0,life:phase===0?.36:.25,color,size:(phase===0?2.1:1.6)*(heavy?1.35:1),spin:0});}
     this.particles=this.particles.slice(-100);
   }
@@ -141,24 +145,24 @@ export class WaterScene extends Phaser.Scene {
     label.setPosition(mark.x,mark.y).setText(mark.text).setVisible(true);this.activeLabels.push(label);
   }
   private pedestal(r:Pose,completed:boolean,index:number,now:number){
-    const base=this.crystalBase;if(!base)return;
+    const second=goalList(this.goal).findIndex(g=>g.index===index)===1,base=second?this.secondCrystalBase:this.crystalBase,shards=second?this.secondCrystalShards:this.crystalShards;if(!base)return;
     const source=base.texture.getSourceImage(),ratio=source.height/source.width;
     const below=Math.max(8,this.viewHeight-r.y-r.h-4),width=Math.min(110,r.w*1.55,2*(r.x-4),2*(this.viewWidth-r.x-4),below/(ratio*.55)),height=width*ratio;
     const burst=this.bursts.find(b=>b.index===index&&!b.final),age=completed?(burst?now-burst.start:10000):-1;
     base.setPosition(r.x,r.y+r.h+2).setDisplaySize(width,height).setRotation(0).setAlpha(1).clearTint();
-    this.crystalShards.forEach(s=>s.setVisible(false));
+    shards.forEach(s=>s.setVisible(false));
     if(!completed){base.setVisible(true);return;}
     if(this.reduced){base.setVisible(age<220).setAlpha(Math.max(0,1-age/220));return;}
     base.setVisible(age<70);if(age<70){base.setTintFill(0xd9ffff);return;}
     const p=Math.min(1,(age-70)/580);if(p>=1)return;
     const directions=[-.35,.35,-.9,.9,0],jumps=[24,26,17,19,12],spins=[-.6,.6,-.95,.95,.12];
-    this.crystalShards.forEach((shard,i)=>{
+    shards.forEach((shard,i)=>{
       const dx=Math.max(4-r.x+width/2,Math.min(this.viewWidth-4-r.x-width/2,directions[i]*width*p*.6));
       shard.setVisible(true).setPosition(r.x+dx,r.y+r.h+2+p*p*35-Math.sin(p*Math.PI)*jumps[i]).setDisplaySize(width,height).setRotation(spins[i]*p).setAlpha(Math.pow(1-p,1.2));
     });
   }
   private restingTube(r:Pose,layers:Layer[],selected:boolean,target:boolean,index:number,now:number){
-    if(index===this.goal?.index)this.pedestal(r,sealedTube(this.board,index,this.goal)&&layers.reduce((v,l)=>v+l.amount,0)>=8-.001,index,now);
+    if(!!goalAt(this.goal,index))this.pedestal(r,sealedTube(this.board,index,this.goal)&&layers.reduce((v,l)=>v+l.amount,0)>=8-.001,index,now);
     const age=now-(this.settles.get(index)??-10000),shake=now-(this.pulses.get(index)??-10000),opening=this.corkOpen.get(index)??0;
     // Cache only settled, unselected vessels. Moving liquid, ripples, corks and glows stay live.
     const stable=!this.bursts.some(b=>b.index===index&&!b.final)&&!selected&&!target&&!this.busyTube(index)&&!this.liquid.has(index)&&!this.bodyMotion.has(index)&&age>=650&&shake>=220&&opening===0&&(this.selectionY.get(index)??0)===0&&now-this.entrance>=260;
@@ -178,7 +182,7 @@ export class WaterScene extends Phaser.Scene {
     return limit*Math.tanh(x/Math.max(.1,limit));
   }
   private tube(r:Pose,layers:Layer[],angle:number,selected:boolean,target:boolean,index:number,now:number){
-    const g=this.ink,w=r.w*.5,h=r.h,capacity=capacityAt(this.goal,index),isGoal=this.goal?.index===index;
+    const g=this.ink,w=r.w*.5,h=r.h,capacity=capacityAt(this.goal,index),isGoal=!!goalAt(this.goal,index);
     const settle=this.settles.get(index),age=settle===undefined?10000:now-settle;
     const landing=age<400?Math.sin(age/30)*Math.exp(-age/90):0;
     const contact=landing*.7;
@@ -194,9 +198,9 @@ export class WaterScene extends Phaser.Scene {
     if(selected||target){const glow=selected?0xb9e3ff:0x68d9e9;for(let n=3;n>=1;n--){g.lineStyle(n*5,glow,.025);g.strokePoints(poly,true);}g.fillStyle(glow,.12*(1-lift));g.fillEllipse(resting.x,shadowY,r.w*1.25,12);}
     this.polygon(poly,this.light?0x8bbbe4:0xb8e4ff,this.light?.13:.045);
     if(isGoal){
-      const colour=COLORS[this.goal!.color],completed=sealedTube(this.board,index,this.goal)&&layers.reduce((v,l)=>v+l.amount,0)>=capacity-.001;
+      const colour=COLORS[goalAt(this.goal,index)!.color],completed=sealedTube(this.board,index,this.goal)&&layers.reduce((v,l)=>v+l.amount,0)>=capacity-.001;
       g.lineStyle(3,colour,.7);g.strokePoints(poly,true);
-      if(!layers.length){this.polygon(poly,colour,.065);g.fillStyle(colour,.35);g.fillCircle(r.x,r.y+h*.46,r.w*.2);if(this.symbols)this.textMark({x:r.x,y:r.y+h*.46,text:SIGNS[this.goal!.color],size:Math.min(22,r.w*.4)},this.light?'#18294a':'#e6f7ff');}
+      if(!layers.length){this.polygon(poly,colour,.065);g.fillStyle(colour,.35);g.fillCircle(r.x,r.y+h*.46,r.w*.2);if(this.symbols)this.textMark({x:r.x,y:r.y+h*.46,text:SIGNS[goalAt(this.goal,index)!.color],size:Math.min(22,r.w*.4)},this.light?'#18294a':'#e6f7ff');}
       if(!completed&&r.y>=40)this.textMark({x:r.x,y:r.y-19,text:'ЦЕЛЬ',size:10},this.light?'#35527b':'#c6ddff');
       for(let k=1;k<8;k++){const y=r.y+h*(1-k*LIQUID_FILL/8);g.lineStyle(1,0xffffff,.3);g.lineBetween(r.x+r.w*.28,y,r.x+r.w*.43,y);}
 
@@ -302,7 +306,7 @@ export class WaterScene extends Phaser.Scene {
     if(f&&t>=.25&&!this.startedSound){this.startedSound=true;if(t<.73)this.onPour(frame.remaining,(f.before[f.to].length+f.amount*transfer)/capacityAt(this.goal,f.to),(f.before[f.to].length+f.amount)/capacityAt(this.goal,f.to));}
     for(let i=0;i<this.board.length;i++){
       if(f&&i===f.from)continue;
-      const r={...poses[i]},chosen=(this.selected===i||this.hintMove?.from===i)&&this.goal?.index!==i;
+      const r={...poses[i]},chosen=(this.selected===i||this.hintMove?.from===i)&&!goalAt(this.goal,i);
       const target=!this.queuedMove&&(this.selected!==null&&!!moveFor(this.board,this.selected,i,this.goal)||this.hintMove?.to===i);
       const aim=chosen&&!this.busyTube(i)?-17:0,prev=this.selectionY.get(i)??0;let velocity=this.selectionV.get(i)??0;velocity+=((aim-prev)*520-velocity*28)*dt;let offset=prev+velocity*dt;if(Math.abs(offset-aim)<.04&&Math.abs(velocity)<.2){offset=aim;velocity=0;}this.selectionY.set(i,offset);this.selectionV.set(i,velocity);r.y+=offset;
       if(now-this.entrance<240){const p=Math.max(0,1-(now-this.entrance)/240);r.y+=p*p*12;}

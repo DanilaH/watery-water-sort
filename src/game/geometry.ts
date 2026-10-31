@@ -94,7 +94,10 @@ export function pourPose(origin:TubePose,dest:TubePose,t:number,width:number,hei
 }
 
 /** A permanent goal column keeps the tall receiver and every ordinary touch target separate. */
-export function goalLayout(width:number,height:number,count:number,goalIndex:number):TubePose[]{
+export function goalLayout(width:number,height:number,count:number,goalIndex:number|readonly number[]):TubePose[]{
+ const indices=typeof goalIndex==='number'?[goalIndex]:goalIndex;
+ if(indices.length>1)return dualGoalLayout(width,height,count,indices);
+ goalIndex=indices[0];
  const column=width<340?64:Math.max(64,Math.min(110,width*.24)),gap=4;
  const normal=layout(width-column-gap,height,count-1,2).map(r=>{
   const h=Math.min(r.h,156,Math.max(48,(height-48)*.57)),w=Math.min(r.w,h*.34);
@@ -103,4 +106,16 @@ export function goalLayout(width:number,height:number,count:number,goalIndex:num
  const top=Math.min(...normal.map(r=>r.y)),bottom=Math.max(...normal.map(r=>r.y+r.h)),h=bottom-top;
  const goal={x:column/2+2,y:top,w:Math.min(column-16,68,h*.5),h,hitW:column-8,hitH:Math.max(48,h+18)};
  const poses:TubePose[]=[];let n=0;for(let i=0;i<count;i++)poses.push(i===goalIndex?goal:normal[n++]);return poses;
+}
+
+/** Two fixed receivers flank the ordinary bank, aligned to its complete row span. */
+function dualGoalLayout(width:number,height:number,count:number,indices:readonly number[]):TubePose[]{
+ const column=Math.max(56,Math.min(86,width*.19)),gap=4;
+ const normal=layout(width-column*2-gap*2,height,count-2,2).map(r=>{
+  const h=Math.min(r.h,156,Math.max(48,(height-48)*.57)),w=Math.min(r.w,h*.34);
+  return {...r,x:r.x+column+gap,y:r.y+(r.h-h)/2,w,h,hitH:Math.min(r.hitH,Math.max(48,h+20))};
+ });
+ const top=Math.min(...normal.map(r=>r.y)),bottom=Math.max(...normal.map(r=>r.y+r.h)),h=bottom-top;
+ const receiver=(right:boolean):TubePose=>({x:right?width-column/2:column/2,y:top,w:Math.min(column-18,68,h*.5),h,hitW:column-8,hitH:Math.max(48,h+18)});
+ let n=0;return Array.from({length:count},(_,i)=>indices.includes(i)?receiver(i===indices[1]):normal[n++]);
 }
