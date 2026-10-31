@@ -21,3 +21,9 @@ Saves retain only discovered authored masked IDs. Replay validates required disc
 The independent C++ optimum search and separate Python bounded proof cover both buffer configurations of all 40 levels. Hidden masks do not alter physical rules, so no new solver state is needed. Core and browser tests cover unit identity, exposure, completion disclosure, Undo/restart/reload, invalid memory, visible-only hints, reward, reduced motion and the two combinations at three screen sizes.
 
 Release evidence, source commit, CI result and APK/capture matching are recorded in `docs/audits/hidden-36/validation.json` after packaging. Native tactile feel still requires a physical Android device.
+
+## Packaged result
+
+Runtime source `639e77519bfbefe8f686b62f54fd658c397c699b`, first CI run [41203702510](https://github.com/DanilaH/watery-water-sort/actions/runs/41203702510) succeeded: 65 core tests, 193 browser tests (13.9 minutes), 80 independently proved optimum paths, Gradle 2m03s. APK version code 36, name `0.36.0-hidden`, 10,852,651 bytes; SHA-256 `2e8dfb328fef4c17078de20f1fac6ab2d49208ac8c323472e528e903aa4d1e24`. V2 signature, matching preview certificate, protected-byte tamper rejection, CRC and all 45 dist files verified. Both clean-source production compositor captures match those APK bytes. Lossless animated WebPs contain 242 and 260 decoded original frames, with measured timing and no interpolation.
+
+The two clips and raw APK were saved successfully. This evidence-only follow-up changes no runtime files. Physical phone installation/audio/haptic evaluation remains pending.
