@@ -52,7 +52,7 @@ const analytics=new Analytics();let activeSince:number|undefined,activeMs=0;
 function measureActive(){if(activeSince!==undefined){activeMs+=performance.now()-activeSince;activeSince=undefined;}}
 function syncActive(){measureActive();if(!atHome&&!blockers.size&&!document.hidden)activeSince=performance.now();}
 function track(name:EventName,extra:Partial<EventData>={},index=state.current){const a=attempt({...state,current:index});analytics.emit(name,{level:levelKey(index),stage:stageNumber(index),revision:state.revision,moves:a.history.length,extra:a.extra,active_ms:Math.round(activeMs+(activeSince===undefined?0:performance.now()-activeSince)),...extra});}
-let atHome=true,rewardBusy=false;
+let atHome=true,rewardBusy=false,recoveringRewards=false;
 const rewarded=new Rewarded();let pendingReceipt:Receipt|undefined;
 const hasStarted=()=>Object.keys(state.attempts).length>0||state.completed.length>0;
 function haptic(event:Touch='select',heavy=false){touch.enabled=state.settings.haptics!==false;touch.blocked=event==='ui'?[...blockers].some(b=>b!=='home'&&b!=='dialog'):blockers.size>0;touch.play(event,heavy);}
@@ -102,7 +102,7 @@ function paint(){
  $('objective').hidden=finished||!$('objective').textContent||!!$('status').textContent;
  $('star-target').hidden=finished;($('star-target') as HTMLButtonElement).disabled=scene.busy;renderPotentialStars($('star-target'),stars(levelKey(state.current),a.history.length));
  $('earned-stars').hidden=!finished;const earned=stars(levelKey(state.current),a.history.length);if(!finished||!$('earned-stars').classList.contains('revealing-stars'))renderResultStars($('earned-stars'),earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
- const extra=$('extra-tube');extra.hidden=atHome||!offerExtra(state)||won(a.board,goalFor(state));(extra as HTMLButtonElement).disabled=scene.busy||rewardBusy;
+ const extra=$('extra-tube');extra.hidden=atHome||!offerExtra(state)||won(a.board,goalFor(state));(extra as HTMLButtonElement).disabled=scene.busy||rewardBusy||recoveringRewards;
  if(offerExtra(state)){const r=scene.positions().at(-1)!;Object.assign(extra.style,{left:`${r.x-r.hitW/2}px`,top:`${r.y+r.h/2-r.hitH/2}px`,width:`${r.hitW}px`,height:`${r.hitH}px`});extra.style.setProperty('--vessel-width',r.w+'px');extra.style.setProperty('--vessel-height',r.h+'px');}
  $('continue').hidden=!finished;
  $('rescue').hidden=finished||scene.busy||!(deadRevision===state.revision||!moves(a.board,goalFor(state)).length);
@@ -237,7 +237,7 @@ async function applyReceipt(receipt:Receipt){
  await rewarded.ack(receipt.token).catch(()=>{});return true;
 }
 async function watchForTube(){
- if(rewardBusy)return;const key=levelKey(state.current);if(!offerExtra(state))return;
+ if(rewardBusy||recoveringRewards)return;const key=levelKey(state.current);if(!offerExtra(state))return;
  rewardBusy=true;block('reward',true);const button=content.querySelector<HTMLButtonElement>('.dialog-actions .primary');if(button){button.disabled=true;button.textContent=pendingReceipt?'Получаем колбу…':'Загружаем рекламу…';}
  let granted=false,notice='';
  try{
@@ -256,9 +256,9 @@ function askExtra(){
 $('extra-tube').onclick=askExtra;
 $('star-target').onclick=()=>{const t=targets(levelKey(state.current));modal('Звёзды за уровень',`★★★ — не больше ${t.three} ходов. ★★ — не больше ${t.two}. ★ — за любое прохождение. Отмена хода возвращает и шанс на звезду.`,[{label:'Понятно',primary:true,action:close}]);};
 async function recoverRewards(){
- if(rewardBusy)return;rewardBusy=true;try{const receipts=await rewarded.pending();if(!receipts.length)return;block('reward',true);for(const r of receipts){if(!await applyReceipt(r)){pendingReceipt=r;break;}}}
+ if(rewardBusy||recoveringRewards)return;recoveringRewards=true;try{const receipts=await rewarded.pending();if(!receipts.length)return;block('receipt-recovery',true);for(const r of receipts){if(!await applyReceipt(r)){pendingReceipt=r;break;}}}
  catch{/* Offline/native bridge unavailability never blocks playing. */}
- finally{rewardBusy=false;block('reward',false);}
+ finally{recoveringRewards=false;block('receipt-recovery',false);}
 }
 
 function help(proven=deadRevision===state.revision){
