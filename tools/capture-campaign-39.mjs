@@ -8,6 +8,7 @@ import {mkdirSync,writeFileSync,readFileSync,readdirSync,statSync} from 'node:fs
 import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';
 const root=process.argv[2],browser=await chromium.launch();
 for(const [kind,index,prior,steps]of [['pour',40,0,3],['finale',59,0,17]]){
+ if(process.argv[3]&&kind!==process.argv[3])continue;
  const out=root+'/'+kind;mkdirSync(out+'/frames',{recursive:true});let state={...fresh(),current:index};for(const m of levels[index].witness.slice(0,prior))state=moved(state,m);state.settings.sound=false;
  const page=await browser.newPage({viewport:{width:390,height:844}}),frames=[],errors=[];page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),state);await page.goto('http://127.0.0.1:4178');await page.evaluate(()=>document.fonts.ready);await page.locator('#home-play').click();await page.waitForTimeout(1300);await page.screenshot({path:out+'/before.png'});
  const cdp=await page.context().newCDPSession(page);cdp.on('Page.screencastFrame',f=>{frames.push({time:f.metadata.timestamp,bytes:Buffer.from(f.data,'base64')});void cdp.send('Page.screencastFrameAck',{sessionId:f.sessionId}).catch(()=>{});});await cdp.send('Page.startScreencast',{format:'png',maxWidth:390,maxHeight:844,everyNthFrame:1});

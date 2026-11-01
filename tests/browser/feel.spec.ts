@@ -48,3 +48,12 @@ test('victory accents every completed color and next level cancels the accent im
  await expect(page.locator('#continue')).toBeVisible();const data=await page.evaluate(()=>{const s=(window as any).resultScene;return {busy:s.busy,colors:[...new Set(s.bursts.filter((b:any)=>b.final).map((b:any)=>b.index))],resultBottom:document.getElementById('feedback')!.getBoundingClientRect().bottom,controlsTop:document.getElementById('undo')!.getBoundingClientRect().top};});expect(data.busy).toBe(false);expect(data.colors).toHaveLength(2);expect(data.resultBottom).toBeLessThanOrEqual(data.controlsTop);
  await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 2');expect(await page.evaluate(()=>(window as any).resultScene.bursts.length)).toBe(0);
 });
+
+
+test('the longest pour keeps audible sample data through the full slowed flow',async({page})=>{
+ await open(page);const result=await page.evaluate(async()=>{
+  const path='/src/audio/sound.ts',geometry='/src/game/geometry.ts',m=await import(path),g=await import(geometry),s=new m.Sound();await s.load();await s.context.resume();
+  const create=s.context.createBufferSource.bind(s.context);let source:AudioBufferSourceNode|undefined;s.context.createBufferSource=()=>source=create();
+  const flow=g.pourTiming(4).flow;s.pour(flow,4,0,1);const available=source!.buffer!.duration/source!.playbackRate.value,rate=source!.playbackRate.value;s.stop();await s.context.close();return {available,flow:flow/1000,rate};
+ });expect(result.available+.00001).toBeGreaterThanOrEqual(result.flow);expect(result.rate).toBeGreaterThan(.85);
+});

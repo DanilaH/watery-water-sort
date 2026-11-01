@@ -25,10 +25,10 @@ it('cork apex and landing match the tactile beats, with smooth joins',()=>{
 });
 
 
-it('raises the pouring lip through the flow and returns continuously without changing transfer timing',()=>{
+it('raises the pouring lip through the flow and returns continuously with smooth phase joins',()=>{
  const [origin,dest]=layout(390,520,4),plan=planPour(origin,dest,390,520,4,2);
  const lip=(t:number)=>{const r=pourPose(origin,dest,t,390,520,-17,plan);return r.y+r.tipX*Math.sin(r.angle);};
- expect(lip(.25)-lip(.73)).toBeGreaterThan(10);expect(lip(.25)-lip(.73)).toBeLessThanOrEqual(14.01);
+ expect(lip(.25)-lip(.73)).toBeGreaterThan(20);expect(lip(.25)-lip(.73)).toBeLessThanOrEqual(24.01);
  let previous=lip(.25);for(let n=1;n<=100;n++){const y=lip(.25+.48*n/100);expect(y).toBeLessThanOrEqual(previous+.0001);previous=y;}
  for(const boundary of [.25,.73]){const h=1e-5,left=(lip(boundary)-lip(boundary-h))/h,right=(lip(boundary+h)-lip(boundary))/h;expect(Math.abs(left-right)).toBeLessThan(.02);}
  const end=pourPose(origin,dest,1,390,520,-17,plan);expect(end.x).toBeCloseTo(origin.x);expect(end.y).toBeCloseTo(origin.y);expect(end.angle).toBeCloseTo(0);

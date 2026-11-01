@@ -8,7 +8,7 @@ for(const fast of [false,true])test(`flow raises the rendered source lip and lan
  await page.evaluate(()=>{const s=(window as any).scene39,fn=s.tube;s.tube=function(...a:any[]){if(this.flight?.from===a[5])this.sourcePose39={...a[0],angle:a[2]};return fn.apply(this,a);};});
  const m=levels[40].witness[0];await tap(page,m.from);await page.clock.fastForward(160);await page.evaluate(()=>(window as any).scene39.update());await tap(page,m.to);
  const sample=async(t:number)=>page.evaluate(t=>{const s=(window as any).scene39,f=s.flight;const elapsed=t<.25?t/.25*f.timing.lift:t<.73?f.timing.lift+(t-.25)/.48*f.timing.flow:f.timing.lift+f.timing.flow+(t-.73)/.27*f.timing.back;f.start=performance.now()-elapsed;s.update();const r=s.sourcePose39;return {lip:r.y+f.plan.dir*r.w/2*Math.sin(r.angle),x:r.x,y:r.y,slot:s.positions()[f.from]};},t);
- const a=await sample(.25),b=await sample(.729);expect(a.lip-b.lip).toBeGreaterThan(10);expect(a.lip-b.lip).toBeLessThanOrEqual(14.01);
+ const a=await sample(.25),b=await sample(.729);expect(a.lip-b.lip).toBeGreaterThan(20);expect(a.lip-b.lip).toBeLessThanOrEqual(24.01);
  const end=await sample(.999999);expect(end.x).toBeCloseTo(end.slot.x,3);expect(end.y).toBeCloseTo(end.slot.y,3);
  await page.clock.fastForward(200);await page.evaluate(()=>(window as any).scene39.update());expect(await page.evaluate(()=>(window as any).scene39.busy)).toBe(false);
  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));expect(attempt(saved).history).toEqual([m]);await page.clock.resume();

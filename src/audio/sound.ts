@@ -35,6 +35,8 @@ export class Sound {
   private play(name:Cue,volume:number,priority:number,rate=1,durationMs?:number,fill?:{from:number;to:number}){
     if(!this.enabled||this.blocked)return;this.prime();const buffer=this.buffers.get(name),c=this.context;if(!c||!this.master)return;if(!buffer){const token=++this.pending,at=performance.now();void this.loading?.then(()=>{if(this.buffers.has(name)&&this.pending===token&&performance.now()-at<100){const remaining=durationMs===undefined?undefined:durationMs-(performance.now()-at);if(remaining===undefined||remaining>12)this.play(name,volume,priority,rate,remaining,fill);}});return;}
     if(this.voices.length>=4){const low=[...this.voices].sort((a,b)=>a.priority-b.priority)[0];if(low.priority>priority)return;low.stop();}
+    // Long pours must not outlast the water sample after the flow is slowed down.
+    if(fill&&durationMs)rate=Math.min(rate,buffer.duration/(durationMs/1000));
     const source=c.createBufferSource(),gain=c.createGain(),pan=c.createStereoPanner();source.buffer=buffer;source.playbackRate.value=rate;
     const duration=durationMs?Math.min(durationMs/1000,buffer.duration/rate):buffer.duration/rate,now=c.currentTime;
     gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(volume,now+.006);gain.gain.setValueAtTime(volume,now+Math.max(.007,duration-.035));gain.gain.linearRampToValueAtTime(0,now+duration);

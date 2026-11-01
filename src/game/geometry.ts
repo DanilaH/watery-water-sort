@@ -52,7 +52,7 @@ export function pourTilt(width:number,height:number,units:number):number{
 }
 export const pourTransfer=(t:number)=>{const u=Math.max(0,Math.min(1,(t-.25)/.48));return u*u*(3-2*u);};
 export function pourTiming(amount:number,fast=false){
- const speed=fast ? .7 : 1,lift=125*speed,flow=(145+42*Math.max(1,Math.min(4,amount)))*speed,back=100*speed;
+ const speed=fast ? .7 : 1,lift=140*speed,flow=(145+42*Math.max(1,Math.min(4,amount)))*1.25*speed,back=115*speed;
  return {lift,flow,back,duration:lift+flow+back};
 }
 /** Preserve the geometry's phase boundaries while giving each phase its own real time. */
@@ -90,7 +90,7 @@ export function pourPose(origin:TubePose,dest:TubePose,t:number,width:number,hei
  const target=targetPose(origin,dest,plan.dir,angle);
  // The lip gradually rises while liquid flows. Quintic joins keep lift/flow/return
  // continuous; the shared pose also anchors the stream, glass and final droplet.
- const flowLift=ease((t-.25)/.48)*Math.min(14,origin.h*.09)*travel;
+ const flowLift=ease((t-.25)/.48)*Math.min(24,origin.h*.15)*travel;
  const r={...origin,x:origin.x+(target.x-origin.x)*travel,y:origin.y+(target.y-origin.y)*travel+lifted*(1-ease(t/.25))-Math.sin(Math.PI*travel)*Math.min(18,origin.h*.13)-flowLift};
  const b=bounds(r,angle);r.x+=Math.max(0,5-b.left)-Math.max(0,b.right-width+5);r.y+=Math.max(0,5-b.top)-Math.max(0,b.bottom-height+5);
  return {...r,angle,tipX:plan.dir*origin.w/2};
