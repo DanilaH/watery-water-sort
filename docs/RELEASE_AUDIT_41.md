@@ -36,4 +36,16 @@
 
 Официальные источники сверены 01.11.2026: [Rewarded Android SDK 8](https://ads.yandex.com/helpcenter/en/dev/android/rewarded), [AppMetrica Android quick start](https://appmetrica.yandex.com/docs/en/sdk/android/analytics/quick-start).
 
-Итог CI, JVM, merged manifest и APK фиксируется после сборки.
+## Итог сборки
+
+[CI 41315537516](https://github.com/DanilaH/watery-water-sort/actions/runs/41315537516) прошёл: 82 проверки логики, 218 браузерных сценариев, 120 оптимальных маршрутов, 7 JVM-проверок журнала наград (8 тестов приложения суммарно, включая шаблонную проверку каркаса), компиляция Android, debug APK, release merged manifest и три отрицательные проверки упаковки. Проверенный коммит `9d17762d7454a74ef92e524ae9931d7d5edcde24`. Первый запуск остановился после успешного native build, потому что проверочный скрипт использовал отсутствующий на runner rg; исправлено на grep.
+
+APK: код 41 / `0.41.0-release-audit`, SHA-256 `3edd569b9d18700b92110c09822f8d887e21f237671643f974f5c27793a8bca6`. Проверены ZIP CRC, V2-подпись, прежний публичный preview-сертификат, отказ подменённого защищённого байта и все 45 игровых файлов. APK сохранён. Кампания, графика и наливание 0.40 не менялись. Физическое устройство, настоящая сеть рекламы и доставка production-аналитики остаются непроверенными.
+
+Разрешения в фактическом release merged manifest: `android.permission.ACCESS_NETWORK_STATE`, `android.permission.INTERNET`, `android.permission.VIBRATE`, `com.danilah.waterywatersort.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`, `com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE`, `com.google.android.gms.permission.AD_ID`. Это инвентаризация сборки, не готовый ответ на магазинную анкету обработки данных.
+
+Машинные результаты: `docs/audits/release-41/validation.json`.
+
+Preview обновляется поверх предыдущего .preview3 с прежней подписью. Production имеет отдельный package com.danilah.waterywatersort: автоматического переноса прогресса из preview в магазинную установку нет.
+
+Дополнительная проверка в production web-сборке: принудительная потеря и восстановление software WebGL-контекста, повторная отрисовка стекла, сохранность данных и работа подсказки/следующего хода. Графическая часть между этим прогоном и итоговым коммитом не менялась; это не физический Android GPU.

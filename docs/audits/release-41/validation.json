@@ -1,0 +1,162 @@
+{
+  "contextProbe": {
+    "method": "Production web build, cloud Chromium software WebGL; not physical Android",
+    "contextRestored": true,
+    "saveUnchanged": true,
+    "hintWorksAfterRestore": true,
+    "acceptedMovesAfterRestore": 1,
+    "pageErrors": [],
+    "glassWhitePixels": {
+      "before": 6000,
+      "after": 6000
+    },
+    "sourceCommit": "8e980d15a6c322ae74268c4d12af9c2e08a14081",
+    "graphicsUnchangedInTestedCommit": true
+  },
+  "release": "0.41.0-release-audit",
+  "testedCommit": "9d17762d7454a74ef92e524ae9931d7d5edcde24",
+  "testedTree": "603742747501d2cb1cb4679c23964c68b84adcd1",
+  "ci": {
+    "run": 41315537516,
+    "job": 124874661808,
+    "headSha": "9d17762d7454a74ef92e524ae9931d7d5edcde24",
+    "artifactId": 13087553477,
+    "artifactSha256": "9326e52b9fc2b6bdaef8010c2aa7905fd8f2714f9dfd73fa3a0c101ddc0164cf",
+    "coreTests": 82,
+    "browserTests": 218,
+    "optimalPaths": 120,
+    "gradle": "BUILD SUCCESSFUL",
+    "zipCRC": true
+  },
+  "apk": {
+    "apk": "perelevy-0.41-audit.apk",
+    "bytes": 10851343,
+    "sha256": "3edd569b9d18700b92110c09822f8d887e21f237671643f974f5c27793a8bca6",
+    "manifest": {
+      "versionCode": 41,
+      "versionName": "0.41.0-release-audit",
+      "compileSdkVersion": 36,
+      "compileSdkVersionCodename": "16",
+      "package": "com.danilah.waterywatersort.preview3",
+      "platformBuildVersionCode": 36,
+      "platformBuildVersionName": 16
+    },
+    "v2Signatures": [
+      {
+        "algorithm": "0x103",
+        "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+      }
+    ],
+    "publicPreviewCertificateMatches": true,
+    "tamperedProtectedByteRejected": true,
+    "distFilesMatched": [
+      "index.html",
+      "audio/hint.ogg",
+      "audio/victory.ogg",
+      "audio/complete.ogg",
+      "audio/pour-1.ogg",
+      "audio/cork.ogg",
+      "audio/land.ogg",
+      "audio/reject.ogg",
+      "audio/material-report.json",
+      "audio/select.ogg",
+      "audio/mix-report.json",
+      "audio/collect.ogg",
+      "audio/pour-3.ogg",
+      "audio/pour-2.ogg",
+      "audio/accept.ogg",
+      "fonts/OFL-Rubik.txt",
+      "fonts/rubik.woff",
+      "assets/index-CJqh4Aaj.js",
+      "assets/solver.worker-CisvNXVQ.js",
+      "assets/web-CGHmPYBQ.js",
+      "assets/phaser-DFK5Ua9d.js",
+      "assets/index-D_PGn7jg.css",
+      "art/goal-crystal-shard-2.webp",
+      "art/goal-crystal-shard-1.webp",
+      "art/goal-crystal-shard-3.webp",
+      "art/goal-crystal-shard-4.webp",
+      "art/goal-crystal-base.webp",
+      "art/goal-crystal-shard-0.webp",
+      "art/night-shore.svg",
+      "art/goal-crystal.json",
+      "art/vfx/sprites.json",
+      "art/vfx/splash-3.webp",
+      "art/vfx/splash-2.webp",
+      "art/vfx/splash-5.webp",
+      "art/vfx/splash-4.webp",
+      "art/vfx/splash-1.webp",
+      "art/vfx/splash-0.webp",
+      "art/glass/tube-27.webp",
+      "art/glass/cork-27.webp",
+      "art/glass/material-27.json",
+      "art/ui/button-blue-29.svg",
+      "art/ui/star-gold-29.svg",
+      "art/ui/star-empty-29.svg",
+      "art/ui/material-29.json",
+      "art/ui/button-gold-29.svg"
+    ]
+  },
+  "androidAudit": {
+    "debug": {
+      "package": "com.danilah.waterywatersort.preview3",
+      "application": "com.danilah.waterywatersort.WaterApplication",
+      "debuggable": "true",
+      "permissions": [
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.INTERNET",
+        "android.permission.VIBRATE",
+        "com.danilah.waterywatersort.preview3.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE",
+        "com.google.android.gms.permission.AD_ID"
+      ]
+    },
+    "release": {
+      "package": "com.danilah.waterywatersort",
+      "application": "com.danilah.waterywatersort.WaterApplication",
+      "debuggable": "false",
+      "permissions": [
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.INTERNET",
+        "android.permission.VIBRATE",
+        "com.danilah.waterywatersort.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE",
+        "com.google.android.gms.permission.AD_ID"
+      ]
+    },
+    "previewCustomAnalyticsEnabled": false,
+    "previewRewardedUsesDemo": true,
+    "jvm": {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "missingIDsRejected": true,
+    "missingProductionSigningRejected": true,
+    "publicPreviewKeyRejectedEvenOnDirectPackageTask": true,
+    "productionPackageCreated": false,
+    "physicalDeviceTested": false,
+    "liveRewardedTested": false,
+    "rewardLedgerTests": 7
+  },
+  "localCoreTests": 82,
+  "localTargetedBrowserTests": 19,
+  "additionalRecoveryRegressionChecks": 5,
+  "bankGraphicsAndPouringUnchangedFrom040": true,
+  "saveSchema": 1,
+  "physicalDeviceTested": false,
+  "liveAdNetworkTested": false,
+  "productionAnalyticsDeliveryTested": false,
+  "productionIDsConfiguredByThisTask": false,
+  "ownerReleaseSigningConfiguredByThisTask": false,
+  "savedAPK": {
+    "filename": "perelevy-0.41-audit.apk",
+    "localMetadataApplied": true
+  },
+  "firstCI": {
+    "run": 41313683609,
+    "nativeBuildPassed": true,
+    "failure": "CI guard checker used rg, not available on the hosted runner. Replaced with grep. Subsequently direct package tasks and copied public preview signing key were covered too."
+  }
+}
