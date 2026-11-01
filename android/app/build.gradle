@@ -93,9 +93,15 @@ try {
 
 // Manifest/unsigned audits remain possible; production packaging requires real configuration.
 gradle.taskGraph.whenReady { graph ->
-    if (graph.allTasks.any { it.path in [':app:assembleRelease', ':app:bundleRelease'] }) {
+    if (graph.allTasks.any { it.path in [':app:assembleRelease', ':app:bundleRelease', ':app:packageRelease', ':app:packageReleaseBundle', ':app:signReleaseBundle'] }) {
         if (!rewardedUnit || rewardedUnit.toLowerCase().contains('demo') || !analyticsKey)
             throw new GradleException('Production IDs are required; use assembleDebug for previews')
-        if (!productionSigning) throw new GradleException('Production signing is required; preview keys are forbidden')
+        if (!productionSigning) throw new GradleException('Production signing is required')
+        def owner = java.security.KeyStore.getInstance(file(releaseStore), releasePassword.toCharArray())
+        def preview = java.security.KeyStore.getInstance(file('../debug-signing/public-test.p12'), 'android'.toCharArray())
+        def ownerCertificate = owner.getCertificate(releaseAlias)
+        if (ownerCertificate == null) throw new GradleException('Production signing alias is missing')
+        if (java.util.Arrays.equals(ownerCertificate.publicKey.encoded, preview.getCertificate('water-preview').publicKey.encoded))
+            throw new GradleException('Preview signing keys are forbidden in production')
     }
 }

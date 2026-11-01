@@ -12,6 +12,7 @@ configs=list((root/'generated/source/buildConfig/debug').rglob('BuildConfig.java
 results=[E.parse(p).getroot()for p in (root/'test-results/testDebugUnitTest').glob('TEST-*.xml')];assert results
 jvm={k:sum(int(r.get(k,'0'))for r in results)for k in ['tests','failures','errors','skipped']};assert jvm['tests']>=8 and jvm['failures']==0 and jvm['errors']==0
 assert 'Production IDs are required' in Path('android/qa-release-guard.log').read_text();assert 'Production signing is required' in Path('android/qa-signing-guard.log').read_text()
+assert 'Preview signing keys are forbidden' in Path('android/qa-preview-key-guard.log').read_text()
 assert not list((root/'outputs/apk/release').glob('*.apk'))
-report={'debug':debug,'release':release,'previewCustomAnalyticsEnabled':False,'previewRewardedUsesDemo':True,'jvm':jvm,'missingIDsRejected':True,'missingProductionSigningRejected':True,'productionPackageCreated':False,'physicalDeviceTested':False,'liveRewardedTested':False}
+report={'debug':debug,'release':release,'previewCustomAnalyticsEnabled':False,'previewRewardedUsesDemo':True,'jvm':jvm,'missingIDsRejected':True,'missingProductionSigningRejected':True,'publicPreviewKeyRejectedEvenOnDirectPackageTask':True,'productionPackageCreated':False,'physicalDeviceTested':False,'liveRewardedTested':False}
 Path('android/qa-release.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))

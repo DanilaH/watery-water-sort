@@ -47,6 +47,11 @@ jobs:
             exit 1
           fi
           grep -F 'Production signing is required' qa-signing-guard.log
+          if YANDEX_REWARDED_AD_UNIT_ID=R-M-config-probe APPMETRICA_API_KEY=00000000-0000-0000-0000-000000000000 ANDROID_KEYSTORE_PATH=../debug-signing/public-test.p12 ANDROID_KEYSTORE_PASSWORD=android ANDROID_KEY_ALIAS=water-preview ANDROID_KEY_PASSWORD=android ./gradlew :app:packageRelease --no-daemon > qa-preview-key-guard.log 2>&1; then
+            echo 'Public preview signing key unexpectedly accepted'
+            exit 1
+          fi
+          grep -F 'Preview signing keys are forbidden' qa-preview-key-guard.log
       - run: python3 tools/audit-android-41.py
       # Ubuntu 24.04 hosted runners already include Chrome runtime libraries.
       # Avoid an unrelated apt mirror outage blocking tests and Android packaging.
@@ -64,4 +69,5 @@ jobs:
             android/qa-release-guard.log
             android/qa-signing-guard.log
             android/qa-release.json
+            android/qa-preview-key-guard.log
           retention-days: 14
