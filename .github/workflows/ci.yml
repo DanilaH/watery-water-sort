@@ -41,12 +41,12 @@ jobs:
             echo 'Unconfigured release unexpectedly packaged'
             exit 1
           fi
-          rg 'Production IDs are required' qa-release-guard.log
+          grep -F 'Production IDs are required' qa-release-guard.log
           if YANDEX_REWARDED_AD_UNIT_ID=R-M-config-probe APPMETRICA_API_KEY=00000000-0000-0000-0000-000000000000 ./gradlew :app:assembleRelease --no-daemon > qa-signing-guard.log 2>&1; then
             echo 'Unsigned production packaging unexpectedly passed'
             exit 1
           fi
-          rg 'Production signing is required' qa-signing-guard.log
+          grep -F 'Production signing is required' qa-signing-guard.log
       - run: python3 tools/audit-android-41.py
       # Ubuntu 24.04 hosted runners already include Chrome runtime libraries.
       # Avoid an unrelated apt mirror outage blocking tests and Android packaging.
