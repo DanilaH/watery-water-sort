@@ -18,21 +18,50 @@ jobs:
       - run: npm run ratings:check
       - run: npm test
       - run: npm run build
-      # Ubuntu 24.04 hosted runners already include Chrome runtime libraries.
-      # Avoid an unrelated apt mirror outage blocking tests and Android packaging.
-      - run: npx playwright install chromium
-        timeout-minutes: 5
-      - run: npm run test:e2e
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
       - run: npx cap sync android
-      - run: chmod +x android/gradlew && cd android && ./gradlew assembleDebug --no-daemon
+      - run: chmod +x android/gradlew && cd android && ./gradlew testDebugUnitTest assembleDebug processReleaseMainManifest --no-daemon
         env:
           YANDEX_REWARDED_AD_UNIT_ID: ${{ secrets.YANDEX_REWARDED_AD_UNIT_ID }}
+          APPMETRICA_API_KEY: ${{ secrets.APPMETRICA_API_KEY }}
+      - name: Reject unconfigured production packaging
+        working-directory: android
+        env:
+          YANDEX_REWARDED_AD_UNIT_ID: ''
+          APPMETRICA_API_KEY: ''
+          ANDROID_KEYSTORE_PATH: ''
+          ANDROID_KEYSTORE_PASSWORD: ''
+          ANDROID_KEY_ALIAS: ''
+          ANDROID_KEY_PASSWORD: ''
+        run: |
+          if ./gradlew :app:assembleRelease --no-daemon > qa-release-guard.log 2>&1; then
+            echo 'Unconfigured release unexpectedly packaged'
+            exit 1
+          fi
+          rg 'Production IDs are required' qa-release-guard.log
+          if YANDEX_REWARDED_AD_UNIT_ID=R-M-config-probe APPMETRICA_API_KEY=00000000-0000-0000-0000-000000000000 ./gradlew :app:assembleRelease --no-daemon > qa-signing-guard.log 2>&1; then
+            echo 'Unsigned production packaging unexpectedly passed'
+            exit 1
+          fi
+          rg 'Production signing is required' qa-signing-guard.log
+      - run: python3 tools/audit-android-41.py
+      # Ubuntu 24.04 hosted runners already include Chrome runtime libraries.
+      # Avoid an unrelated apt mirror outage blocking tests and Android packaging.
+      - run: npx playwright install chromium
+        timeout-minutes: 5
+      - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         with:
           name: watery-water-sort-debug
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/test-results/testDebugUnitTest/*.xml
+            android/app/build/intermediates/merged_manifest/release/**/AndroidManifest.xml
+            android/app/build/intermediates/merged_manifests/release/**/AndroidManifest.xml
+            android/qa-release-guard.log
+            android/qa-signing-guard.log
+            android/qa-release.json
           retention-days: 14
