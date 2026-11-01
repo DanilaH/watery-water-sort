@@ -1,5 +1,5 @@
 {
-  "method": "Deterministic sample of up to four off-witness legal moves at three optimal-path prefixes, both physical buffer configurations. Alternative moves are not presumed mistakes. DFS budget 25000 nodes / 100ms; UNKNOWN is not a dead end. Reward trials only when the real offerExtra predicate allows it. No real ad/phone/human tested.",
+  "method": "Deterministic sample of up to four off-witness legal moves at three optimal-path prefixes, both physical buffer configurations. Alternative moves are not presumed mistakes. DFS budget 25000 nodes / 100ms; UNKNOWN is not a dead end. Reward trials only on non-winning boards where the real offerExtra predicate allows it. No real ad/phone/human tested.",
   "seed": 380013,
   "summary": {
     "branches": 920,
@@ -8,9 +8,9 @@
       "UNKNOWN": 0,
       "UNSOLVABLE": 2
     },
-    "bufferTrials": 368,
+    "bufferTrials": 333,
     "bufferStatus": {
-      "FOUND": 368,
+      "FOUND": 333,
       "UNKNOWN": 0,
       "UNSOLVABLE": 0
     },
@@ -980,8 +980,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -1388,8 +1386,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -1760,8 +1756,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -2222,8 +2216,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -2612,8 +2604,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -2965,8 +2955,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -3727,8 +3715,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -4081,8 +4067,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -4117,8 +4101,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -4471,8 +4453,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -5299,8 +5279,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -7309,8 +7287,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -7663,8 +7639,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -8089,8 +8063,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -8497,8 +8469,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -8815,8 +8785,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -9114,8 +9082,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -9414,8 +9380,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -9732,8 +9696,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -10122,8 +10084,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -10494,8 +10454,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -11286,8 +11244,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -11676,8 +11632,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -11694,8 +11648,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -12084,8 +12036,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -12120,8 +12070,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -12474,8 +12422,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -12528,8 +12474,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -13290,8 +13234,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -13344,8 +13286,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -13698,8 +13638,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -13734,8 +13672,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -14124,8 +14060,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -14568,8 +14502,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {
@@ -14868,8 +14800,6 @@
       "status": "FOUND",
       "nodes": 1,
       "verifiedContinuation": 0,
-      "extraRescue": "FOUND",
-      "extraRescueNodes": 1,
       "undoAndThreeStars": true
     },
     {

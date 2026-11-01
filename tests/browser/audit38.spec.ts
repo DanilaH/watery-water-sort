@@ -10,7 +10,9 @@ async function tap(p:Page,i:number){const b=(await p.locator('#board').boundingB
 test('following successive UI hints finishes the formerly cycling puzzle using one verified Worker route',async({page})=>{
  test.setTimeout(60000);await page.clock.install();await open(page);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));let n=0;
  while(!won(attempt(await saved(page)).board,goalFor(await saved(page)))){
-  await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');const m=await page.evaluate(()=>(window as any).auditScene.hintMove);expect(m).not.toBeNull();await tap(page,m.to);await advanceFrames(page,'auditScene',1200);expect(++n).toBeLessThan(40);if(n===4){await page.locator('#menu').click();await page.locator('#home-play').click();}
+  await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');const m=await page.evaluate(()=>(window as any).auditScene.hintMove);expect(m).not.toBeNull();await tap(page,m.to);
+  // This checks route continuity, not intermediate rendering (covered in the effect tests).
+  await page.clock.fastForward(1200);await page.evaluate(()=>(window as any).auditScene.update());expect(++n).toBeLessThan(40);if(n===4){await page.locator('#menu').click();await page.locator('#home-play').click();}
  }
  expect(await page.evaluate(()=>(window as any).workerCalls38)).toBe(1);expect(n).toBe(16);await page.clock.resume();await expect(page.locator('#continue')).toBeVisible();
 });

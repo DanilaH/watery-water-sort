@@ -32,7 +32,7 @@ for(let index=0;index<levels.length;index++)for(const extra of [false,true]){
    if(policy==='random-undo-reload'&&step%7===6){const before=structuredClone(attempt(s));s=undone(s);undos++;if(attempt(s).history.length!==before.history.length-1)throw Error('Undo count');s=moved(s,m);actions++;const reloaded=JSON.parse(JSON.stringify(s));if(!validSave(reloaded))throw Error('Reload validation');s=reloaded;}
    if(!validSave(s))throw Error('Invalid exploratory save '+l.id);
   }
-  const finished=won(attempt(s).board,goalFor(s));
+  maxHistory=Math.max(maxHistory,attempt(s).history.length);const finished=won(attempt(s).board,goalFor(s));
   // Every bad route must remain recoverable by free Undo, retaining learned information and entitlement.
   const known=[...(attempt(s).known??[])];while(attempt(s).history.length)s=undone(s);
   if(!validSave(s)||JSON.stringify(attempt(s).board)!==JSON.stringify([...l.initial,...(extra?[[]]:[])])||!known.every(id=>attempt(s).known?.includes(id)))throw Error('Broken recovery '+l.id);

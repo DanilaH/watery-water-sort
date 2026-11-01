@@ -9,10 +9,10 @@ for(let i=0;i<levels.length;i++)for(const extra of [false,true]){
   const alternatives=moves(attempt(base).board,goalFor(base)).filter(m=>JSON.stringify(m)!==JSON.stringify(path[prefix]));
   for(let k=alternatives.length-1;k>0;k--){const n=Math.floor(random()*(k+1));[alternatives[k],alternatives[n]]=[alternatives[n],alternatives[k]];}
   for(const m of alternatives.slice(0,4)){
-   let changed=moved(base,m);if(!validSave(JSON.parse(JSON.stringify(changed))))throw Error('Branch save');const r=solve(attempt(changed).board,25000,100,goalFor(changed));let rescue:ReturnType<typeof solve>|undefined;
-   if(offerExtra(changed)){const buffered=expanded(changed);rescue=solve(attempt(buffered).board,25000,100,goalFor(buffered));}
+   let changed=moved(base,m);if(!validSave(JSON.parse(JSON.stringify(changed))))throw Error('Branch save');const r=solve(attempt(changed).board,25000,100,goalFor(changed));const canReward=offerExtra(changed)&&!won(attempt(changed).board,goalFor(changed));let rescue:ReturnType<typeof solve>|undefined;
+   if(canReward){const buffered=expanded(changed);rescue=solve(attempt(buffered).board,25000,100,goalFor(buffered));}
    // Undo works even after an accepted bad route or an ad that arrives after that route.
-   const retained=[...(attempt(changed).known??[])];if(!extra&&offerExtra(changed))changed=expanded(changed);let recovered=undone(changed);
+   const retained=[...(attempt(changed).known??[])];if(!extra&&canReward)changed=expanded(changed);let recovered=undone(changed);
    if(JSON.stringify(attempt(recovered).board)!==JSON.stringify([...attempt(base).board,...(!extra&&attempt(changed).extra?[[]]:[])])||!retained.every(id=>attempt(recovered).known?.includes(id)))throw Error('Undo loss');
    for(const next of path.slice(prefix))recovered=moved(recovered,next);
    if(!won(attempt(recovered).board,goalFor(recovered))||!validSave(recovered)||stars(levelKey(i),attempt(recovered).history.length)!==3)throw Error('Lost three-star recovery');
@@ -22,4 +22,4 @@ for(let i=0;i<levels.length;i++)for(const extra of [false,true]){
 }
 const counts=(key:string)=>Object.fromEntries(['FOUND','UNKNOWN','UNSOLVABLE'].map(status=>[status,rows.filter(r=>r[key]===status).length]));
 const summary={branches:rows.length,status:counts('status'),bufferTrials:rows.filter(r=>r.extraRescue).length,bufferStatus:counts('extraRescue'),provedTrapsRescued:rows.filter(r=>r.status==='UNSOLVABLE'&&r.extraRescue==='FOUND').length,allUndoRecoveriesThreeStars:rows.every(r=>r.undoAndThreeStars)};
-mkdirSync('docs/audits/scenario-38',{recursive:true});writeFileSync('docs/audits/scenario-38/branches.json',JSON.stringify({method:'Deterministic sample of up to four off-witness legal moves at three optimal-path prefixes, both physical buffer configurations. Alternative moves are not presumed mistakes. DFS budget 25000 nodes / 100ms; UNKNOWN is not a dead end. Reward trials only when the real offerExtra predicate allows it. No real ad/phone/human tested.',seed:380013,summary,rows},null,2)+'\n');console.log(JSON.stringify(summary,null,2));
+mkdirSync('docs/audits/scenario-38',{recursive:true});writeFileSync('docs/audits/scenario-38/branches.json',JSON.stringify({method:'Deterministic sample of up to four off-witness legal moves at three optimal-path prefixes, both physical buffer configurations. Alternative moves are not presumed mistakes. DFS budget 25000 nodes / 100ms; UNKNOWN is not a dead end. Reward trials only on non-winning boards where the real offerExtra predicate allows it. No real ad/phone/human tested.',seed:380013,summary,rows},null,2)+'\n');console.log(JSON.stringify(summary,null,2));
