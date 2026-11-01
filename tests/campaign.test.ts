@@ -4,7 +4,7 @@ import {fresh,levels,moved,attempt,restarted,undone,expanded,validSave,levelKey}
 import {SaveStore} from '../src/platform/storage';
 
 test('every stable puzzle appears once; tutorials precede combinations and dense fields arrive late',()=>{
- expect(campaign).toHaveLength(40);expect(new Set(campaign).size).toBe(40);expect(campaign.slice(0,4)).toEqual([0,1,2,12]);expect(campaign.at(-1)).toBe(11);expect(campaign[35]).toBe(30);expect(stageNumber(18)).toBeLessThan(stageNumber(21));
+ expect(campaign).toHaveLength(60);expect(new Set(campaign).size).toBe(60);expect(campaign.slice(0,4)).toEqual([0,1,2,12]);expect(campaign[39]).toBe(11);expect(campaign.at(-1)).toBe(59);expect(campaign[35]).toBe(30);expect(stageNumber(18)).toBeLessThan(stageNumber(21));
  const prerequisites=[['mini',23],['ice',29],['hidden',35]] as const;
  for(const [role,intro]of prerequisites)for(const i of campaign.filter(i=>levels[i][role]!==undefined))expect(stageNumber(i)).toBeGreaterThanOrEqual(stageNumber(intro-1));
  expect(stageNumber(12)).toBeLessThan(stageNumber(16));expect(stageNumber(16)).toBeLessThan(stageNumber(27));
@@ -18,7 +18,7 @@ test('a fresh player can complete the whole reordered campaign without a lock, l
   for(const m of levels[index].witness)s=moved(s,m);expect(validSave(s)).toBe(true);
   const next=continuation(s);if(next!==undefined){expect(available(s,next)).toBe(true);s=restarted({...s,current:next});}
  }
- expect(continuation(s)).toBeUndefined();expect(s.completed).toHaveLength(40);expect(Object.keys(s.best!)).toHaveLength(40);
+ expect(continuation(s)).toBeUndefined();expect(s.completed).toHaveLength(60);expect(Object.keys(s.best!)).toHaveLength(60);
 });
 
 test('legacy migration retains all old frontiers and in-progress state for every campaign position',()=>{
@@ -55,4 +55,11 @@ test('invalid campaign metadata rejects corrupt snapshots; legacy snapshots rema
 test('loading an old save upgrades in memory without writing to unavailable storage',()=>{
  const old=fresh();delete old.campaignVersion;let writes=0;const store=new SaveStore({getItem:k=>k==='water-sort-v1'?JSON.stringify(old):null,setItem:()=>{writes++;throw Error('unavailable');}});
  const loaded=store.load();expect(writes).toBe(0);expect(loaded.state.campaignVersion).toBe(1);expect(loaded.state.completed).toEqual([]);expect(loaded.state.best).toEqual({});expect(loaded.state.unlocked).toEqual([levels[0].id]);
+});
+
+
+test('a finished 0.38 campaign opens stage 41 without losing attempts, best records or knowledge',()=>{
+ let s=fresh();for(const current of campaign.slice(0,40)){s={...s,current};for(const m of levels[current].witness)s=moved(s,m);}
+ const previous=structuredClone(s),loaded=JSON.parse(JSON.stringify(s));expect(validSave(loaded)).toBe(true);expect(migrateCampaign(loaded)).toEqual(previous);expect(continuation(loaded)).toBe(40);expect(available(loaded,40)).toBe(true);expect(available(loaded,41)).toBe(false);
+ const next=restarted({...loaded,current:40});expect(next.completed).toEqual(previous.completed);expect(next.best).toEqual(previous.best);for(const [key,a]of Object.entries(previous.attempts))expect(next.attempts[key]).toEqual(a);
 });

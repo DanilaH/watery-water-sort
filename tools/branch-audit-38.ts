@@ -1,4 +1,4 @@
-import proof from '../docs/audits/hidden-36/optimal.json' with {type:'json'};
+import proof from '../docs/audits/campaign-39/optimal.json' with {type:'json'};
 import {mkdirSync,writeFileSync} from 'node:fs';
 import {levels,fresh,moved,undone,expanded,attempt,goalFor,knowledgeFor,validSave,levelKey,offerExtra,type Save} from '../src/core/session';
 import {moves,won,type Move} from '../src/core/rules';import {solve} from '../src/core/solver';import {stars} from '../src/core/ratings';import {stageNumber} from '../src/core/campaign';
@@ -22,4 +22,4 @@ for(let i=0;i<levels.length;i++)for(const extra of [false,true]){
 }
 const counts=(key:string)=>Object.fromEntries(['FOUND','UNKNOWN','UNSOLVABLE'].map(status=>[status,rows.filter(r=>r[key]===status).length]));
 const summary={branches:rows.length,status:counts('status'),bufferTrials:rows.filter(r=>r.extraRescue).length,bufferStatus:counts('extraRescue'),provedTrapsRescued:rows.filter(r=>r.status==='UNSOLVABLE'&&r.extraRescue==='FOUND').length,allUndoRecoveriesThreeStars:rows.every(r=>r.undoAndThreeStars)};
-mkdirSync('docs/audits/scenario-38',{recursive:true});writeFileSync('docs/audits/scenario-38/branches.json',JSON.stringify({method:'Deterministic sample of up to four off-witness legal moves at three optimal-path prefixes, both physical buffer configurations. Alternative moves are not presumed mistakes. DFS budget 25000 nodes / 100ms; UNKNOWN is not a dead end. Reward trials only on non-winning boards where the real offerExtra predicate allows it. No real ad/phone/human tested.',seed:380013,summary,rows},null,2)+'\n');console.log(JSON.stringify(summary,null,2));
+const out=process.argv[2]??'docs/audits/scenario-38/branches.json';mkdirSync(out.slice(0,out.lastIndexOf('/')),{recursive:true});writeFileSync(out,JSON.stringify({method:'Deterministic sample of up to four off-witness legal moves at three optimal-path prefixes, both physical buffer configurations. Alternative moves are not presumed mistakes. DFS budget 25000 nodes / 100ms; UNKNOWN is not a dead end. Reward trials only on non-winning boards where the real offerExtra predicate allows it. No real ad/phone/human tested.',seed:380013,summary,rows},null,2)+'\n');console.log(JSON.stringify(summary,null,2));

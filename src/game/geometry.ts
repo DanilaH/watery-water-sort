@@ -88,7 +88,10 @@ export function pourPose(origin:TubePose,dest:TubePose,t:number,width:number,hei
  const units=plan.startUnits+(plan.endUnits-plan.startUnits)*pourTransfer(t);
  const angle=plan.dir*pourTilt(origin.w,origin.h,units)*travel;
  const target=targetPose(origin,dest,plan.dir,angle);
- const r={...origin,x:origin.x+(target.x-origin.x)*travel,y:origin.y+lifted+(target.y-origin.y-lifted)*travel-Math.sin(Math.PI*travel)*Math.min(18,origin.h*.13)};
+ // The lip gradually rises while liquid flows. Quintic joins keep lift/flow/return
+ // continuous; the shared pose also anchors the stream, glass and final droplet.
+ const flowLift=ease((t-.25)/.48)*Math.min(14,origin.h*.09)*travel;
+ const r={...origin,x:origin.x+(target.x-origin.x)*travel,y:origin.y+(target.y-origin.y)*travel+lifted*(1-ease(t/.25))-Math.sin(Math.PI*travel)*Math.min(18,origin.h*.13)-flowLift};
  const b=bounds(r,angle);r.x+=Math.max(0,5-b.left)-Math.max(0,b.right-width+5);r.y+=Math.max(0,5-b.top)-Math.max(0,b.bottom-height+5);
  return {...r,angle,tipX:plan.dir*origin.w/2};
 }

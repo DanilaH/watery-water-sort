@@ -51,7 +51,7 @@ test('all 12 exact hidden paths earn a complete reveal; free exploration does no
 });
 
 test('mask is informational: full physics, goal and mini routes and rewarded slot remain unchanged',()=>{
- for(const l of levels.slice(34)){let r={board:l.initial,rules:levelGoals(l)};for(const m of l.witness)r=transition(r.board,m,r.rules);expect(won(r.board,r.rules)).toBe(true);
+ for(const l of levels.filter(l=>l.hidden)){let r={board:l.initial,rules:levelGoals(l)};for(const m of l.witness)r=transition(r.board,m,r.rules);expect(won(r.board,r.rules)).toBe(true);
   const s=expanded({...fresh(),current:levels.indexOf(l)}),v=knowledgeFor(s)!;expect(v.ids.at(-1)).toEqual([]);expect(validSave(restarted(s))).toBe(true);
  }
 });
