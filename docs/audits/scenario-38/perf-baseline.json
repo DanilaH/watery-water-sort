@@ -1,0 +1,78 @@
+{
+  "environment": "Cloud Chromium / SwiftShader; 1-second real-time samples, not phone FPS. GC heap snapshots before/after 25 home/settings cycles.",
+  "rows": [
+    {
+      "updates": 40,
+      "draws": 0,
+      "total": 2.4000000008381903,
+      "max": 0.30000000004656613,
+      "name": "game-idle",
+      "loop": true,
+      "board": 6
+    },
+    {
+      "updates": 60,
+      "draws": 0,
+      "total": 0.8999999996740371,
+      "max": 0.10000000009313226,
+      "name": "home",
+      "loop": true,
+      "board": 6
+    },
+    {
+      "updates": 60,
+      "draws": 0,
+      "total": 1.3999999999068677,
+      "max": 0.20000000018626451,
+      "name": "modal-home",
+      "loop": true,
+      "board": 6
+    },
+    {
+      "updates": 36,
+      "draws": 0,
+      "total": 1.5999999991618097,
+      "max": 0.10000000009313226,
+      "name": "modal-game",
+      "loop": true,
+      "board": 6
+    }
+  ],
+  "before": {
+    "usedSize": 9528852,
+    "totalSize": 11665408,
+    "embedderHeapUsedSize": 3644968,
+    "backingStorageSize": 18339859,
+    "dom": {
+      "documents": 4,
+      "nodes": 455,
+      "jsEventListeners": 134
+    },
+    "pools": {
+      "labels": 12,
+      "tubes": 7,
+      "sprites": 7,
+      "children": 1,
+      "canvas": 1
+    }
+  },
+  "after": {
+    "usedSize": 9218860,
+    "totalSize": 11665408,
+    "embedderHeapUsedSize": 3676864,
+    "backingStorageSize": 18339275,
+    "dom": {
+      "documents": 4,
+      "nodes": 455,
+      "jsEventListeners": 134
+    },
+    "pools": {
+      "labels": 12,
+      "tubes": 7,
+      "sprites": 7,
+      "children": 1,
+      "canvas": 1
+    }
+  },
+  "errors": []
+}

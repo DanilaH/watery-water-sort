@@ -1,3 +1,4 @@
+import {HintRoute} from './core/hintRoute';
 import {campaign,stageNumber,continuation,available as levelAvailable} from './core/campaign';
 import {hasUnknown} from './core/knowledge';
 import {visibleHint} from './core/visibleHint';
@@ -44,7 +45,7 @@ scene.setViewport($('board').clientWidth,$('board').clientHeight,density);
 const game=new Phaser.Game({type:Phaser.AUTO,parent:'board',transparent:true,antialias:true,scale:{mode:Phaser.Scale.NONE,width:Math.round($('board').clientWidth*density),height:Math.round($('board').clientHeight*density)},scene:[scene],audio:{noAudio:true}});
 let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,lastMove:Move|null=null,kind:'pour'|'undo'='pour',newColor=false,pendingIce:number|null=null,pendingReveal=false;
 let deadRevision:number|null=null;
-let hintCache:{revision:number;move:Move}|null=null;
+const hintRoute=new HintRoute();
 const blockers=new Set<string>();
 let atHome=true,rewardBusy=false;
 const rewarded=new Rewarded();let pendingReceipt:Receipt|undefined;
@@ -55,7 +56,7 @@ function guidance(){
  if(won(attempt(state).board,goalFor(state)))return 'Все цвета собраны';
  if(queued)return 'Следующий ход выбран · фон — отмена';
  if(deadRevision===state.revision)return 'Из этого положения решения нет';
- if(!scene.busy&&!moves(attempt(state).board,goalFor(state)).length)return 'Нет доступных ходов';
+ if(!scene.busy&&!moves(attempt(state).board,goalFor(state)).length)return 'Нет доступных ходов · можно отменить ход';
  if(scene.hintMove)return 'Перелей в колбу со стрелкой';
  if(scene.selected!==null)return scene.busy?'Следующий ход: выбери цель':'Выбери пустую или с тем же цветом сверху';
  if(state.current===34&&attempt(state).history.length===0&&!state.completed.includes(levels[34].id)&&hasUnknown(knowledgeFor(state)))return 'Открой цвета · отмена их не спрячет';
@@ -67,7 +68,9 @@ function guidance(){
 function cancelSearch(){worker?.terminate();worker=undefined;requestId++;searching=false;}
 function clearIntent(){queued=null;scene.queuedMove=null;scene.selected=null;scene.hintMove=null;}
 function interrupt(){pendingReveal=false;pendingIce=null;reward.cancel();pendingStars=undefined;scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
-function block(reason:string,on:boolean){if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();}
+function syncLoop(){document.body.dataset.gamePaused=String(blockers.size>0);if(!scene.ready)return;if(blockers.size)game.loop.sleep();else game.loop.wake();}
+scene.onReady=syncLoop;
+function block(reason:string,on:boolean){if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();syncLoop();}
 function commit(next:Save){try{store.write(next);state=next;recoveryNotice='';$('home-error').hidden=true;return true;}catch{paint();const error='Не удалось сохранить. Изменение не принято — попробуй ещё раз.';message(error,true);if(atHome&&!dialog.open){$('home-error').textContent=error;$('home-error').hidden=false;}if(dialog.open){const body=content.querySelector('.dialog-body');let note=body?.querySelector<HTMLElement>('[role=alert]');if(body&&!note){note=document.createElement('p');note.setAttribute('role','alert');body.prepend(note);}if(note)note.textContent=error;if(body)body.scrollTop=0;}return false;}}
 function paint(){
  const a=attempt(state),finished=won(a.board,goalFor(state))&&!scene.busy;
@@ -116,7 +119,7 @@ function modal(title:string,description:string,buttons:{label:string;action:()=>
 }
 function activateGame(){
  atHome=false;dialog.close();blockers.delete('dialog');blockers.delete('home');
- audio.block(blockers.size>0);paint();scene.reveal();message(guidance());$('menu').focus({preventScroll:true});$('hard-badge').classList.remove('challenge-enter');if(isHard(state.current)){void $('hard-badge').offsetWidth;$('hard-badge').classList.add('challenge-enter');}
+ audio.block(blockers.size>0);paint();scene.reveal();message(guidance());$('menu').focus({preventScroll:true});$('hard-badge').classList.remove('challenge-enter');if(isHard(state.current)){void $('hard-badge').offsetWidth;$('hard-badge').classList.add('challenge-enter');}syncLoop();
 }
 function resumeGame(){
  if(locked)return;
@@ -131,16 +134,16 @@ function showHome(){
 function switchLevel(index:number){
  if(index<0||index>=levels.length)return;
  interrupt();const n=restarted({...state,current:index});
- if(commit(n)){hintCache=null;activateGame();}
+ if(commit(n)){hintRoute.clear();activateGame();}
 }
-function restart(){const n=restarted(state);if(commit(n)){interrupt();hintCache=null;activateGame();message('Та же задача — новая попытка');}}
+function restart(){const n=restarted(state);if(commit(n)){interrupt();hintRoute.clear();activateGame();message('Та же задача — новая попытка');}}
 function drainQueue(){if(!queued)return;const q=queued;clearIntent();const m=moveFor(attempt(state).board,q.from,q.to,goalFor(state));if(m)accept(m,true);}
 function accept(m:Move,acknowledged=false){
  if(locked||blockers.size)return;
  cancelSearch();const before=attempt(state).board,beforeStars=totalStars(state),beforeRules=goalFor(state),beforeKnowledge=knowledgeFor(state);const next=moved(state,m);
  if(won(attempt(next).board,goalFor(next))&&!next.completed.includes(levels[next.current].id))next.completed.push(levels[next.current].id);
  if(!commit(next))return;
- hintCache=null;clearIntent();lastMove=m;kind='pour';pendingReveal=(knowledgeFor(next)?.known.length??0)>(beforeKnowledge?.known.length??0);pendingIce=!iceOpen(beforeRules)&&iceOpen(goalFor(next))?iceIndex(goalFor(next))!:null;scene.iceHeld=pendingIce;newColor=!sealedTube(before,m.from,goalFor(state))&&sealedTube(attempt(next).board,m.to,goalFor(state));
+ hintRoute.accepted(before,m,beforeRules);clearIntent();lastMove=m;kind='pour';pendingReveal=(knowledgeFor(next)?.known.length??0)>(beforeKnowledge?.known.length??0);pendingIce=!iceOpen(beforeRules)&&iceOpen(goalFor(next))?iceIndex(goalFor(next))!:null;scene.iceHeld=pendingIce;newColor=!sealedTube(before,m.from,goalFor(state))&&sealedTube(attempt(next).board,m.to,goalFor(state));
  if(won(attempt(next).board,goalFor(next)))pendingStars={before:beforeStars,total:totalStars(next),delta:totalStars(next)-beforeStars,earned:stars(levelKey(next.current),attempt(next).history.length)};
  if(!acknowledged){audio.accept();haptic('accept');}scene.setBoard(attempt(state).board);scene.animate(before,m,state.settings.fast,beforeKnowledge);paint();message('');
 }
@@ -191,7 +194,7 @@ scene.onComplete=()=>{
 };
 function undo(){
  const a=attempt(state),m=a.history.at(-1);if(!m)return;const before=a.board,beforeKnowledge=knowledgeFor(state);
- interrupt();if(commit(undone(state))){hintCache=null;kind='undo';lastMove=null;scene.setBoard(attempt(state).board);
+ interrupt();if(commit(undone(state))){hintRoute.clear();kind='undo';lastMove=null;scene.setBoard(attempt(state).board);
   if(goalAt(goalFor(state),m.to)){scene.land(m.from,m.amount);scene.land(m.to,m.amount);}else scene.animate(before,{from:m.to,to:m.from,amount:m.amount,color:m.color},true,beforeKnowledge);
   audio.undo();paint();message(goalAt(goalFor(state),m.to)?'Ход отменён · большая бутылка остаётся на месте':'Возвращаем предыдущий ход');}
 }
@@ -203,7 +206,7 @@ function showHint(m:Move){clearIntent();scene.selected=m.from;scene.hintMove=m;a
 $('hint').onclick=()=>{
  if(scene.busy||blockers.size||locked||won(attempt(state).board,goalFor(state)))return;audio.prime();
  const view=knowledgeFor(state);if(hasUnknown(view)){const m=visibleHint(attempt(state).board,view!,goalFor(state));if(m){showHint(m);message('Открой следующий слой · отмена доступна');}else message('Нет доступного перелива · можно отменить ход');return;}
- if(hintCache?.revision===state.revision){showHint(hintCache.move);return;}
+ const planned=hintRoute.get(attempt(state).board,goalFor(state));if(planned){showHint(planned);return;}
  cancelSearch();const id=++requestId,revision=state.revision;searching=true;paint();message('Ищу продолжение…');
  const failed=()=>{if(id!==requestId)return;cancelSearch();paint();message('Подсказка недоступна. Можно продолжить или отменить ход.');};
  try{
@@ -211,7 +214,7 @@ $('hint').onclick=()=>{
   worker.onmessage=(event:MessageEvent<{result:Result;revision:number;requestId:number}>)=>{
    if(event.data.requestId!==id||event.data.revision!==state.revision)return;
    const result=event.data.result;cancelSearch();paint();
-   if(result.status==='FOUND'&&result.path.length){hintCache={revision,move:result.path[0]};showHint(result.path[0]);}
+   if(result.status==='FOUND'&&result.path.length&&hintRoute.set(attempt(state).board,goalFor(state),result.path)){showHint(hintRoute.get(attempt(state).board,goalFor(state))!);}
    else if(result.status==='UNSOLVABLE'){deadRevision=state.revision;paint();help(true);}
    else message('Решение пока не найдено. Попробуй отменить ход.');
   };
@@ -235,7 +238,7 @@ async function watchForTube(){
   if(pendingReceipt){granted=await applyReceipt(pendingReceipt);if(granted)pendingReceipt=undefined;else notice='Награда получена, но колбу не удалось сохранить. Нажми «Получить колбу» — повторный просмотр не нужен.';}
  }catch{notice='Реклама пока недоступна. Попробуй позже.';}
  finally{rewardBusy=false;block('reward',false);}
- if(granted){interrupt();hintCache=null;activateGame();message('Колба открыта · ходы сохранены');}
+ if(granted){interrupt();hintRoute.clear();activateGame();message('Колба открыта · ходы сохранены');}
  else{const body=content.querySelector('.dialog-body');if(body){let note=body.querySelector<HTMLElement>('.reward-notice');if(!note){note=document.createElement('p');note.className='reward-notice';note.setAttribute('role','status');body.append(note);}note.textContent=notice;}if(button){button.disabled=false;button.textContent=pendingReceipt?'Получить колбу':'Смотреть рекламу';}}
 }
 function askExtra(){

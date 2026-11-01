@@ -77,6 +77,7 @@ export class WaterScene extends Phaser.Scene {
   private lastSelected:number|null=null;
   private previousSignature='';
   private lastFrame=0;private frameStep=.016;
+  ready=false;onReady:()=>void=()=>{};
   onTap:(i:number|null)=>void=()=>{};
   onPour:(remainingMs:number,fill:number,endFill:number)=>void=()=>{};
   onComplete:()=>void=()=>{};
@@ -104,7 +105,7 @@ export class WaterScene extends Phaser.Scene {
     this.input.on('pointerdown',(p:Phaser.Input.Pointer)=>{
       if(!p.primaryDown)return;
       this.onTap(this.hitTube(p.x/this.density,p.y/this.density));
-    });
+    });this.ready=true;this.onReady();
   }
   private hitTube(x:number,y:number):number|null{
     // Marks belong to their slots. Keep resting slots usable during a flight.
@@ -186,7 +187,7 @@ export class WaterScene extends Phaser.Scene {
     if(!!goalAt(this.goal,index))this.pedestal(r,sealedTube(this.board,index,this.goal)&&layers.reduce((v,l)=>v+l.amount,0)>=8-.001,index,now);
     const age=now-(this.settles.get(index)??-10000),shake=now-(this.pulses.get(index)??-10000),opening=this.corkOpen.get(index)??0;
     // Cache only settled, unselected vessels. Moving liquid, ripples, corks and glows stay live.
-    const stable=!this.reveals.size&&!this.bursts.some(b=>b.index===index&&!b.final)&&!selected&&!target&&!this.busyTube(index)&&!this.liquid.has(index)&&!this.bodyMotion.has(index)&&age>=650&&shake>=220&&opening===0&&(this.selectionY.get(index)??0)===0&&now-this.entrance>=260;
+    const stable=!layers.some(l=>l.reveal!==undefined&&l.reveal>0&&l.reveal<1)&&!this.bursts.some(b=>b.index===index&&!b.final)&&!selected&&!target&&!this.busyTube(index)&&!this.liquid.has(index)&&!this.bodyMotion.has(index)&&age>=650&&shake>=220&&opening===0&&(this.selectionY.get(index)??0)===0&&now-this.entrance>=260;
     const key=stable?JSON.stringify([r,layers,this.light,this.symbols,this.goal,this.popped.has(index)]):'',cached=this.tubes.get(index);
     if(stable&&cached?.key===key){
       this.glass?.restore(index,cached.cork,r);
@@ -311,7 +312,8 @@ export class WaterScene extends Phaser.Scene {
     if(this.iceRelease&&now-this.iceRelease.start>=680)this.iceRelease=undefined;
     if(this.selected!==this.lastSelected){if(this.lastSelected!==null)this.land(this.lastSelected,2);if(this.selected!==null)this.land(this.selected,2);this.lastSelected=this.selected;}
     if(this.reduced){this.liquid.clear();this.bodyMotion.clear();}
-    else for(let i=0;i<this.board.length;i++){
+    else if(this.liquid.size||this.flight)for(let i=0;i<this.board.length;i++){
+      if(!this.liquid.has(i)&&this.flight?.to!==i)continue;
       const f=this.flight,age=f?now-f.start-f.timing.lift:-1,flow=f?streamEnvelope(age,f.timing.flow):0;
       const s=this.liquid.get(i)??{x:0,v:0};
       const force=f?.to===i&&age>=0&&age<f.timing.flow?Math.sin(age/42)*(650+f.amount*180)*flow:0;

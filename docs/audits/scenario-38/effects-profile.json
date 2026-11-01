@@ -1,0 +1,98 @@
+{
+  "method": "Actual user input and real clock, instrumented development build in cloud Chromium. CPU timings in scene update / 2D overlay exclude GPU completion. Not phone FPS, battery or retention data. One run per case, no baseline performance improvement inferred.",
+  "rows": [
+    {
+      "name": "dense-pour-symbols",
+      "renderer": {
+        "type": 2,
+        "deviceScale": 1,
+        "canvas": [
+          716,
+          1112
+        ],
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "updateCPUms": {
+        "samples": 12,
+        "mean": 3.3833333333798996,
+        "p95": 4.5,
+        "max": 6
+      },
+      "overlayCPUms": {
+        "samples": 0,
+        "mean": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "maxBursts": 0,
+      "maxParticles": 0,
+      "maxCanvas": 1,
+      "remainingCanvas": 1,
+      "remainingParticles": 0,
+      "remainingBursts": 0,
+      "errors": []
+    },
+    {
+      "name": "two-goal-victory",
+      "renderer": {
+        "type": 2,
+        "deviceScale": 1,
+        "canvas": [
+          716,
+          1076
+        ],
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "updateCPUms": {
+        "samples": 65,
+        "mean": 1.6692307692522612,
+        "p95": 2.599999999627471,
+        "max": 3.1000000000931323
+      },
+      "overlayCPUms": {
+        "samples": 50,
+        "mean": 0.773999999994412,
+        "p95": 1.400000000372529,
+        "max": 1.6000000000931323
+      },
+      "maxBursts": 4,
+      "maxParticles": 14,
+      "maxCanvas": 2,
+      "remainingCanvas": 1,
+      "remainingParticles": 0,
+      "remainingBursts": 0,
+      "errors": []
+    },
+    {
+      "name": "hidden-reveal",
+      "renderer": {
+        "type": 2,
+        "deviceScale": 1,
+        "canvas": [
+          716,
+          1076
+        ],
+        "gpu": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+      },
+      "updateCPUms": {
+        "samples": 22,
+        "mean": 1.781818181805482,
+        "p95": 2.5,
+        "max": 3
+      },
+      "overlayCPUms": {
+        "samples": 0,
+        "mean": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "maxBursts": 0,
+      "maxParticles": 0,
+      "maxCanvas": 1,
+      "remainingCanvas": 1,
+      "remainingParticles": 0,
+      "remainingBursts": 0,
+      "errors": []
+    }
+  ]
+}
