@@ -20,6 +20,8 @@ for (let i=0;i<12;i++) {
     levels.push({id:'water-'+String(i+1).padStart(3,'0'),version:1,colors,initial,witness:result.path,seed:usedSeed});break;
   }
 }
-const authored=JSON.parse(readFileSync('src/core/levels.json','utf8')).filter((l:{goal?:unknown;goals?:unknown;mini?:number;ice?:number;hidden?:unknown})=>l.goal||l.goals||l.mini!==undefined||l.ice!==undefined||l.hidden!==undefined);
+// This command only regenerates the original prototype bank. All later content
+// (including ordinary puzzles without role metadata) keeps its stable identity.
+const authored=JSON.parse(readFileSync('src/core/levels.json','utf8')).filter((l:{id:string})=>!levels.some(prototype=>prototype.id===l.id));
 writeFileSync('src/core/levels.json',JSON.stringify([...levels,...authored],null,2)+'\n');
 console.log(`Generated ${levels.length} witnessed prototype levels. Human difficulty calibration pending.`);

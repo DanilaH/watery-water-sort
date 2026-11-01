@@ -51,7 +51,17 @@ test('covered victory letter/star/button animations freeze without changing the 
 test('all campaign role layouts reuse bounded glass/label pools and keep one live input listener',async({page})=>{
  test.setTimeout(90000);await open(page,0);const s=await saved(page);s.completed=levels.map(l=>l.id);await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.reload();
  await page.evaluate(async()=>{const path='/src/game/WaterScene.ts',m=await import(path),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).auditScene=this;return fn.call(this);};});await page.locator('#home-play').click();
- for(const l of levels){await page.locator('#menu').click();await page.locator('#home-levels').click();await page.locator(`.levels button[data-level="${l.id}"]`).click();await expect.poll(()=>page.evaluate(()=>!!(window as any).auditScene?.ready)).toBe(true);const p=await page.evaluate(()=>{const s=(window as any).auditScene;return {canvas:document.querySelectorAll('canvas').length,labels:s.labels.length+s.activeLabels.length,glass:s.glass.tubes.size,cache:s.tubes.size,events:s.input.listenerCount('pointerdown')};});expect(p.canvas).toBe(1);expect(p.labels).toBeLessThanOrEqual(32);expect(p.glass).toBeLessThanOrEqual(11);expect(p.cache).toBeLessThanOrEqual(11);expect(p.events).toBe(1);}
+ // Resource stress uses the same DOM handlers without pointer-action animation waits.
+ // Pointer targets/navigation are covered separately; explicitly render every chosen board.
+ for(const [index,l]of levels.entries()){
+  const p=await page.evaluate(id=>{
+   (document.getElementById('menu') as HTMLButtonElement).click();(document.getElementById('home-levels') as HTMLButtonElement).click();
+   (document.querySelector(`.levels button[data-level="${id}"]`) as HTMLButtonElement).click();
+   const s=(window as any).auditScene;s.update();return {current:JSON.parse(localStorage.getItem('water-sort-v1')!).current,canvas:document.querySelectorAll('canvas').length,labels:s.labels.length+s.activeLabels.length,glass:s.glass.tubes.size,cache:s.tubes.size,events:s.input.listenerCount('pointerdown')};
+  },l.id);
+  expect(p.current).toBe(index);expect(p.canvas).toBe(1);expect(p.labels).toBeLessThanOrEqual(32);expect(p.glass).toBeLessThanOrEqual(11);expect(p.cache).toBeLessThanOrEqual(11);expect(p.events).toBe(1);
+ }
+
 });
 
 
