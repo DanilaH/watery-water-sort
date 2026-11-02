@@ -15,7 +15,7 @@ async function move(page:Page,from:number,to:number){await tap(page,from);await 
 async function record(page:Page){await page.evaluate(async()=>{const s=(window as any).iceScene,fn=s.thaw;(window as any).iceEvents=[];s.thaw=function(index:number){const received=this.flight?.received,result=fn.call(this,index);(window as any).iceEvents.push({index,received,held:this.iceHeld});return result;};const h='/src/platform/haptics.ts',hm=await import(h),play=hm.TouchFeedback.prototype.play;(window as any).iceTouches=[];hm.TouchFeedback.prototype.play=function(...a:any[]){(window as any).iceTouches.push(a[0]);return play.apply(this,a);};const p='/src/audio/sound.ts',m=await import(p),ice=m.Sound.prototype.ice;(window as any).iceSounds=0;m.Sound.prototype.ice=function(){(window as any).iceSounds++;return ice.call(this);};});}
 
 test('field has no MINI/GOAL captions or symbols button; colour symbols live in settings',async({page})=>{
- await open(page,22);await expect(page.locator('#meta button')).toHaveCount(0);await expect(page.locator('#symbols')).toHaveCount(0);expect(await page.evaluate(()=>(window as any).iceScene.activeLabels.some((l:any)=>['МИНИ','ЦЕЛЬ'].includes(l.text)))).toBe(false);
+ await open(page,22);await expect(page.locator('#meta button:not(#wallet)')).toHaveCount(0);await expect(page.locator('#symbols')).toHaveCount(0);expect(await page.evaluate(()=>(window as any).iceScene.activeLabels.some((l:any)=>['МИНИ','ЦЕЛЬ'].includes(l.text)))).toBe(false);
  await toggleSymbols(page);expect((await saved(page)).settings.symbols).toBe(true);await expect(page.locator('#meta')).not.toContainText('Метки');await page.reload();await page.locator('#home-play').click();expect((await saved(page)).settings.symbols).toBe(true);
 });
 

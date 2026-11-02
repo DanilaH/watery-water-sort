@@ -272,13 +272,13 @@ async function applyReceipt(receipt:Receipt){
 async function watchForTube(){
  if(rewardBusy||recoveringRewards)return;const key=levelKey(state.current);if(!offerExtra(state))return;
  rewardBusy=true;block('reward',true);const button=content.querySelector<HTMLButtonElement>('.dialog-actions .primary');if(button){button.disabled=true;button.textContent=pendingReceipt?'Получаем колбу…':'Загружаем рекламу…';}
- let granted=false,notice='';
+ let granted=false,notice='',cooldown=false;
  try{
   if(pendingReceipt&&pendingReceipt.level!==key){if(await applyReceipt(pendingReceipt))pendingReceipt=undefined;else throw Error('Save unavailable');}
-  if(!pendingReceipt){track('reward_request');const r=await rewarded.request(key);track('reward_result',{status:r.status});if(r.status==='rewarded'&&r.receipt?.level===key)pendingReceipt=r.receipt;else notice=r.status==='closed'?'Просмотр не завершён. Колба остаётся закрытой.':'Реклама пока недоступна. Попробуй позже.';}
+  if(!pendingReceipt){track('reward_request');const r=await rewarded.request(key);cooldown=r.wasShown===true||r.status==='rewarded';track('reward_result',{status:r.status});if(r.status==='rewarded'&&r.receipt?.level===key)pendingReceipt=r.receipt;else notice=r.status==='closed'?'Просмотр не завершён. Колба остаётся закрытой.':'Реклама пока недоступна. Попробуй позже.';}
   if(pendingReceipt){granted=await applyReceipt(pendingReceipt);if(granted)pendingReceipt=undefined;else notice='Награда получена, но колбу не удалось сохранить. Нажми «Получить колбу» — повторный просмотр не нужен.';}
  }catch{notice='Реклама пока недоступна. Попробуй позже.';}
- finally{rewardBusy=false;postRewardCooldown();block('reward',false);}
+ finally{rewardBusy=false;if(cooldown)postRewardCooldown();block('reward',false);}
  if(granted){interrupt();hintRoute.clear();activateGame();message('Колба открыта · ходы сохранены');}
  else{const body=content.querySelector('.dialog-body');if(body){let note=body.querySelector<HTMLElement>('.reward-notice');if(!note){note=document.createElement('p');note.className='reward-notice';note.setAttribute('role','status');body.append(note);}note.textContent=notice;}if(button){button.disabled=false;button.textContent=pendingReceipt?'Получить колбу':'Смотреть рекламу';}}
 }
@@ -372,13 +372,13 @@ function hintShop(notice=''){
  track('hint_shop');
  const enough=state.wallet!.coins>=ECONOMY.packPrice;
  const buttons:{label:string;primary?:boolean;action:()=>void}[]=[];
- if(enough)buttons.push({label:`Купить 3 подсказки · ${ECONOMY.packPrice} 🪙`,primary:true,action:()=>{const n=purchaseHints(state);if(n&&commit(n)){track('hint_purchase',{amount:ECONOMY.packPrice,balance:state.wallet!.coins,hints:state.wallet!.hints});close();paint();}}});
- buttons.push({label:`Получить ${ECONOMY.adCoins} 🪙 · реклама`,primary:!enough,action:()=>{void watchForCoins(true);}});
+ if(enough)buttons.push({label:`Купить 3 подсказки · ${ECONOMY.packPrice} монет`,primary:true,action:()=>{const n=purchaseHints(state);if(n&&commit(n)){track('hint_purchase',{amount:ECONOMY.packPrice,balance:state.wallet!.coins,hints:state.wallet!.hints});close();paint();}}});
+ buttons.push({label:`Получить ${ECONOMY.adCoins} монет · реклама`,primary:!enough,action:()=>{void watchForCoins(true);}});
  const body=modal('Подсказки',notice||`Один совет показывает следующий перелив. На скрытых слоях — по видимым цветам. Пакет: 3 подсказки за ${ECONOMY.packPrice} монет.`,buttons);
  const balance=document.createElement('div');balance.className='shop-balance';balance.innerHTML='<i class="coin-icon" aria-hidden="true"></i>';const count=document.createElement('strong');count.textContent=String(state.wallet!.coins);balance.append(count);body.prepend(balance);
 }
 function coinShop(notice=''){
- const body=modal('Монеты',notice||'Зарабатывай по 10 монет за новые звёзды. Монеты можно потратить на подсказки.',[{label:`Получить ${ECONOMY.adCoins} 🪙 · реклама`,primary:true,action:()=>{void watchForCoins(false);}},{label:'Подсказки · 3 за 60 🪙',action:()=>hintShop()}]);
+ const body=modal('Монеты',notice||'Зарабатывай по 10 монет за новые звёзды. Монеты можно потратить на подсказки.',[{label:`Получить ${ECONOMY.adCoins} монет · реклама`,primary:true,action:()=>{void watchForCoins(false);}},{label:'Подсказки · 3 за 60 монет',action:()=>hintShop()}]);
  const balance=document.createElement('div');balance.className='shop-balance';balance.innerHTML='<i class="coin-icon" aria-hidden="true"></i>';const count=document.createElement('strong');count.textContent=String(state.wallet!.coins);balance.append(count);body.prepend(balance);
 }
 $('wallet').onclick=()=>coinShop();$('home-wallet').onclick=()=>coinShop();
@@ -386,13 +386,13 @@ async function watchForCoins(fromHints:boolean){
  if(rewardBusy||recoveringRewards||interstitialBusy||locked)return;
  rewardBusy=true;block('reward',true);for(const button of content.querySelectorAll<HTMLButtonElement>('button'))button.disabled=true;
  const reopen=(notice:string)=>fromHints?hintShop(notice):coinShop(notice);
- let notice='Реклама пока недоступна. Попробуй позже.',requested=false;
+ let notice='Реклама пока недоступна. Попробуй позже.',cooldown=false;
  try{
   if(pendingReceipt){if(!await applyReceipt(pendingReceipt)){notice='Награда ожидает сохранения. Повторный просмотр не нужен.';return;}pendingReceipt=undefined;notice='Предыдущая награда сохранена. Повторный просмотр не нужен.';return;}
   if(!state.wallet!.adOrder){const n=structuredClone(state);n.wallet!.adOrder=`coins:${crypto.randomUUID()}`;n.revision++;if(!commit(n)){notice='Не удалось сохранить предложение. Реклама не запущена.';return;}}
-  const order=state.wallet!.adOrder!;requested=true;track('reward_request',{reason:'coins'});const r=await rewarded.request(order);track('reward_result',{reason:'coins',status:r.status});
+  const order=state.wallet!.adOrder!;track('reward_request',{reason:'coins'});const r=await rewarded.request(order);cooldown=r.wasShown===true||r.status==='rewarded';track('reward_result',{reason:'coins',status:r.status});
   if(r.status==='rewarded'&&r.receipt?.level===order){pendingReceipt=r.receipt;if(await applyReceipt(pendingReceipt)){pendingReceipt=undefined;notice=`+${ECONOMY.adCoins} монет. Можно купить подсказки или сохранить на потом.`;}else notice='Награда получена и ожидает сохранения. Повторный просмотр не нужен.';}
   else if(r.status==='closed')notice='Просмотр не завершён. Монеты не начислены.';
  }catch{/* Persisted offers and native receipts remain available for retry/recovery. */}
- finally{rewardBusy=false;if(requested)postRewardCooldown();block('reward',false);reopen(notice);}
+ finally{rewardBusy=false;if(cooldown)postRewardCooldown();block('reward',false);reopen(notice);}
 }

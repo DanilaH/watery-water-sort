@@ -61,7 +61,7 @@ jobs:
       # Avoid an unrelated apt mirror outage blocking tests and Android packaging.
       - run: npx playwright install chromium
         timeout-minutes: 5
-      - run: npm run test:e2e
+      - run: npm run test:e2e -- --workers=2
       - uses: actions/upload-artifact@v4
         with:
           name: watery-water-sort-debug

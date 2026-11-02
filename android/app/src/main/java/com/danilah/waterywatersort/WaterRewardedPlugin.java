@@ -52,18 +52,18 @@ public class WaterRewardedPlugin extends Plugin {
    try{
    if(g!=generation||active==null)return;
    if(loader==null)loader=new RewardedAdLoader(getActivity());
-   loader.loadAd(new AdRequest.Builder(BuildConfig.REWARDED_AD_UNIT_ID).build(),new RewardedAdLoadListener(){
-    @Override public void onAdFailedToLoad(@NonNull AdRequestError error){if(g==generation)finish("unavailable");}
+   WaterAnalyticsPlugin.ad("rewarded","request");loader.loadAd(new AdRequest.Builder(BuildConfig.REWARDED_AD_UNIT_ID).build(),new RewardedAdLoadListener(){
+    @Override public void onAdFailedToLoad(@NonNull AdRequestError error){if(g==generation){WaterAnalyticsPlugin.ad("rewarded","load_error");finish("unavailable");}}
     @Override public void onAdLoaded(@NonNull RewardedAd loaded){
-     if(g!=generation||active==null){loaded.setAdEventListener(null);return;}ad=loaded;retryAt=0;
+     if(g!=generation||active==null){loaded.setAdEventListener(null);return;}ad=loaded;retryAt=0;WaterAnalyticsPlugin.ad("rewarded","loaded");
      ad.setAdEventListener(new RewardedAdEventListener(){
-      @Override public void onAdShown(){if(g==generation)shown=true;}
-      @Override public void onAdFailedToShow(@NonNull AdError error){if(g==generation)finish("failed");}
-      @Override public void onAdDismissed(){if(g==generation)finish(receipt==null?"closed":"rewarded");}
+      @Override public void onAdShown(){if(g==generation){shown=true;WaterAnalyticsPlugin.ad("rewarded","shown");}}
+      @Override public void onAdFailedToShow(@NonNull AdError error){if(g==generation){WaterAnalyticsPlugin.ad("rewarded","show_error");finish("failed");}}
+      @Override public void onAdDismissed(){if(g==generation){WaterAnalyticsPlugin.ad("rewarded","dismissed");finish(receipt==null?"closed":"rewarded");}}
       @Override public void onAdClicked(){}
-      @Override public void onAdImpression(@Nullable ImpressionData data){}
+      @Override public void onAdImpression(@Nullable ImpressionData data){if(g==generation)WaterAnalyticsPlugin.ad("rewarded","impression");}
       @Override public void onRewarded(@NonNull Reward reward){
-       if(g!=generation||receipt!=null)return;String token=UUID.randomUUID().toString();JSObject r=new JSObject();r.put("token",token);r.put("level",level);receipt=r;ledger().record(token,level);
+       if(g!=generation||receipt!=null)return;String token=UUID.randomUUID().toString();JSObject r=new JSObject();r.put("token",token);r.put("level",level);receipt=r;ledger().record(token,level);WaterAnalyticsPlugin.ad("rewarded","earned");
       }
      });shown=true;try{ad.show(getActivity());}catch(Exception e){finish("failed");}
     }
@@ -71,7 +71,7 @@ public class WaterRewardedPlugin extends Plugin {
    }catch(Exception e){finish("failed");}
   }));}catch(Exception e){finish("failed");}
  });}
- private void finish(String status){boolean wasShown=shown;PluginCall c=active;active=null;generation++;handler.removeCallbacksAndMessages(null);if(loader!=null&&!shown){try{loader.cancelLoading();}catch(Exception ignored){}}if(ad!=null){ad.setAdEventListener(null);ad=null;}shown=false;if(c!=null){JSObject r=new JSObject();r.put("status",receipt==null?status:"rewarded");if(receipt!=null)r.put("receipt",receipt);c.resolve(r);}receipt=null;FullscreenAds.release(this,getContext(),wasShown);}
+ private void finish(String status){boolean wasShown=shown;PluginCall c=active;active=null;generation++;handler.removeCallbacksAndMessages(null);if(loader!=null&&!shown){try{loader.cancelLoading();}catch(Exception ignored){}}if(ad!=null){ad.setAdEventListener(null);ad=null;}shown=false;if(c!=null){JSObject r=new JSObject();r.put("status",receipt==null?status:"rewarded");r.put("wasShown",wasShown);if(receipt!=null)r.put("receipt",receipt);c.resolve(r);}receipt=null;FullscreenAds.release(this,getContext(),wasShown);}
  @Override protected void handleOnPause(){if(active!=null&&!shown)finish("closed");}
  @Override protected void handleOnDestroy(){try{if(journal!=null)journal.flush();}catch(Exception ignored){}finish(receipt==null?"closed":"rewarded");loader=null;handler.removeCallbacksAndMessages(null);}
 }

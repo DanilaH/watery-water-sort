@@ -31,9 +31,9 @@ public class WaterAdsPlugin extends Plugin {
   handler.postDelayed(()->{if(g==generation&&loading){generation++;loading=false;if(loader!=null)loader.cancelLoading();}},15000);
   try{YandexAds.initialize(getContext(),()->getActivity().runOnUiThread(()->{
    if(destroyed||g!=generation||!loading)return;
-   try{if(loader==null)loader=new InterstitialAdLoader(getActivity());loader.loadAd(new AdRequest.Builder(BuildConfig.INTERSTITIAL_AD_UNIT_ID).build(),new InterstitialAdLoadListener(){
-    @Override public void onAdLoaded(@NonNull InterstitialAd loaded){if(destroyed||g!=generation||!loading){loaded.setAdEventListener(null);return;}loading=false;ad=loaded;loadedAt=System.currentTimeMillis();}
-    @Override public void onAdFailedToLoad(@NonNull AdRequestError error){if(g==generation){loading=false;retryAt=System.currentTimeMillis()+30000;}}
+   try{if(loader==null)loader=new InterstitialAdLoader(getActivity());WaterAnalyticsPlugin.ad("interstitial","request");loader.loadAd(new AdRequest.Builder(BuildConfig.INTERSTITIAL_AD_UNIT_ID).build(),new InterstitialAdLoadListener(){
+    @Override public void onAdLoaded(@NonNull InterstitialAd loaded){if(destroyed||g!=generation||!loading){loaded.setAdEventListener(null);return;}loading=false;WaterAnalyticsPlugin.ad("interstitial","loaded");ad=loaded;loadedAt=System.currentTimeMillis();}
+    @Override public void onAdFailedToLoad(@NonNull AdRequestError error){if(g==generation){loading=false;WaterAnalyticsPlugin.ad("interstitial","load_error");retryAt=System.currentTimeMillis()+30000;}}
    });}catch(Exception e){if(g==generation)loading=false;}
   }));}catch(Exception e){loading=false;}
  }
@@ -48,11 +48,11 @@ public class WaterAdsPlugin extends Plugin {
   if(!FullscreenAds.acquire(this)){result(call,"unavailable");return;}
   active=call;final InterstitialAd current=ad;displayed=current;ad=null;final int g=++generation;shown=false;
   current.setAdEventListener(new InterstitialAdEventListener(){
-   @Override public void onAdShown(){if(g==generation)shown=true;}
-   @Override public void onAdFailedToShow(@NonNull AdError error){if(g==generation)finish(current,"failed");}
-   @Override public void onAdDismissed(){if(g==generation)finish(current,"shown");}
+   @Override public void onAdShown(){if(g==generation){shown=true;WaterAnalyticsPlugin.ad("interstitial","shown");}}
+   @Override public void onAdFailedToShow(@NonNull AdError error){if(g==generation){WaterAnalyticsPlugin.ad("interstitial","show_error");finish(current,"failed");}}
+   @Override public void onAdDismissed(){if(g==generation){WaterAnalyticsPlugin.ad("interstitial","dismissed");finish(current,"shown");}}
    @Override public void onAdClicked(){}
-   @Override public void onAdImpression(@Nullable ImpressionData data){}
+   @Override public void onAdImpression(@Nullable ImpressionData data){if(g==generation)WaterAnalyticsPlugin.ad("interstitial","impression");}
   });
   // From show() onward Android may pause our Activity; never resume gameplay behind the SDK.
   shown=true;try{current.show(getActivity());}catch(Exception e){finish(current,"failed");}
@@ -81,13 +81,13 @@ public class WaterAdsPlugin extends Plugin {
    int offset=mapped.centeredTop(height);
    if(banner==null||bannerWidth!=width||bannerFailedAt>0&&System.currentTimeMillis()-bannerFailedAt>=30000){destroyBanner();bannerFailedAt=0;bannerWidth=width;container=new FrameLayout(getActivity());container.setClipChildren(true);root.addView(container);banner=new BannerAdView(getActivity());container.addView(banner,new FrameLayout.LayoutParams(width,height));banner.setAdSize(size);final int g=++bannerGeneration;
     banner.setBannerAdEventListener(new BannerAdEventListener(){
-     @Override public void onAdLoaded(){if(destroyed||g!=bannerGeneration)return;visibility.run();}
-     @Override public void onAdFailedToLoad(@NonNull AdRequestError error){if(g==bannerGeneration)bannerFailedAt=System.currentTimeMillis();}
+     @Override public void onAdLoaded(){if(destroyed||g!=bannerGeneration)return;WaterAnalyticsPlugin.ad("banner","loaded");visibility.run();}
+     @Override public void onAdFailedToLoad(@NonNull AdRequestError error){if(g==bannerGeneration){bannerFailedAt=System.currentTimeMillis();WaterAnalyticsPlugin.ad("banner","load_error");}}
      @Override public void onAdClicked(){}
      public void onLeftApplication(){}
      public void onReturnedToApplication(){}
-     @Override public void onImpression(@Nullable ImpressionData data){}
-    });banner.loadAd(new AdRequest.Builder(BuildConfig.BANNER_AD_UNIT_ID).build());
+     @Override public void onImpression(@Nullable ImpressionData data){if(g==bannerGeneration)WaterAnalyticsPlugin.ad("banner","impression");}
+    });WaterAnalyticsPlugin.ad("banner","request");banner.loadAd(new AdRequest.Builder(BuildConfig.BANNER_AD_UNIT_ID).build());
    }
    FrameLayout.LayoutParams params=new FrameLayout.LayoutParams(width,height);params.leftMargin=mapped.x-root.getPaddingLeft();params.topMargin=offset-root.getPaddingTop();container.setLayoutParams(params);geometryValid=true;visibility.run();reply.put("status","placed");call.resolve(reply);
   }catch(Exception e){if(container!=null)container.setVisibility(View.INVISIBLE);call.resolve();}

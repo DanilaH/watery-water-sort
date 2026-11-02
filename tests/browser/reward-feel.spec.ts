@@ -23,8 +23,9 @@ async function finish(page:Page){
 test('saved best result precedes cosmetic collection; replay and reload cannot farm stars',async({page})=>{
  await prepare(page);await finish(page);
  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));
- expect(totalStars(saved)).toBe(3);expect(saved.best[levelKey(0)].history).toHaveLength(3);
- await expect.poll(()=>page.evaluate(()=>(window as any).arrivals.length)).toBe(3);
+ expect(totalStars(saved)).toBe(3);expect(saved.best[levelKey(0)].history).toHaveLength(3);expect(saved.wallet.coins).toBe(30);
+ // Three stars and six decorative coins use the shared collection sound.
+ await expect.poll(()=>page.evaluate(()=>(window as any).arrivals.length)).toBe(9);
  await expect(page.locator('#star-total')).toHaveText('3');
  await page.reload();await page.locator('#home-play').click();await expect(page.locator('#earned-stars')).toHaveText('★★★');
  await page.waitForTimeout(1900);await expect(page.locator('.star-flight')).toHaveCount(0);

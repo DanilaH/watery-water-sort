@@ -5,7 +5,7 @@ body #home-wallet{position:absolute;right:max(22px,env(safe-area-inset-right));t
 #hint-count{position:absolute;right:-6px;top:-7px;min-width:24px;height:24px;border-radius:14px;background:#ffe18a;color:#5f3c13;display:grid;place-items:center;padding:0 5px;border:2px solid var(--bg-mid);font-size:12px;box-shadow:0 2px 0 #0c173b44}
 #earned-coins{display:inline-flex;align-items:center;gap:5px;color:#ffe38b;font-weight:750;font-size:15px;margin-top:3px}#earned-coins:before{content:'';width:15px;height:15px;border-radius:50%;background:linear-gradient(135deg,#fff1a2,#efac27);border:2px solid #ffdc71;box-shadow:0 2px #9f6428}#earned-coins[hidden]{display:none}
 .coin-flight{position:fixed;left:0;top:0;z-index:9;pointer-events:none;will-change:transform}
-.shop-balance{display:flex;align-items:center;justify-content:center;gap:12px;margin:5px 0 20px;color:#5d3a10;font-size:35px;font-variant-numeric:tabular-nums}.shop-balance .coin-icon{width:35px;height:35px}.shop-balance .coin-icon:after{inset:9px 12px}
+.shop-balance{display:flex;align-items:center;justify-content:center;gap:12px;margin:5px 0 20px;color:#ffe49d;text-shadow:0 2px 0 #6d481d;font-size:35px;font-variant-numeric:tabular-nums}.shop-balance .coin-icon{width:35px;height:35px}.shop-balance .coin-icon:after{inset:9px 12px}
 #banner-slot{--banner-height:60px;min-height:0;pointer-events:none;background:transparent}
 body.with-banner #app{grid-template-rows:52px 34px minmax(0,1fr) 104px 86px var(--banner-height,60px)}
 body.with-banner #banner-slot{height:var(--banner-height);min-height:var(--banner-height);margin-top:0}

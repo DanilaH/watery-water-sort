@@ -1,6 +1,6 @@
 import {Capacitor,registerPlugin} from '@capacitor/core';
 export type Receipt={token:string;level:string};
-export type AdResult={status:'rewarded'|'closed'|'unavailable'|'failed';receipt?:Receipt};
+export type AdResult={status:'rewarded'|'closed'|'unavailable'|'failed';receipt?:Receipt;wasShown?:boolean};
 const bridge=registerPlugin<{request(o:{level:string}):Promise<AdResult>;pending():Promise<{receipts:Receipt[]}>;ack(o:{token:string}):Promise<void>;cancel():Promise<void>}>('WaterRewarded');
 export class Rewarded{
  async request(level:string):Promise<AdResult>{if(!Capacitor.isNativePlatform())return {status:'unavailable'};return bridge.request({level});}

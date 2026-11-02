@@ -10,7 +10,7 @@ for(const manual of [false,true])test(`retina rendering preserves logical hit te
  const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:3});const page=await context.newPage();await start(page,2);
  const density=await page.locator('canvas').evaluate(c=>({backing:(c as HTMLCanvasElement).width,css:c.getBoundingClientRect().width}));expect(density.backing/density.css).toBeCloseTo(3,1);
  await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');
- if(manual){await tap(page,0,2);await tap(page,3,2);const from=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-003@1'].history.at(-1).from);expect(from).toBe(0);}
+ if(manual){const source=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).wallet.hintAdvice.move.from);if(source===0)await tap(page,0,2);await tap(page,0,2);await tap(page,3,2);const from=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-003@1'].history.at(-1).from);expect(from).toBe(0);}
  else{await tap(page,4,2);await expect(page.locator('#moves')).toHaveText('Ходов: 1');}
  await context.close();
 });
