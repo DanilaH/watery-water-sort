@@ -6,7 +6,7 @@ on:
 permissions:
   contents: read
 jobs:
-  check:
+  native:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -57,11 +57,6 @@ jobs:
           fi
           grep -F 'Preview signing keys are forbidden' qa-preview-key-guard.log
       - run: python3 tools/audit-android-41.py
-      # Ubuntu 24.04 hosted runners already include Chrome runtime libraries.
-      # Avoid an unrelated apt mirror outage blocking tests and Android packaging.
-      - run: npx playwright install chromium
-        timeout-minutes: 5
-      - run: npm run test:e2e -- --workers=2
       - uses: actions/upload-artifact@v4
         with:
           name: watery-water-sort-debug
@@ -75,3 +70,35 @@ jobs:
             android/qa-release.json
             android/qa-preview-key-guard.log
           retention-days: 14
+
+  browser:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Keep two workers per host; distribute the full suite across independent hosts.
+      - run: npx playwright install chromium
+        timeout-minutes: 5
+      - run: npm run test:e2e -- --workers=2 --shard=${{ matrix.shard }}/3
+
+  # Preserve the original required-check name and fail closed on any failed shard.
+  check:
+    if: ${{ always() }}
+    needs: [native, browser]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require native and every browser shard
+        env:
+          NATIVE_RESULT: ${{ needs.native.result }}
+          BROWSER_RESULT: ${{ needs.browser.result }}
+        run: |
+          test "$NATIVE_RESULT" = success
+          test "$BROWSER_RESULT" = success

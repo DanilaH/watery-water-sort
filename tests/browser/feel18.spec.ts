@@ -1,3 +1,4 @@
+import {advanceFrames} from './controlled-frames';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,moved,displaySlots,attempt} from '../../src/core/session';
 import {layout,goalLayout} from '../../src/game/geometry';
@@ -10,18 +11,20 @@ async function prepare(page:Page,last=true,index=0){
  });
 }
 async function tap(page:Page,i:number){const b=(await page.locator('#board').boundingBox())!,s=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!)),r=(levels[s.current].goal?goalLayout(b.width,b.height,displaySlots(s),0):layout(b.width,b.height,displaySlots(s)))[i];await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
-async function finish(page:Page,index=0){const m=levels[index].witness.at(-1)!;await tap(page,m.from);
- await page.evaluate(()=>{const s=(window as any).feelScene,w=window as any;w.beats=[];w.pops=[];const phase=s.onPhase,finale=s.onFinale;s.onPhase=(n:number)=>{w.beats.push({n,time:performance.now()});phase(n);};s.onFinale=(n:number)=>{const e=document.getElementById('victory-effects'),r=e?.getBoundingClientRect();w.pops.push({n,time:performance.now(),overlay:e&&r?{x:r.x,y:r.y,width:r.width,height:r.height,pointerEvents:getComputedStyle(e).pointerEvents}:null});finale(n);};});
- await tap(page,m.to);await expect(page.locator('#continue')).toBeVisible();}
+async function finish(page:Page,index=0,controlled=false){const m=levels[index].witness.at(-1)!;await tap(page,m.from);
+ await expect.poll(()=>page.evaluate(()=>!!(window as any).feelScene)).toBe(true);
+ if(controlled)await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));
+ await page.evaluate(()=>{const s=(window as any).feelScene,w=window as any;w.beats=[];w.pops=[];const phase=s.onPhase,finale=s.onFinale;s.onPhase=(n:number,heavy:boolean)=>{w.beats.push({n,time:performance.now()});phase(n,heavy);};s.onFinale=(n:number,heavy:boolean)=>{const e=document.getElementById('victory-effects'),r=e?.getBoundingClientRect();w.pops.push({n,time:performance.now(),overlay:e&&r?{x:r.x,y:r.y,width:r.width,height:r.height,pointerEvents:getComputedStyle(e).pointerEvents}:null});finale(n,heavy);};});
+ await tap(page,m.to);if(controlled)await advanceFrames(page,'feelScene',1600);await expect(page.locator('#continue')).toBeVisible();}
 for(const [width,height]of [[1280,720],[390,844]])test(`fill beats and ordered pops overlap, while corks stay gone ${width}x${height}`,async({page})=>{
- await page.setViewportSize({width,height});await prepare(page);const before=(await page.locator('#board').boundingBox())!;await finish(page);
+ await page.clock.install();await page.setViewportSize({width,height});await prepare(page);const before=(await page.locator('#board').boundingBox())!;await finish(page,0,true);
  await expect.poll(()=>page.evaluate(()=>(window as any).pops.length)).toBe(2);
  const data=await page.evaluate(()=>({beats:(window as any).beats,pops:(window as any).pops,popped:[...(window as any).feelScene.popped]}));
  expect(data.beats.map((b:any)=>b.n)).toEqual([0,1,2]);expect(data.pops.map((b:any)=>b.n)).toEqual([0,1]);expect(data.pops[0].time).toBeLessThan(data.beats[2].time);expect(data.pops.at(-1).time).toBeGreaterThan(data.beats[2].time);expect(data.pops[1].time-data.pops[0].time).toBeGreaterThan(130);
  // Observe bounds and style during the final pop, while the overlay is attached.
  const box=data.pops.at(-1).overlay,view=page.viewportSize()!;expect(box).toMatchObject({x:0,y:0,width:view.width,height:view.height,pointerEvents:'none'});
  const after=(await page.locator('#board').boundingBox())!;expect(after).toEqual(before);
- await page.waitForTimeout(2100);expect(await page.evaluate(()=>[...(window as any).feelScene.popped])).toEqual(data.popped);await expect(page.locator('#victory-effects')).toHaveCount(0);
+ await advanceFrames(page,'feelScene',2400);expect(await page.evaluate(()=>[...(window as any).feelScene.popped])).toEqual(data.popped);await expect(page.locator('#victory-effects')).toHaveCount(0);await page.clock.resume();
 });
 test('select and deselect both disturb the liquid without accepting a move',async({page})=>{
  await prepare(page,false);await tap(page,0);
