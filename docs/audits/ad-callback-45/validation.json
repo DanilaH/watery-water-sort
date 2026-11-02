@@ -1,0 +1,145 @@
+{
+  "source": "407a38f8cf7622b664f60045e7cfb8484935a997",
+  "sourceTree": "31bc4731ca4d0ecdeed95506843af5d1f3f67302",
+  "ci": {
+    "run": 41491661773,
+    "url": "https://github.com/DanilaH/watery-water-sort/actions/runs/41491661773",
+    "conclusion": "success",
+    "requiredCheckJob": 125439391979,
+    "nativeJob": 125435958462,
+    "browserShards": [
+      {
+        "job": 125435959140,
+        "passed": 84,
+        "duration": "6.0m"
+      },
+      {
+        "job": 125435959286,
+        "passed": 82,
+        "duration": "3.1m"
+      },
+      {
+        "job": 125435959289,
+        "passed": 85,
+        "duration": "4.5m"
+      }
+    ],
+    "browserTotal": 251,
+    "unitTests": 100,
+    "jvmTests": 15,
+    "productionNativePluginScenarios": 9,
+    "optimalPaths": 240
+  },
+  "nativeRegression": {
+    "productionJavaCompiled": true,
+    "platformAndSDKDoubles": true,
+    "baselineSource": "85c7ce63172c185b4cda9089a07238b270745536",
+    "baselineSHA256": "894b7128a2d0c8f628dd205ec159472ea279364a7b0e34ad745d78af6ea863fb",
+    "baselineBugReproduced": true,
+    "baselineFailure": "dismiss must resolve original bridge call exactly once",
+    "currentScenariosPassed": 9,
+    "browserSettingsReturnScenariosPassed": 12
+  },
+  "artifact": {
+    "artifactId": 13163928161,
+    "zipBytes": 10184663,
+    "zipSHA256": "a81f71b3449247772f0c52ae9ca82f52ef81d33ea212543d6e76aae678a792c7",
+    "zipCRC": true,
+    "apkBytes": 10882043,
+    "apkSHA256": "2f5b4fedd01eb90183dc64d9d4f047c4ec29c03670cd9d00f8e29ee663acfee3",
+    "jvmTests": [
+      {
+        "name": "com.danilah.waterywatersort.BannerGeometryTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.danilah.waterywatersort.RewardLedgerTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.getcapacitor.myapp.ExampleUnitTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "apk": {
+    "apk": "perelevy-0.45-ad-callback.apk",
+    "bytes": 10882043,
+    "sha256": "2f5b4fedd01eb90183dc64d9d4f047c4ec29c03670cd9d00f8e29ee663acfee3",
+    "manifest": {
+      "versionCode": 45,
+      "versionName": "0.45.0-ad-callback",
+      "compileSdkVersion": 36,
+      "compileSdkVersionCodename": "16",
+      "package": "com.danilah.waterywatersort.preview3",
+      "platformBuildVersionCode": 36,
+      "platformBuildVersionName": 16
+    },
+    "v2Signatures": [
+      {
+        "algorithm": "0x103",
+        "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+      }
+    ],
+    "publicPreviewCertificateMatches": true,
+    "tamperedProtectedByteRejected": true,
+    "distFilesMatched": [
+      "index.html",
+      "audio/material-report.json",
+      "audio/pour-2.ogg",
+      "audio/pour-1.ogg",
+      "audio/mix-report.json",
+      "audio/cork.ogg",
+      "audio/collect.ogg",
+      "audio/hint.ogg",
+      "audio/reject.ogg",
+      "audio/land.ogg",
+      "audio/complete.ogg",
+      "audio/victory.ogg",
+      "audio/accept.ogg",
+      "audio/select.ogg",
+      "audio/pour-3.ogg",
+      "fonts/OFL-Rubik.txt",
+      "fonts/rubik.woff",
+      "art/goal-crystal-shard-2.webp",
+      "art/goal-crystal-shard-0.webp",
+      "art/goal-crystal-shard-4.webp",
+      "art/goal-crystal-shard-3.webp",
+      "art/goal-crystal-shard-1.webp",
+      "art/goal-crystal-base.webp",
+      "art/goal-crystal.json",
+      "art/night-shore.svg",
+      "assets/web-CSjP9m3v.js",
+      "assets/solver.worker-mwOyOevU.js",
+      "assets/phaser-DFK5Ua9d.js",
+      "assets/index-49fLYnyc.css",
+      "assets/index-C_48d5Ye.js",
+      "art/glass/material-27.json",
+      "art/glass/tube-27.webp",
+      "art/glass/cork-27.webp",
+      "art/vfx/splash-5.webp",
+      "art/vfx/splash-2.webp",
+      "art/vfx/splash-3.webp",
+      "art/vfx/splash-4.webp",
+      "art/vfx/splash-0.webp",
+      "art/vfx/splash-1.webp",
+      "art/vfx/sprites.json",
+      "art/ui/button-blue-29.svg",
+      "art/ui/material-29.json",
+      "art/ui/star-gold-29.svg",
+      "art/ui/star-empty-29.svg",
+      "art/ui/button-gold-29.svg"
+    ]
+  },
+  "physicalDeviceTested": false,
+  "requiresPhoneRetest": true
+}
