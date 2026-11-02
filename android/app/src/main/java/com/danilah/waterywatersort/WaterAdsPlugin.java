@@ -1,6 +1,7 @@
 package com.danilah.waterywatersort;
 
 import android.view.View;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.os.Handler;
@@ -89,7 +90,7 @@ public class WaterAdsPlugin extends Plugin {
      @Override public void onImpression(@Nullable ImpressionData data){if(g==bannerGeneration)WaterAnalyticsPlugin.ad("banner","impression");}
     });WaterAnalyticsPlugin.ad("banner","request");banner.loadAd(new AdRequest.Builder(BuildConfig.BANNER_AD_UNIT_ID).build());
    }
-   FrameLayout.LayoutParams params=new FrameLayout.LayoutParams(width,height);params.leftMargin=mapped.x-root.getPaddingLeft();params.topMargin=offset-root.getPaddingTop();container.setLayoutParams(params);geometryValid=true;visibility.run();reply.put("status","placed");call.resolve(reply);
+   FrameLayout.LayoutParams params=new FrameLayout.LayoutParams(width,height);params.gravity=Gravity.TOP|Gravity.LEFT;params.leftMargin=mapped.x-root.getPaddingLeft();params.topMargin=offset-root.getPaddingTop();container.setLayoutParams(params);geometryValid=true;visibility.run();reply.put("status","placed");call.resolve(reply);
   }catch(Exception e){if(container!=null)container.setVisibility(View.INVISIBLE);call.resolve();}
  });}
  @Override protected void handleOnPause(){foreground=false;geometryValid=false;if(container!=null)container.setVisibility(View.INVISIBLE);}
