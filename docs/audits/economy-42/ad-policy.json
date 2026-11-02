@@ -1,0 +1,32 @@
+{
+  "source": "389b179681fe0374ad65483954a3d045e0040baa",
+  "sdk": "mocked",
+  "physicalDevice": false,
+  "interstitialCountsAtSeconds": [
+    {
+      "seconds": 0,
+      "count": 1
+    },
+    {
+      "seconds": 10,
+      "count": 1
+    },
+    {
+      "seconds": 61,
+      "count": 2
+    },
+    {
+      "seconds": 122,
+      "count": 3
+    },
+    {
+      "seconds": 183,
+      "count": 4
+    }
+  ],
+  "moreThanThreeInOneHour": true,
+  "rapidClicksProducedOneRequest": true,
+  "hiddenPageDidNotAdvance": true,
+  "returnContinuedWithoutSecondAd": true,
+  "rewardedPostponedInterstitial": true
+}

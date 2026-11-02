@@ -39,3 +39,15 @@ mini-games-kit main 5450f9db344aacb5acdc103b4199fd8aeb11b10d: docs/layout/NATIVE
 Официальные SDK документы проверены 2 ноября: https://ads.yandex.com/helpcenter/en/dev/android/interstitial и https://ads.yandex.com/helpcenter/en/dev/android/adaptive-sticky-banner. Конкурентные наблюдения: Magic Sort! Grand Games App Store 6499209744, Water Sort Puzzle IEC com.gma.water.sort.puzzle (отзывы — отдельные свидетельства, не полная спецификация); Royal Match official coins help; https://foolfishgames.com/game/water-sort/ (пример доплаты за улучшение звёзд, не доказательство рекламной эффективности).
 
 SDK callbacks дополнительно отмечают ad_request / ad_loaded / ad_load_error / ad_shown / ad_impression / ad_dismissed / ad_show_error / ad_earned с полем format. Это диагностика фактических стадий SDK, отдельно от JS reward_granted и coins_earned; она не содержит рекламных ID и не выдаётся за подтверждённую доставку аналитики. Preview custom analytics отключена.
+
+## Проверка и APK
+
+CI [41451805893](https://github.com/DanilaH/watery-water-sort/actions/runs/41451805893) успешен на commit 389b179681fe0374ad65483954a3d045e0040baa: 96 модульных, 231 браузерный сценарий, 120 независимо проверенных оптимальных путей; 15 JVM-тестов (7 журнала, 7 геометрии, 1 шаблонный). Три отрицательные проверки production-упаковки прошли.
+
+Две старые временные проверки исправлены: отмена Worker удерживается управляемым сетевым gate, короткие фазы жидкости проверяются пошаговым продвижением кадров. Проверяемые условия не ослаблены. Это изменения тестов поверх runtime 20a3873; приложение не менялось.
+
+APK: perelevy-0.42-economy.apk, 10879563 байт; versionCode 42, versionName 0.42.0-economy, package com.danilah.waterywatersort.preview3. SHA-256: 5c4c19ea5d275c431c6cc24a8edbc1a507bb91221ba2d4461bf0e911cdecfb7d. Проверены AOSP v2-подпись, совпадение прежнего preview-сертификата, отклонение изменённого защищённого байта, ZIP CRC и побайтовое совпадение всех 45 файлов dist. Артефакт CI также проверен по его SHA-256.
+
+Дополнительная проверка логики с имитированным SDK: показы на 0/61/122/183-й секунде (4 за час разрешены), пропуск на 10-й, один запрос при двойном нажатии, сохранение победы при уходе в фон, продолжение после возвращения без второго показа и отсрочка interstitial после rewarded. Это проверка контроллера игры; реальные native SDK fill, показ, поворот с баннером и физические ощущения требуют телефона.
+
+[Полная машинная проверка](audits/economy-42/validation.json), [native-манифесты и конфигурация](audits/economy-42/android.json), [проверка рекламной политики с mock SDK](audits/economy-42/ad-policy.json).

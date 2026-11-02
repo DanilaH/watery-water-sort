@@ -1,0 +1,101 @@
+{
+  "source": "389b179681fe0374ad65483954a3d045e0040baa",
+  "tree": "db5dffe24014aa82e89bd209c3f58abfa7af1dea",
+  "run": 41451805893,
+  "job": 125298567555,
+  "artifact": 13145837107,
+  "digest": "sha256:e4231ec6caba728cd5d846776baaac3e2fa07b8825870c8759cd089a68cbb3ea",
+  "ciUrl": "https://github.com/DanilaH/watery-water-sort/actions/runs/41451805893",
+  "unitTests": 96,
+  "browserTests": 231,
+  "independentOptimalPaths": 120,
+  "jvmTests": {
+    "tests": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "nativeTestBreakdown": {
+    "rewardLedger": 7,
+    "bannerGeometry": 7,
+    "template": 1
+  },
+  "apk": {
+    "apk": "perelevy-0.42-economy.apk",
+    "bytes": 10879563,
+    "sha256": "5c4c19ea5d275c431c6cc24a8edbc1a507bb91221ba2d4461bf0e911cdecfb7d",
+    "manifest": {
+      "versionCode": 42,
+      "versionName": "0.42.0-economy",
+      "compileSdkVersion": 36,
+      "compileSdkVersionCodename": "16",
+      "package": "com.danilah.waterywatersort.preview3",
+      "platformBuildVersionCode": 36,
+      "platformBuildVersionName": 16
+    },
+    "v2Signatures": [
+      {
+        "algorithm": "0x103",
+        "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+      }
+    ],
+    "publicPreviewCertificateMatches": true,
+    "tamperedProtectedByteRejected": true,
+    "distFilesMatched": [
+      "index.html",
+      "audio/material-report.json",
+      "audio/pour-2.ogg",
+      "audio/pour-1.ogg",
+      "audio/mix-report.json",
+      "audio/cork.ogg",
+      "audio/collect.ogg",
+      "audio/hint.ogg",
+      "audio/reject.ogg",
+      "audio/land.ogg",
+      "audio/complete.ogg",
+      "audio/victory.ogg",
+      "audio/accept.ogg",
+      "audio/select.ogg",
+      "audio/pour-3.ogg",
+      "fonts/OFL-Rubik.txt",
+      "fonts/rubik.woff",
+      "art/goal-crystal-shard-2.webp",
+      "art/goal-crystal-shard-0.webp",
+      "art/goal-crystal-shard-4.webp",
+      "art/goal-crystal-shard-3.webp",
+      "art/goal-crystal-shard-1.webp",
+      "art/goal-crystal-base.webp",
+      "art/goal-crystal.json",
+      "art/night-shore.svg",
+      "assets/index-CG39ACnq.js",
+      "assets/phaser-DFK5Ua9d.js",
+      "assets/solver.worker-0nNA2AWJ.js",
+      "assets/web-C_XRN77S.js",
+      "assets/index-49fLYnyc.css",
+      "art/glass/material-27.json",
+      "art/glass/tube-27.webp",
+      "art/glass/cork-27.webp",
+      "art/vfx/splash-5.webp",
+      "art/vfx/splash-2.webp",
+      "art/vfx/splash-3.webp",
+      "art/vfx/splash-4.webp",
+      "art/vfx/splash-0.webp",
+      "art/vfx/splash-1.webp",
+      "art/vfx/sprites.json",
+      "art/ui/button-blue-29.svg",
+      "art/ui/material-29.json",
+      "art/ui/star-gold-29.svg",
+      "art/ui/star-empty-29.svg",
+      "art/ui/button-gold-29.svg"
+    ]
+  },
+  "physicalDeviceTested": false,
+  "liveAdsTested": false,
+  "customPreviewAnalyticsEnabled": false,
+  "demoFormats": [
+    "rewarded",
+    "banner",
+    "interstitial"
+  ],
+  "localMockPolicyProof": "ad-policy.json"
+}
