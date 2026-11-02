@@ -1,3 +1,6 @@
+import {Ads} from './platform/ads';
+import {ECONOMY,settleEconomy,purchaseHints,ownHint,adviceKey,creditCoins} from './core/economy';
+import {CoinReward} from './game/CoinReward';
 import {Analytics,type EventName,type EventData} from './platform/analytics';
 import {HintRoute} from './core/hintRoute';
 import {campaign,stageNumber,continuation,available as levelAvailable} from './core/campaign';
@@ -10,6 +13,7 @@ import './style.css';
 import './ui29.css';
 import './finish30.css';
 import './ambient32.css';
+import './economy42.css';
 import {mountAmbient} from './game/Ambient';
 import {mountHomeHero} from './game/HomeHero';
 import { Sound } from './audio/sound';
@@ -27,13 +31,16 @@ import {StarReward} from './game/StarReward';
 import {totalStars} from './core/progress';
 import {isHard} from './core/difficulty';
 const touch=new TouchFeedback();
+const ads=new Ads(document.getElementById('banner-slot')!);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const ambient=mountAmbient();
 const $=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
 const dialog=$<HTMLDialogElement>('dialog'),content=$('dialog-content'),audio=new Sound(),store=new SaveStore(()=>localStorage);
 const reward=new StarReward($('earned-stars'),[$('star-total'),$('home-star-total')],index=>{audio.collect(index);haptic('collect');});
+const coinReward=new CoinReward($('earned-coins'),$('wallet'),index=>{audio.collect(index);haptic('collect');});
+let pendingCoins=0,interstitialBusy=false;
 let pendingStars:{before:number;delta:number;earned:number;total:number}|undefined;
-const loaded=store.load();let state=loaded.state,locked=loaded.corrupt||loaded.unavailable;
+const loaded=store.load();let state=settleEconomy(loaded.state),locked=loaded.corrupt||loaded.unavailable;
 audio.setEnabled(state.settings.sound);if(state.settings.sound)void audio.load();
 let recoveryNotice=loaded.recovered?'Откат к резервной копии':'';
 let homeHero:Awaited<ReturnType<typeof mountHomeHero>>;
@@ -72,11 +79,11 @@ function guidance(){
 }
 function cancelSearch(){worker?.terminate();worker=undefined;requestId++;searching=false;}
 function clearIntent(){queued=null;scene.queuedMove=null;scene.selected=null;scene.hintMove=null;}
-function interrupt(){pendingReveal=false;pendingIce=null;reward.cancel();pendingStars=undefined;scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
+function interrupt(){pendingReveal=false;pendingIce=null;reward.cancel();coinReward.cancel();$('earned-coins').hidden=true;pendingCoins=0;pendingStars=undefined;scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
 function syncLoop(){document.body.dataset.gamePaused=String(blockers.size>0);if(!scene.ready)return;if(blockers.size)game.loop.sleep();else game.loop.wake();}
 scene.onReady=syncLoop;
 function block(reason:string,on:boolean){measureActive();if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();syncLoop();syncActive();}
-function commit(next:Save){try{store.write(next);state=next;recoveryNotice='';$('home-error').hidden=true;return true;}catch{track('save_error');paint();const error='Не удалось сохранить. Изменение не принято — попробуй ещё раз.';message(error,true);if(atHome&&!dialog.open){$('home-error').textContent=error;$('home-error').hidden=false;}if(dialog.open){const body=content.querySelector('.dialog-body');let note=body?.querySelector<HTMLElement>('[role=alert]');if(body&&!note){note=document.createElement('p');note.setAttribute('role','alert');body.prepend(note);}if(note)note.textContent=error;if(body)body.scrollTop=0;}return false;}}
+function commit(next:Save){try{next=settleEconomy(next);store.write(next);state=next;recoveryNotice='';$('home-error').hidden=true;return true;}catch{track('save_error');paint();const error='Не удалось сохранить. Изменение не принято — попробуй ещё раз.';message(error,true);if(atHome&&!dialog.open){$('home-error').textContent=error;$('home-error').hidden=false;}if(dialog.open){const body=content.querySelector('.dialog-body');let note=body?.querySelector<HTMLElement>('[role=alert]');if(body&&!note){note=document.createElement('p');note.setAttribute('role','alert');body.prepend(note);}if(note)note.textContent=error;if(body)body.scrollTop=0;}return false;}}
 function paint(){
  const a=attempt(state),finished=won(a.board,goalFor(state))&&!scene.busy;
  document.body.classList.toggle('home',atHome);$('home').hidden=!atHome;$('home').inert=!atHome;$('app').inert=atHome;
@@ -88,6 +95,10 @@ function paint(){
  const theme=themeFor(state.settings);document.body.dataset.theme=theme.id;
  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content=theme.color;
  scene.reduced=reduced.matches;scene.setKnowledge(knowledgeFor(state));touch.enabled=state.settings.haptics!==false;reward.setTotal(totalStars(state),pendingStars?.before);
+ $('coins').textContent=$('home-coins').textContent=String(state.wallet!.coins);
+ $('hint-count').textContent=levels[state.current].colors<=2?'∞':String(state.wallet!.hints);
+ $<HTMLButtonElement>('wallet').disabled=$<HTMLButtonElement>('home-wallet').disabled=rewardBusy||recoveringRewards||interstitialBusy;
+ const adsAllowed=!atHome&&!blockers.size&&stageNumber(state.current)>2&&!document.hidden;document.body.classList.toggle('with-banner',ads.native&&stageNumber(state.current)>2);ads.banner(adsAllowed);
  $('star-capacity').textContent=`/ ${levels.length*3}`;
  $('hard-badge').hidden=!isHard(state.current);$('home-challenge').hidden=!isHard(state.current);$('home-play').classList.toggle('hard-level',isHard(state.current));
  scene.lockedExtra=!atHome&&offerExtra(state)&&!won(a.board,goalFor(state));scene.goal=goalFor(state);scene.slots=displaySlots(state);scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=theme.light;audio.setEnabled(state.settings.sound);
@@ -110,7 +121,7 @@ function paint(){
  $('finish-title').hidden=!finished;renderVictoryTitle($('finish-title'),continuation(state)===undefined?'Пройдено!':earned===3?'Идеально!':'Получилось!');
  if(finished)message(`Ходов: ${a.history.length} · рекорд: ${state.best?.[levelKey(state.current)]?.history.length??a.history.length}`);
 }
-function close(){if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;dialog.close();block('dialog',false);message(guidance());}
+function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;dialog.close();block('dialog',false);message(guidance());}
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
  block('dialog',true);content.replaceChildren();
  const header=document.createElement('header');header.className='dialog-header';
@@ -124,7 +135,7 @@ function modal(title:string,description:string,buttons:{label:string;action:()=>
 }
 function activateGame(reason='resume'){
  atHome=false;dialog.close();blockers.delete('dialog');blockers.delete('home');
- audio.block(blockers.size>0);paint();scene.reveal();message(guidance());$('menu').focus({preventScroll:true});$('hard-badge').classList.remove('challenge-enter');if(isHard(state.current)){void $('hard-badge').offsetWidth;$('hard-badge').classList.add('challenge-enter');}syncLoop();syncActive();track(attempt(state).history.length?'level_resume':'level_start',{reason});
+ audio.block(blockers.size>0);paint();scene.reveal();message(guidance());$('menu').focus({preventScroll:true});$('hard-badge').classList.remove('challenge-enter');if(isHard(state.current)){void $('hard-badge').offsetWidth;$('hard-badge').classList.add('challenge-enter');}syncLoop();syncActive();if(stageNumber(state.current)>2)ads.prepare();track(attempt(state).history.length?'level_resume':'level_start',{reason});
 }
 function resumeGame(){
  if(locked)return;
@@ -147,7 +158,9 @@ function accept(m:Move,acknowledged=false){
  if(locked||blockers.size)return;
  cancelSearch();const before=attempt(state).board,beforeStars=totalStars(state),beforeRules=goalFor(state),beforeKnowledge=knowledgeFor(state);const first=!state.completed.includes(levels[state.current].id),next=moved(state,m);
  if(won(attempt(next).board,goalFor(next))&&!next.completed.includes(levels[next.current].id))next.completed.push(levels[next.current].id);
+ const beforeCoins=state.wallet!.coins;
  if(!commit(next))return;
+ pendingCoins=state.wallet!.coins-beforeCoins;if(pendingCoins)track('coins_earned',{reason:'stars',amount:pendingCoins,balance:state.wallet!.coins});
  if(won(attempt(state).board,goalFor(state))){track('level_complete',{first,stars:stars(levelKey(state.current),attempt(state).history.length)});if(first&&state.current===1&&state.completed.includes(levels[0].id))track('tutorial_complete');}
  hintRoute.accepted(before,m,beforeRules);clearIntent();lastMove=m;kind='pour';pendingReveal=(knowledgeFor(next)?.known.length??0)>(beforeKnowledge?.known.length??0);pendingIce=!iceOpen(beforeRules)&&iceOpen(goalFor(next))?iceIndex(goalFor(next))!:null;scene.iceHeld=pendingIce;newColor=!sealedTube(before,m.from,goalFor(state))&&sealedTube(attempt(next).board,m.to,goalFor(state));
  if(won(attempt(next).board,goalFor(next)))pendingStars={before:beforeStars,total:totalStars(next),delta:totalStars(next)-beforeStars,earned:stars(levelKey(next.current),attempt(next).history.length)};
@@ -192,7 +205,7 @@ scene.onComplete=()=>{
  if(kind==='undo'){audio.land();paint();message(guidance());drainQueue();return;}
  if(won(board,goalFor(state))){
   if(lastMove)scene.celebrate(lastMove.to,true);audio.finish(true);paint();
-  if(pendingStars){const presentation=pendingStars;pendingStars=undefined;reward.run({...presentation,reduced:reduced.matches});}
+  if(pendingStars){const presentation=pendingStars;pendingStars=undefined;reward.run({...presentation,reduced:reduced.matches});coinReward.run(pendingCoins,reduced.matches);pendingCoins=0;}
   return;
  }
  if(!newColor){audio.land();haptic('land');}
@@ -207,10 +220,28 @@ function undo(){
 $('undo').onclick=undo;
 function askRestart(){audio.ui();modal('Начать заново?','Текущие ходы будут сброшены. Открытая дополнительная колба сохранится.',[{label:'Продолжить игру',primary:true,action:close},{label:'Начать заново',action:restart}]);}
 $('restart').onclick=askRestart;
-$('continue').onclick=()=>{audio.ui();if(continuation(state)===undefined)menu();else switchLevel(continuation(state)!,'next');};
-function showHint(m:Move){track('hint_result',{status:'FOUND'});clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
-$('hint').onclick=()=>{
+$('continue').onclick=()=>{void continueAfterWin();};
+async function continueAfterWin(){
+ if(interstitialBusy||rewardBusy||recoveringRewards||locked||blockers.size||!won(attempt(state).board,goalFor(state)))return;
+ audio.ui();const index=state.current,next=continuation(state),key=levelKey(index),now=Date.now();
+ const tutorialDone=levels.slice(0,2).every(l=>state.completed.includes(l.id));
+ let after=state.wallet!.adAfter??0,attemptAfter=state.wallet!.adAttemptAfter??0;
+ if(after>now+60000||attemptAfter>now+60000){const n=structuredClone(state);n.wallet!.adAfter=after=Math.min(after,now+60000);n.wallet!.adAttemptAfter=attemptAfter=Math.min(attemptAfter,now+60000);n.revision++;if(!commit(n))return;}
+ if(ads.native&&stageNumber(index)>2&&tutorialDone&&now>=after&&now>=attemptAfter){
+  const n=structuredClone(state);n.wallet!.adAttemptAfter=now+60000;n.revision++;if(!commit(n))return;
+  interstitialBusy=true;block('interstitial',true);track('interstitial_request');
+  try{const r=await ads.show();track('interstitial_result',{status:r.status});if(r.status==='shown'){const n=structuredClone(state);n.wallet!.adAfter=Date.now()+60000;n.revision++;commit(n);}}
+  finally{interstitialBusy=false;block('interstitial',false);}
+ }
+ if(document.hidden||[...blockers].some(x=>x!=='native')||levelKey(state.current)!==key)return;
+ if(next===undefined)menu();else switchLevel(next,'next');
+}
+
+function showHint(m:Move){const key=adviceKey(state),free=levels[state.current].colors<=2;const next=ownHint(state,key,m,free);if(!next){hintShop();return;}const spent=state.wallet!.hints-next.wallet!.hints;if(next!==state&&!commit(next))return;if(spent)track('hint_spent',{amount:spent,balance:state.wallet!.coins,hints:state.wallet!.hints});paint();track('hint_result',{status:'FOUND'});clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
+function requestHint(){
  if(scene.busy||blockers.size||locked||won(attempt(state).board,goalFor(state)))return;audio.prime();track('hint_request');
+ const owned=state.wallet!.hintAdvice;if(owned?.key===adviceKey(state)){showHint(owned.move);return;}
+ if(levels[state.current].colors>2&&!state.wallet!.hints){hintShop();return;}
  const view=knowledgeFor(state);if(hasUnknown(view)){const m=visibleHint(attempt(state).board,view!,goalFor(state));if(m){showHint(m);message('Открой следующий слой · отмена доступна');}else{track('hint_result',{status:'NO_VISIBLE_MOVE'});message('Нет доступного перелива · можно отменить ход');}return;}
  const planned=hintRoute.get(attempt(state).board,goalFor(state));if(planned){showHint(planned);return;}
  cancelSearch();const id=++requestId,revision=state.revision;searching=true;paint();message('Ищу продолжение…');
@@ -226,10 +257,12 @@ $('hint').onclick=()=>{
   };
   worker.onerror=e=>{e.preventDefault();failed();};
   worker.onmessageerror=failed;
-  worker.postMessage({board:attempt(state).board,goal:goalFor(state),revision,requestId:id});
+  worker.postMessage({board:attempt(state).board,goal:goalFor(state),revision,requestId:id,level:levelKey(state.current),extra:attempt(state).extra});
  }catch{failed();}
-};
+}
+$('hint').onclick=requestHint;
 async function applyReceipt(receipt:Receipt){
+ if(receipt.level.startsWith('coins:')){const next=creditCoins(state,receipt.token,receipt.level);if(!next)return false;const fresh=next!==state;if(fresh&&!commit(next))return false;if(fresh)track('reward_granted',{reason:'coins',amount:ECONOMY.adCoins,balance:state.wallet!.coins});await rewarded.ack(receipt.token).catch(()=>{});return true;}
  const i=levels.findIndex((_,i)=>levelKey(i)===receipt.level);if(i<0||levels[i].colors<=2){await rewarded.ack(receipt.token);return true;}
  const already=attempt({...state,current:i}).extra;
  if(!already&&!commit(grantExtra(state,receipt.level)))return false;
@@ -245,7 +278,7 @@ async function watchForTube(){
   if(!pendingReceipt){track('reward_request');const r=await rewarded.request(key);track('reward_result',{status:r.status});if(r.status==='rewarded'&&r.receipt?.level===key)pendingReceipt=r.receipt;else notice=r.status==='closed'?'Просмотр не завершён. Колба остаётся закрытой.':'Реклама пока недоступна. Попробуй позже.';}
   if(pendingReceipt){granted=await applyReceipt(pendingReceipt);if(granted)pendingReceipt=undefined;else notice='Награда получена, но колбу не удалось сохранить. Нажми «Получить колбу» — повторный просмотр не нужен.';}
  }catch{notice='Реклама пока недоступна. Попробуй позже.';}
- finally{rewardBusy=false;block('reward',false);}
+ finally{rewardBusy=false;postRewardCooldown();block('reward',false);}
  if(granted){interrupt();hintRoute.clear();activateGame();message('Колба открыта · ходы сохранены');}
  else{const body=content.querySelector('.dialog-body');if(body){let note=body.querySelector<HTMLElement>('.reward-notice');if(!note){note=document.createElement('p');note.className='reward-notice';note.setAttribute('role','status');body.append(note);}note.textContent=notice;}if(button){button.disabled=false;button.textContent=pendingReceipt?'Получить колбу':'Смотреть рекламу';}}
 }
@@ -314,7 +347,7 @@ let previousSize='';const observer=new ResizeObserver(()=>{
  interrupt();scene.setViewport(width,height,density);game.scale.resize(Math.round(width*density),Math.round(height*density));paint();message(guidance());
 });observer.observe($('board'));
 if(Capacitor.isNativePlatform()){
- void App.addListener('appStateChange',({isActive})=>{block('native',!isActive);if(isActive)message(guidance());});
+ void App.addListener('appStateChange',({isActive})=>{block('native',!isActive);if(isActive){message(guidance());ads.prepare();}});
  void App.addListener('backButton',()=>{if(dialog.open)close();else if(!atHome)showHome();else void App.exitApp();});
 }
 block('home',true);message(guidance());
@@ -326,10 +359,41 @@ function startupIssue(){
 function showReadFailure(){modal('Прогресс недоступен','Не удалось прочитать сохранение. Прогресс не изменён. Проверь доступ к хранилищу и попробуй ещё раз.',[{label:'Повторить чтение',primary:true,action:()=>{
  const retry=store.load();
  if(retry.unavailable){showReadFailure();return;}
- state=retry.state;locked=retry.corrupt;recoveryNotice=retry.recovered?'Откат к резервной копии':'';
+ state=settleEconomy(retry.state);locked=retry.corrupt;recoveryNotice=retry.recovered?'Откат к резервной копии':'';
  if(retry.corrupt){showCorrupt();return;}
  interrupt();close();scene.reveal();void recoverRewards();
  }}]);}
 function showCorrupt(){modal('Сохранение повреждено','Основная и резервная копии не читаются. Начать заново можно только после подтверждения.',[{label:'Начать заново',action:()=>{if(commit(state)){locked=false;close();}}}]);}
 startupIssue();
 if(!locked)void recoverRewards();
+
+function postRewardCooldown(){const n=structuredClone(state);n.wallet!.adAfter=Date.now()+60000;n.revision++;commit(n);}
+function hintShop(notice=''){
+ track('hint_shop');
+ const enough=state.wallet!.coins>=ECONOMY.packPrice;
+ const buttons:{label:string;primary?:boolean;action:()=>void}[]=[];
+ if(enough)buttons.push({label:`Купить 3 подсказки · ${ECONOMY.packPrice} 🪙`,primary:true,action:()=>{const n=purchaseHints(state);if(n&&commit(n)){track('hint_purchase',{amount:ECONOMY.packPrice,balance:state.wallet!.coins,hints:state.wallet!.hints});close();paint();}}});
+ buttons.push({label:`Получить ${ECONOMY.adCoins} 🪙 · реклама`,primary:!enough,action:()=>{void watchForCoins(true);}});
+ buttons.push({label:'Продолжить игру',action:close});
+ const body=modal('Подсказки',notice||`Один совет показывает следующий перелив. На скрытых слоях — по видимым цветам. Пакет: 3 подсказки за ${ECONOMY.packPrice} монет.`,buttons);
+ const balance=document.createElement('div');balance.className='shop-balance';balance.innerHTML='<i class="coin-icon" aria-hidden="true"></i>';const count=document.createElement('strong');count.textContent=String(state.wallet!.coins);balance.append(count);body.prepend(balance);
+}
+function coinShop(notice=''){
+ const body=modal('Монеты',notice||'Зарабатывай по 10 монет за новые звёзды. Монеты можно потратить на подсказки.',[{label:`Получить ${ECONOMY.adCoins} 🪙 · реклама`,primary:true,action:()=>{void watchForCoins(false);}},{label:'Подсказки · 3 за 60 🪙',action:()=>hintShop()},{label:'Продолжить',action:close}]);
+ const balance=document.createElement('div');balance.className='shop-balance';balance.innerHTML='<i class="coin-icon" aria-hidden="true"></i>';const count=document.createElement('strong');count.textContent=String(state.wallet!.coins);balance.append(count);body.prepend(balance);
+}
+$('wallet').onclick=()=>coinShop();$('home-wallet').onclick=()=>coinShop();
+async function watchForCoins(fromHints:boolean){
+ if(rewardBusy||recoveringRewards||interstitialBusy||locked)return;
+ const reopen=(notice:string)=>fromHints?hintShop(notice):coinShop(notice);
+ if(pendingReceipt){try{if(!await applyReceipt(pendingReceipt)){reopen('Награда ожидает сохранения. Повторный просмотр не нужен.');return;}pendingReceipt=undefined;}catch{reopen('Не удалось сохранить награду. Повторный просмотр не нужен.');return;}}
+ if(!state.wallet!.adOrder){const n=structuredClone(state);n.wallet!.adOrder=`coins:${crypto.randomUUID()}`;n.revision++;if(!commit(n))return;}
+ const order=state.wallet!.adOrder!;rewardBusy=true;block('reward',true);for(const button of content.querySelectorAll<HTMLButtonElement>('button'))button.disabled=true;
+ let notice='Реклама пока недоступна. Попробуй позже.';
+ try{track('reward_request',{reason:'coins'});const r=await rewarded.request(order);track('reward_result',{reason:'coins',status:r.status});
+  if(r.status==='rewarded'&&r.receipt?.level===order){pendingReceipt=r.receipt;if(await applyReceipt(pendingReceipt)){pendingReceipt=undefined;notice=`+${ECONOMY.adCoins} монет. Можно купить подсказки или сохранить на потом.`;}else notice='Награда получена и ожидает сохранения. Повторный просмотр не нужен.';}
+  else if(r.status==='closed')notice='Просмотр не завершён. Монеты не начислены.';
+ }catch{/* Offer remains durable for retry/recovery. */}
+ finally{rewardBusy=false;postRewardCooldown();block('reward',false);}
+ reopen(notice);
+}

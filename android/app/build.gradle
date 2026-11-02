@@ -7,6 +7,9 @@ def releaseAlias = System.getenv('ANDROID_KEY_ALIAS') ?: ''
 def releaseKeyPassword = System.getenv('ANDROID_KEY_PASSWORD') ?: ''
 def productionSigning = releaseStore && releasePassword && releaseAlias && releaseKeyPassword
 def rewardedUnit = System.getenv('YANDEX_REWARDED_AD_UNIT_ID') ?: ''
+def bannerUnit = System.getenv('YANDEX_BANNER_AD_UNIT_ID') ?: ''
+def interstitialUnit = System.getenv('YANDEX_INTERSTITIAL_AD_UNIT_ID') ?: ''
+for (unit in [bannerUnit, interstitialUnit]) if (unit && !unit.matches('[A-Za-z0-9_-]+')) throw new GradleException('Invalid ad unit id')
 if (rewardedUnit && !rewardedUnit.matches('[A-Za-z0-9_-]+')) throw new GradleException('Invalid rewarded ad unit id')
 
 android {
@@ -17,9 +20,11 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         buildConfigField "String", "REWARDED_AD_UNIT_ID", "\"${rewardedUnit}\""
+        buildConfigField "String", "BANNER_AD_UNIT_ID", "\"${bannerUnit}\""
+        buildConfigField "String", "INTERSTITIAL_AD_UNIT_ID", "\"${interstitialUnit}\""
         buildConfigField "String", "ANALYTICS_API_KEY", "\"${analyticsKey}\""
-        versionCode 41
-        versionName "0.41.0-release-audit"
+        versionCode 42
+        versionName "0.42.0-economy"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -49,6 +54,8 @@ android {
         debug {
             buildConfigField "String", "ANALYTICS_API_KEY", '""'
             buildConfigField "String", "REWARDED_AD_UNIT_ID", '"demo-rewarded-yandex"'
+            buildConfigField "String", "BANNER_AD_UNIT_ID", '"demo-banner-yandex"'
+            buildConfigField "String", "INTERSTITIAL_AD_UNIT_ID", '"demo-interstitial-yandex"'
             applicationIdSuffix ".preview3"
             signingConfig signingConfigs.publicPreview
         }
@@ -94,7 +101,7 @@ try {
 // Manifest/unsigned audits remain possible; production packaging requires real configuration.
 gradle.taskGraph.whenReady { graph ->
     if (graph.allTasks.any { it.path in [':app:assembleRelease', ':app:bundleRelease', ':app:packageRelease', ':app:packageReleaseBundle', ':app:signReleaseBundle'] }) {
-        if (!rewardedUnit || rewardedUnit.toLowerCase().contains('demo') || !analyticsKey)
+        if ([rewardedUnit,bannerUnit,interstitialUnit].any { !it || it.toLowerCase().contains('demo') } || !analyticsKey)
             throw new GradleException('Production IDs are required; use assembleDebug for previews')
         if (!productionSigning) throw new GradleException('Production signing is required')
         def owner = java.security.KeyStore.getInstance(file(releaseStore), releasePassword.toCharArray())

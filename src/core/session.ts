@@ -1,3 +1,4 @@
+import {emptyWallet,validWallet,type Wallet} from './economy';
 import levelData from './levels.json' with {type:'json'};
 import { clone, validBoard, won, type Board, type Move, type Goal, goalList, type Goals, transition, iceOpen } from './rules';
 import {walk,validKnowledge,knowledgeView} from './knowledge';
@@ -9,8 +10,8 @@ export const goalFor=(s:Pick<Save,'current'|'attempts'>)=>levelGoals(levels[s.cu
 export type Attempt = { board: Board; history: Move[]; extra: boolean; thawed?:boolean;known?:number[] };
 export type Settings = { sound: boolean; fast: boolean; symbols: boolean; light: boolean; haptics?: boolean; theme?:ThemeId };
 export type Best = {history:Move[];extra:boolean};
-export type Save = { best?:Record<string,Best>; schema: 1; campaignVersion?:1; unlocked?:string[]; artVersion?: number; current: number; revision: number; completed: string[]; attempts: Record<string,Attempt>; settings: Settings };
-export function fresh(): Save { return { schema:1,campaignVersion:1,artVersion:4,best:{},current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false} }; }
+export type Save = { wallet?:Wallet; best?:Record<string,Best>; schema: 1; campaignVersion?:1; unlocked?:string[]; artVersion?: number; current: number; revision: number; completed: string[]; attempts: Record<string,Attempt>; settings: Settings };
+export function fresh(): Save { return { wallet:emptyWallet(),schema:1,campaignVersion:1,artVersion:4,best:{},current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false} }; }
 export const levelKey = (i: number) => `${levels[i].id}@${levels[i].version}`;
 export function attempt(s:Pick<Save,'current'|'attempts'>): Attempt { return s.attempts[levelKey(s.current)] ?? {board:clone(levels[s.current].initial),history:[],extra:false}; }
 /** Replay is the authority for both liquid and earned access, including Undo. */
@@ -21,6 +22,7 @@ export function replay(l:Level,history:Move[],extra:boolean):Attempt{
 export function validSave(value: unknown): value is Save {
   try {
     const s=value as Save;
+    if(s.wallet!==undefined&&!validWallet(s.wallet))return false;
     if(s.schema!==1 || !Number.isInteger(s.current) || s.current<0 || s.current>=levels.length || !Number.isSafeInteger(s.revision) || s.revision<0) return false;
     if(s.campaignVersion!==undefined&&s.campaignVersion!==1)return false;
     if(s.unlocked!==undefined&&(!Array.isArray(s.unlocked)||new Set(s.unlocked).size!==s.unlocked.length||!s.unlocked.every(id=>levels.some(l=>l.id===id))))return false;

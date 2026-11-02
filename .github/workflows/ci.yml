@@ -27,11 +27,15 @@ jobs:
         env:
           YANDEX_REWARDED_AD_UNIT_ID: ${{ secrets.YANDEX_REWARDED_AD_UNIT_ID }}
           APPMETRICA_API_KEY: ${{ secrets.APPMETRICA_API_KEY }}
+          YANDEX_BANNER_AD_UNIT_ID: ${{ secrets.YANDEX_BANNER_AD_UNIT_ID }}
+          YANDEX_INTERSTITIAL_AD_UNIT_ID: ${{ secrets.YANDEX_INTERSTITIAL_AD_UNIT_ID }}
       - name: Reject unconfigured production packaging
         working-directory: android
         env:
           YANDEX_REWARDED_AD_UNIT_ID: ''
           APPMETRICA_API_KEY: ''
+          YANDEX_BANNER_AD_UNIT_ID: ''
+          YANDEX_INTERSTITIAL_AD_UNIT_ID: ''
           ANDROID_KEYSTORE_PATH: ''
           ANDROID_KEYSTORE_PASSWORD: ''
           ANDROID_KEY_ALIAS: ''
@@ -42,12 +46,12 @@ jobs:
             exit 1
           fi
           grep -F 'Production IDs are required' qa-release-guard.log
-          if YANDEX_REWARDED_AD_UNIT_ID=R-M-config-probe APPMETRICA_API_KEY=00000000-0000-0000-0000-000000000000 ./gradlew :app:assembleRelease --no-daemon > qa-signing-guard.log 2>&1; then
+          if YANDEX_BANNER_AD_UNIT_ID=R-M-config-probe YANDEX_INTERSTITIAL_AD_UNIT_ID=R-M-config-probe YANDEX_REWARDED_AD_UNIT_ID=R-M-config-probe APPMETRICA_API_KEY=00000000-0000-0000-0000-000000000000 ./gradlew :app:assembleRelease --no-daemon > qa-signing-guard.log 2>&1; then
             echo 'Unsigned production packaging unexpectedly passed'
             exit 1
           fi
           grep -F 'Production signing is required' qa-signing-guard.log
-          if YANDEX_REWARDED_AD_UNIT_ID=R-M-config-probe APPMETRICA_API_KEY=00000000-0000-0000-0000-000000000000 ANDROID_KEYSTORE_PATH=../debug-signing/public-test.p12 ANDROID_KEYSTORE_PASSWORD=android ANDROID_KEY_ALIAS=water-preview ANDROID_KEY_PASSWORD=android ./gradlew :app:packageRelease --no-daemon > qa-preview-key-guard.log 2>&1; then
+          if YANDEX_BANNER_AD_UNIT_ID=R-M-config-probe YANDEX_INTERSTITIAL_AD_UNIT_ID=R-M-config-probe YANDEX_REWARDED_AD_UNIT_ID=R-M-config-probe APPMETRICA_API_KEY=00000000-0000-0000-0000-000000000000 ANDROID_KEYSTORE_PATH=../debug-signing/public-test.p12 ANDROID_KEYSTORE_PASSWORD=android ANDROID_KEY_ALIAS=water-preview ANDROID_KEY_PASSWORD=android ./gradlew :app:packageRelease --no-daemon > qa-preview-key-guard.log 2>&1; then
             echo 'Public preview signing key unexpectedly accepted'
             exit 1
           fi

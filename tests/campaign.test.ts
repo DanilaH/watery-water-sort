@@ -1,3 +1,4 @@
+import {settleEconomy} from '../src/core/economy';
 import {test,expect} from 'vitest';
 import {campaign,stageNumber,nextLevel,continuation,available,migrateCampaign} from '../src/core/campaign';
 import {fresh,levels,moved,attempt,restarted,undone,expanded,validSave,levelKey} from '../src/core/session';
@@ -39,7 +40,7 @@ test('finishing a resumed late legacy puzzle leads to the earliest missing lesso
 test('frontier survives reload, Undo and restarted attempts; new players do not inherit old linear unlocks',()=>{
  let s={...fresh(),current:12,completed:[levels[0].id,levels[1].id,levels[2].id]};for(const m of levels[12].witness)s=moved(s,m);expect(available(s,3)).toBe(true);s=undone(s);expect(available(s,3)).toBe(true);s=restarted(s);expect(available(s,3)).toBe(true);
  expect(available(fresh(),12)).toBe(false);expect(available({...fresh(),completed:[levels[11].id]},12)).toBe(false);
- const keys=new Map<string,string>(),store=new SaveStore({getItem:k=>keys.get(k)??null,setItem:(k,v)=>{keys.set(k,v);}});store.write(s);expect(store.load().state).toEqual(s);
+ const keys=new Map<string,string>(),store=new SaveStore({getItem:k=>keys.get(k)??null,setItem:(k,v)=>{keys.set(k,v);}});store.write(s);expect(store.load().state).toEqual(settleEconomy(s));
 });
 
 test('earned extra tube and hidden knowledge retain stable identity across migration and navigation',()=>{

@@ -8,6 +8,7 @@ public class MainActivity extends BridgeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         registerPlugin(FeelHapticsPlugin.class);
         registerPlugin(WaterRewardedPlugin.class);
+        registerPlugin(WaterAdsPlugin.class);
         registerPlugin(WaterAnalyticsPlugin.class);
         super.onCreate(savedInstanceState);
     }
