@@ -89,6 +89,9 @@ jobs:
       - run: npx playwright install chromium
         timeout-minutes: 5
       - run: npm run test:e2e -- --workers=2 --shard=${{ matrix.shard }}/3
+      - name: Verify cold startup in the packaged web build
+        if: matrix.shard == 1
+        run: npm run build && npx playwright test --config=playwright.production.config.ts --workers=2
 
   # Preserve the original required-check name and fail closed on any failed shard.
   check:

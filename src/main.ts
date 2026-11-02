@@ -1,3 +1,4 @@
+import {revealStartup} from './platform/startup';
 import {playerMoves} from './core/goalStart';
 import {Ads} from './platform/ads';
 import {ECONOMY,settleEconomy,purchaseHints,ownHint,adviceKey,creditCoins} from './core/economy';
@@ -46,8 +47,7 @@ const loaded=store.load();let state=settleEconomy(loaded.state),locked=loaded.co
 audio.setEnabled(state.settings.sound);if(state.settings.sound)void audio.load();
 let recoveryNotice=loaded.recovered?'Откат к резервной копии':'';
 let homeHero:Awaited<ReturnType<typeof mountHomeHero>>;
-void mountHomeHero().then(hero=>{homeHero=hero;paint();});
-for(const id of ['home-play','home-levels','home-settings','menu','settings','undo','hint','restart','continue','rescue']){const b=$(id);b.classList.add('gel-button');if(id==='home-play'||id==='continue')b.classList.add('gel-primary');}
+const homeHeroReady=mountHomeHero().then(hero=>{homeHero=hero;paint();});
 const scene=new WaterScene('water');
 // Downsample on 1× displays; retain native detail on common 2.5–3× phones.
 const density=Math.min(3,Math.max(2,devicePixelRatio));
@@ -414,3 +414,6 @@ async function watchForCoins(fromHints:boolean){
  }catch{/* Persisted offers and native receipts remain available for retry/recovery. */}
  finally{rewardBusy=false;if(cooldown)postRewardCooldown();block('reward',false);reopen(notice);}
 }
+
+// Reveal only after synchronous startup has bound controls and restored the theme.
+void revealStartup(homeHeroReady);
