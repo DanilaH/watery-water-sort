@@ -1,3 +1,4 @@
+import {toggleSymbols} from './navigation';
 import {advanceFrames} from './controlled-frames';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,displaySlots} from '../../src/core/session';
@@ -7,7 +8,11 @@ async function open(page:Page,fast=false){const s=fresh();s.settings.sound=false
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.surfaceWave,land=m.WaterScene.prototype.land;(window as any).liquidFrames=[];(window as any).liquidImpacts=[];
   m.WaterScene.prototype.surfaceWave=function(...args:any[]){const v=fn.apply(this,args);(window as any).liquidScene=this;(window as any).liquidFrames.push({index:args[0],wave:v,busy:this.busy,received:!!this.flight?.received,time:performance.now()});return v;};
   m.WaterScene.prototype.land=function(i:number,...args:any[]){const before=this.liquid.get(i)?.x??0,result=land.call(this,i,...args);(window as any).liquidImpacts.push({i,before,after:this.liquid.get(i)?.x??0});return result;};
- });return s;
+ });
+ // Observe a real uncached draw before pausing rAF. A selection alone may not
+ // have delivered its first frame yet on a busy CI host.
+ await toggleSymbols(page);await expect.poll(()=>page.evaluate(()=>!!(window as any).liquidScene)).toBe(true);
+ return s;
 }
 async function tap(page:Page,index:number,s:ReturnType<typeof fresh>){const b=(await page.locator('#board').boundingBox())!,r=layout(b.width,b.height,displaySlots(s))[index];await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
 for(const fast of [false,true])test(`liquid survives receiving and return, settles and clears on navigation (${fast?'fast':'normal'})`,async({page})=>{
