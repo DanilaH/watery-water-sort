@@ -15,7 +15,7 @@ test('first launch shows home; settings do not start the game; first Play persis
 });
 
 test('Continue retains the exact accepted attempt through home, settings, Escape and reload',async({page})=>{
- const state=moved(fresh(),levels[0].witness[0]);await seed(page,state);await page.goto('/');await expect(page.locator('#home-summary')).toContainText('ходов: 1');await page.locator('#home-play').click();await expect(page.locator('#moves')).toHaveText('Ходов: 1');await page.keyboard.press('Escape');await expect(page.locator('#home')).toBeVisible();expect(await saved(page)).toEqual(state);
+ const state=moved(fresh(),levels[0].witness[0]);await seed(page,state);await page.goto('/');await expect(page.locator('#home-summary')).toHaveText('Уровень 1');await page.locator('#home-play').click();await expect(page.locator('#moves')).toHaveText('Ходов: 1');await page.keyboard.press('Escape');await expect(page.locator('#home')).toBeVisible();expect(await saved(page)).toEqual(state);
  await page.locator('#home-settings').click();await page.keyboard.press('Escape');await expect(page.locator('#home')).toBeVisible();await page.reload();await expect(page.locator('#home')).toBeVisible();await page.locator('#home-play').click();expect(await saved(page)).toEqual(state);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
 });
 

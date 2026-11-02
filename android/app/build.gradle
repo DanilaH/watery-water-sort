@@ -23,8 +23,8 @@ android {
         buildConfigField "String", "BANNER_AD_UNIT_ID", "\"${bannerUnit}\""
         buildConfigField "String", "INTERSTITIAL_AD_UNIT_ID", "\"${interstitialUnit}\""
         buildConfigField "String", "ANALYTICS_API_KEY", "\"${analyticsKey}\""
-        versionCode 43
-        versionName "0.43.0-ad-return"
+        versionCode 44
+        versionName "0.44.0-visual-goals"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

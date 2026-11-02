@@ -1,3 +1,4 @@
+import {fresh,seededRestart,attempt} from '../../src/core/session';
 import {expect,type Page} from '@playwright/test';
 // Real navigation for pre-existing gameplay tests; new navigation tests use raw page.goto.
 export async function resumeGame(page:Page){if(await page.locator('#home').isVisible()&&!await page.locator('dialog').isVisible()){await page.locator('#home-play').click();await expect(page.locator('#home')).toBeHidden();}}
@@ -12,3 +13,6 @@ export async function toggleSymbols(page:Page){await page.locator('#settings').c
 
 /** Select stable content identity when a test targets a particular mechanic. */
 export function levelButton(page:Page,index:number){return page.locator('.levels button[data-level="water-'+String(index+1).padStart(3,'0')+'"]');}
+
+/** Expected UI start, including real receiver liquid. */
+export function startingBoard(index:number,extra=false){const b=attempt(seededRestart({...fresh(),current:index})).board;return extra?[...b,[]]:b;}

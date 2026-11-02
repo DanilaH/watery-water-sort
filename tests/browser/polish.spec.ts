@@ -36,7 +36,7 @@ test('unavailable audio never delays accepting a move',async({page})=>{
 test('manual selection cancels an in-flight hint without stealing input',async({page})=>{
  let release!:()=>void;const gate=new Promise<void>(resolve=>release=resolve);
  await page.route('**/solver.worker*',async route=>{await gate;await route.continue().catch(()=>{});});
- try{await start(page,2);await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Ищу продолжение');await tap(page,0,2);release();await expect(page.locator('#status')).toContainText('Выбери пустую');await tap(page,3,2);
+ try{await start(page,2);await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Ищу продолжение');await tap(page,0,2);release();await expect(page.locator('#status')).toHaveText('');await tap(page,3,2);
  const source=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-003@1'].history.at(-1).from);expect(source).toBe(0);
  }finally{release();}
 });
@@ -46,7 +46,7 @@ test('dense field reserves one advertised slot outside the real board and keeps 
  const expected=levels[11].initial.length;
  await page.evaluate(async()=>{const path='/src/game/WaterScene.ts',m=await import(path),original=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(this:any){const poses=original.call(this);(window as any).__field={slots:this.slots,tubes:this.board.length,poses:poses.length};m.WaterScene.prototype.positions=original;return poses;};});
  await tap(page,0,11);const actual=await page.evaluate(()=>(window as any).__field);
- expect(actual).toEqual({slots:expected+1,tubes:expected,poses:expected+1});await expect(page.locator('#extra-tube')).toBeVisible();await expect(page.locator('#status')).toContainText('Выбери');
+ expect(actual).toEqual({slots:expected+1,tubes:expected,poses:expected+1});await expect(page.locator('#extra-tube')).toBeVisible();await expect(page.locator('#status')).toHaveText('');
 });
 
 for(const [width,height]of [[390,844],[320,480],[568,320]])test(`controls retain 48px touch areas ${width}x${height}`,async({page})=>{

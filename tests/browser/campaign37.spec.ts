@@ -1,3 +1,4 @@
+import {startingBoard} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,moved,attempt,levelKey,type Save} from '../../src/core/session';
 import {campaign,stageNumber} from '../../src/core/campaign';
@@ -7,7 +8,7 @@ async function open(p:Page,s:Save){s.settings.sound=false;await p.addInitScript(
 async function tap(p:Page,i:number){const b=(await p.locator('#board').boundingBox())!,r=await p.evaluate(i=>(window as any).campaignScene.positions()[i],i);await p.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
 
 test('ordinary third puzzle advances into the large-goal tutorial and grid follows campaign order',async({page})=>{
- let s={...fresh(),current:2,completed:[levels[0].id,levels[1].id]};for(const m of levels[2].witness.slice(0,-1))s=moved(s,m);await open(page,s);const last=levels[2].witness.at(-1)!;await tap(page,last.from);await tap(page,last.to);await expect(page.locator('#continue')).toBeVisible();await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 4');expect((await saved(page)).current).toBe(12);expect(attempt(await saved(page)).board).toEqual(levels[12].initial);await expect(page.locator('#objective')).toContainText('большую колбу');
+ let s={...fresh(),current:2,completed:[levels[0].id,levels[1].id]};for(const m of levels[2].witness.slice(0,-1))s=moved(s,m);await open(page,s);const last=levels[2].witness.at(-1)!;await tap(page,last.from);await tap(page,last.to);await expect(page.locator('#continue')).toBeVisible();await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 4');expect((await saved(page)).current).toBe(12);expect(attempt(await saved(page)).board).toEqual(startingBoard(12));await expect(page.locator('#objective')).toBeHidden();
  await openLevels(page);const ids=await page.locator('.levels button').evaluateAll(bs=>bs.map(b=>(b as HTMLElement).dataset.level));expect(ids).toEqual(campaign.map(i=>levels[i].id));await expect(levelButton(page,12)).toHaveAttribute('aria-current','step');await expect(levelButton(page,3)).toBeDisabled();await expect(levelButton(page,11)).toHaveAttribute('aria-label',/Уровень 40/);
 });
 
@@ -17,7 +18,7 @@ test('resuming a legacy high-colour puzzle keeps the board and fills the earlies
 });
 
 test('legacy unlocked frontier stays selectable even when its new predecessor was never completed',async({page})=>{
- const s={...fresh(),current:16,completed:levels.slice(0,17).map(l=>l.id)};delete s.campaignVersion;await open(page,s);await openLevels(page);await expect(levelButton(page,17)).toBeEnabled();await expect(levelButton(page,24)).toBeDisabled();await levelButton(page,17).click();const next=await saved(page);expect(next.current).toBe(17);expect(next.unlocked).toContain(levels[17].id);await page.reload();await page.locator('#home-play').click();await expect(page.locator('#level-title')).toHaveText('Уровень 17');expect(attempt(await saved(page)).board).toEqual(levels[17].initial);
+ const s={...fresh(),current:16,completed:levels.slice(0,17).map(l=>l.id)};delete s.campaignVersion;await open(page,s);await openLevels(page);await expect(levelButton(page,17)).toBeEnabled();await expect(levelButton(page,24)).toBeDisabled();await levelButton(page,17).click();const next=await saved(page);expect(next.current).toBe(17);expect(next.unlocked).toContain(levels[17].id);await page.reload();await page.locator('#home-play').click();await expect(page.locator('#level-title')).toHaveText('Уровень 17');expect(attempt(await saved(page)).board).toEqual(startingBoard(17));
 });
 
 for(const [width,height]of [[320,480],[568,320],[390,844]])test(`new final level ends the campaign at ${width}x${height}`,async({page})=>{

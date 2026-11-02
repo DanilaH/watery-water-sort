@@ -1,7 +1,14 @@
 """Independent bounded search: own transitions, tuple states, no production solver."""
 import json,time,math,sys
 from pathlib import Path
-levels=json.loads(Path('src/core/levels.json').read_text());source=Path(next((s for s in sys.argv[1:]if s!='--write'),'docs/audits/campaign-39/optimal.json'));rows=[json.loads(s)for s in source.read_text().splitlines()]if source.suffix=='.jsonl'else json.loads(source.read_text());proofs=[]
+args=sys.argv[1:];proof_output=None
+if '--proof-output' in args:
+ proof_output=Path(args[args.index('--proof-output')+1]);del args[args.index('--proof-output'):args.index('--proof-output')+2]
+seeded='--levels' in args
+assert not(seeded and '--write' in args), 'Do not overwrite historical rating bank with prepared starts'
+level_source=Path(args[args.index('--levels')+1]) if seeded else Path('src/core/levels.json')
+if seeded:del args[args.index('--levels'):args.index('--levels')+2]
+levels=json.loads(level_source.read_text());source=Path(next((s for s in args if s!='--write'),'docs/audits/campaign-39/optimal.json'));rows=[json.loads(s)for s in source.read_text().splitlines()]if source.suffix=='.jsonl'else json.loads(source.read_text());proofs=[]
 assert len(rows)==len(levels)*2 and {(r['level'],int(r['extra'])) for r in rows}=={(i,extra) for i in range(len(levels)) for extra in [0,1]}, 'Incomplete optimal proof bank'
 for row in rows:
  initial=levels[row['level']]['initial']+([[]]if row['extra']else[]);colors=levels[row['level']]['colors'];level=levels[row['level']];goals=level.get('goals',[level['goal']] if level.get('goal') else []);first=len(goals);mini=level.get('mini');ice=level.get('ice');fixed=first+int(mini is not None)+int(ice is not None);goal_colors={g['color'] for g in goals};seen={};nodes=0
@@ -47,7 +54,8 @@ for row in rows:
  print(row['level']+1,row['extra'],row['optimal'],nodes,flush=True)
 if '--write'in sys.argv:
  Path('docs/audits/campaign-39').mkdir(parents=True,exist_ok=True);Path('docs/audits/campaign-39/optimal.json').write_text(json.dumps(proofs,indent=2)+'\n')
-ratings={levels[r['level']]['id']+'@'+str(levels[r['level']]['version']):{'three':r['optimal'],'two':r['optimal']+max(2,math.ceil(r['optimal']*.2))}for r in rows if not r['extra']}
+if proof_output:proof_output.write_text(json.dumps(proofs,indent=2)+'\n')
+ratings={levels[r['level']]['id']+'@'+str(levels[r['level']]['version']):{'three':r['optimal']+r.get('setup',0),'two':r['optimal']+r.get('setup',0)+max(2,math.ceil((r['optimal']+r.get('setup',0))*.2))}for r in rows if not r['extra']}
 if '--write'in sys.argv:Path('src/core/ratings.json').write_text(json.dumps(ratings,indent=2)+'\n')
 else:assert json.loads(Path('src/core/ratings.json').read_text())==ratings
 print(f'Verified {len(rows)} optimal paths and all star thresholds')

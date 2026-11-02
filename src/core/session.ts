@@ -1,3 +1,4 @@
+import {goalStart} from './goalStart';
 import {emptyWallet,validWallet,type Wallet} from './economy';
 import levelData from './levels.json' with {type:'json'};
 import { clone, validBoard, won, type Board, type Move, type Goal, goalList, type Goals, transition, iceOpen } from './rules';
@@ -7,9 +8,9 @@ export type Level={id:string;version:number;colors:number;seed:number;initial:Bo
 export const levels=levelData as Level[];
 export const levelGoals=(l:Level,thawed=false):Goals|undefined=>l.mini===undefined&&l.ice===undefined?l.goals??l.goal:{goals:goalList(l.goals??l.goal),...(l.mini!==undefined?{mini:l.mini}:{}),...(l.ice!==undefined?{ice:l.ice,thawed}:{})};
 export const goalFor=(s:Pick<Save,'current'|'attempts'>)=>levelGoals(levels[s.current],attempt(s).thawed===true);
-export type Attempt = { board: Board; history: Move[]; extra: boolean; thawed?:boolean;known?:number[] };
+export type Attempt = { board: Board; history: Move[]; extra: boolean; setup?:number; thawed?:boolean;known?:number[] };
 export type Settings = { sound: boolean; fast: boolean; symbols: boolean; light: boolean; haptics?: boolean; theme?:ThemeId };
-export type Best = {history:Move[];extra:boolean};
+export type Best = {history:Move[];extra:boolean;setup?:number};
 export type Save = { wallet?:Wallet; best?:Record<string,Best>; schema: 1; campaignVersion?:1; unlocked?:string[]; artVersion?: number; current: number; revision: number; completed: string[]; attempts: Record<string,Attempt>; settings: Settings };
 export function fresh(): Save { return { wallet:emptyWallet(),schema:1,campaignVersion:1,artVersion:4,best:{},current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false} }; }
 export const levelKey = (i: number) => `${levels[i].id}@${levels[i].version}`;
@@ -18,6 +19,9 @@ export function attempt(s:Pick<Save,'current'|'attempts'>): Attempt { return s.a
 export function replay(l:Level,history:Move[],extra:boolean):Attempt{
  const result=walk(l,history,extra,levelGoals(l));
  return {board:result.board,history:structuredClone(history),extra,...(l.ice!==undefined?{thawed:iceOpen(result.rules)}:{}),...(l.hidden?{known:result.learned}:{})};
+}
+function validSetup(l:Level,a:{history:Move[];setup?:number}){
+ if(a.setup===undefined)return true;const prefix=goalStart(l);return prefix.length>0&&a.setup===prefix.length&&a.history.length>=prefix.length&&prefix.every((m,i)=>{const actual=a.history[i];return actual&&actual.from===m.from&&actual.to===m.to&&actual.amount===m.amount&&actual.color===m.color;});
 }
 export function validSave(value: unknown): value is Save {
   try {
@@ -34,6 +38,7 @@ export function validSave(value: unknown): value is Save {
     for(const [key,a] of Object.entries(s.attempts)) {
       const l=levels.find(l=>`${l.id}@${l.version}`===key); if(!l || !validBoard(a.board,levelGoals(l,a.thawed===true)) || typeof a.extra!=='boolean' || !Array.isArray(a.history))return false;
       if(a.thawed!==undefined&&(typeof a.thawed!=='boolean'||l.ice===undefined))return false;
+      if(!validSetup(l,a))return false;
       const expected=replay(l,a.history,a.extra);
       if(JSON.stringify(expected.board)!==JSON.stringify(a.board)||!!expected.thawed!==!!a.thawed||!validKnowledge(l,a.known,expected.known??[]))return false;
     }
@@ -41,16 +46,16 @@ export function validSave(value: unknown): value is Save {
       if(!s.best||typeof s.best!=='object'||Array.isArray(s.best))return false;
       for(const [key,r]of Object.entries(s.best)){
         const l=levels.find(l=>`${l.id}@${l.version}`===key);if(!l||!r||typeof r.extra!=='boolean'||!Array.isArray(r.history))return false;
-        const result=replay(l,r.history,r.extra);if(!won(result.board,levelGoals(l,result.thawed)))return false;
+        if(!validSetup(l,r))return false;const result=replay(l,r.history,r.extra);if(!won(result.board,levelGoals(l,result.thawed)))return false;
       }
     }
     return true;
   }catch{return false;}
 }
 export function moved(s:Save,m:Move):Save {const n=structuredClone(s), a=attempt(n); const result=transition(a.board,m,goalFor(n));a.board=result.board;if(levels[n.current].ice!==undefined)a.thawed=iceOpen(result.rules);a.history.push(m);if(levels[n.current].hidden)a.known=[...new Set([...(a.known??[]),...walk(levels[n.current],a.history,a.extra,levelGoals(levels[n.current])).learned])].sort((a,b)=>a-b);n.attempts[levelKey(n.current)]=a;n.revision++;
- if(won(a.board,goalFor(n))){if(!n.completed.includes(levels[n.current].id))n.completed.push(levels[n.current].id);const key=levelKey(n.current);n.best??={};if(!n.best[key]||n.best[key].history.length>a.history.length)n.best[key]={history:structuredClone(a.history),extra:a.extra};}
+ if(won(a.board,goalFor(n))){if(!n.completed.includes(levels[n.current].id))n.completed.push(levels[n.current].id);const key=levelKey(n.current);n.best??={};if(!n.best[key]||n.best[key].history.length>a.history.length)n.best[key]={history:structuredClone(a.history),extra:a.extra,...(a.setup!==undefined?{setup:a.setup}:{})};}
  return n;}
-export function undone(s:Save):Save {const n=structuredClone(s),a=attempt(n);if(a.history.length){a.history.pop();const result=replay(levels[n.current],a.history,a.extra);if(levels[n.current].hidden)result.known=[...new Set([...(a.known??[]),...(result.known??[])])].sort((a,b)=>a-b);n.attempts[levelKey(n.current)]=result;n.revision++;}return n;}
+export function undone(s:Save):Save {const n=structuredClone(s),a=attempt(n);if(a.history.length>(a.setup??0)){a.history.pop();const result={...replay(levels[n.current],a.history,a.extra),...(a.setup!==undefined?{setup:a.setup}:{})};if(levels[n.current].hidden)result.known=[...new Set([...(a.known??[]),...(result.known??[])])].sort((a,b)=>a-b);n.attempts[levelKey(n.current)]=result;n.revision++;}return n;}
 export function restarted(s:Save):Save {const n=structuredClone(s),extra=attempt(n).extra; const board=clone(levels[n.current].initial);if(extra)board.push([]);n.attempts[levelKey(n.current)]={board,history:[],extra,...(levels[n.current].hidden?{known:[...(attempt(s).known??[])]}:{})};n.revision++;return n;}
 
 /** Append one tube idempotently; UI callers require a rewarded receipt. Old moves remain replayable. */
@@ -70,8 +75,17 @@ export function grantExtra(s:Save,key:string):Save{
 /** Recover only provable previous results; completion without a retained path earns no invented record. */
 export function migrateBest(s:Save):Save{
  const n=structuredClone(s);n.best??={};
- for(const [key,a]of Object.entries(n.attempts))if(won(a.board,levelGoals(levels.find(l=>`${l.id}@${l.version}`===key)!,a.thawed))&&(!n.best[key]||n.best[key].history.length>a.history.length))n.best[key]={history:structuredClone(a.history),extra:a.extra};
+ for(const [key,a]of Object.entries(n.attempts))if(won(a.board,levelGoals(levels.find(l=>`${l.id}@${l.version}`===key)!,a.thawed))&&(!n.best[key]||n.best[key].history.length>a.history.length))n.best[key]={history:structuredClone(a.history),extra:a.extra,...(a.setup!==undefined?{setup:a.setup}:{})};
  return n;
 }
 
 export const knowledgeFor=(s:Pick<Save,'current'|'attempts'>)=>knowledgeView(levels[s.current],attempt(s),levelGoals(levels[s.current]));
+
+/** Used for a new UI attempt only. Existing attempts are resumed byte-for-byte. */
+export function seededRestart(s:Save):Save{
+ const n=restarted(s),prefix=goalStart(levels[n.current]);
+ if(prefix.length){const a=attempt(n),result=replay(levels[n.current],prefix,a.extra);result.setup=prefix.length;
+ if(levels[n.current].hidden)result.known=[...new Set([...(a.known??[]),...(result.known??[])])].sort((a,b)=>a-b);
+ n.attempts[levelKey(n.current)]=result;}
+ return n;
+}
