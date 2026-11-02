@@ -3,7 +3,8 @@ import {levels,fresh,moved,undone,restarted,expanded,attempt,validSave,levelKey,
 import {validMask,walk,knowledgeView,hasUnknown} from '../src/core/knowledge';
 import {visibleHint} from '../src/core/visibleHint';
 import {moveFor,won,transition} from '../src/core/rules';
-import proof from '../docs/audits/hidden-36/optimal.json';
+import currentProof from '../docs/audits/campaign-balance-47/optimal.json';
+const proof=currentProof.filter(p=>p.level>=34&&p.level<40);
 
 test('authored masks never cover the top, reject duplicate/dead slots and preserve the first 34 levels',()=>{
  for(const l of levels)expect(validMask(l)).toBe(true);

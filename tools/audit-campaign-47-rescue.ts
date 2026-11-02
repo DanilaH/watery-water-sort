@@ -1,5 +1,8 @@
+import legacyBank from '../src/core/levels-v1.json' with {type:'json'};
+import type {Level as LegacyLevel} from '../src/core/session';
+const levels=legacyBank as LegacyLevel[];
 import {readFileSync,writeFileSync} from 'node:fs';
-import {levels,levelGoals} from '../src/core/session';
+import {levelGoals} from '../src/core/session';
 import {goalStart} from '../src/core/goalStart';
 import {walk} from '../src/core/knowledge';
 import {transition,won} from '../src/core/rules';

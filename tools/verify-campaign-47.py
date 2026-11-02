@@ -4,7 +4,7 @@ No TS imports, no solver oracle. Hidden colours are known to this physical graph
 import json
 from collections import deque
 from pathlib import Path
-levels={l['id']:l for l in json.loads(Path('src/core/levels.json').read_text())}
+levels={l['id']:l for l in json.loads(Path('src/core/levels-v1.json').read_text())}
 audit=json.loads(Path('docs/audits/campaign-47/audit.json').read_text())
 
 def check(l,blocked=-1):

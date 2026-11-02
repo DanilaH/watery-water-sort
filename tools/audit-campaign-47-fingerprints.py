@@ -1,6 +1,6 @@
 import json,itertools,hashlib
 from pathlib import Path
-levels=json.loads(Path('src/core/levels.json').read_text());groups={}
+levels=json.loads(Path('src/core/levels-v1.json').read_text());groups={}
 for l in levels:
  goals=l.get('goals',[l['goal']]if'goal'in l else []);gi={g['index']for g in goals};special={l[k]for k in ('mini','ice')if k in l};colors=sorted(set(sum(l['initial'],[])));best=None
  for p in itertools.permutations(range(len(colors))):

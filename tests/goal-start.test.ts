@@ -3,7 +3,7 @@ import {goalStart,playerMoves} from '../src/core/goalStart';
 import {fresh,levels,levelKey,levelGoals,goalFor,attempt,moved,undone,seededRestart,replay,validSave,expanded,migrateBest} from '../src/core/session';
 import {goalList,validBoard,moves,won} from '../src/core/rules';
 import {solveHint} from '../src/core/hintSolver';import {stars,targets} from '../src/core/ratings';
-import {SaveStore} from '../src/platform/storage';import {settleEconomy} from '../src/core/economy';import proof from '../docs/audits/visual-goals-44/optimal.json';import legacyProof from '../docs/audits/campaign-39/optimal.json';
+import {SaveStore} from '../src/platform/storage';import {settleEconomy} from '../src/core/economy';import proof from '../docs/audits/campaign-balance-47/prepared.json';import legacyProof from '../docs/audits/campaign-balance-47/optimal.json';
 test('all 120 prepared boards conserve liquid, have zero player moves and keep exact star targets',()=>{
  for(const p of proof){let s={...fresh(),current:p.level};if(p.extra)s=expanded(s);s=seededRestart(s);const a=attempt(s),l=levels[p.level],prefix=goalStart(l);
  expect(validSave(s)).toBe(true);expect(validBoard(a.board,goalFor(s))).toBe(true);expect(a.board.flat().sort()).toEqual(l.initial.flat().sort());expect(playerMoves(a)).toBe(0);expect(a.history).toEqual(prefix);

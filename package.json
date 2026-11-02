@@ -1,6 +1,6 @@
 {
   "name": "watery-water-sort",
-  "version": "0.46.0",
+  "version": "0.47.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,8 +10,8 @@
     "test:e2e": "playwright test",
     "levels": "node --import tsx tools/generate-levels.ts",
     "android:sync": "npm run build && cap sync android",
-    "ratings:check": "python3 tools/verify-optimal.py && python3 tools/verify-goal-start.py",
-    "ratings:generate": "python3 tools/rate-levels.py"
+    "ratings:check": "python3 tools/verify-campaign-47-ratings.py",
+    "ratings:generate": "node --import tsx tools/prove-campaign-47.ts"
   },
   "dependencies": {
     "@capacitor/android": "8.4.3",

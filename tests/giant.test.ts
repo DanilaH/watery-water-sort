@@ -2,7 +2,8 @@ import {test,expect} from 'vitest';
 import {apply,reverse,moveFor,moves,won,validBoard,sealedTube,type Board} from '../src/core/rules';
 import {fresh,levels,moved,undone,restarted,attempt,validSave,levelKey,goalFor,expanded,migrateBest} from '../src/core/session';
 import {solve} from '../src/core/solver';import {targets} from '../src/core/ratings';import {goalLayout} from '../src/game/geometry';
-import proof from '../docs/audits/giant-17/optimal.json';
+import currentProof from '../docs/audits/campaign-balance-47/optimal.json';
+const proof=currentProof.filter(p=>p.level>=12&&p.level<16);
 const level=levels[12],goal=level.goal!;
 test('goal is colour locked, receive only, eight units; four-unit goal-colour vessels are unfinished',()=>{
  expect(validBoard(level.initial,goal)).toBe(true);expect(validBoard(level.initial)).toBe(false);

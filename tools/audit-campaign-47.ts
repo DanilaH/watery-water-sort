@@ -1,14 +1,18 @@
+import {createHash} from 'node:crypto';
+import legacyBank from '../src/core/levels-v1.json' with {type:'json'};
+import type {Level as LegacyLevel} from '../src/core/session';
+const levels=legacyBank as LegacyLevel[];
 /** Read-only content audit of the exact v46 player starts. No changes to campaign/rating/save data. */
 import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
-import {levels,levelGoals,levelKey,type Level} from '../src/core/session';
+import {levelGoals,levelKey,type Level} from '../src/core/session';
 import {campaign} from '../src/core/campaign';
 import {goalStart} from '../src/core/goalStart';
 import {walk,knowledgeView} from '../src/core/knowledge';
 import {moves,transition,won,goalAt,goalList,miniIndex,iceIndex,iceOpen,sealedTube,type Board,type Goals,type Move} from '../src/core/rules';
 import {stars} from '../src/core/ratings';
 const out='docs/audits/campaign-47';mkdirSync(out,{recursive:true});
-const proofs=JSON.parse(readFileSync('docs/audits/visual-goals-44/optimal.json','utf8'));
+const proofs=JSON.parse(readFileSync('docs/audits/campaign-39/optimal.json','utf8'));
 const LIMIT=20000,TRIALS=24,STEP=120;
 const signature=(b:Board,g?:Goals,blocked=-1)=>JSON.stringify([
  goalList(g).map(t=>[t.color,b[t.index]]),miniIndex(g)===undefined?null:b[miniIndex(g)!],
@@ -59,7 +63,7 @@ function bot(l:Level,index:number,extra:boolean,blocked:number,policy:'greedy'|'
   candidates.sort((a,b)=>policy==='greedy'?b.score-a.score||a.random-b.random:a.random-b.random);
   const c=candidates[0];used.add(`${c.m.from}:${c.m.to}`);const t=transition(board,c.m,rules);board=t.board;rules=t.rules;history.push(c.m);
  }
- const success=won(board,rules);return {success,steps,stars:success?stars(levelKey(index),history.length):0,outcome:success?'won':outcome};
+ const success=won(board,rules);return {success,steps,stars:success?stars(`${l.id}@${l.version}`,history.length):0,outcome:success?'won':outcome};
 }
 function bots(l:Level,index:number,extra=false,blocked=-1){
  return Object.fromEntries((['greedy','explore'] as const).map(policy=>{
@@ -76,6 +80,6 @@ for(const [rank,index]of campaign.entries()){
  // Check supplied witnesses against actual moves and terminal rules, independently of graph bookkeeping.
  for(const [check,block]of [[g,-1],[removal,blocked]] as const)if(check?.witness){let b=s.board,r=s.rules;for(const m of check.witness){if(m.from===block||m.to===block)throw Error('Blocked move');const t=transition(b,m,r);b=t.board;r=t.rules;}if(!won(b,r))throw Error('False witness');}
  const row={stage:rank+1,id:l.id,colors:l.colors,roles:[...(goalList(s.rules).length?[goalList(s.rules).length===2?'dual':'goal']:[]),...(l.mini!==undefined?['mini']:[]),...(l.ice!==undefined?['ice']:[]),...(l.hidden?['hidden']:[])],tubes:s.board.length,emptyOrdinary,freeUnits:s.board.reduce((n,t,i)=>n+(i===miniIndex(s.rules)?2:goalAt(s.rules,i)?.capacity??4)-t.length,0),setupMoves:s.prefix.length,optimal:base.optimal,playerOptimal:base.optimal-s.prefix.length,adPlayerOptimal:ad.optimal-s.prefix.length,graph:g,withoutOneEmpty:removal?{blocked,...removal}:null,bots:bots(l,index),withAd:l.colors>2?bots(l,index,true):null,withoutOneEmptyBots:blocked===undefined?null:bots(l,index,false,blocked)};
- rows.push(row);writeFileSync(`${out}/audit.json`,JSON.stringify({source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),method:{graphLimit:LIMIT,botTrials:TRIALS,botStepBudget:STEP,seedFormula:'470001 + contentIndex*7919 + trial*997',hidden:'Graphs have complete physical information; bots rank only visible runs and do not inspect hidden layers. Bots remember tried actions on labelled observable boards; no future-state lookahead or hidden-colour cycle oracle. Not a human win-rate estimate.',canonicalization:'Colour identity and all special vessel roles fixed; only ordinary vessel permutations collapsed. Blocked empty slot excluded. Won nodes terminal. All legal moves included in graphs.',truncation:'Only complete graphs prove dead-state counts or absence. A found path proves solvability even when incomplete. Missing paths with truncation are UNKNOWN.',counterfactual:'Disable one ordinary empty slot; retain empty placeholder to avoid changing min-four validation or special indices. Not a released level edit.'},rows},null,2)+'\n');
+ rows.push(row);writeFileSync(`${out}/audit.json`,JSON.stringify({contentSource:'src/core/levels-v1.json',contentSHA256:createHash('sha256').update(readFileSync('src/core/levels-v1.json')).digest('hex'),source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),method:{graphLimit:LIMIT,botTrials:TRIALS,botStepBudget:STEP,seedFormula:'470001 + contentIndex*7919 + trial*997',hidden:'Graphs have complete physical information; bots rank only visible runs and do not inspect hidden layers. Bots remember tried actions on labelled observable boards; no future-state lookahead or hidden-colour cycle oracle. Not a human win-rate estimate.',canonicalization:'Colour identity and all special vessel roles fixed; only ordinary vessel permutations collapsed. Blocked empty slot excluded. Won nodes terminal. All legal moves included in graphs.',truncation:'Only complete graphs prove dead-state counts or absence. A found path proves solvability even when incomplete. Missing paths with truncation are UNKNOWN.',counterfactual:'Disable one ordinary empty slot; retain empty placeholder to avoid changing min-four validation or special indices. Not a released level edit.'},rows},null,2)+'\n');
  console.log(JSON.stringify({stage:row.stage,id:l.id,optimal:row.playerOptimal,graph:g.complete?`${g.states}/${g.deadStates} dead`:`>${g.states}`,remove:removal?`${removal.complete?'exact':'partial'} ${removal.shortest??'no witness'}`:'none',greedy:(row.bots.greedy as any).wins,explore:(row.bots.explore as any).wins}));
 }

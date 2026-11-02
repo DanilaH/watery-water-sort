@@ -1,20 +1,28 @@
 import {goalStart} from './goalStart';
 import {emptyWallet,validWallet,type Wallet} from './economy';
 import levelData from './levels.json' with {type:'json'};
+import legacyData from './levels-v1.json' with {type:'json'};
 import { clone, validBoard, won, type Board, type Move, type Goal, goalList, type Goals, transition, iceOpen } from './rules';
 import {walk,validKnowledge,knowledgeView} from './knowledge';
 import {isTheme,type ThemeId} from './themes';
 export type Level={id:string;version:number;colors:number;seed:number;initial:Board;witness:Move[];goal?:Goal;goals?:Goal[];mini?:number;ice?:number;hidden?:{index:number;layers:number[]}[]};
 export const levels=levelData as Level[];
+/** Historical boards remain replayable; newest content is used only for a genuinely new attempt. */
+export const allLevels=[...new Map([...(legacyData as Level[]),...levels].map(l=>[`${l.id}@${l.version}`,l])).values()];
+export const levelByKey=(key:string)=>allLevels.find(l=>`${l.id}@${l.version}`===key);
+export function levelFor(s:Pick<Save,'current'|'attempts'>,index=s.current):Level{
+ const latest=levels[index];return allLevels.filter(l=>l.id===latest.id&&s.attempts[`${l.id}@${l.version}`]).sort((a,b)=>b.version-a.version)[0]??latest;
+}
+export const activeKey=(s:Pick<Save,'current'|'attempts'>,index=s.current)=>{const l=levelFor(s,index);return `${l.id}@${l.version}`;};
 export const levelGoals=(l:Level,thawed=false):Goals|undefined=>l.mini===undefined&&l.ice===undefined?l.goals??l.goal:{goals:goalList(l.goals??l.goal),...(l.mini!==undefined?{mini:l.mini}:{}),...(l.ice!==undefined?{ice:l.ice,thawed}:{})};
-export const goalFor=(s:Pick<Save,'current'|'attempts'>)=>levelGoals(levels[s.current],attempt(s).thawed===true);
+export const goalFor=(s:Pick<Save,'current'|'attempts'>)=>levelGoals(levelFor(s),attempt(s).thawed===true);
 export type Attempt = { board: Board; history: Move[]; extra: boolean; setup?:number; thawed?:boolean;known?:number[] };
 export type Settings = { sound: boolean; fast: boolean; symbols: boolean; light: boolean; haptics?: boolean; theme?:ThemeId };
 export type Best = {history:Move[];extra:boolean;setup?:number};
 export type Save = { wallet?:Wallet; best?:Record<string,Best>; schema: 1; campaignVersion?:1; unlocked?:string[]; artVersion?: number; current: number; revision: number; completed: string[]; attempts: Record<string,Attempt>; settings: Settings };
 export function fresh(): Save { return { wallet:emptyWallet(),schema:1,campaignVersion:1,artVersion:4,best:{},current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false} }; }
 export const levelKey = (i: number) => `${levels[i].id}@${levels[i].version}`;
-export function attempt(s:Pick<Save,'current'|'attempts'>): Attempt { return s.attempts[levelKey(s.current)] ?? {board:clone(levels[s.current].initial),history:[],extra:false}; }
+export function attempt(s:Pick<Save,'current'|'attempts'>): Attempt { return s.attempts[activeKey(s)] ?? {board:clone(levelFor(s).initial),history:[],extra:false}; }
 /** Replay is the authority for both liquid and earned access, including Undo. */
 export function replay(l:Level,history:Move[],extra:boolean):Attempt{
  const result=walk(l,history,extra,levelGoals(l));
@@ -36,7 +44,7 @@ export function validSave(value: unknown): value is Save {
     if(!s.settings || !['sound','fast','symbols','light'].every(k=>typeof s.settings[k as keyof Settings]==='boolean'))return false;
     if(!s.attempts || typeof s.attempts!=='object')return false;
     for(const [key,a] of Object.entries(s.attempts)) {
-      const l=levels.find(l=>`${l.id}@${l.version}`===key); if(!l || !validBoard(a.board,levelGoals(l,a.thawed===true)) || typeof a.extra!=='boolean' || !Array.isArray(a.history))return false;
+      const l=levelByKey(key); if(!l || !validBoard(a.board,levelGoals(l,a.thawed===true)) || typeof a.extra!=='boolean' || !Array.isArray(a.history))return false;
       if(a.thawed!==undefined&&(typeof a.thawed!=='boolean'||l.ice===undefined))return false;
       if(!validSetup(l,a))return false;
       const expected=replay(l,a.history,a.extra);
@@ -45,47 +53,56 @@ export function validSave(value: unknown): value is Save {
     if(s.best!==undefined){
       if(!s.best||typeof s.best!=='object'||Array.isArray(s.best))return false;
       for(const [key,r]of Object.entries(s.best)){
-        const l=levels.find(l=>`${l.id}@${l.version}`===key);if(!l||!r||typeof r.extra!=='boolean'||!Array.isArray(r.history))return false;
+        const l=levelByKey(key);if(!l||!r||typeof r.extra!=='boolean'||!Array.isArray(r.history))return false;
         if(!validSetup(l,r))return false;const result=replay(l,r.history,r.extra);if(!won(result.board,levelGoals(l,result.thawed)))return false;
       }
     }
     return true;
   }catch{return false;}
 }
-export function moved(s:Save,m:Move):Save {const n=structuredClone(s), a=attempt(n); const result=transition(a.board,m,goalFor(n));a.board=result.board;if(levels[n.current].ice!==undefined)a.thawed=iceOpen(result.rules);a.history.push(m);if(levels[n.current].hidden)a.known=[...new Set([...(a.known??[]),...walk(levels[n.current],a.history,a.extra,levelGoals(levels[n.current])).learned])].sort((a,b)=>a-b);n.attempts[levelKey(n.current)]=a;n.revision++;
- if(won(a.board,goalFor(n))){if(!n.completed.includes(levels[n.current].id))n.completed.push(levels[n.current].id);const key=levelKey(n.current);n.best??={};if(!n.best[key]||n.best[key].history.length>a.history.length)n.best[key]={history:structuredClone(a.history),extra:a.extra,...(a.setup!==undefined?{setup:a.setup}:{})};}
+export function moved(s:Save,m:Move):Save {const n=structuredClone(s), a=attempt(n); const result=transition(a.board,m,goalFor(n));a.board=result.board;if(levelFor(n).ice!==undefined)a.thawed=iceOpen(result.rules);a.history.push(m);if(levelFor(n).hidden)a.known=[...new Set([...(a.known??[]),...walk(levelFor(n),a.history,a.extra,levelGoals(levelFor(n))).learned])].sort((a,b)=>a-b);n.attempts[activeKey(n)]=a;n.revision++;
+ if(won(a.board,goalFor(n))){if(!n.completed.includes(levelFor(n).id))n.completed.push(levelFor(n).id);const key=activeKey(n);n.best??={};if(!n.best[key]||n.best[key].history.length>a.history.length)n.best[key]={history:structuredClone(a.history),extra:a.extra,...(a.setup!==undefined?{setup:a.setup}:{})};}
  return n;}
-export function undone(s:Save):Save {const n=structuredClone(s),a=attempt(n);if(a.history.length>(a.setup??0)){a.history.pop();const result={...replay(levels[n.current],a.history,a.extra),...(a.setup!==undefined?{setup:a.setup}:{})};if(levels[n.current].hidden)result.known=[...new Set([...(a.known??[]),...(result.known??[])])].sort((a,b)=>a-b);n.attempts[levelKey(n.current)]=result;n.revision++;}return n;}
-export function restarted(s:Save):Save {const n=structuredClone(s),extra=attempt(n).extra; const board=clone(levels[n.current].initial);if(extra)board.push([]);n.attempts[levelKey(n.current)]={board,history:[],extra,...(levels[n.current].hidden?{known:[...(attempt(s).known??[])]}:{})};n.revision++;return n;}
+export function undone(s:Save):Save {const n=structuredClone(s),a=attempt(n);if(a.history.length>(a.setup??0)){a.history.pop();const result={...replay(levelFor(n),a.history,a.extra),...(a.setup!==undefined?{setup:a.setup}:{})};if(levelFor(n).hidden)result.known=[...new Set([...(a.known??[]),...(result.known??[])])].sort((a,b)=>a-b);n.attempts[activeKey(n)]=result;n.revision++;}return n;}
+export function restarted(s:Save):Save {const n=structuredClone(s),extra=attempt(n).extra; const board=clone(levelFor(n).initial);if(extra)board.push([]);n.attempts[activeKey(n)]={board,history:[],extra,...(levelFor(n).hidden?{known:[...(attempt(s).known??[])]}:{})};n.revision++;return n;}
 
 /** Append one tube idempotently; UI callers require a rewarded receipt. Old moves remain replayable. */
 export function expanded(s:Save):Save {
  if(attempt(s).extra)return s;
  const n=structuredClone(s),a=attempt(n);a.extra=true;a.board.push([]);
- n.attempts[levelKey(n.current)]=a;n.revision++;return n;
+ n.attempts[activeKey(n)]=a;n.revision++;return n;
 }
 
 /** Metadata for a displayed slot never enters the board or solver. */
-export function offerExtra(s:Save){return levels[s.current].colors>2&&!attempt(s).extra;}
+export function offerExtra(s:Save){return levelFor(s).colors>2&&!attempt(s).extra;}
 export function displaySlots(s:Save){return attempt(s).board.length+Number(offerExtra(s));}
 export function grantExtra(s:Save,key:string):Save{
- const i=levels.findIndex((_,i)=>levelKey(i)===key);if(i<0||levels[i].colors<=2)throw Error('Invalid reward level');
- const n=expanded({...s,current:i});return {...n,current:s.current};
+ const l=levelByKey(key);if(!l||l.colors<=2)throw Error('Invalid reward level');
+ const n=structuredClone(s),a=n.attempts[key]??{board:clone(l.initial),history:[],extra:false};
+ if(a.extra)return s;a.extra=true;a.board.push([]);n.attempts[key]=a;n.revision++;return n;
 }
 /** Recover only provable previous results; completion without a retained path earns no invented record. */
 export function migrateBest(s:Save):Save{
  const n=structuredClone(s);n.best??={};
- for(const [key,a]of Object.entries(n.attempts))if(won(a.board,levelGoals(levels.find(l=>`${l.id}@${l.version}`===key)!,a.thawed))&&(!n.best[key]||n.best[key].history.length>a.history.length))n.best[key]={history:structuredClone(a.history),extra:a.extra,...(a.setup!==undefined?{setup:a.setup}:{})};
+ for(const [key,a]of Object.entries(n.attempts))if(won(a.board,levelGoals(levelByKey(key)!,a.thawed))&&(!n.best[key]||n.best[key].history.length>a.history.length))n.best[key]={history:structuredClone(a.history),extra:a.extra,...(a.setup!==undefined?{setup:a.setup}:{})};
  return n;
 }
 
-export const knowledgeFor=(s:Pick<Save,'current'|'attempts'>)=>knowledgeView(levels[s.current],attempt(s),levelGoals(levels[s.current]));
+export const knowledgeFor=(s:Pick<Save,'current'|'attempts'>)=>knowledgeView(levelFor(s),attempt(s),levelGoals(levelFor(s)));
 
 /** Used for a new UI attempt only. Existing attempts are resumed byte-for-byte. */
 export function seededRestart(s:Save):Save{
- const n=restarted(s),prefix=goalStart(levels[n.current]);
- if(prefix.length){const a=attempt(n),result=replay(levels[n.current],prefix,a.extra);result.setup=prefix.length;
- if(levels[n.current].hidden)result.known=[...new Set([...(a.known??[]),...(result.known??[])])].sort((a,b)=>a-b);
- n.attempts[levelKey(n.current)]=result;}
+ const n=restarted(s),prefix=goalStart(levelFor(n));
+ if(prefix.length){const a=attempt(n),result=replay(levelFor(n),prefix,a.extra);result.setup=prefix.length;
+ if(levelFor(n).hidden)result.known=[...new Set([...(a.known??[]),...(result.known??[])])].sort((a,b)=>a-b);
+ n.attempts[activeKey(n)]=result;}
  return n;
+}
+
+/** Explicit map selection / Next uses the latest board; old attempts and records are archived intact. */
+export function startLatest(s:Save):Save{
+ if(levelFor(s).version===levels[s.current].version)return seededRestart(s);
+ const n=structuredClone(s),l=levels[n.current];
+ n.attempts[levelKey(n.current)]={board:clone(l.initial),history:[],extra:false};
+ return seededRestart(n);
 }

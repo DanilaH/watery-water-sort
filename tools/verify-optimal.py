@@ -2,6 +2,8 @@
 import json,time,math,sys
 from pathlib import Path
 args=sys.argv[1:];proof_output=None
+subset='--ratings-subset' in args
+if subset:args.remove('--ratings-subset')
 if '--proof-output' in args:
  proof_output=Path(args[args.index('--proof-output')+1]);del args[args.index('--proof-output'):args.index('--proof-output')+2]
 seeded='--levels' in args
@@ -57,5 +59,7 @@ if '--write'in sys.argv:
 if proof_output:proof_output.write_text(json.dumps(proofs,indent=2)+'\n')
 ratings={levels[r['level']]['id']+'@'+str(levels[r['level']]['version']):{'three':r['optimal']+r.get('setup',0),'two':r['optimal']+r.get('setup',0)+max(2,math.ceil((r['optimal']+r.get('setup',0))*.2))}for r in rows if not r['extra']}
 if '--write'in sys.argv:Path('src/core/ratings.json').write_text(json.dumps(ratings,indent=2)+'\n')
-else:assert json.loads(Path('src/core/ratings.json').read_text())==ratings
+else:
+ actual=json.loads(Path('src/core/ratings.json').read_text())
+ assert all(actual.get(k)==v for k,v in ratings.items()) if subset else actual==ratings
 print(f'Verified {len(rows)} optimal paths and all star thresholds')

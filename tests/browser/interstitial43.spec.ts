@@ -1,5 +1,5 @@
 import {test,expect,type Page} from '@playwright/test';
-import {fresh,levels,moved,type Save} from '../../src/core/session';
+import {fresh,levels,moved,levelKey,type Save} from '../../src/core/session';
 const saved=(p:Page):Promise<Save>=>p.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));
 async function open(p:Page,last=false){
  let s=fresh();s.settings.sound=false;s.current=last?levels.length-1:2;s.completed=(last?levels:levels.slice(0,2)).map(l=>l.id);for(const m of levels[s.current].witness)s=moved(s,m);
@@ -37,7 +37,7 @@ test('the last level opens level selection automatically after delayed resume',a
 });
 
 test('explicit Undo cancels delayed Next and preserves the requested earlier board',async({page})=>{
- await open(page);const before=await saved(page);await page.locator('#continue').click();await lifecycle(page,'page',true);await page.locator('#undo').evaluate((b:HTMLButtonElement)=>b.click());await page.evaluate(()=>(window as any).dismiss43());await lifecycle(page,'page',false);const after=await saved(page);expect(after.current).toBe(2);expect(after.attempts['water-003@1'].history).toHaveLength(before.attempts['water-003@1'].history.length-1);await expect(page.locator('#continue')).toBeHidden();expect(await page.evaluate(()=>(window as any).adCalls43)).toBe(1);
+ await open(page);const before=await saved(page);await page.locator('#continue').click();await lifecycle(page,'page',true);await page.locator('#undo').evaluate((b:HTMLButtonElement)=>b.click());await page.evaluate(()=>(window as any).dismiss43());await lifecycle(page,'page',false);const after=await saved(page);expect(after.current).toBe(2);expect(after.attempts[levelKey(2)].history).toHaveLength(before.attempts[levelKey(2)].history.length-1);await expect(page.locator('#continue')).toBeHidden();expect(await page.evaluate(()=>(window as any).adCalls43)).toBe(1);
 });
 
 test('settings opened while dismissal is pending closes again after native return and Next remains usable',async({page})=>{

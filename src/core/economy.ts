@@ -1,6 +1,6 @@
 import type {Save} from './session';
-import {levels,levelKey,attempt} from './session';
-import {stars} from './ratings';
+import {levels,activeKey,attempt} from './session';
+import {earnedStars} from './progress';
 import type {Move} from './rules';
 export const ECONOMY={star:10,startHints:3,packHints:3,packPrice:60,adCoins:80} as const;
 export type Wallet={version:1;coins:number;hints:number;awarded:Record<string,number>;receipts:string[];adOrder?:string;adAfter?:number;adAttemptAfter?:number;hintAdvice?:{key:string;move:Move}};
@@ -10,11 +10,11 @@ export function validWallet(w:Wallet){return !!w&&w.version===1&&integer(w.coins
 /** Award only the new high-water mark; called inside the same durable game transaction. */
 export function settleEconomy(s:Save):Save{
  const n=structuredClone(s);n.wallet??=emptyWallet();
- for(let i=0;i<levels.length;i++){const l=levels[i],b=n.best?.[levelKey(i)],earned=b?stars(levelKey(i),b.history.length):n.completed.includes(l.id)?1:0;const old=n.wallet.awarded[l.id]??0;if(earned>old){n.wallet.coins+=(earned-old)*ECONOMY.star;n.wallet.awarded[l.id]=earned;}}
+ for(let i=0;i<levels.length;i++){const l=levels[i],earned=earnedStars(n,i);const old=n.wallet.awarded[l.id]??0;if(earned>old){n.wallet.coins+=(earned-old)*ECONOMY.star;n.wallet.awarded[l.id]=earned;}}
  return n;
 }
 export function purchaseHints(s:Save):Save|undefined{if(!s.wallet||s.wallet.coins<ECONOMY.packPrice)return;const n=structuredClone(s);n.wallet!.coins-=ECONOMY.packPrice;n.wallet!.hints+=ECONOMY.packHints;n.revision++;return n;}
-export const adviceKey=(s:Save)=>{const a=attempt(s);return JSON.stringify([levelKey(s.current),a.board,!!a.thawed,a.known??[]]);};
+export const adviceKey=(s:Save)=>{const a=attempt(s);return JSON.stringify([activeKey(s),a.board,!!a.thawed,a.known??[]]);};
 export function ownHint(s:Save,key:string,move:Move,free=false):Save|undefined{
  if(s.wallet?.hintAdvice?.key===key){if(['from','to','color','amount'].every(k=>s.wallet!.hintAdvice!.move[k as keyof Move]===move[k as keyof Move]))return s;const n=structuredClone(s);n.wallet!.hintAdvice={key,move:{...move}};n.revision++;return n;}
  if(!s.wallet||!free&&!s.wallet.hints)return;

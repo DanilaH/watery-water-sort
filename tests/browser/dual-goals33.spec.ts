@@ -16,14 +16,15 @@ async function tap(page:Page,i:number){const s=await saved(page),b=(await page.l
 async function move(page:Page,from:number,to:number){await tap(page,from);await tap(page,to);await expect(page.locator('#hint')).toBeEnabled();}
 
 test('two targets teach colour matching, reject wrong receiver, preserve fixed Undo and real worker hint',async({page})=>{
- await open(page);await expect(page.locator('#objective')).toBeHidden();await expect(page.locator('#extra-tube')).toBeHidden();
- await move(page,4,1);expect(attempt(await saved(page)).history).toHaveLength(0);
- await tap(page,0);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).board[0]).toHaveLength(4);
- await page.locator('#undo').click();await expect(page.locator('#status')).toHaveText('');expect(attempt(await saved(page)).board[0]).toEqual([]);
+ await open(page);await expect(page.locator('#objective')).toBeHidden();await expect(page.locator('#extra-tube')).toBeVisible();
+ const source=levels[16].initial.findIndex((t,i)=>i>1&&t.length>0&&t.at(-1)!<2),wrong=1-levels[16].initial[source].at(-1)!;
+ await move(page,source,wrong);expect(attempt(await saved(page)).history).toHaveLength(0);
+ await tap(page,source);await tap(page,0);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).board[0]).toHaveLength(4);
+ await expect(page.locator('#undo')).toBeDisabled();
  await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');
  const hint=await page.evaluate(()=>(window as any).dualScene.hintMove),s=await saved(page);expect(hint).toEqual(moveFor(attempt(s).board,hint.from,hint.to,goalFor(s)));expect(hint.from).toBeGreaterThan(1);
  await tap(page,hint.to);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(1);
- await page.reload();await page.locator('#home-play').click();expect(attempt(await saved(page)).history).toHaveLength(1);
+ await page.reload();await page.locator('#home-play').click();expect(attempt(await saved(page)).history).toHaveLength(1);await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(0);expect(attempt(await saved(page)).board[0]).toHaveLength(4);
 });
 
 test('first finished receiver has its own pedestal and heavy beats without winning the whole level',async({page})=>{

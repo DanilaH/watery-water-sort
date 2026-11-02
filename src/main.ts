@@ -21,7 +21,7 @@ import {mountHomeHero} from './game/HomeHero';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
 import { goalList, goalAt, isMini, iceIndex, iceOpen, moveFor, sealedTube, won, moves, type Move } from './core/rules';
-import { attempt, levels, moved, undone, seededRestart, levelKey, offerExtra, displaySlots, grantExtra, goalFor, knowledgeFor, type Save } from './core/session';
+import { attempt, levels, moved, undone, seededRestart, startLatest, activeKey, levelByKey, levelFor, offerExtra, displaySlots, grantExtra, goalFor, knowledgeFor, type Save } from './core/session';
 import { SaveStore } from './platform/storage';
 import {stars,targets} from './core/ratings';
 import {Rewarded,type Receipt} from './platform/rewarded';
@@ -30,7 +30,7 @@ import type { Result } from './core/solver';
 import {TouchFeedback,type Touch} from './platform/haptics';
 import {renderVictoryTitle,renderResultStars,renderPotentialStars} from './game/VictoryUI';
 import {StarReward} from './game/StarReward';
-import {totalStars} from './core/progress';
+import {totalStars,earnedStars} from './core/progress';
 import {isHard} from './core/difficulty';
 const touch=new TouchFeedback();
 const ads=new Ads(document.getElementById('banner-slot')!);
@@ -60,7 +60,7 @@ const blockers=new Set<string>();
 const analytics=new Analytics();let activeSince:number|undefined,activeMs=0;
 function measureActive(){if(activeSince!==undefined){activeMs+=performance.now()-activeSince;activeSince=undefined;}}
 function syncActive(){measureActive();if(!atHome&&!blockers.size&&!document.hidden)activeSince=performance.now();}
-function track(name:EventName,extra:Partial<EventData>={},index=state.current){const a=attempt({...state,current:index});analytics.emit(name,{level:levelKey(index),stage:stageNumber(index),revision:state.revision,moves:playerMoves(a),extra:a.extra,active_ms:Math.round(activeMs+(activeSince===undefined?0:performance.now()-activeSince)),...extra});}
+function track(name:EventName,extra:Partial<EventData>={},index=state.current){const a=attempt({...state,current:index});analytics.emit(name,{level:activeKey(state,index),stage:stageNumber(index),revision:state.revision,moves:playerMoves(a),extra:a.extra,active_ms:Math.round(activeMs+(activeSince===undefined?0:performance.now()-activeSince)),...extra});}
 let atHome=true,rewardBusy=false,recoveringRewards=false;
 const rewarded=new Rewarded();let pendingReceipt:Receipt|undefined;
 const hasStarted=()=>Object.keys(state.attempts).length>0||state.completed.length>0;
@@ -98,7 +98,7 @@ function paint(){
  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content=theme.color;
  scene.reduced=reduced.matches;scene.setKnowledge(knowledgeFor(state));touch.enabled=state.settings.haptics!==false;reward.setTotal(totalStars(state),pendingStars?.before);
  $('coins').textContent=$('home-coins').textContent=String(state.wallet!.coins);
- $('hint-count').textContent=levels[state.current].colors<=2?'∞':String(state.wallet!.hints);
+ $('hint-count').textContent=levelFor(state).colors<=2?'∞':String(state.wallet!.hints);
  $<HTMLButtonElement>('wallet').disabled=$<HTMLButtonElement>('home-wallet').disabled=rewardBusy||recoveringRewards||interstitialBusy;
  const adsAllowed=!atHome&&!blockers.size&&stageNumber(state.current)>2&&!document.hidden;document.body.classList.toggle('with-banner',ads.native&&stageNumber(state.current)>2);ads.banner(adsAllowed);
  $('star-capacity').textContent=`/ ${levels.length*3}`;
@@ -112,10 +112,10 @@ function paint(){
  const colourNames=['голубой','жёлтый','фиолетовый','зелёный','розовый','синий','лимонный','оранжевый'];
  $('board').setAttribute('aria-label','Игровое поле'+goalList(objective).map(g=>` · большая колба: ${colourNames[g.color]} цвет`).join(''));
  // Colour is carried by the receiver's liquid. Only the first ice encounter needs text.
- $('objective').textContent=iceIndex(objective)!==undefined&&!iceOpen(objective)&&state.current===levels.findIndex(l=>l.ice!==undefined)&&!state.completed.includes(levels[state.current].id)?'Собери цвет — лёд расколется':'';
+ $('objective').textContent=iceIndex(objective)!==undefined&&!iceOpen(objective)&&state.current===levels.findIndex(l=>l.ice!==undefined)&&!state.completed.includes(levelFor(state).id)?'Собери цвет — лёд расколется':'';
  $('objective').hidden=finished||!$('objective').textContent||!!$('status').textContent;
- $('star-target').hidden=finished;($('star-target') as HTMLButtonElement).disabled=scene.busy;renderPotentialStars($('star-target'),stars(levelKey(state.current),a.history.length));
- $('earned-stars').hidden=!finished;const earned=stars(levelKey(state.current),a.history.length);if(!finished||!$('earned-stars').classList.contains('revealing-stars'))renderResultStars($('earned-stars'),earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
+ $('star-target').hidden=finished;($('star-target') as HTMLButtonElement).disabled=scene.busy;renderPotentialStars($('star-target'),stars(activeKey(state),a.history.length));
+ $('earned-stars').hidden=!finished;const earned=stars(activeKey(state),a.history.length);if(!finished||!$('earned-stars').classList.contains('revealing-stars'))renderResultStars($('earned-stars'),earned);$('earned-stars').setAttribute('aria-label',`${earned} из 3 звёзд`);
  const extra=$('extra-tube');extra.hidden=atHome||!offerExtra(state)||won(a.board,goalFor(state));(extra as HTMLButtonElement).disabled=scene.busy||rewardBusy||recoveringRewards;
  if(offerExtra(state)){const r=scene.positions().at(-1)!;Object.assign(extra.style,{left:`${r.x-r.hitW/2}px`,top:`${r.y+r.h/2-r.hitH/2}px`,width:`${r.hitW}px`,height:`${r.hitH}px`});extra.style.setProperty('--vessel-width',r.w+'px');extra.style.setProperty('--vessel-height',r.h+'px');}
  $('continue').hidden=!finished;
@@ -144,7 +144,7 @@ function activateGame(reason='resume'){
 function resumeGame(){
  if(locked)return;
  // Persist the first start too, so returning without moves still says Continue.
- if(!state.attempts[levelKey(state.current)]&&!commit(seededRestart(state)))return;
+ if(!state.attempts[activeKey(state)]&&!commit(seededRestart(state)))return;
  audio.ui();activateGame();
 }
 function showHome(){
@@ -153,21 +153,21 @@ function showHome(){
 }
 function switchLevel(index:number,reason='select'){
  if(index<0||index>=levels.length)return;pendingNext=undefined;
- measureActive();track('level_leave',{reason});interrupt();const n=seededRestart({...state,current:index});
+ measureActive();track('level_leave',{reason});interrupt();const n=startLatest({...state,current:index});
  if(commit(n)){activeMs=0;hintRoute.clear();activateGame(reason);}
 }
 function restart(){pendingNext=undefined;const n=seededRestart(state);if(commit(n)){track('level_restart');measureActive();activeMs=0;interrupt();hintRoute.clear();activateGame('restart');message(guidance());}}
 function drainQueue(){if(!queued)return;const q=queued;clearIntent();const m=moveFor(attempt(state).board,q.from,q.to,goalFor(state));if(m)accept(m,true);}
 function accept(m:Move,acknowledged=false){
  if(locked||blockers.size)return;
- cancelSearch();const before=attempt(state).board,beforeStars=totalStars(state),beforeRules=goalFor(state),beforeKnowledge=knowledgeFor(state);const first=!state.completed.includes(levels[state.current].id),next=moved(state,m);
+ cancelSearch();const before=attempt(state).board,beforeStars=totalStars(state),beforeRules=goalFor(state),beforeKnowledge=knowledgeFor(state);const first=!state.completed.includes(levelFor(state).id),next=moved(state,m);
  if(won(attempt(next).board,goalFor(next))&&!next.completed.includes(levels[next.current].id))next.completed.push(levels[next.current].id);
  const beforeCoins=state.wallet!.coins;
  if(!commit(next))return;
  pendingCoins=state.wallet!.coins-beforeCoins;if(pendingCoins)track('coins_earned',{reason:'stars',amount:pendingCoins,balance:state.wallet!.coins});
- if(won(attempt(state).board,goalFor(state))){track('level_complete',{first,stars:stars(levelKey(state.current),attempt(state).history.length)});if(first&&state.current===1&&state.completed.includes(levels[0].id))track('tutorial_complete');}
+ if(won(attempt(state).board,goalFor(state))){track('level_complete',{first,stars:stars(activeKey(state),attempt(state).history.length)});if(first&&state.current===1&&state.completed.includes(levels[0].id))track('tutorial_complete');}
  hintRoute.accepted(before,m,beforeRules);clearIntent();lastMove=m;kind='pour';pendingReveal=(knowledgeFor(next)?.known.length??0)>(beforeKnowledge?.known.length??0);pendingIce=!iceOpen(beforeRules)&&iceOpen(goalFor(next))?iceIndex(goalFor(next))!:null;scene.iceHeld=pendingIce;newColor=!sealedTube(before,m.from,goalFor(state))&&sealedTube(attempt(next).board,m.to,goalFor(state));
- if(won(attempt(next).board,goalFor(next)))pendingStars={before:beforeStars,total:totalStars(next),delta:totalStars(next)-beforeStars,earned:stars(levelKey(next.current),attempt(next).history.length)};
+ if(won(attempt(next).board,goalFor(next)))pendingStars={before:beforeStars,total:totalStars(next),delta:totalStars(next)-beforeStars,earned:stars(activeKey(next),attempt(next).history.length)};
  if(!acknowledged){audio.accept();haptic('accept');}scene.setBoard(attempt(state).board);scene.animate(before,m,state.settings.fast,beforeKnowledge);paint();message('');
 }
 scene.onTap=(i)=>{
@@ -230,7 +230,7 @@ $('continue').onclick=()=>{void continueAfterWin();};
 function completePendingNext(){
  const request=pendingNext;
  if(!request||!request.ready||interstitialBusy||rewardBusy||recoveringRewards||locked||atHome||document.hidden||blockers.size)return;
- if(levelKey(state.current)!==request.key||!won(attempt(state).board,goalFor(state))){pendingNext=undefined;return;}
+ if(activeKey(state)!==request.key||!won(attempt(state).board,goalFor(state))){pendingNext=undefined;return;}
  // Consume before navigation: duplicate lifecycle events must never advance a second level.
  pendingNext=undefined;
  if(request.next===undefined)menu();else switchLevel(request.next,'next');
@@ -238,7 +238,7 @@ function completePendingNext(){
 async function continueAfterWin(){
  if(pendingNext){completePendingNext();return;}
  if(interstitialBusy||rewardBusy||recoveringRewards||locked||blockers.size||!won(attempt(state).board,goalFor(state)))return;
- audio.ui();const index=state.current,next=continuation(state),key=levelKey(index),now=Date.now();
+ audio.ui();const index=state.current,next=continuation(state),key=activeKey(state,index),now=Date.now();
  const tutorialDone=levels.slice(0,2).every(l=>state.completed.includes(l.id));
  let after=state.wallet!.adAfter??0,attemptAfter=state.wallet!.adAttemptAfter??0;
  if(after>now+60000||attemptAfter>now+60000){const n=structuredClone(state);n.wallet!.adAfter=after=Math.min(after,now+60000);n.wallet!.adAttemptAfter=attemptAfter=Math.min(attemptAfter,now+60000);n.revision++;if(!commit(n))return;}
@@ -254,11 +254,11 @@ async function continueAfterWin(){
  completePendingNext();
 }
 
-function showHint(m:Move){const key=adviceKey(state),free=levels[state.current].colors<=2;const next=ownHint(state,key,m,free);if(!next){hintShop();return;}const spent=state.wallet!.hints-next.wallet!.hints;if(next!==state&&!commit(next))return;if(spent)track('hint_spent',{amount:spent,balance:state.wallet!.coins,hints:state.wallet!.hints});paint();track('hint_result',{status:'FOUND'});clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
+function showHint(m:Move){const key=adviceKey(state),free=levelFor(state).colors<=2;const next=ownHint(state,key,m,free);if(!next){hintShop();return;}const spent=state.wallet!.hints-next.wallet!.hints;if(next!==state&&!commit(next))return;if(spent)track('hint_spent',{amount:spent,balance:state.wallet!.coins,hints:state.wallet!.hints});paint();track('hint_result',{status:'FOUND'});clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
 function requestHint(){
  if(scene.busy||blockers.size||locked||won(attempt(state).board,goalFor(state)))return;audio.prime();track('hint_request');
  const owned=state.wallet!.hintAdvice;if(owned?.key===adviceKey(state)){const legal=moveFor(attempt(state).board,owned.move.from,owned.move.to,goalFor(state));if(legal&&legal.amount===owned.move.amount&&legal.color===owned.move.color){showHint(owned.move);return;}}
- if(levels[state.current].colors>2&&!state.wallet!.hints){hintShop();return;}
+ if(levelFor(state).colors>2&&!state.wallet!.hints){hintShop();return;}
  const view=knowledgeFor(state);if(hasUnknown(view)){const m=visibleHint(attempt(state).board,view!,goalFor(state));if(m){showHint(m);message('Открой следующий слой · отмена доступна');}else{track('hint_result',{status:'NO_VISIBLE_MOVE'});message('Нет доступного перелива · можно отменить ход');}return;}
  const planned=hintRoute.get(attempt(state).board,goalFor(state));if(planned){showHint(planned);return;}
  cancelSearch();const id=++requestId,revision=state.revision;searching=true;paint();message('Ищу продолжение…');
@@ -274,20 +274,20 @@ function requestHint(){
   };
   worker.onerror=e=>{e.preventDefault();failed();};
   worker.onmessageerror=failed;
-  worker.postMessage({board:attempt(state).board,goal:goalFor(state),revision,requestId:id,level:levelKey(state.current),extra:attempt(state).extra});
+  worker.postMessage({board:attempt(state).board,goal:goalFor(state),revision,requestId:id,level:activeKey(state),extra:attempt(state).extra});
  }catch{failed();}
 }
 $('hint').onclick=requestHint;
 async function applyReceipt(receipt:Receipt){
  if(receipt.level.startsWith('coins:')){const next=creditCoins(state,receipt.token,receipt.level);if(!next)return false;const fresh=next!==state;if(fresh&&!commit(next))return false;if(fresh)track('reward_granted',{reason:'coins',amount:ECONOMY.adCoins,balance:state.wallet!.coins});await rewarded.ack(receipt.token).catch(()=>{});return true;}
- const i=levels.findIndex((_,i)=>levelKey(i)===receipt.level);if(i<0||levels[i].colors<=2){await rewarded.ack(receipt.token);return true;}
- const already=attempt({...state,current:i}).extra;
+ const l=levelByKey(receipt.level),i=l?levels.findIndex(v=>v.id===l.id):-1;if(!l||i<0||l.colors<=2){await rewarded.ack(receipt.token);return true;}
+ const already=state.attempts[receipt.level]?.extra===true;
  if(!already&&!commit(grantExtra(state,receipt.level)))return false;
- if(!already)track('reward_granted',{},i);
+ if(!already)track('reward_granted',{level:receipt.level},i);
  await rewarded.ack(receipt.token).catch(()=>{});return true;
 }
 async function watchForTube(){
- if(rewardBusy||recoveringRewards)return;const key=levelKey(state.current);if(!offerExtra(state))return;
+ if(rewardBusy||recoveringRewards)return;const key=activeKey(state);if(!offerExtra(state))return;
  rewardBusy=true;block('reward',true);const button=content.querySelector<HTMLButtonElement>('.dialog-actions .primary');if(button){button.disabled=true;button.textContent=pendingReceipt?'Получаем колбу…':'Загружаем рекламу…';}
  let granted=false,notice='',cooldown=false;
  try{
@@ -304,7 +304,7 @@ function askExtra(){
  track('extra_tube_offer');modal('Дополнительная колба','Добавит место для переливания. Текущие ходы сохранятся.',[{label:pendingReceipt?'Получить колбу':'Смотреть рекламу',primary:true,action:()=>{void watchForTube();}},{label:'Позже',action:close}]);
 }
 $('extra-tube').onclick=askExtra;
-$('star-target').onclick=()=>{const t=targets(levelKey(state.current)),offset=attempt(state).setup??0;modal('Звёзды за уровень',`★★★ — не больше ${t.three-offset} ходов. ★★ — не больше ${t.two-offset}. ★ — за любое прохождение. Отмена хода возвращает и шанс на звезду.`,[{label:'Понятно',primary:true,action:close}]);};
+$('star-target').onclick=()=>{const t=targets(activeKey(state)),offset=attempt(state).setup??0;modal('Звёзды за уровень',`★★★ — не больше ${t.three-offset} ходов. ★★ — не больше ${t.two-offset}. ★ — за любое прохождение. Отмена хода возвращает и шанс на звезду.`,[{label:'Понятно',primary:true,action:close}]);};
 async function recoverRewards(){
  if(rewardBusy||recoveringRewards)return;recoveringRewards=true;try{const receipts=await rewarded.pending();if(!receipts.length)return;block('receipt-recovery',true);for(const r of receipts){if(!await applyReceipt(r)){pendingReceipt=r;break;}}}
  catch{/* Offline/native bridge unavailability never blocks playing. */}
@@ -327,7 +327,7 @@ function menu(){
  campaign.forEach(i=>{const l=levels[i],b=document.createElement('button'),done=state.completed.includes(l.id),available=levelAvailable(state,i);b.dataset.level=l.id;
   b.disabled=!available;b.classList.add('gel-button');if(i===state.current)b.classList.add('gel-primary');b.textContent=String(stageNumber(i));b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
   b.setAttribute('aria-label',`Уровень ${stageNumber(i)}${l.goals?', две большие колбы':l.goal?', большая бутылка':''}${l.mini!==undefined?', мини-колба':''}${l.ice!==undefined?', лёд':''}${l.hidden?', скрытые слои':''}${done?', пройден':!available?', закрыт':''}`);
-  const record=state.best?.[levelKey(i)],earned=record?stars(levelKey(i),record.history.length):done?1:0;if(isHard(i)){const difficulty=document.createElement('small');difficulty.className='level-hard';difficulty.textContent='Сложный';b.append(difficulty);}
+  const earned=earnedStars(state,i);if(isHard(i)){const difficulty=document.createElement('small');difficulty.className='level-hard';difficulty.textContent='Сложный';b.append(difficulty);}
 
   const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
  });body.append(grid);

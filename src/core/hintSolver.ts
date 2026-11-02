@@ -3,13 +3,13 @@ import {goalStart} from './goalStart';
 import routes from './optimalRoutes.json' with {type:'json'};
 import {solve,type Result} from './solver';
 import {moves,transition,won,goalList,miniIndex,iceIndex,iceOpen,type Board,type Goals,type Move} from './rules';
-import {levels,levelGoals} from './session';
+import {levelByKey,levelGoals} from './session';
 const signature=(b:Board,g?:Goals)=>JSON.stringify([b,g]);
 const stateKey=(b:Board,g?:Goals)=>JSON.stringify([b.filter((_,i)=>goalList(g).some(x=>x.index===i)||miniIndex(g)===i||iceIndex(g)===i),b.filter((_,i)=>!goalList(g).some(x=>x.index===i)&&miniIndex(g)!==i&&iceIndex(g)!==i).map(t=>t.join('')).sort(),!!iceOpen(g)]);
 const lower=(b:Board)=>{const colors=new Set<number>();let runs=0;for(const t of b)for(let i=0;i<t.length;i++){colors.add(t[i]);if(i===0||t[i-1]!==t[i])runs++;}return runs-colors.size;};
 /** Offline independently proven paths are reused only on exactly matching boards/rules. */
 export function solveHint(board:Board,goal:Goals|undefined,level?:string,extra=false,maxMs=750):Result{
- const l=levels.find(l=>`${l.id}@${l.version}`===level),seed=(routes as Record<string,Move[]>)[(level??'')+(extra?'+':'')];
+ const l=level?levelByKey(level):undefined,seed=(routes as Record<string,Move[]>)[(level??'')+(extra?'+':'')];
  const seeded=(seededRoutes as Record<string,Move[]>)[(level??'')+(extra?'+':'')];
  for(const candidate of [seed, l&&seeded?[...goalStart(l),...seeded]:undefined])if(l&&candidate){const seed=candidate;let current={board:extra?[...l.initial,[]]:l.initial,rules:levelGoals(l)};for(let i=0;i<=seed.length;i++){if(signature(board,goal)===signature(current.board,current.rules))return {status:'FOUND',path:seed.slice(i).map(m=>({...m})),nodes:0};if(i<seed.length)current=transition(current.board,seed[i],current.rules);}}
  const start=performance.now(),fallback=solve(board,200000,Math.min(100,maxMs/4),goal);if(fallback.status==='UNSOLVABLE')return fallback;

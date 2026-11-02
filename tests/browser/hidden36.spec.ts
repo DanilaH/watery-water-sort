@@ -1,13 +1,14 @@
+import legacy from '../../src/core/levels-v1.json' with {type:'json'};
 import {goalStart,playerMoves} from '../../src/core/goalStart';
 import {startingBoard} from './navigation';
 import {levelButton} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
-import {fresh,levels,moved,attempt,levelKey,knowledgeFor,goalFor} from '../../src/core/session';
+import {fresh,levels,moved,attempt,levelKey,replay,type Level,knowledgeFor,goalFor} from '../../src/core/session';
 import {hasUnknown} from '../../src/core/knowledge';
 import {mockReward,toggleSymbols,openLevels} from './navigation';
 import {advanceFrames} from './controlled-frames';
 async function saved(page:Page){return page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
-async function open(page:Page,index=34,n=0){let s={...fresh(),current:index};s.settings.sound=false;s.completed=levels.slice(0,index).map(l=>l.id);for(const m of levels[index].witness.slice(0,n))s=moved(s,m);
+async function open(page:Page,index=34,n=0,old=false){let s={...fresh(),current:index};s.settings.sound=false;s.completed=levels.slice(0,index).map(l=>l.id);const l=old?legacy[index]as Level:levels[index];if(old)s.attempts[`${l.id}@1`]=replay(l,[],false);for(const m of l.witness.slice(0,n))s=moved(s,m);
  await page.addInitScript(s=>{if(sessionStorage.hidden36)return;sessionStorage.hidden36='1';localStorage.setItem('water-sort-v1',JSON.stringify(s));},s);await page.goto('/');
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).hiddenScene=this;return fn.call(this);};});
  await page.locator('#home-play').click();await expect.poll(()=>page.evaluate(()=>!!(window as any).hiddenScene)).toBe(true);await page.waitForTimeout(280);return s;
@@ -17,13 +18,13 @@ async function move(page:Page,from:number,to:number){await tap(page,from);await 
 async function questions(page:Page){return page.evaluate(()=>(window as any).hiddenScene.activeLabels.filter((l:any)=>l.text==='?').length);}
 
 test('only concealed portions carry question marks, top stays coloured even with symbols enabled',async({page})=>{
- await open(page);expect(await questions(page)).toBe(4);await expect(page.locator('#status')).toContainText('отмена их не спрячет');await toggleSymbols(page);expect(await questions(page)).toBe(4);
+ await open(page,34,0,true);expect(await questions(page)).toBe(4);await expect(page.locator('#status')).toContainText('отмена их не спрячет');await toggleSymbols(page);expect(await questions(page)).toBe(4);
  const ls=await page.evaluate(()=>{const s=(window as any).hiddenScene;return s.board.map((t:number[],i:number)=>s.layers(t,s.knowledge.ids[i],performance.now()));});expect(ls[0]).toEqual([{color:1,amount:1,reveal:0},{color:1,amount:1,reveal:0},{color:0,amount:1,reveal:1},{color:2,amount:1,reveal:1}]);
 });
 
 test('discovery blends continuously at receive, with one tactile/audio cue and no Undo erasure',async({page})=>{
- await page.clock.install();await open(page,34,3);await page.evaluate(async()=>{const p='/src/platform/haptics.ts',m=await import(p),fn=m.TouchFeedback.prototype.play;(window as any).revealTicks=[];m.TouchFeedback.prototype.play=function(...args:any[]){(window as any).revealTicks.push(args[0]);return fn.apply(this,args);};const a='/src/audio/sound.ts',am=await import(a),rf=am.Sound.prototype.reveal;(window as any).revealSounds=0;am.Sound.prototype.reveal=function(){(window as any).revealSounds++;return rf.call(this);};});
- await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));const m=levels[34].witness[3];await tap(page,m.from);await tap(page,m.to);
+ await page.clock.install();await open(page,34,3,true);await page.evaluate(async()=>{const p='/src/platform/haptics.ts',m=await import(p),fn=m.TouchFeedback.prototype.play;(window as any).revealTicks=[];m.TouchFeedback.prototype.play=function(...args:any[]){(window as any).revealTicks.push(args[0]);return fn.apply(this,args);};const a='/src/audio/sound.ts',am=await import(a),rf=am.Sound.prototype.reveal;(window as any).revealSounds=0;am.Sound.prototype.reveal=function(){(window as any).revealSounds++;return rf.call(this);};});
+ await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));const m=legacy[34].witness[3];await tap(page,m.from);await tap(page,m.to);
  const start=await page.evaluate(()=>{const s=(window as any).hiddenScene;return [...s.reveals.values()][0]-performance.now();});expect(start).toBeGreaterThan(0);
  await advanceFrames(page,'hiddenScene',Math.ceil(start/40)*40+80);const progress=await page.evaluate(()=>{const s=(window as any).hiddenScene;return s.layers(s.board[0],s.knowledge.ids[0],performance.now()).at(-1).reveal;});expect(progress).toBeGreaterThan(0);expect(progress).toBeLessThan(1);
  await advanceFrames(page,'hiddenScene',900);expect(await questions(page)).toBe(3);expect(await page.evaluate(()=>(window as any).revealTicks.filter((x:string)=>x==='reveal').length)).toBe(1);expect(await page.evaluate(()=>(window as any).revealSounds)).toBe(1);await page.clock.resume();

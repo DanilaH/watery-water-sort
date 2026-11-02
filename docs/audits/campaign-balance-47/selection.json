@@ -1,0 +1,149 @@
+{
+  "method": "Deterministic candidate prefilter, not human difficulty or optimality. Visible-ranked greedy bots use no solver or Undo. Exact routes and broader independent probes follow separately.",
+  "rows": [
+    {
+      "stage": 3,
+      "id": "water-003",
+      "seed": 3026638785,
+      "tries": 6,
+      "colors": 3,
+      "tubes": 4,
+      "greedyWins": 9,
+      "trials": 12,
+      "dfsWitness": 10,
+      "adDfsWitness": 10
+    },
+    {
+      "stage": 5,
+      "id": "water-004",
+      "seed": 4228532930,
+      "tries": 4,
+      "colors": 3,
+      "tubes": 4,
+      "greedyWins": 3,
+      "trials": 12,
+      "dfsWitness": 13,
+      "adDfsWitness": 14
+    },
+    {
+      "stage": 8,
+      "id": "water-017",
+      "seed": 47065051,
+      "tries": 0,
+      "colors": 3,
+      "tubes": 5,
+      "greedyWins": 12,
+      "trials": 12,
+      "dfsWitness": 7,
+      "adDfsWitness": 7
+    },
+    {
+      "stage": 9,
+      "id": "water-005",
+      "seed": 2222036911,
+      "tries": 7,
+      "colors": 4,
+      "tubes": 5,
+      "greedyWins": 3,
+      "trials": 12,
+      "dfsWitness": 16,
+      "adDfsWitness": 16
+    },
+    {
+      "stage": 10,
+      "id": "water-027",
+      "seed": 3301255506,
+      "tries": 6,
+      "colors": 3,
+      "tubes": 5,
+      "greedyWins": 6,
+      "trials": 12,
+      "dfsWitness": 15,
+      "adDfsWitness": 17
+    },
+    {
+      "stage": 13,
+      "id": "water-006",
+      "seed": 3298961009,
+      "tries": 2,
+      "colors": 4,
+      "tubes": 5,
+      "greedyWins": 3,
+      "trials": 12,
+      "dfsWitness": 14,
+      "adDfsWitness": 14
+    },
+    {
+      "stage": 14,
+      "id": "water-035",
+      "seed": 445445091,
+      "tries": 1,
+      "colors": 3,
+      "tubes": 4,
+      "greedyWins": 8,
+      "trials": 12,
+      "dfsWitness": 9,
+      "adDfsWitness": 9
+    },
+    {
+      "stage": 15,
+      "id": "water-036",
+      "seed": 776792673,
+      "tries": 5,
+      "colors": 4,
+      "tubes": 5,
+      "greedyWins": 8,
+      "trials": 12,
+      "dfsWitness": 16,
+      "adDfsWitness": 16
+    },
+    {
+      "stage": 16,
+      "id": "water-025",
+      "seed": 558384405,
+      "tries": 331,
+      "colors": 4,
+      "tubes": 5,
+      "greedyWins": 6,
+      "trials": 12,
+      "dfsWitness": 9,
+      "adDfsWitness": 9
+    },
+    {
+      "stage": 19,
+      "id": "water-032",
+      "seed": 1670068301,
+      "tries": 7,
+      "colors": 4,
+      "tubes": 6,
+      "greedyWins": 8,
+      "trials": 12,
+      "dfsWitness": 16,
+      "adDfsWitness": 16
+    },
+    {
+      "stage": 20,
+      "id": "water-037",
+      "seed": 3330285538,
+      "tries": 4,
+      "colors": 4,
+      "tubes": 5,
+      "greedyWins": 6,
+      "trials": 12,
+      "dfsWitness": 10,
+      "adDfsWitness": 11
+    },
+    {
+      "stage": 21,
+      "id": "water-026",
+      "seed": 1090867971,
+      "tries": 3900,
+      "colors": 4,
+      "tubes": 5,
+      "greedyWins": 5,
+      "trials": 12,
+      "dfsWitness": 10,
+      "adDfsWitness": 10
+    }
+  ]
+}

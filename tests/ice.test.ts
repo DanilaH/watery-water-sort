@@ -2,7 +2,8 @@ import {test,expect} from 'vitest';
 import {levels,levelGoals,goalFor,fresh,moved,undone,restarted,expanded,attempt,validSave,levelKey,replay} from '../src/core/session';
 import {moves,moveFor,validBoard,validGoal,won,sealedTube,transition,iceOpen,isFrozen,type VesselRules} from '../src/core/rules';
 import {solve} from '../src/core/solver';import {stars} from '../src/core/ratings';
-import proof from '../docs/audits/ice-35/optimal.json';
+import currentProof from '../docs/audits/campaign-balance-47/optimal.json';
+const proof=currentProof.filter(p=>p.level>=28&&p.level<34);
 
 test('ice blocks both directions; earning one complete colour opens it once',()=>{
  const l=levels[28],g=levelGoals(l)!;expect(validBoard(l.initial,g)).toBe(true);expect(moveFor(l.initial,'0' as any,3,g)).toBeNull();

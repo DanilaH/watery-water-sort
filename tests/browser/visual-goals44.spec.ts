@@ -1,6 +1,6 @@
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,attempt,levelKey,seededRestart,goalFor,displaySlots,moved} from '../../src/core/session';
-import {goalList,moveFor} from '../../src/core/rules';import {goalStart,playerMoves} from '../../src/core/goalStart';import {targets} from '../../src/core/ratings';import proof from '../../docs/audits/visual-goals-44/optimal.json' with {type:'json'};
+import {goalList,moveFor} from '../../src/core/rules';import {goalStart,playerMoves} from '../../src/core/goalStart';import {targets} from '../../src/core/ratings';import proof from '../../docs/audits/campaign-balance-47/prepared.json' with {type:'json'};
 async function saved(page:Page){return page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
 async function open(page:Page,index:number,win=false){let s={...fresh(),current:index,completed:levels.map(l=>l.id)};s.settings.sound=false;
  if(win){s=seededRestart(s);for(const m of proof.find(p=>p.level===index&&!p.extra)!.path)s=moved(s,m);}

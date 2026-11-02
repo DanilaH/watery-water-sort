@@ -2,8 +2,8 @@ import {startGame,reloadGame,openLevels,resumeGame,slotCount} from './navigation
 import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {layout} from '../../src/game/geometry';
-const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
-const initial=(current=0)=>({schema:1,current,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false}});
+const levels=JSON.parse(readFileSync(new URL('../../src/core/levels-v1.json',import.meta.url),'utf8'));
+const initial=(current=0)=>({schema:1,current,revision:0,completed:[],attempts:{[`${levels[current].id}@1`]:{board:levels[current].initial,history:[],extra:false}},settings:{sound:true,fast:false,symbols:false,light:false}});
 async function start(page:Page,index=0){await startGame(page);await page.evaluate(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),initial(index));await reloadGame(page);await expect(page.locator('canvas')).toBeVisible();await page.waitForTimeout(120);}
 async function tap(page:Page,i:number,index=0){const b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,await slotCount(page))[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
 for(const manual of [false,true])test(`retina rendering preserves logical hit testing and real hint selection (${manual?'manual override':'hint recipient'})`,async({browser})=>{

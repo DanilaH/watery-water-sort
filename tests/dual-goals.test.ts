@@ -1,13 +1,16 @@
+import legacy from '../src/core/levels-v1.json';
+import type {Level} from '../src/core/session';
 import {test,expect} from 'vitest';
 import {levels,levelGoals,goalFor,fresh,moved,undone,restarted,expanded,attempt,validSave,levelKey} from '../src/core/session';
 import {apply,reverse,moves,moveFor,validBoard,validGoal,won,sealedTube,type Goal} from '../src/core/rules';
 import {solve} from '../src/core/solver';
 import {goalLayout} from '../src/game/geometry';
 import {stars} from '../src/core/ratings';
-import proof from '../docs/audits/dual-goals-33/optimal.json';
+import currentProof from '../docs/audits/campaign-balance-47/optimal.json';
+const proof=currentProof.filter(p=>p.level>=16&&p.level<22);
 
 test('two receivers have distinct colours and identities; each must fill in its own slot',()=>{
- const l=levels[16],g=l.goals!;expect(validBoard(l.initial,g)).toBe(true);
+ const l=legacy[16] as Level,g=l.goals!;expect(validBoard(l.initial,g)).toBe(true);
  for(const bad of [[],[g[0],g[0]],[g[0],{...g[1],color:g[0].color}],[...g,g[0]],[g[0],{...g[1],index:99}]])expect(validGoal(bad as Goal[],l.initial.length)).toBe(false);
  const solved=l.witness.reduce((b,m)=>apply(b,m,g),l.initial);expect(won(solved,g)).toBe(true);
  expect(won([solved[1],solved[0],...solved.slice(2)],g)).toBe(false);

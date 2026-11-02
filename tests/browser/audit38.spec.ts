@@ -1,10 +1,11 @@
+import legacy from '../../src/core/levels-v1.json' with {type:'json'};
 import {mockReward} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
-import {fresh,levels,moved,attempt,goalFor,levelKey,type Save} from '../../src/core/session';
+import {fresh,levels,moved,attempt,goalFor,levelKey,replay,type Level,type Save} from '../../src/core/session';
 import {won,moves} from '../../src/core/rules';
 import {advanceFrames} from './controlled-frames';
 async function saved(p:Page){return p.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
-async function open(p:Page,index=4,n=0){let s={...fresh(),current:index};s.settings.sound=false;s.wallet!.hints=100;for(const m of levels[index].witness.slice(0,n))s=moved(s,m);await p.addInitScript(s=>{if(sessionStorage.audit38)return;sessionStorage.audit38='1';localStorage.setItem('water-sort-v1',JSON.stringify(s));},s);await p.goto('/');await p.evaluate(async()=>{const path='/src/game/WaterScene.ts',m=await import(path),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).auditScene=this;return fn.call(this);};const WorkerBase=window.Worker;(window as any).workerCalls38=0;window.Worker=class extends WorkerBase{constructor(...args:ConstructorParameters<typeof Worker>){super(...args);(window as any).workerCalls38++;}};});await p.locator('#home-play').click();await expect.poll(()=>p.evaluate(()=>!!(window as any).auditScene?.ready)).toBe(true);await p.waitForTimeout(300);}
+async function open(p:Page,index=4,n=0,old=false){let s={...fresh(),current:index};s.settings.sound=false;s.wallet!.hints=100;const l=old?legacy[index]as Level:levels[index];if(old)s.attempts[`${l.id}@1`]=replay(l,[],false);for(const m of l.witness.slice(0,n))s=moved(s,m);await p.addInitScript(s=>{if(sessionStorage.audit38)return;sessionStorage.audit38='1';localStorage.setItem('water-sort-v1',JSON.stringify(s));},s);await p.goto('/');await p.evaluate(async()=>{const path='/src/game/WaterScene.ts',m=await import(path),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).auditScene=this;return fn.call(this);};const WorkerBase=window.Worker;(window as any).workerCalls38=0;window.Worker=class extends WorkerBase{constructor(...args:ConstructorParameters<typeof Worker>){super(...args);(window as any).workerCalls38++;}};});await p.locator('#home-play').click();await expect.poll(()=>p.evaluate(()=>!!(window as any).auditScene?.ready)).toBe(true);await p.waitForTimeout(300);}
 async function tap(p:Page,i:number){const b=(await p.locator('#board').boundingBox())!,r=await p.evaluate(i=>(window as any).auditScene.positions()[i],i);await p.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
 
 test('following successive UI hints finishes the formerly cycling puzzle using one verified Worker route',async({page})=>{
@@ -34,7 +35,7 @@ test('sleeping during an accepted pour clears its visual work and resumes the du
 });
 
 test('a reveal redraws only affected vessels while unchanged neighbours retain material and cached commands',async({page})=>{
- await page.clock.install();await open(page,34,3);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));const m=levels[34].witness[3];await tap(page,m.from);await tap(page,m.to);const end=await page.evaluate(()=>{const s=(window as any).auditScene;return s.flight.start+s.flight.timing.lift+s.flight.timing.flow-performance.now();});await advanceFrames(page,'auditScene',Math.ceil(end/40)*40+40);
+ await page.clock.install();await open(page,34,3,true);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));const m=legacy[34].witness[3];await tap(page,m.from);await tap(page,m.to);const end=await page.evaluate(()=>{const s=(window as any).auditScene;return s.flight.start+s.flight.timing.lift+s.flight.timing.flow-performance.now();});await advanceFrames(page,'auditScene',Math.ceil(end/40)*40+40);
  await page.evaluate(()=>{const s=(window as any).auditScene,fn=s.tube;(window as any).tubeCalls38=[];s.tube=function(...a:any[]){(window as any).tubeCalls38.push(a[5]);return fn.apply(this,a);};});await advanceFrames(page,'auditScene',40);const calls=await page.evaluate(()=>(window as any).tubeCalls38);expect(calls).toContain(0);expect(calls).not.toContain(1);expect(calls).not.toContain(3);expect(await page.evaluate(()=>(window as any).auditScene.glass.tubes.get(1).visible)).toBe(true);await page.clock.resume();
 });
 

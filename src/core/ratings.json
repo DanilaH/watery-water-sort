@@ -238,5 +238,53 @@
   "water-060@1": {
     "three": 17,
     "two": 21
+  },
+  "water-003@2": {
+    "three": 8,
+    "two": 10
+  },
+  "water-004@2": {
+    "three": 10,
+    "two": 12
+  },
+  "water-005@2": {
+    "three": 12,
+    "two": 15
+  },
+  "water-006@2": {
+    "three": 11,
+    "two": 14
+  },
+  "water-017@2": {
+    "three": 6,
+    "two": 8
+  },
+  "water-025@2": {
+    "three": 8,
+    "two": 10
+  },
+  "water-026@2": {
+    "three": 9,
+    "two": 11
+  },
+  "water-027@2": {
+    "three": 11,
+    "two": 14
+  },
+  "water-032@2": {
+    "three": 10,
+    "two": 12
+  },
+  "water-035@2": {
+    "three": 7,
+    "two": 9
+  },
+  "water-036@2": {
+    "three": 13,
+    "two": 16
+  },
+  "water-037@2": {
+    "three": 8,
+    "two": 10
   }
 }
