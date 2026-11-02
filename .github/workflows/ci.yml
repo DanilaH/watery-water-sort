@@ -22,6 +22,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+      - run: python3 tools/test-native-ads.py --baseline && python3 tools/test-native-ads.py
       - run: npx cap sync android
       - run: chmod +x android/gradlew && cd android && ./gradlew testDebugUnitTest assembleDebug processReleaseMainManifest --no-daemon
         env:

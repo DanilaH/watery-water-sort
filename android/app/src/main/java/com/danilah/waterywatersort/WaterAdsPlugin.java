@@ -27,7 +27,9 @@ public class WaterAdsPlugin extends Plugin {
  private final Handler handler=new Handler(Looper.getMainLooper());
  @Override public void load(){visibility=()->{if(container!=null)container.setVisibility(wanted&&geometryValid&&foreground&&!FullscreenAds.busy()?View.VISIBLE:View.INVISIBLE);};FullscreenAds.visibility=visibility;try{YandexAds.initialize(getContext(),()->getActivity().runOnUiThread(()->{if(destroyed)return;sdkReady=true;notifyListeners("ready",new JSObject());preload();}));}catch(Exception ignored){}}
  private void preload(){
-  if(!sdkReady||destroyed||!foreground||loading||ad!=null||System.currentTimeMillis()<retryAt||BuildConfig.INTERSTITIAL_AD_UNIT_ID.isEmpty())return;
+  // Resume/prepare may arrive before the displayed ad dismisses. A load must
+  // never invalidate the generation of its still-pending show callback.
+  if(!sdkReady||destroyed||!foreground||active!=null||displayed!=null||FullscreenAds.busy()||loading||ad!=null||System.currentTimeMillis()<retryAt||BuildConfig.INTERSTITIAL_AD_UNIT_ID.isEmpty())return;
   loading=true;final int g=++generation;retryAt=System.currentTimeMillis()+30000;
   handler.postDelayed(()->{if(g==generation&&loading){generation++;loading=false;if(loader!=null)loader.cancelLoading();}},15000);
   try{YandexAds.initialize(getContext(),()->getActivity().runOnUiThread(()->{

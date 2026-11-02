@@ -39,3 +39,11 @@ test('the last level opens level selection automatically after delayed resume',a
 test('explicit Undo cancels delayed Next and preserves the requested earlier board',async({page})=>{
  await open(page);const before=await saved(page);await page.locator('#continue').click();await lifecycle(page,'page',true);await page.locator('#undo').evaluate((b:HTMLButtonElement)=>b.click());await page.evaluate(()=>(window as any).dismiss43());await lifecycle(page,'page',false);const after=await saved(page);expect(after.current).toBe(2);expect(after.attempts['water-003@1'].history).toHaveLength(before.attempts['water-003@1'].history.length-1);await expect(page.locator('#continue')).toBeHidden();expect(await page.evaluate(()=>(window as any).adCalls43)).toBe(1);
 });
+
+test('settings opened while dismissal is pending closes again after native return and Next remains usable',async({page})=>{
+ await open(page);await page.locator('#continue').click();await lifecycle(page,'native',true);await lifecycle(page,'native',false);
+ await page.locator('#settings').evaluate((b:HTMLButtonElement)=>b.click());await expect(page.locator('dialog')).toBeVisible();
+ await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('dialog')).toBeVisible();
+ await page.evaluate(()=>(window as any).dismiss43());await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();await expect(page.locator('body')).toHaveAttribute('data-game-paused','false');
+ await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 4');expect(await page.evaluate(()=>(window as any).adCalls43)).toBe(1);
+});
