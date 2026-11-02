@@ -1,5 +1,5 @@
 import type {Save} from './session';
-import {levels,levelKey} from './session';
+import {levels,levelKey,attempt} from './session';
 import {stars} from './ratings';
 import type {Move} from './rules';
 export const ECONOMY={star:10,startHints:3,packHints:3,packPrice:60,adCoins:80} as const;
@@ -14,16 +14,17 @@ export function settleEconomy(s:Save):Save{
  return n;
 }
 export function purchaseHints(s:Save):Save|undefined{if(!s.wallet||s.wallet.coins<ECONOMY.packPrice)return;const n=structuredClone(s);n.wallet!.coins-=ECONOMY.packPrice;n.wallet!.hints+=ECONOMY.packHints;n.revision++;return n;}
-export const adviceKey=(s:Save)=>JSON.stringify([levelKey(s.current),s.attempts[levelKey(s.current)]??null]);
+export const adviceKey=(s:Save)=>{const a=attempt(s);return JSON.stringify([levelKey(s.current),a.board,!!a.thawed,a.known??[]]);};
 export function ownHint(s:Save,key:string,move:Move,free=false):Save|undefined{
- if(s.wallet?.hintAdvice?.key===key)return s;
+ if(s.wallet?.hintAdvice?.key===key){if(['from','to','color','amount'].every(k=>s.wallet!.hintAdvice!.move[k as keyof Move]===move[k as keyof Move]))return s;const n=structuredClone(s);n.wallet!.hintAdvice={key,move:{...move}};n.revision++;return n;}
  if(!s.wallet||!free&&!s.wallet.hints)return;
  const n=structuredClone(s);if(!free)n.wallet!.hints--;n.wallet!.hintAdvice={key,move:{...move}};n.revision++;return n;
 }
 export function creditCoins(s:Save,token:string,order:string):Save|undefined{
  if(!s.wallet)return;
  if(s.wallet.receipts.includes(token))return s;
- // The immutable native receipt targets the persisted offer, never the currently open dialog.
- if(s.wallet.adOrder!==order)return;
- const n=structuredClone(s);n.wallet!.coins+=ECONOMY.adCoins;n.wallet!.receipts.push(token);delete n.wallet!.adOrder;n.revision++;return n;
+ // Native earned receipts remain authoritative even if recovery used a pre-offer backup.
+ // Deduplicate the durable effect before acknowledging; never depend on the open dialog.
+ if(!/^coins:[a-zA-Z0-9-]{1,80}$/.test(order))return;
+ const n=structuredClone(s);n.wallet!.coins+=ECONOMY.adCoins;n.wallet!.receipts.push(token);if(n.wallet!.adOrder===order)delete n.wallet!.adOrder;n.revision++;return n;
 }

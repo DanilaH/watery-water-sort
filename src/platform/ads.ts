@@ -14,7 +14,7 @@ export class Ads{
  private async update(){
   if(this.busy){this.again=true;return;}this.busy=true;const epoch=this.epoch;
   try{const r=this.slot.getBoundingClientRect();const result=await native.banner({visible:this.visible&&!document.hidden,slot:{x:r.x,y:r.y,width:r.width,height:r.height},viewport:{width:innerWidth,height:innerHeight}});
-   if(epoch===this.epoch&&this.visible&&result.heightCss&&Number.isFinite(result.heightCss)){const height=Math.ceil(result.heightCss);if(height>=1&&height<innerHeight/2&&this.slot.style.getPropertyValue('--banner-height')!==height+'px'){this.slot.style.setProperty('--banner-height',height+'px');document.getElementById('app')!.style.setProperty('--banner-height',height+'px');this.again=true;}}
+   if(epoch===this.epoch&&result.heightCss&&Number.isFinite(result.heightCss)){const height=Math.ceil(result.heightCss);if(height>=1&&height<innerHeight/2&&this.slot.style.getPropertyValue('--banner-height')!==height+'px'){this.slot.style.setProperty('--banner-height',height+'px');document.getElementById('app')!.style.setProperty('--banner-height',height+'px');this.again=true;}}
   }catch{/* Native/no-fill never blocks the game. */}finally{this.busy=false;if(this.again){this.again=false;this.schedule();}}
  }
 }

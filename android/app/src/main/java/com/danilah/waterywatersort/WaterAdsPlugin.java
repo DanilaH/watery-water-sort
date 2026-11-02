@@ -61,7 +61,8 @@ public class WaterAdsPlugin extends Plugin {
  private void finish(InterstitialAd current,String status){current.setAdEventListener(null);displayed=null;generation++;PluginCall c=active;active=null;FullscreenAds.release(this,getContext(),shown);shown=false;if(c!=null)result(c,status);preload();}
  private void destroyBanner(){bannerGeneration++;if(banner!=null){banner.setBannerAdEventListener(null);banner.destroy();banner=null;}if(container!=null){ViewGroup p=(ViewGroup)container.getParent();if(p!=null)p.removeView(container);container=null;}bannerWidth=0;}
  @PluginMethod public void banner(PluginCall call){getActivity().runOnUiThread(()->{
-  wanted=call.getBoolean("visible",false);if(!wanted||destroyed||!foreground||FullscreenAds.busy()){geometryValid=false;if(container!=null)container.setVisibility(View.INVISIBLE);call.resolve();return;}
+  wanted=call.getBoolean("visible",false);if(destroyed||!foreground||FullscreenAds.busy()){geometryValid=false;if(container!=null)container.setVisibility(View.INVISIBLE);call.resolve();return;}
+  if(!wanted&&container!=null){geometryValid=false;container.setVisibility(View.INVISIBLE);}
   if(!sdkReady){call.resolve();return;}
   try{
    JSObject slot=call.getObject("slot"),viewport=call.getObject("viewport");View web=getBridge().getWebView();FrameLayout root=getActivity().findViewById(android.R.id.content);
@@ -75,6 +76,7 @@ public class WaterAdsPlugin extends Plugin {
    final int width=mapped.width;float density=getContext().getResources().getDisplayMetrics().density;int dp=(int)Math.floor(width/density);if(dp<1){call.resolve();return;}
    BannerAdSize size=BannerAdSize.sticky(getContext(),dp);int height=size.getHeightInPixels(getContext());
    JSObject reply=new JSObject();reply.put("heightCss",mapped.requiredCss(height));
+   if(!wanted){call.resolve(reply);return;}
    if(mapped.height<height){if(container!=null)container.setVisibility(View.INVISIBLE);reply.put("status","reserve");call.resolve(reply);return;}
    int offset=mapped.centeredTop(height);
    if(banner==null||bannerWidth!=width||bannerFailedAt>0&&System.currentTimeMillis()-bannerFailedAt>=30000){destroyBanner();bannerFailedAt=0;bannerWidth=width;container=new FrameLayout(getActivity());container.setClipChildren(true);root.addView(container);banner=new BannerAdView(getActivity());container.addView(banner,new FrameLayout.LayoutParams(width,height));banner.setAdSize(size);final int g=++bannerGeneration;

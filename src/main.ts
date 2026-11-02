@@ -240,7 +240,7 @@ async function continueAfterWin(){
 function showHint(m:Move){const key=adviceKey(state),free=levels[state.current].colors<=2;const next=ownHint(state,key,m,free);if(!next){hintShop();return;}const spent=state.wallet!.hints-next.wallet!.hints;if(next!==state&&!commit(next))return;if(spent)track('hint_spent',{amount:spent,balance:state.wallet!.coins,hints:state.wallet!.hints});paint();track('hint_result',{status:'FOUND'});clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
 function requestHint(){
  if(scene.busy||blockers.size||locked||won(attempt(state).board,goalFor(state)))return;audio.prime();track('hint_request');
- const owned=state.wallet!.hintAdvice;if(owned?.key===adviceKey(state)){showHint(owned.move);return;}
+ const owned=state.wallet!.hintAdvice;if(owned?.key===adviceKey(state)){const legal=moveFor(attempt(state).board,owned.move.from,owned.move.to,goalFor(state));if(legal&&legal.amount===owned.move.amount&&legal.color===owned.move.color){showHint(owned.move);return;}}
  if(levels[state.current].colors>2&&!state.wallet!.hints){hintShop();return;}
  const view=knowledgeFor(state);if(hasUnknown(view)){const m=visibleHint(attempt(state).board,view!,goalFor(state));if(m){showHint(m);message('Открой следующий слой · отмена доступна');}else{track('hint_result',{status:'NO_VISIBLE_MOVE'});message('Нет доступного перелива · можно отменить ход');}return;}
  const planned=hintRoute.get(attempt(state).board,goalFor(state));if(planned){showHint(planned);return;}
@@ -374,26 +374,25 @@ function hintShop(notice=''){
  const buttons:{label:string;primary?:boolean;action:()=>void}[]=[];
  if(enough)buttons.push({label:`Купить 3 подсказки · ${ECONOMY.packPrice} 🪙`,primary:true,action:()=>{const n=purchaseHints(state);if(n&&commit(n)){track('hint_purchase',{amount:ECONOMY.packPrice,balance:state.wallet!.coins,hints:state.wallet!.hints});close();paint();}}});
  buttons.push({label:`Получить ${ECONOMY.adCoins} 🪙 · реклама`,primary:!enough,action:()=>{void watchForCoins(true);}});
- buttons.push({label:'Продолжить игру',action:close});
  const body=modal('Подсказки',notice||`Один совет показывает следующий перелив. На скрытых слоях — по видимым цветам. Пакет: 3 подсказки за ${ECONOMY.packPrice} монет.`,buttons);
  const balance=document.createElement('div');balance.className='shop-balance';balance.innerHTML='<i class="coin-icon" aria-hidden="true"></i>';const count=document.createElement('strong');count.textContent=String(state.wallet!.coins);balance.append(count);body.prepend(balance);
 }
 function coinShop(notice=''){
- const body=modal('Монеты',notice||'Зарабатывай по 10 монет за новые звёзды. Монеты можно потратить на подсказки.',[{label:`Получить ${ECONOMY.adCoins} 🪙 · реклама`,primary:true,action:()=>{void watchForCoins(false);}},{label:'Подсказки · 3 за 60 🪙',action:()=>hintShop()},{label:'Продолжить',action:close}]);
+ const body=modal('Монеты',notice||'Зарабатывай по 10 монет за новые звёзды. Монеты можно потратить на подсказки.',[{label:`Получить ${ECONOMY.adCoins} 🪙 · реклама`,primary:true,action:()=>{void watchForCoins(false);}},{label:'Подсказки · 3 за 60 🪙',action:()=>hintShop()}]);
  const balance=document.createElement('div');balance.className='shop-balance';balance.innerHTML='<i class="coin-icon" aria-hidden="true"></i>';const count=document.createElement('strong');count.textContent=String(state.wallet!.coins);balance.append(count);body.prepend(balance);
 }
 $('wallet').onclick=()=>coinShop();$('home-wallet').onclick=()=>coinShop();
 async function watchForCoins(fromHints:boolean){
  if(rewardBusy||recoveringRewards||interstitialBusy||locked)return;
+ rewardBusy=true;block('reward',true);for(const button of content.querySelectorAll<HTMLButtonElement>('button'))button.disabled=true;
  const reopen=(notice:string)=>fromHints?hintShop(notice):coinShop(notice);
- if(pendingReceipt){try{if(!await applyReceipt(pendingReceipt)){reopen('Награда ожидает сохранения. Повторный просмотр не нужен.');return;}pendingReceipt=undefined;}catch{reopen('Не удалось сохранить награду. Повторный просмотр не нужен.');return;}}
- if(!state.wallet!.adOrder){const n=structuredClone(state);n.wallet!.adOrder=`coins:${crypto.randomUUID()}`;n.revision++;if(!commit(n))return;}
- const order=state.wallet!.adOrder!;rewardBusy=true;block('reward',true);for(const button of content.querySelectorAll<HTMLButtonElement>('button'))button.disabled=true;
- let notice='Реклама пока недоступна. Попробуй позже.';
- try{track('reward_request',{reason:'coins'});const r=await rewarded.request(order);track('reward_result',{reason:'coins',status:r.status});
+ let notice='Реклама пока недоступна. Попробуй позже.',requested=false;
+ try{
+  if(pendingReceipt){if(!await applyReceipt(pendingReceipt)){notice='Награда ожидает сохранения. Повторный просмотр не нужен.';return;}pendingReceipt=undefined;notice='Предыдущая награда сохранена. Повторный просмотр не нужен.';return;}
+  if(!state.wallet!.adOrder){const n=structuredClone(state);n.wallet!.adOrder=`coins:${crypto.randomUUID()}`;n.revision++;if(!commit(n)){notice='Не удалось сохранить предложение. Реклама не запущена.';return;}}
+  const order=state.wallet!.adOrder!;requested=true;track('reward_request',{reason:'coins'});const r=await rewarded.request(order);track('reward_result',{reason:'coins',status:r.status});
   if(r.status==='rewarded'&&r.receipt?.level===order){pendingReceipt=r.receipt;if(await applyReceipt(pendingReceipt)){pendingReceipt=undefined;notice=`+${ECONOMY.adCoins} монет. Можно купить подсказки или сохранить на потом.`;}else notice='Награда получена и ожидает сохранения. Повторный просмотр не нужен.';}
   else if(r.status==='closed')notice='Просмотр не завершён. Монеты не начислены.';
- }catch{/* Offer remains durable for retry/recovery. */}
- finally{rewardBusy=false;postRewardCooldown();block('reward',false);}
- reopen(notice);
+ }catch{/* Persisted offers and native receipts remain available for retry/recovery. */}
+ finally{rewardBusy=false;if(requested)postRewardCooldown();block('reward',false);reopen(notice);}
 }
