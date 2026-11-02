@@ -1,0 +1,154 @@
+{
+  "runtimeSource": "7587ae3ae726c20a517baa7e885230cffccddfb9",
+  "environment": "production Vite build in Playwright Chromium; no physical Android device",
+  "screens": [
+    {
+      "screen": "home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "levels",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "settings",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "coins",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "hint-shop",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "tube-offer",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "restart",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "home",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "levels",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "settings",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "coins",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "hint-shop",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "tube-offer",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    },
+    {
+      "screen": "restart",
+      "viewport": {
+        "width": 568,
+        "height": 320
+      },
+      "pageErrors": [],
+      "documentOverflow": false
+    }
+  ],
+  "gameplay": {
+    "oneAndTwoGoals": true,
+    "viewports": [
+      [
+        320,
+        480
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        568,
+        320
+      ]
+    ],
+    "realLiquid": true,
+    "zeroPlayerMoves": true,
+    "textObjectiveRemoved": true
+  },
+  "fixtures": "UI review unlocks the level grid and empties hint inventory; no production player data",
+  "screenshotsDelivered": false
+}

@@ -1,0 +1,143 @@
+{
+  "source": "957261d0f181615f0456f001e2195e12d954026d",
+  "sourceTree": "454b78f1d0c898b7387bc43cbd2f47d62da954a3",
+  "runtimeSource": "7587ae3ae726c20a517baa7e885230cffccddfb9",
+  "runtimeUnchangedByTestAndCIFixes": true,
+  "ci": {
+    "run": 41486225523,
+    "url": "https://github.com/DanilaH/watery-water-sort/actions/runs/41486225523",
+    "conclusion": "success",
+    "requiredCheck": {
+      "job": 125420529303,
+      "conclusion": "success"
+    },
+    "nativeJob": 125417176336,
+    "browserShards": [
+      {
+        "job": 125417175679,
+        "passed": 84,
+        "duration": "5.0m"
+      },
+      {
+        "job": 125417176061,
+        "passed": 84,
+        "duration": "5.6m"
+      },
+      {
+        "job": 125417176201,
+        "passed": 82,
+        "duration": "4.7m"
+      }
+    ],
+    "browserTotal": 250,
+    "unitTests": 100,
+    "jvmTests": 15,
+    "optimalProofs": {
+      "authored": 120,
+      "prepared": 120
+    },
+    "productionRejectionGates": 3
+  },
+  "artifact": {
+    "artifactId": 13161277981,
+    "zipBytes": 10184662,
+    "zipSHA256": "288d67386727ad53903bf28bea36226847c786f3af2e9c3c6000b9042a54ec7a",
+    "zipCRC": true,
+    "apkBytes": 10882043,
+    "apkSHA256": "d48fbd056ca9ed2b4f08ae105d954938a3e13a31327e695ce38b4f367ba4a0bd",
+    "jvmTests": [
+      {
+        "name": "com.danilah.waterywatersort.RewardLedgerTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.danilah.waterywatersort.BannerGeometryTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.getcapacitor.myapp.ExampleUnitTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ]
+  },
+  "apk": {
+    "apk": "perelevy-0.44-visual-goals.apk",
+    "bytes": 10882043,
+    "sha256": "d48fbd056ca9ed2b4f08ae105d954938a3e13a31327e695ce38b4f367ba4a0bd",
+    "manifest": {
+      "versionCode": 44,
+      "versionName": "0.44.0-visual-goals",
+      "compileSdkVersion": 36,
+      "compileSdkVersionCodename": "16",
+      "package": "com.danilah.waterywatersort.preview3",
+      "platformBuildVersionCode": 36,
+      "platformBuildVersionName": 16
+    },
+    "v2Signatures": [
+      {
+        "algorithm": "0x103",
+        "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+      }
+    ],
+    "publicPreviewCertificateMatches": true,
+    "tamperedProtectedByteRejected": true,
+    "distFilesMatched": [
+      "index.html",
+      "audio/material-report.json",
+      "audio/pour-2.ogg",
+      "audio/pour-1.ogg",
+      "audio/mix-report.json",
+      "audio/cork.ogg",
+      "audio/collect.ogg",
+      "audio/hint.ogg",
+      "audio/reject.ogg",
+      "audio/land.ogg",
+      "audio/complete.ogg",
+      "audio/victory.ogg",
+      "audio/accept.ogg",
+      "audio/select.ogg",
+      "audio/pour-3.ogg",
+      "fonts/OFL-Rubik.txt",
+      "fonts/rubik.woff",
+      "art/goal-crystal-shard-2.webp",
+      "art/goal-crystal-shard-0.webp",
+      "art/goal-crystal-shard-4.webp",
+      "art/goal-crystal-shard-3.webp",
+      "art/goal-crystal-shard-1.webp",
+      "art/goal-crystal-base.webp",
+      "art/goal-crystal.json",
+      "art/night-shore.svg",
+      "assets/web-CSjP9m3v.js",
+      "assets/solver.worker-mwOyOevU.js",
+      "assets/phaser-DFK5Ua9d.js",
+      "assets/index-49fLYnyc.css",
+      "assets/index-C_48d5Ye.js",
+      "art/glass/material-27.json",
+      "art/glass/tube-27.webp",
+      "art/glass/cork-27.webp",
+      "art/vfx/splash-5.webp",
+      "art/vfx/splash-2.webp",
+      "art/vfx/splash-3.webp",
+      "art/vfx/splash-4.webp",
+      "art/vfx/splash-0.webp",
+      "art/vfx/splash-1.webp",
+      "art/vfx/sprites.json",
+      "art/ui/button-blue-29.svg",
+      "art/ui/material-29.json",
+      "art/ui/star-gold-29.svg",
+      "art/ui/star-empty-29.svg",
+      "art/ui/button-gold-29.svg"
+    ]
+  },
+  "physicalDeviceTested": false,
+  "uiReview": "ui-review.json"
+}
