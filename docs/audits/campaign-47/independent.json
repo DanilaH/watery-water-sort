@@ -1,0 +1,340 @@
+{
+  "method": "Independent Python rules and legal setup derivation; exhaustive graphs for first 21 stages, with/without one ordinary empty. Compare completion, state count, exact shortest length and dead-state count against TypeScript audit. Not a human playtest.",
+  "checked": 37,
+  "allMatched": true,
+  "rows": [
+    {
+      "stage": 1,
+      "blocked": -1,
+      "complete": true,
+      "states": 7,
+      "deadStates": 0,
+      "shortest": 3,
+      "matches": true
+    },
+    {
+      "stage": 1,
+      "blocked": 2,
+      "complete": true,
+      "states": 6,
+      "deadStates": 0,
+      "shortest": 3,
+      "matches": true
+    },
+    {
+      "stage": 2,
+      "blocked": -1,
+      "complete": true,
+      "states": 67,
+      "deadStates": 0,
+      "shortest": 7,
+      "matches": true
+    },
+    {
+      "stage": 2,
+      "blocked": 2,
+      "complete": true,
+      "states": 16,
+      "deadStates": 0,
+      "shortest": 7,
+      "matches": true
+    },
+    {
+      "stage": 3,
+      "blocked": -1,
+      "complete": true,
+      "states": 235,
+      "deadStates": 0,
+      "shortest": 9,
+      "matches": true
+    },
+    {
+      "stage": 3,
+      "blocked": 3,
+      "complete": true,
+      "states": 25,
+      "deadStates": 2,
+      "shortest": 9,
+      "matches": true
+    },
+    {
+      "stage": 4,
+      "blocked": -1,
+      "complete": true,
+      "states": 10,
+      "deadStates": 0,
+      "shortest": 3,
+      "matches": true
+    },
+    {
+      "stage": 4,
+      "blocked": 4,
+      "complete": true,
+      "states": 8,
+      "deadStates": 0,
+      "shortest": 3,
+      "matches": true
+    },
+    {
+      "stage": 5,
+      "blocked": -1,
+      "complete": true,
+      "states": 122,
+      "deadStates": 0,
+      "shortest": 10,
+      "matches": true
+    },
+    {
+      "stage": 5,
+      "blocked": 3,
+      "complete": true,
+      "states": 21,
+      "deadStates": 3,
+      "shortest": 10,
+      "matches": true
+    },
+    {
+      "stage": 6,
+      "blocked": -1,
+      "complete": true,
+      "states": 11,
+      "deadStates": 0,
+      "shortest": 4,
+      "matches": true
+    },
+    {
+      "stage": 7,
+      "blocked": -1,
+      "complete": true,
+      "states": 17,
+      "deadStates": 1,
+      "shortest": 7,
+      "matches": true
+    },
+    {
+      "stage": 8,
+      "blocked": -1,
+      "complete": true,
+      "states": 16,
+      "deadStates": 0,
+      "shortest": 4,
+      "matches": true
+    },
+    {
+      "stage": 8,
+      "blocked": 6,
+      "complete": true,
+      "states": 16,
+      "deadStates": 0,
+      "shortest": 4,
+      "matches": true
+    },
+    {
+      "stage": 9,
+      "blocked": -1,
+      "complete": true,
+      "states": 573,
+      "deadStates": 0,
+      "shortest": 12,
+      "matches": true
+    },
+    {
+      "stage": 9,
+      "blocked": 4,
+      "complete": true,
+      "states": 28,
+      "deadStates": 11,
+      "shortest": 12,
+      "matches": true
+    },
+    {
+      "stage": 10,
+      "blocked": -1,
+      "complete": true,
+      "states": 74,
+      "deadStates": 0,
+      "shortest": 4,
+      "matches": true
+    },
+    {
+      "stage": 11,
+      "blocked": -1,
+      "complete": true,
+      "states": 16,
+      "deadStates": 0,
+      "shortest": 4,
+      "matches": true
+    },
+    {
+      "stage": 11,
+      "blocked": 3,
+      "complete": true,
+      "states": 2,
+      "deadStates": 2,
+      "shortest": null,
+      "matches": true
+    },
+    {
+      "stage": 12,
+      "blocked": -1,
+      "complete": true,
+      "states": 40,
+      "deadStates": 0,
+      "shortest": 7,
+      "matches": true
+    },
+    {
+      "stage": 12,
+      "blocked": 3,
+      "complete": true,
+      "states": 3,
+      "deadStates": 3,
+      "shortest": null,
+      "matches": true
+    },
+    {
+      "stage": 13,
+      "blocked": -1,
+      "complete": true,
+      "states": 999,
+      "deadStates": 0,
+      "shortest": 14,
+      "matches": true
+    },
+    {
+      "stage": 13,
+      "blocked": 4,
+      "complete": true,
+      "states": 58,
+      "deadStates": 14,
+      "shortest": 14,
+      "matches": true
+    },
+    {
+      "stage": 14,
+      "blocked": -1,
+      "complete": true,
+      "states": 160,
+      "deadStates": 0,
+      "shortest": 8,
+      "matches": true
+    },
+    {
+      "stage": 14,
+      "blocked": 3,
+      "complete": true,
+      "states": 18,
+      "deadStates": 2,
+      "shortest": 8,
+      "matches": true
+    },
+    {
+      "stage": 15,
+      "blocked": -1,
+      "complete": true,
+      "states": 112,
+      "deadStates": 0,
+      "shortest": 7,
+      "matches": true
+    },
+    {
+      "stage": 15,
+      "blocked": 3,
+      "complete": true,
+      "states": 15,
+      "deadStates": 3,
+      "shortest": 7,
+      "matches": true
+    },
+    {
+      "stage": 16,
+      "blocked": -1,
+      "complete": true,
+      "states": 18,
+      "deadStates": 0,
+      "shortest": 5,
+      "matches": true
+    },
+    {
+      "stage": 17,
+      "blocked": -1,
+      "complete": true,
+      "states": 6060,
+      "deadStates": 0,
+      "shortest": 10,
+      "matches": true
+    },
+    {
+      "stage": 17,
+      "blocked": 6,
+      "complete": true,
+      "states": 2931,
+      "deadStates": 0,
+      "shortest": 10,
+      "matches": true
+    },
+    {
+      "stage": 18,
+      "blocked": -1,
+      "complete": true,
+      "states": 1574,
+      "deadStates": 4,
+      "shortest": 16,
+      "matches": true
+    },
+    {
+      "stage": 18,
+      "blocked": 5,
+      "complete": true,
+      "states": 32,
+      "deadStates": 32,
+      "shortest": null,
+      "matches": true
+    },
+    {
+      "stage": 19,
+      "blocked": -1,
+      "complete": true,
+      "states": 21,
+      "deadStates": 0,
+      "shortest": 6,
+      "matches": true
+    },
+    {
+      "stage": 19,
+      "blocked": 4,
+      "complete": true,
+      "states": 17,
+      "deadStates": 0,
+      "shortest": 6,
+      "matches": true
+    },
+    {
+      "stage": 20,
+      "blocked": -1,
+      "complete": true,
+      "states": 413,
+      "deadStates": 0,
+      "shortest": 11,
+      "matches": true
+    },
+    {
+      "stage": 20,
+      "blocked": 4,
+      "complete": true,
+      "states": 27,
+      "deadStates": 11,
+      "shortest": 11,
+      "matches": true
+    },
+    {
+      "stage": 21,
+      "blocked": -1,
+      "complete": true,
+      "states": 30,
+      "deadStates": 0,
+      "shortest": 7,
+      "matches": true
+    }
+  ]
+}

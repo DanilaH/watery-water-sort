@@ -1,0 +1,113 @@
+{
+  "method": "One earliest proved trap per complete graph, exhausted again by production DFS; append one empty rewarded slot and validate every found rescue route. Not a probability of entering a trap. All these states also have free Undo/restart available.",
+  "rows": [
+    {
+      "stage": 7,
+      "id": "water-024",
+      "trapDepth": 1,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 12,
+      "rewardEligible": true
+    },
+    {
+      "stage": 18,
+      "id": "water-007",
+      "trapDepth": 3,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 19,
+      "rewardEligible": true
+    },
+    {
+      "stage": 26,
+      "id": "water-008",
+      "trapDepth": 2,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 25,
+      "rewardEligible": true
+    },
+    {
+      "stage": 30,
+      "id": "water-009",
+      "trapDepth": 3,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 28,
+      "rewardEligible": true
+    },
+    {
+      "stage": 35,
+      "id": "water-010",
+      "trapDepth": 3,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 23,
+      "rewardEligible": true
+    },
+    {
+      "stage": 38,
+      "id": "water-011",
+      "trapDepth": 2,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 39,
+      "rewardEligible": true
+    },
+    {
+      "stage": 40,
+      "id": "water-012",
+      "trapDepth": 2,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 38,
+      "rewardEligible": true
+    },
+    {
+      "stage": 43,
+      "id": "water-043",
+      "trapDepth": 3,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 10,
+      "rewardEligible": true
+    },
+    {
+      "stage": 49,
+      "id": "water-049",
+      "trapDepth": 4,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 20,
+      "rewardEligible": true
+    },
+    {
+      "stage": 55,
+      "id": "water-055",
+      "trapDepth": 1,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 23,
+      "rewardEligible": true
+    },
+    {
+      "stage": 57,
+      "id": "water-057",
+      "trapDepth": 5,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 27,
+      "rewardEligible": true
+    },
+    {
+      "stage": 59,
+      "id": "water-059",
+      "trapDepth": 2,
+      "withoutAd": "UNSOLVABLE",
+      "withAd": "FOUND",
+      "rescueMoves": 36,
+      "rewardEligible": true
+    }
+  ]
+}
