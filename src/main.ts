@@ -39,6 +39,7 @@ const dialog=$<HTMLDialogElement>('dialog'),content=$('dialog-content'),audio=ne
 const reward=new StarReward($('earned-stars'),[$('star-total'),$('home-star-total')],index=>{audio.collect(index);haptic('collect');});
 const coinReward=new CoinReward($('earned-coins'),$('wallet'),index=>{audio.collect(index);haptic('collect');});
 let pendingCoins=0,interstitialBusy=false;
+let pendingNext:{key:string;next:number|undefined;ready:boolean}|undefined;
 let pendingStars:{before:number;delta:number;earned:number;total:number}|undefined;
 const loaded=store.load();let state=settleEconomy(loaded.state),locked=loaded.corrupt||loaded.unavailable;
 audio.setEnabled(state.settings.sound);if(state.settings.sound)void audio.load();
@@ -82,7 +83,7 @@ function clearIntent(){queued=null;scene.queuedMove=null;scene.selected=null;sce
 function interrupt(){pendingReveal=false;pendingIce=null;reward.cancel();coinReward.cancel();$('earned-coins').hidden=true;pendingCoins=0;pendingStars=undefined;scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
 function syncLoop(){document.body.dataset.gamePaused=String(blockers.size>0);if(!scene.ready)return;if(blockers.size)game.loop.sleep();else game.loop.wake();}
 scene.onReady=syncLoop;
-function block(reason:string,on:boolean){measureActive();if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();syncLoop();syncActive();}
+function block(reason:string,on:boolean){measureActive();if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();syncLoop();syncActive();if(!on)completePendingNext();}
 function commit(next:Save){try{next=settleEconomy(next);store.write(next);state=next;recoveryNotice='';$('home-error').hidden=true;return true;}catch{track('save_error');paint();const error='Не удалось сохранить. Изменение не принято — попробуй ещё раз.';message(error,true);if(atHome&&!dialog.open){$('home-error').textContent=error;$('home-error').hidden=false;}if(dialog.open){const body=content.querySelector('.dialog-body');let note=body?.querySelector<HTMLElement>('[role=alert]');if(body&&!note){note=document.createElement('p');note.setAttribute('role','alert');body.prepend(note);}if(note)note.textContent=error;if(body)body.scrollTop=0;}return false;}}
 function paint(){
  const a=attempt(state),finished=won(a.board,goalFor(state))&&!scene.busy;
@@ -123,6 +124,7 @@ function paint(){
 }
 function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;dialog.close();block('dialog',false);message(guidance());}
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
+ pendingNext=undefined;
  block('dialog',true);content.replaceChildren();
  const header=document.createElement('header');header.className='dialog-header';
  const h=document.createElement('h2');h.textContent=title;h.tabIndex=-1;header.append(h);
@@ -144,15 +146,15 @@ function resumeGame(){
  audio.ui();activateGame();
 }
 function showHome(){
- if(locked)return;
+ if(locked)return;pendingNext=undefined;
  track('level_leave',{reason:'home'});measureActive();activeMs=0;atHome=true;dialog.close();blockers.delete('dialog');block('home',true);message(guidance());$('home-play').focus({preventScroll:true});
 }
 function switchLevel(index:number,reason='select'){
- if(index<0||index>=levels.length)return;
+ if(index<0||index>=levels.length)return;pendingNext=undefined;
  measureActive();track('level_leave',{reason});interrupt();const n=restarted({...state,current:index});
  if(commit(n)){activeMs=0;hintRoute.clear();activateGame(reason);}
 }
-function restart(){const n=restarted(state);if(commit(n)){track('level_restart');measureActive();activeMs=0;interrupt();hintRoute.clear();activateGame('restart');message('Та же задача — новая попытка');}}
+function restart(){pendingNext=undefined;const n=restarted(state);if(commit(n)){track('level_restart');measureActive();activeMs=0;interrupt();hintRoute.clear();activateGame('restart');message('Та же задача — новая попытка');}}
 function drainQueue(){if(!queued)return;const q=queued;clearIntent();const m=moveFor(attempt(state).board,q.from,q.to,goalFor(state));if(m)accept(m,true);}
 function accept(m:Move,acknowledged=false){
  if(locked||blockers.size)return;
@@ -212,6 +214,7 @@ scene.onComplete=()=>{
  paint();message(guidance());drainQueue();
 };
 function undo(){
+ pendingNext=undefined;
  const a=attempt(state),m=a.history.at(-1);if(!m)return;const before=a.board,beforeKnowledge=knowledgeFor(state);
  interrupt();if(commit(undone(state))){track('undo');hintRoute.clear();kind='undo';lastMove=null;scene.setBoard(attempt(state).board);
   if(goalAt(goalFor(state),m.to)){scene.land(m.from,m.amount);scene.land(m.to,m.amount);}else scene.animate(before,{from:m.to,to:m.from,amount:m.amount,color:m.color},true,beforeKnowledge);
@@ -221,20 +224,32 @@ $('undo').onclick=undo;
 function askRestart(){audio.ui();modal('Начать заново?','Текущие ходы будут сброшены. Открытая дополнительная колба сохранится.',[{label:'Продолжить игру',primary:true,action:close},{label:'Начать заново',action:restart}]);}
 $('restart').onclick=askRestart;
 $('continue').onclick=()=>{void continueAfterWin();};
+/** A dismissed SDK screen and a resumed WebView are independent events, in either order. */
+function completePendingNext(){
+ const request=pendingNext;
+ if(!request||!request.ready||interstitialBusy||rewardBusy||recoveringRewards||locked||atHome||document.hidden||blockers.size)return;
+ if(levelKey(state.current)!==request.key||!won(attempt(state).board,goalFor(state))){pendingNext=undefined;return;}
+ // Consume before navigation: duplicate lifecycle events must never advance a second level.
+ pendingNext=undefined;
+ if(request.next===undefined)menu();else switchLevel(request.next,'next');
+}
 async function continueAfterWin(){
+ if(pendingNext){completePendingNext();return;}
  if(interstitialBusy||rewardBusy||recoveringRewards||locked||blockers.size||!won(attempt(state).board,goalFor(state)))return;
  audio.ui();const index=state.current,next=continuation(state),key=levelKey(index),now=Date.now();
  const tutorialDone=levels.slice(0,2).every(l=>state.completed.includes(l.id));
  let after=state.wallet!.adAfter??0,attemptAfter=state.wallet!.adAttemptAfter??0;
  if(after>now+60000||attemptAfter>now+60000){const n=structuredClone(state);n.wallet!.adAfter=after=Math.min(after,now+60000);n.wallet!.adAttemptAfter=attemptAfter=Math.min(attemptAfter,now+60000);n.revision++;if(!commit(n))return;}
- if(ads.native&&stageNumber(index)>2&&tutorialDone&&now>=after&&now>=attemptAfter){
-  const n=structuredClone(state);n.wallet!.adAttemptAfter=now+60000;n.revision++;if(!commit(n))return;
+ const showAd=ads.native&&stageNumber(index)>2&&tutorialDone&&now>=after&&now>=attemptAfter;
+ if(showAd){const n=structuredClone(state);n.wallet!.adAttemptAfter=now+60000;n.revision++;if(!commit(n))return;}
+ const request={key,next,ready:!showAd};pendingNext=request;
+ if(showAd){
   interstitialBusy=true;block('interstitial',true);track('interstitial_request');
-  try{const r=await ads.show();track('interstitial_result',{status:r.status});if(r.status==='shown'){const n=structuredClone(state);n.wallet!.adAfter=Date.now()+60000;n.revision++;commit(n);}}
-  finally{interstitialBusy=false;block('interstitial',false);}
+  try{const r=await ads.show();track('interstitial_result',{status:r.status},index);if(r.status==='shown'){const n=structuredClone(state);n.wallet!.adAfter=Date.now()+60000;n.revision++;commit(n);}}
+  catch{track('interstitial_result',{status:'failed'},index);}
+  finally{if(pendingNext===request)request.ready=true;interstitialBusy=false;block('interstitial',false);}
  }
- if(document.hidden||[...blockers].some(x=>x!=='native')||levelKey(state.current)!==key)return;
- if(next===undefined)menu();else switchLevel(next,'next');
+ completePendingNext();
 }
 
 function showHint(m:Move){const key=adviceKey(state),free=levels[state.current].colors<=2;const next=ownHint(state,key,m,free);if(!next){hintShop();return;}const spent=state.wallet!.hints-next.wallet!.hints;if(next!==state&&!commit(next))return;if(spent)track('hint_spent',{amount:spent,balance:state.wallet!.coins,hints:state.wallet!.hints});paint();track('hint_result',{status:'FOUND'});clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
@@ -346,8 +361,9 @@ let previousSize='';const observer=new ResizeObserver(()=>{
  const width=$('board').clientWidth,height=$('board').clientHeight,key=`${width}x${height}`;if(key===previousSize)return;previousSize=key;
  interrupt();scene.setViewport(width,height,density);game.scale.resize(Math.round(width*density),Math.round(height*density));paint();message(guidance());
 });observer.observe($('board'));
+function onNativeActivity(isActive:boolean){block('native',!isActive);if(isActive){message(guidance());ads.prepare();}}
 if(Capacitor.isNativePlatform()){
- void App.addListener('appStateChange',({isActive})=>{block('native',!isActive);if(isActive){message(guidance());ads.prepare();}});
+ void App.addListener('appStateChange',({isActive})=>onNativeActivity(isActive));
  void App.addListener('backButton',()=>{if(dialog.open)close();else if(!atHome)showHome();else void App.exitApp();});
 }
 block('home',true);message(guidance());
