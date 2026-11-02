@@ -1,0 +1,31 @@
+{
+  "productionBuild": true,
+  "distMatchesVerifiedAPK": true,
+  "source": "8fe0f711a76c3615914fc530d5de85592b78c2f2",
+  "bridge": "simulated Capacitor native headers and callbacks",
+  "realSDK": false,
+  "physicalDevice": false,
+  "results": [
+    {
+      "order": "dismiss-first",
+      "nextStage": 4,
+      "requests": 1,
+      "platform": "android",
+      "pageErrors": []
+    },
+    {
+      "order": "resume-first",
+      "nextStage": 4,
+      "requests": 1,
+      "platform": "android",
+      "pageErrors": []
+    },
+    {
+      "order": "failed-show",
+      "nextStage": 4,
+      "requests": 1,
+      "platform": "android",
+      "pageErrors": []
+    }
+  ]
+}

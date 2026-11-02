@@ -1,0 +1,102 @@
+{
+  "source": "8fe0f711a76c3615914fc530d5de85592b78c2f2",
+  "tree": "89c3a33339a564119d9e0f605cf5940f60ef31d2",
+  "run": 41460734288,
+  "job": 125328785173,
+  "artifact": 13149144088,
+  "digest": "sha256:368e79b3315a9e6532db3ee64948fd9c7392c357757fad66015ccbfec3faa32f",
+  "ciUrl": "https://github.com/DanilaH/watery-water-sort/actions/runs/41460734288",
+  "unitTests": 96,
+  "browserTests": 242,
+  "regressionsForThisBug": 11,
+  "independentOptimalPaths": 120,
+  "jvm": {
+    "tests": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "before": {
+    "source": "adc9741c5f496a18df702d1ffa0e53c6aefc604a",
+    "delayedHiddenResume": {
+      "expectedStage": 4,
+      "actualStage": 3,
+      "passed": false
+    }
+  },
+  "after": {
+    "allElevenRegressionCasesPassed": true,
+    "productionBridgeCases": 3,
+    "realSDKTested": false,
+    "physicalDeviceTested": false
+  },
+  "apk": {
+    "apk": "perelevy-0.43-ad-return.apk",
+    "bytes": 10879723,
+    "sha256": "13f94527c3891d279fe1a20f8716dce23dcd3d936ec9984e58a1ce1ad9305f6d",
+    "manifest": {
+      "versionCode": 43,
+      "versionName": "0.43.0-ad-return",
+      "compileSdkVersion": 36,
+      "compileSdkVersionCodename": "16",
+      "package": "com.danilah.waterywatersort.preview3",
+      "platformBuildVersionCode": 36,
+      "platformBuildVersionName": 16
+    },
+    "v2Signatures": [
+      {
+        "algorithm": "0x103",
+        "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+      }
+    ],
+    "publicPreviewCertificateMatches": true,
+    "tamperedProtectedByteRejected": true,
+    "distFilesMatched": [
+      "index.html",
+      "audio/material-report.json",
+      "audio/pour-2.ogg",
+      "audio/pour-1.ogg",
+      "audio/mix-report.json",
+      "audio/cork.ogg",
+      "audio/collect.ogg",
+      "audio/hint.ogg",
+      "audio/reject.ogg",
+      "audio/land.ogg",
+      "audio/complete.ogg",
+      "audio/victory.ogg",
+      "audio/accept.ogg",
+      "audio/select.ogg",
+      "audio/pour-3.ogg",
+      "fonts/OFL-Rubik.txt",
+      "fonts/rubik.woff",
+      "art/goal-crystal-shard-2.webp",
+      "art/goal-crystal-shard-0.webp",
+      "art/goal-crystal-shard-4.webp",
+      "art/goal-crystal-shard-3.webp",
+      "art/goal-crystal-shard-1.webp",
+      "art/goal-crystal-base.webp",
+      "art/goal-crystal.json",
+      "art/night-shore.svg",
+      "assets/index-DAYbax_C.js",
+      "assets/web-BMwiJ_fA.js",
+      "assets/phaser-DFK5Ua9d.js",
+      "assets/solver.worker-0nNA2AWJ.js",
+      "assets/index-49fLYnyc.css",
+      "art/glass/material-27.json",
+      "art/glass/tube-27.webp",
+      "art/glass/cork-27.webp",
+      "art/vfx/splash-5.webp",
+      "art/vfx/splash-2.webp",
+      "art/vfx/splash-3.webp",
+      "art/vfx/splash-4.webp",
+      "art/vfx/splash-0.webp",
+      "art/vfx/splash-1.webp",
+      "art/vfx/sprites.json",
+      "art/ui/button-blue-29.svg",
+      "art/ui/material-29.json",
+      "art/ui/star-gold-29.svg",
+      "art/ui/star-empty-29.svg",
+      "art/ui/button-gold-29.svg"
+    ]
+  }
+}
