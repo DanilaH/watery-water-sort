@@ -34,8 +34,11 @@ test('unavailable audio never delays accepting a move',async({page})=>{
 });
 
 test('manual selection cancels an in-flight hint without stealing input',async({page})=>{
- await page.route('**/solver.worker*',async route=>{await new Promise(resolve=>setTimeout(resolve,500));await route.continue().catch(()=>{});});await start(page,2);await page.locator('#hint').click();await tap(page,0,2);await page.waitForTimeout(650);await tap(page,3,2);
+ let release!:()=>void;const gate=new Promise<void>(resolve=>release=resolve);
+ await page.route('**/solver.worker*',async route=>{await gate;await route.continue().catch(()=>{});});
+ try{await start(page,2);await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Ищу продолжение');await tap(page,0,2);release();await expect(page.locator('#status')).toContainText('Выбери пустую');await tap(page,3,2);
  const source=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-003@1'].history.at(-1).from);expect(source).toBe(0);
+ }finally{release();}
 });
 
 test('dense field reserves one advertised slot outside the real board and keeps guidance quiet',async({page})=>{
