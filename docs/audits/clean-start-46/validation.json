@@ -1,0 +1,161 @@
+{
+  "source": "5c9e0b8dea05156aadf04255d52062e210942f89",
+  "sourceTree": "716693ab5fd7adaeb930a817fb1e5fdb56946925",
+  "ci": {
+    "run": 41496435936,
+    "url": "https://github.com/DanilaH/watery-water-sort/actions/runs/41496435936",
+    "conclusion": "success",
+    "requiredCheckJob": 125456268056,
+    "nativeJob": 125452517629,
+    "browserShards": [
+      {
+        "job": 125452517584,
+        "summaries": [
+          {
+            "passed": 85,
+            "duration": "3.7m"
+          }
+        ]
+      },
+      {
+        "job": 125452517604,
+        "summaries": [
+          {
+            "passed": 82,
+            "duration": "3.0m"
+          }
+        ]
+      },
+      {
+        "job": 125452518004,
+        "summaries": [
+          {
+            "passed": 84,
+            "duration": "5.6m"
+          },
+          {
+            "passed": 4,
+            "duration": "7.6s"
+          }
+        ]
+      }
+    ],
+    "devScenarios": 251,
+    "productionStartupScenarios": 4,
+    "browserTotal": 255,
+    "unitTests": 100,
+    "jvmTests": 15,
+    "nativeAdScenarios": 9,
+    "optimalPaths": 240
+  },
+  "artifact": {
+    "artifactId": 13166891598,
+    "zipBytes": 10185288,
+    "zipSHA256": "541bed4df135456480b44850ca5f3eb69f127381ee08c217a2794c3bfc9465be",
+    "zipCRC": true,
+    "apkBytes": 10882655,
+    "apkSHA256": "fe9ca99a0a76e8bd432cdf02f3984fd5fab1b989b4d389eae5243b5f09b205bd",
+    "jvmTests": [
+      {
+        "name": "com.danilah.waterywatersort.BannerGeometryTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.danilah.waterywatersort.RewardLedgerTest",
+        "tests": 7,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      {
+        "name": "com.getcapacitor.myapp.ExampleUnitTest",
+        "tests": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    ],
+    "webViewBackground": "#121e48",
+    "staticSkinAndBootGateInPackagedHTML": true
+  },
+  "apk": {
+    "apk": "perelevy-0.46-clean-start.apk",
+    "bytes": 10882655,
+    "sha256": "fe9ca99a0a76e8bd432cdf02f3984fd5fab1b989b4d389eae5243b5f09b205bd",
+    "manifest": {
+      "versionCode": 46,
+      "versionName": "0.46.0-clean-start",
+      "compileSdkVersion": 36,
+      "compileSdkVersionCodename": "16",
+      "package": "com.danilah.waterywatersort.preview3",
+      "platformBuildVersionCode": 36,
+      "platformBuildVersionName": 16
+    },
+    "v2Signatures": [
+      {
+        "algorithm": "0x103",
+        "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+      }
+    ],
+    "publicPreviewCertificateMatches": true,
+    "tamperedProtectedByteRejected": true,
+    "distFilesMatched": [
+      "index.html",
+      "audio/material-report.json",
+      "audio/pour-2.ogg",
+      "audio/pour-1.ogg",
+      "audio/mix-report.json",
+      "audio/cork.ogg",
+      "audio/collect.ogg",
+      "audio/hint.ogg",
+      "audio/reject.ogg",
+      "audio/land.ogg",
+      "audio/complete.ogg",
+      "audio/victory.ogg",
+      "audio/accept.ogg",
+      "audio/select.ogg",
+      "audio/pour-3.ogg",
+      "fonts/OFL-Rubik.txt",
+      "fonts/rubik.woff",
+      "art/goal-crystal-shard-2.webp",
+      "art/goal-crystal-shard-0.webp",
+      "art/goal-crystal-shard-4.webp",
+      "art/goal-crystal-shard-3.webp",
+      "art/goal-crystal-shard-1.webp",
+      "art/goal-crystal-base.webp",
+      "art/goal-crystal.json",
+      "art/night-shore.svg",
+      "assets/index-y9Bo2f3B.js",
+      "assets/web-CbCu9KH1.js",
+      "assets/solver.worker-mwOyOevU.js",
+      "assets/phaser-DFK5Ua9d.js",
+      "assets/index-Bq3p57Wn.css",
+      "art/glass/material-27.json",
+      "art/glass/tube-27.webp",
+      "art/glass/cork-27.webp",
+      "art/vfx/splash-5.webp",
+      "art/vfx/splash-2.webp",
+      "art/vfx/splash-3.webp",
+      "art/vfx/splash-4.webp",
+      "art/vfx/splash-0.webp",
+      "art/vfx/splash-1.webp",
+      "art/vfx/sprites.json",
+      "art/ui/button-blue-29.svg",
+      "art/ui/material-29.json",
+      "art/ui/star-gold-29.svg",
+      "art/ui/star-empty-29.svg",
+      "art/ui/button-gold-29.svg"
+    ]
+  },
+  "physicalColdStartTested": false,
+  "startupChecks": [
+    "blocked JavaScript keeps HTML hidden/inert with final classes present",
+    "delayed button image never exposes legacy green style",
+    "failed image/font uses visible functional fallback controls",
+    "stalled image uses bounded fallback and does not reskin later"
+  ],
+  "startupBudgetAfterControllerMs": 2000
+}
