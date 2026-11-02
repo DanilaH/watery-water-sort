@@ -1,5 +1,5 @@
 import {test,expect,type Page} from '@playwright/test';
-import {fresh,levels,moved,displaySlots} from '../../src/core/session';
+import {fresh,levels,moved,displaySlots,attempt} from '../../src/core/session';
 import {layout,goalLayout} from '../../src/game/geometry';
 async function prepare(page:Page,last=true,index=0){
  let s={...fresh(),current:index};if(last)for(const m of levels[index].witness.slice(0,-1))s=moved(s,m);s.settings.sound=false;
@@ -48,8 +48,8 @@ test('entrance reaches its resting slot even after a long first frame',async({pa
  expect(data.first).toBeGreaterThan(data.rest+5);expect(data.last).toBeCloseTo(data.rest,3);
 });
 
-test('goal words and star conditions fit above controls on a small phone',async({page})=>{
+test('visible goal colour and star conditions fit above controls on a small phone',async({page})=>{
  await page.setViewportSize({width:320,height:480});await prepare(page,false,12);
  const data=await page.evaluate(()=>{const b=document.getElementById('star-target')!.getBoundingClientRect(),n=document.getElementById('undo')!.getBoundingClientRect();return {bottom:b.bottom,controls:n.y};});
- expect(data.bottom).toBeLessThanOrEqual(data.controls);await expect(page.locator('#objective')).toContainText('голубую жидкость');
+ expect(data.bottom).toBeLessThanOrEqual(data.controls);await expect(page.locator('#objective')).toBeHidden();await expect(page.locator('#board')).toHaveAttribute('aria-label',/голубой/);const s=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));expect(attempt(s).board[0]).toEqual([0,0]);await expect(page.locator('#moves')).toHaveText('Ходов: 0');
 });
