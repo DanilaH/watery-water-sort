@@ -1,0 +1,135 @@
+{
+  "source": "f75e2bca1d1e8f402a935009f6cd137f3597f6f8",
+  "gameSource": "680d18e1ec5bf18ed5adf3a129d197ceddc028f0",
+  "runId": 41506066897,
+  "jobs": [
+    {
+      "id": 125485573590,
+      "name": "native",
+      "conclusion": "success"
+    },
+    {
+      "id": 125485573653,
+      "name": "browser (1)",
+      "conclusion": "success"
+    },
+    {
+      "id": 125485573905,
+      "name": "browser (2)",
+      "conclusion": "success"
+    },
+    {
+      "id": 125485573948,
+      "name": "browser (3)",
+      "conclusion": "success"
+    },
+    {
+      "id": 125489270874,
+      "name": "check",
+      "conclusion": "success"
+    }
+  ],
+  "unit": 105,
+  "authoredPreparedHistoricalAndCurrentPaths": 480,
+  "browserDevelopment": 256,
+  "browserProduction": 4,
+  "jvm": 15,
+  "nativePluginScenarios": 9,
+  "regressionBaselineReproduced": true,
+  "apkVerification": {
+    "apk": "perelevy-0.47-campaign-balance.apk",
+    "bytes": 10900487,
+    "sha256": "d0094407952b064c81d87fd9075794b5f901fcf7009011bc1138bdb456f4f66e",
+    "manifest": {
+      "versionCode": 47,
+      "versionName": "0.47.0-campaign-balance",
+      "compileSdkVersion": 36,
+      "compileSdkVersionCodename": "16",
+      "package": "com.danilah.waterywatersort.preview3",
+      "platformBuildVersionCode": 36,
+      "platformBuildVersionName": 16
+    },
+    "v2Signatures": [
+      {
+        "algorithm": "0x103",
+        "certificateSha256": "c429d185d4bd6f5d6027b62668c6f40d0a44a5ab919b60c51f588f985f62a373"
+      }
+    ],
+    "publicPreviewCertificateMatches": true,
+    "tamperedProtectedByteRejected": true,
+    "distFilesMatched": [
+      "index.html",
+      "audio/material-report.json",
+      "audio/pour-2.ogg",
+      "audio/pour-1.ogg",
+      "audio/mix-report.json",
+      "audio/cork.ogg",
+      "audio/collect.ogg",
+      "audio/hint.ogg",
+      "audio/reject.ogg",
+      "audio/land.ogg",
+      "audio/complete.ogg",
+      "audio/victory.ogg",
+      "audio/accept.ogg",
+      "audio/select.ogg",
+      "audio/pour-3.ogg",
+      "fonts/OFL-Rubik.txt",
+      "fonts/rubik.woff",
+      "art/goal-crystal-shard-2.webp",
+      "art/goal-crystal-shard-0.webp",
+      "art/goal-crystal-shard-4.webp",
+      "art/goal-crystal-shard-3.webp",
+      "art/goal-crystal-shard-1.webp",
+      "art/goal-crystal-base.webp",
+      "art/goal-crystal.json",
+      "art/night-shore.svg",
+      "assets/web-CchOvnpW.js",
+      "assets/solver.worker-B7cdEpmc.js",
+      "assets/phaser-DFK5Ua9d.js",
+      "assets/index-Bq3p57Wn.css",
+      "assets/index-D9Mal6KA.js",
+      "art/glass/material-27.json",
+      "art/glass/tube-27.webp",
+      "art/glass/cork-27.webp",
+      "art/vfx/splash-5.webp",
+      "art/vfx/splash-2.webp",
+      "art/vfx/splash-3.webp",
+      "art/vfx/splash-4.webp",
+      "art/vfx/splash-0.webp",
+      "art/vfx/splash-1.webp",
+      "art/vfx/sprites.json",
+      "art/ui/button-blue-29.svg",
+      "art/ui/material-29.json",
+      "art/ui/star-gold-29.svg",
+      "art/ui/star-empty-29.svg",
+      "art/ui/button-gold-29.svg"
+    ]
+  },
+  "artifact": {
+    "id": 13171460853,
+    "zipBytes": 10202210,
+    "sha256": "f267699a442722c28920401b88c76427286f7f00f573a3ddc1156d581f69df62",
+    "crcChecked": true
+  },
+  "browserShards": [
+    {
+      "job": 125485573653,
+      "development": 89,
+      "production": 4
+    },
+    {
+      "job": 125485573905,
+      "development": 82
+    },
+    {
+      "job": 125485573948,
+      "development": 85
+    }
+  ],
+  "physicalPhoneTested": false,
+  "knownLimitations": [
+    "Human difficulty and hint demand still require playtest.",
+    "Stages 22-60 retain their previous layouts in this package.",
+    "Initial CI geometry test exceeded 5s; all identical poses and four bounds remain checked with lower assertion overhead. Runtime unchanged."
+  ]
+}
