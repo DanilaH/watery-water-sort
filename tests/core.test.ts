@@ -60,7 +60,7 @@ describe('polished field geometry',()=>{
  });
  it('keeps the moving silhouette inside the field on every source/target pair',()=>{
   for(const [w,h]of [[296,294],[366,542],[456,161],[720,730]])for(const count of [5,6,7,8,9,10,11]){
-   const p=layout(w,h,count);for(let i=0;i<p.length;i++)for(let j=0;j<p.length;j++){if(i===j)continue;const plan=planPour(p[i],p[j],w,h);for(let n=0;n<=24;n++){const r=pourPose(p[i],p[j],n/24,w,h,-17,plan),b=bounds(r,r.angle);expect(b.left).toBeGreaterThanOrEqual(4.99);expect(b.top).toBeGreaterThanOrEqual(4.99);expect(b.right).toBeLessThanOrEqual(w-4.99);expect(b.bottom).toBeLessThanOrEqual(h-4.99);}}
+   const p=layout(w,h,count);for(let i=0;i<p.length;i++)for(let j=0;j<p.length;j++){if(i===j)continue;const plan=planPour(p[i],p[j],w,h);for(let n=0;n<=24;n++){const r=pourPose(p[i],p[j],n/24,w,h,-17,plan),b=bounds(r,r.angle);if(!(b.left>=4.99&&b.top>=4.99&&b.right<=w-4.99&&b.bottom<=h-4.99))throw Error(JSON.stringify({w,h,count,from:i,to:j,frame:n,bounds:b}));}}
   }
  });
 });
