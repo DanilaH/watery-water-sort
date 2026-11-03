@@ -1,0 +1,6 @@
+/* Opacity changes keep final hit targets and layout fixed throughout entry. */
+body[data-startup-ready] #home{animation:menu-arrive53 360ms cubic-bezier(.2,.7,.3,1) both}
+body:not(.home) #app{animation:field-arrive53 420ms cubic-bezier(.2,.7,.3,1) both}
+@keyframes menu-arrive53{from{opacity:0}to{opacity:1}}
+@keyframes field-arrive53{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){body[data-startup-ready] #home,body:not(.home) #app{animation:none!important}}

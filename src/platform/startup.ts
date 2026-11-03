@@ -15,5 +15,14 @@ export async function revealStartup(heroReady:Promise<unknown>){
  await Promise.race([Promise.allSettled(work),new Promise<void>(resolve=>{deadline=setTimeout(resolve,2000);})]);
  clearTimeout(deadline);
  for(const name of ['blue','gold','star','font'])if(!loaded.has(name))document.body.setAttribute(`data-${name}-fallback`,'');
+ // Give decoded fonts and final DOM geometry a paint opportunity before reveal.
+ // A backgrounded WebView need not run RAF, so this settlement is bounded too.
+ await new Promise<void>(resolve=>{
+  let first=0,second=0;
+  const finish=()=>{clearTimeout(timer);cancelAnimationFrame(first);cancelAnimationFrame(second);resolve();};
+  const timer=setTimeout(finish,120);
+  first=requestAnimationFrame(()=>{second=requestAnimationFrame(finish);});
+ });
+ document.body.setAttribute('data-startup-ready','');
  document.body.removeAttribute('data-booting');document.body.inert=false;
 }

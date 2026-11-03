@@ -19,6 +19,7 @@ import './finish30.css';
 import './ambient32.css';
 import './economy42.css';
 import './play48.css';
+import './entry53.css';
 import {mountAmbient} from './game/Ambient';
 import {mountHomeHero} from './game/HomeHero';
 import { Sound } from './audio/sound';
@@ -57,6 +58,7 @@ const density=Math.min(3,Math.max(2,devicePixelRatio));
 scene.setViewport($('board').clientWidth,$('board').clientHeight,density);
 const game=new Phaser.Game({input:{touch:{capture:false}},type:Phaser.AUTO,parent:'board',transparent:true,antialias:true,scale:{mode:Phaser.Scale.NONE,width:Math.round($('board').clientWidth*density),height:Math.round($('board').clientHeight*density)},scene:[scene],audio:{noAudio:true}});
 let previousSize='';
+let entryRequest:string|undefined;
 let mixActive=false,assistFrame=0,assistRequestId=0;
 let assistWorker:Worker|undefined,assistTimer:ReturnType<typeof setTimeout>|undefined;
 let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,lastMove:Move|null=null,kind:'pour'|'undo'='pour',newColor=false,pendingIce:number|null=null,pendingReveal=false;
@@ -89,8 +91,8 @@ function cancelSearch(){worker?.terminate();worker=undefined;requestId++;searchi
 function clearIntent(){queued=null;scene.queuedMove=null;scene.selected=null;scene.hintMove=null;}
 function interrupt(){mixActive=false;cancelAnimationFrame(assistFrame);$('board').classList.remove('mixing48');$('board').querySelectorAll('.shuffle-veil').forEach(e=>e.remove());if(assistWorker&&dialog.open){const h=content.querySelector('h2');if(h)h.textContent='Перемешивание отменено';const p=content.querySelector('.dialog-body p');if(p)p.textContent='Заряд сохранён.';}cancelAssist();pendingReveal=false;pendingIce=null;reward.cancel();coinReward.cancel();$('earned-coins').hidden=true;pendingCoins=0;pendingStars=undefined;scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
 function syncLoop(){document.body.dataset.gamePaused=String(blockers.size>0);if(!scene.ready)return;if(blockers.size)game.loop.sleep();else game.loop.wake();}
-scene.onReady=syncLoop;
-function block(reason:string,on:boolean){measureActive();if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();syncLoop();syncActive();if(!on)completePendingNext();}
+scene.onReady=()=>{paint();if(!completeEntry())syncLoop();};
+function block(reason:string,on:boolean){measureActive();if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();syncLoop();syncActive();if(!on){completePendingNext();completeEntry();}}
 function commit(next:Save){try{next=settleEconomy(next);store.write(next);state=next;recoveryNotice='';$('home-error').hidden=true;return true;}catch{track('save_error');paint();const error='Не удалось сохранить. Изменение не принято — попробуй ещё раз.';message(error,true);if(atHome&&!dialog.open){$('home-error').textContent=error;$('home-error').hidden=false;}if(dialog.open){const body=content.querySelector('.dialog-body');let note=body?.querySelector<HTMLElement>('[role=alert]');if(body&&!note){note=document.createElement('p');note.setAttribute('role','alert');body.prepend(note);}if(note)note.textContent=error;if(body)body.scrollTop=0;}return false;}}
 function paint(){
  const a=attempt(state),finished=won(a.board,goalFor(state))&&!scene.busy;
@@ -98,8 +100,9 @@ function paint(){
  homeHero?.setActive(atHome&&![...blockers].some(x=>x!=='home')&&!document.hidden,reduced.matches);
  ambient.setActive(!document.hidden&&![...blockers].some(x=>x!=='home')&&!reduced.matches);
  $('app').setAttribute('aria-hidden',String(atHome));
- $('home-play').textContent=hasStarted()?'Продолжить':'Играть';
- $('home-summary').textContent=hasStarted()?`Уровень ${stageNumber(state.current)}`:'Собери каждый цвет в свою колбу';
+ $('home-play').textContent=entryRequest!==undefined?'Подготавливаем…':hasStarted()?'Продолжить':'Играть';
+ $<HTMLButtonElement>('home-play').disabled=entryRequest!==undefined;$('home-play').setAttribute('aria-busy',String(entryRequest!==undefined));
+ if(entryRequest===undefined)$('home-summary').textContent=hasStarted()?`Уровень ${stageNumber(state.current)}`:'Собери каждый цвет в свою колбу';
  const theme=themeFor(state.settings);document.body.dataset.theme=theme.id;
  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content=theme.color;
  scene.reduced=reduced.matches;scene.setKnowledge(knowledgeFor(state));touch.enabled=state.settings.haptics!==false;reward.setTotal(totalStars(state),pendingStars?.before);
@@ -110,7 +113,7 @@ function paint(){
  const adsAllowed=!atHome&&!blockers.size&&stageNumber(state.current)>2&&!document.hidden;document.body.classList.toggle('with-banner',ads.native&&stageNumber(state.current)>2);ads.banner(adsAllowed);
  $('star-capacity').textContent=`/ ${levels.length*3}`;
  $('hard-badge').hidden=!isHard(state.current);$('home-challenge').hidden=!isHard(state.current);$('home-play').classList.toggle('hard-level',isHard(state.current));
- scene.lockedExtra=false;scene.goal=goalFor(state);scene.slots=displaySlots(state);syncField();scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=theme.light;audio.setEnabled(state.settings.sound);
+ scene.lockedExtra=false;scene.goal=goalFor(state);scene.slots=displaySlots(state);scene.setBoard(a.board);scene.symbols=state.settings.symbols;scene.light=theme.light;audio.setEnabled(state.settings.sound);
  document.body.classList.toggle('packed-board',displaySlots(state)>=10);document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',displaySlots(state)>10);document.body.classList.toggle('goal-board',goalList(goalFor(state)).length>0);document.body.classList.toggle('light',theme.light);document.body.classList.toggle('finished',finished);
  $('level-title').innerHTML=`<span>Уровень</span> <strong>${stageNumber(state.current)}</strong>`;$('moves').textContent=`Ходов: ${playerMoves(a)}`;
  ($('undo') as HTMLButtonElement).disabled=playerMoves(a)===0||mixActive||scene.arranging;
@@ -132,6 +135,8 @@ function paint(){
  $('continue').textContent=continuation(state)===undefined?'К уровням →':'Дальше →';
  $('finish-title').hidden=!finished;renderVictoryTitle($('finish-title'),continuation(state)===undefined?'Пройдено!':earned===3?'Идеально!':'Получилось!');
  if(finished)message('');
+ // Measure only after all layout classes, result controls and labels are final.
+ syncField();
 }
 function paintBoost(kind:Boost,count:number){
  const button=$(kind==='tube'?'extra-tube':'shuffle'),badge=$(kind==='tube'?'tube-count':'shuffle-count'),name=kind==='tube'?'колбы':'перемешивания',action=kind==='tube'?'Добавить колбу':'Перемешать';
@@ -143,7 +148,7 @@ function paintBoost(kind:Boost,count:number){
 function parkControls(){for(const id of ['menu','restart','hint','star-target','rescue'])$('park').append($(id));}
 function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;cancelAssist();dialog.close();parkControls();block('dialog',false);message(guidance());}
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
- pendingNext=undefined;
+ entryRequest=undefined;pendingNext=undefined;
  block('dialog',true);parkControls();content.replaceChildren();
  const header=document.createElement('header');header.className='dialog-header';
  const h=document.createElement('h2');h.textContent=title;h.tabIndex=-1;header.append(h);
@@ -154,8 +159,13 @@ function modal(title:string,description:string,buttons:{label:string;action:()=>
  for(const item of buttons){const b=document.createElement('button');b.textContent=item.label;b.className=item.primary?'primary gel-button gel-primary':'gel-button';b.onclick=()=>{audio.ui();item.action();};footer.append(b);}
  content.append(header,body,footer);if(!dialog.open)dialog.showModal();h.focus({preventScroll:true});return body;
 }
+function completeEntry(){
+ if(entryRequest===undefined||!scene.ready||document.hidden||[...blockers].some(b=>b!=='home'))return false;
+ const reason=entryRequest;entryRequest=undefined;activateGame(reason);return true;
+}
 function activateGame(reason='resume'){
- atHome=false;dialog.close();parkControls();blockers.delete('dialog');blockers.delete('home');
+ if(!scene.ready){entryRequest=reason;atHome=true;dialog.close();parkControls();blockers.delete('dialog');block('home',true);return;}
+ entryRequest=undefined;atHome=false;dialog.close();parkControls();blockers.delete('dialog');blockers.delete('home');
  audio.block(blockers.size>0);paint();scene.reveal();message(guidance());$('settings').focus({preventScroll:true});$('hard-badge').classList.remove('challenge-enter');if(isHard(state.current)){void $('hard-badge').offsetWidth;$('hard-badge').classList.add('challenge-enter');}syncLoop();syncActive();if(stageNumber(state.current)>2)ads.prepare();track(playerMoves(attempt(state))?'level_resume':'level_start',{reason});
 }
 function resumeGame(){
@@ -165,7 +175,7 @@ function resumeGame(){
  audio.ui();activateGame();
 }
 function showHome(){
- if(locked)return;pendingNext=undefined;
+ if(locked)return;entryRequest=undefined;pendingNext=undefined;
  track('level_leave',{reason:'home'});measureActive();activeMs=0;atHome=true;dialog.close();parkControls();blockers.delete('dialog');block('home',true);message(guidance());$('home-play').focus({preventScroll:true});
 }
 function switchLevel(index:number,reason='select'){
@@ -372,7 +382,7 @@ function syncField(){if(!game)return;const width=$('board').clientWidth,visible=
  $('board').style.setProperty('--field-height',height+'px');$('board').classList.toggle('scroll-field',height>visible+1);if(key===previousSize)return;previousSize=key;
  scene.setViewport(width,height,density);game.scale.resize(Math.round(width*density),Math.round(height*density));
 }
-let previousWindow=`${innerWidth}x${innerHeight}`;const observer=new ResizeObserver(()=>{const size=`${innerWidth}x${innerHeight}`;if(size!==previousWindow){previousWindow=size;interrupt();}syncField();paint();});observer.observe($('board'));
+let previousWindow=`${innerWidth}x${innerHeight}`;const observer=new ResizeObserver(()=>{const size=`${innerWidth}x${innerHeight}`;if(size!==previousWindow){previousWindow=size;interrupt();}paint();});observer.observe($('board'));
 function onNativeActivity(isActive:boolean){block('native',!isActive);if(isActive){message(guidance());ads.prepare();}}
 if(Capacitor.isNativePlatform()){
  void App.addListener('appStateChange',({isActive})=>onNativeActivity(isActive));
