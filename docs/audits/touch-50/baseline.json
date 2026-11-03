@@ -1,0 +1,14 @@
+{
+  "source": "73e685db73adb3e47e68e48d85eef2e8634e087e",
+  "method": "Real Playwright touchscreen.tap in mobile Chromium, 390x844, DPR 2",
+  "observedEvents": [
+    "onTap(0)",
+    "touchstart",
+    "touchend",
+    "onTap(0)",
+    "mousedown",
+    "mouseup"
+  ],
+  "selectedAfterTap": null,
+  "duplicateReproduced": true
+}
