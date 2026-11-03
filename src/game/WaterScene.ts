@@ -102,10 +102,18 @@ export class WaterScene extends Phaser.Scene {
     this.crystalShards=Array.from({length:5},(_,i)=>{const shard=this.add.image(0,0,`goal-crystal-shard-${i}`).setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(shard);return shard;});this.root.sort('depth');
     this.secondCrystalBase=this.add.image(0,0,'goal-crystal-base').setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(this.secondCrystalBase);
     this.secondCrystalShards=Array.from({length:5},(_,i)=>{const shard=this.add.image(0,0,`goal-crystal-shard-${i}`).setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(shard);return shard;});this.root.sort('depth');
-    let scrollTap:{x:number;y:number;scroll:number}|undefined;
-    this.input.on('pointerup',(p:Phaser.Input.Pointer)=>{if(!scrollTap)return;const a=scrollTap;scrollTap=undefined;const el=this.game.canvas.parentElement!;if(Math.hypot(p.x-a.x,p.y-a.y)<10&&Math.abs(el.scrollTop-a.scroll)<5)this.onTap(this.hitTube(p.x/this.density,p.y/this.density));});
+    let scrollTap:{id:number;x:number;y:number;scroll:number}|undefined,lastTouchAt=-Infinity;
+    // Passive touch input keeps native scrolling. Browsers may then synthesize
+    // mouse events for that same tap: accepting both immediately deselects it.
+    const duplicateMouse=(p:Phaser.Input.Pointer)=>{
+      if(p.wasTouch){lastTouchAt=performance.now();return false;}
+      const source=(p.event as MouseEvent&{sourceCapabilities?:{firesTouchEvents:boolean}|null}).sourceCapabilities;
+      return source?source.firesTouchEvents:performance.now()-lastTouchAt<800;
+    };
+    this.input.on('pointerup',(p:Phaser.Input.Pointer)=>{if(duplicateMouse(p)||!scrollTap||scrollTap.id!==p.id)return;const a=scrollTap;scrollTap=undefined;const el=this.game.canvas.parentElement!;if(Math.hypot(p.x/this.density-a.x,p.y/this.density-a.y)<10&&Math.abs(el.scrollTop-a.scroll)<5)this.onTap(this.hitTube(p.x/this.density,p.y/this.density));});
+    this.input.on('pointerupoutside',()=>{scrollTap=undefined;});
     this.input.on('pointerdown',(p:Phaser.Input.Pointer)=>{
-      if(!p.primaryDown)return;const el=this.game.canvas.parentElement!;if(el.classList.contains('scroll-field')){scrollTap={x:p.x,y:p.y,scroll:el.scrollTop};return;}
+      if(!p.primaryDown||duplicateMouse(p))return;const el=this.game.canvas.parentElement!;if(el.classList.contains('scroll-field')){scrollTap={id:p.id,x:p.x/this.density,y:p.y/this.density,scroll:el.scrollTop};return;}
       this.onTap(this.hitTube(p.x/this.density,p.y/this.density));
     });this.ready=true;this.onReady();
   }
