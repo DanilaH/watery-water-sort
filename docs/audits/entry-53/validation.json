@@ -1,0 +1,60 @@
+{
+  "source": "4ca4b47179469a6e11722534b527e15292cd47d5",
+  "runId": 41639067903,
+  "runUrl": "https://github.com/DanilaH/watery-water-sort/actions/runs/41639067903",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 125932444224,
+      "name": "browser (1)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125932446094,
+      "name": "browser (3)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125932446525,
+      "name": "native",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125932447273,
+      "name": "browser (2)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125936257705,
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "developmentBrowserTests": 283,
+  "productionStartupTests": 4,
+  "unitTests": 111,
+  "jvmTests": 16,
+  "nativeControlFlowScenarios": 9,
+  "historicalAndCurrentProofPaths": 480,
+  "newEntryTests": 6,
+  "localEntryAndTouchTests": 11,
+  "localEntryAndInputTests": 21,
+  "localEconomyAndBoostTests": 23,
+  "rerun": {
+    "sourceUnchanged": true,
+    "initialPassed": 282,
+    "initialFailure": "feel.spec.ts: incoming liquid reacts during the real flow; hint was disabled after controlled 800ms",
+    "isolatedPasses": 11,
+    "failedShardRerunPassed": true,
+    "causeOfSingleFailureNotEstablished": true
+  },
+  "apk": "apk.json",
+  "android": "android.json",
+  "video": "video.json",
+  "physicalDeviceTested": false
+}

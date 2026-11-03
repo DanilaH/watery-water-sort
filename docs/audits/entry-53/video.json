@@ -1,0 +1,15 @@
+{
+  "method": "Real browser recording of final source, seeded QA save, not actual player progress",
+  "source": "4ca4b47179469a6e11722534b527e15292cd47d5",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "dpr": 2,
+  "videoResolution": {
+    "width": 390,
+    "height": 844
+  },
+  "sound": false,
+  "initialBrowserBlankTrimSeconds": 0.4
+}

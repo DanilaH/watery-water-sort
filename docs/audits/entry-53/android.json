@@ -1,0 +1,44 @@
+{
+  "debug": {
+    "package": "com.danilah.waterywatersort.preview3",
+    "application": "com.danilah.waterywatersort.WaterApplication",
+    "debuggable": "true",
+    "permissions": [
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.INTERNET",
+      "android.permission.VIBRATE",
+      "com.danilah.waterywatersort.preview3.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+      "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE",
+      "com.google.android.gms.permission.AD_ID"
+    ]
+  },
+  "release": {
+    "package": "com.danilah.waterywatersort",
+    "application": "com.danilah.waterywatersort.WaterApplication",
+    "debuggable": "false",
+    "permissions": [
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.INTERNET",
+      "android.permission.VIBRATE",
+      "com.danilah.waterywatersort.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+      "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE",
+      "com.google.android.gms.permission.AD_ID"
+    ]
+  },
+  "previewCustomAnalyticsEnabled": false,
+  "previewRewardedUsesDemo": true,
+  "previewBannerUsesDemo": true,
+  "previewInterstitialUsesDemo": true,
+  "jvm": {
+    "tests": 16,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "missingIDsRejected": true,
+  "missingProductionSigningRejected": true,
+  "publicPreviewKeyRejectedEvenOnDirectPackageTask": true,
+  "productionPackageCreated": false,
+  "physicalDeviceTested": false,
+  "liveRewardedTested": false
+}
