@@ -16,7 +16,7 @@ export class Ads{
   try{const r=this.slot.getBoundingClientRect();const geometry=`${innerWidth}x${innerHeight}:${r.width}`;const geometryChanged=geometry!==this.geometry;if(geometryChanged){this.geometry=geometry;this.reserved=0;}const result=await native.banner({visible:this.visible&&!document.hidden,slot:{x:r.x,y:r.y,width:r.width,height:r.height},viewport:{width:innerWidth,height:innerHeight}});
    if(epoch===this.epoch&&result.heightCss&&Number.isFinite(result.heightCss)){// Never shrink a fitted slot on ordinary callbacks: fractional native edge rounding can otherwise oscillate by one CSS pixel.
    if(this.visible&&result.status==='placed'&&!geometryChanged){this.reserved=Math.max(this.reserved,r.height);return;}
-   const height=Math.max(this.reserved,Math.ceil(result.heightCss),Math.ceil(r.height));this.reserved=height;if(height>=1&&height<innerHeight/2&&this.slot.style.getPropertyValue('--banner-height')!==height+'px'){this.slot.style.setProperty('--banner-height',height+'px');document.getElementById('app')!.style.setProperty('--banner-height',height+'px');this.again=true;}}
+   const height=Math.max(this.reserved,Math.ceil(result.heightCss));this.reserved=height;if(height>=1&&height<innerHeight/2&&this.slot.style.getPropertyValue('--banner-height')!==height+'px'){this.slot.style.setProperty('--banner-height',height+'px');document.getElementById('app')!.style.setProperty('--banner-height',height+'px');this.again=true;}}
   }catch{/* Native/no-fill never blocks the game. */}finally{this.busy=false;if(this.again){this.again=false;this.schedule();}}
  }
 }
