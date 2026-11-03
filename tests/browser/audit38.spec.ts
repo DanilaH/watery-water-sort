@@ -41,7 +41,9 @@ test('a reveal redraws only affected vessels while unchanged neighbours retain m
 });
 
 test('repeated home/settings cycles retain one canvas and bounded pools',async({page})=>{
- test.setTimeout(60000);await open(page,37);const stats=()=>page.evaluate(()=>{const s=(window as any).auditScene;return {canvas:document.querySelectorAll('canvas').length,labels:s.labels.length+s.activeLabels.length,glass:s.glass.tubes.size,events:s.input.listenerCount('pointerdown')};});const before=await stats();
+ // Twenty real pointer cycles now include the pause menu on every trip home.
+ // Keep every cycle and its animation/actionability checks on slower CI runners.
+ test.setTimeout(120000);await open(page,37);const stats=()=>page.evaluate(()=>{const s=(window as any).auditScene;return {canvas:document.querySelectorAll('canvas').length,labels:s.labels.length+s.activeLabels.length,glass:s.glass.tubes.size,events:s.input.listenerCount('pointerdown')};});const before=await stats();
  for(let i=0;i<20;i++){await home48(page);await page.locator('#home-play').click();await page.locator('#settings').click();await page.getByRole('button',{name:'Готово',exact:true}).click();}
  await page.waitForTimeout(350);expect(await stats()).toEqual(before);
 });
