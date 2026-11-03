@@ -1,0 +1,37 @@
+{
+  "method": "Real browser screenshots of seeded QA states, not generated artwork or actual player progress.",
+  "cases": [
+    {
+      "name": "before-18",
+      "index": 6,
+      "width": 390,
+      "height": 844,
+      "extras": 0,
+      "errors": []
+    },
+    {
+      "name": "play48-18",
+      "index": 6,
+      "width": 390,
+      "height": 844,
+      "extras": 0,
+      "errors": []
+    },
+    {
+      "name": "play48-goals",
+      "index": 59,
+      "width": 390,
+      "height": 844,
+      "extras": 3,
+      "errors": []
+    },
+    {
+      "name": "play48-landscape",
+      "index": 59,
+      "width": 568,
+      "height": 320,
+      "extras": 3,
+      "errors": []
+    }
+  ]
+}

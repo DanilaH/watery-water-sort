@@ -1,0 +1,66 @@
+{
+  "source": "aa437957760655123e006e2a01e613eba040c2b0",
+  "testedRevision": "faeabdfa07cb76f3f5b237c081fffd668ed51a96",
+  "runId": 41602849668,
+  "runUrl": "https://github.com/DanilaH/watery-water-sort/actions/runs/41602849668",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 125805465457,
+      "name": "native",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125805465576,
+      "name": "browser (3)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125805465701,
+      "name": "browser (1)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125805465801,
+      "name": "browser (2)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125807828395,
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "unitTests": 111,
+  "developmentBrowserTests": 266,
+  "productionStartupTests": 4,
+  "browserShards": [
+    99,
+    79,
+    88
+  ],
+  "historicalAndCurrentProofPaths": 480,
+  "nativeControlFlowScenarios": 9,
+  "baseline044DefectReproduced": true,
+  "jvmTests": 16,
+  "jvmFailures": 0,
+  "jvmErrors": 0,
+  "resourceStress": {
+    "cycles": 20,
+    "ciSeconds": 57.9,
+    "localSeconds": 30.6,
+    "timeoutSeconds": 120,
+    "boundedResources": true,
+    "note": "Initial full run had 265/266 browser scenarios pass; resource stress reached its old 60-second overall limit. All 20 real pointer cycles and assertions retained; final full run passed."
+  },
+  "apkProof": "apk.json",
+  "androidAudit": "android.json",
+  "screenshots": "screenshots.json",
+  "physicalDeviceTested": false,
+  "liveAdSdkDeviceTested": false
+}
