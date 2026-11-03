@@ -1,0 +1,50 @@
+{
+  "source": "2dba725b434b85fe6a12a37b4ba160ef9b155ebe",
+  "runId": 41609176646,
+  "runUrl": "https://github.com/DanilaH/watery-water-sort/actions/runs/41609176646",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 125826456816,
+      "name": "native",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125826457186,
+      "name": "browser (2)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125826457248,
+      "name": "browser (1)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125826457283,
+      "name": "browser (3)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125829119149,
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "localTargetedBrowserTests": 22,
+  "developmentBrowserTests": 266,
+  "productionStartupTests": 4,
+  "unitTests": 111,
+  "jvmTests": 16,
+  "nativeControlFlowScenarios": 9,
+  "historicalAndCurrentProofPaths": 480,
+  "manualLayoutCases": 16,
+  "layout": "layout.json",
+  "apk": "apk.json",
+  "android": "android.json",
+  "physicalDeviceTested": false
+}

@@ -1,0 +1,982 @@
+{
+  "source": "2dba725b434b85fe6a12a37b4ba160ef9b155ebe",
+  "method": "Real browser geometry and computed style checks on seeded QA states; no actual player progress.",
+  "cases": [
+    {
+      "w": 320,
+      "h": 480,
+      "theme": "blue",
+      "coins": 0,
+      "wallet": {
+        "x": 16,
+        "y": 12,
+        "right": 84,
+        "bottom": 60,
+        "width": 68,
+        "height": 48
+      },
+      "level": {
+        "x": 118.5,
+        "y": 16.359375,
+        "right": 219.5,
+        "bottom": 55.640625,
+        "width": 101,
+        "height": 39.28125
+      },
+      "settings": {
+        "x": 254,
+        "y": 11,
+        "right": 304,
+        "bottom": 61,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 25,
+          "y": 26,
+          "right": 45,
+          "bottom": 46,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 49,
+          "y": 26.5,
+          "right": 60,
+          "bottom": 45.5,
+          "width": 11,
+          "height": 19
+        },
+        {
+          "x": 64,
+          "y": 25,
+          "right": 75,
+          "bottom": 47,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 320,
+      "h": 480,
+      "theme": "blue",
+      "coins": 420,
+      "wallet": {
+        "x": 16,
+        "y": 12,
+        "right": 103,
+        "bottom": 60,
+        "width": 87,
+        "height": 48
+      },
+      "level": {
+        "x": 128,
+        "y": 16.359375,
+        "right": 229,
+        "bottom": 55.640625,
+        "width": 101,
+        "height": 39.28125
+      },
+      "settings": {
+        "x": 254,
+        "y": 11,
+        "right": 304,
+        "bottom": 61,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 26,
+          "right": 43,
+          "bottom": 46,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 47,
+          "y": 26.5,
+          "right": 81,
+          "bottom": 45.5,
+          "width": 34,
+          "height": 19
+        },
+        {
+          "x": 85,
+          "y": 25,
+          "right": 96,
+          "bottom": 47,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 320,
+      "h": 480,
+      "theme": "blue",
+      "coins": 99999,
+      "wallet": {
+        "x": 16,
+        "y": 12,
+        "right": 124,
+        "bottom": 60,
+        "width": 108,
+        "height": 48
+      },
+      "level": {
+        "x": 138.5,
+        "y": 16.359375,
+        "right": 239.5,
+        "bottom": 55.640625,
+        "width": 101,
+        "height": 39.28125
+      },
+      "settings": {
+        "x": 254,
+        "y": 11,
+        "right": 304,
+        "bottom": 61,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 26,
+          "right": 43,
+          "bottom": 46,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 47,
+          "y": 26.5,
+          "right": 102,
+          "bottom": 45.5,
+          "width": 55,
+          "height": 19
+        },
+        {
+          "x": 106,
+          "y": 25,
+          "right": 117,
+          "bottom": 47,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 320,
+      "h": 480,
+      "theme": "blue",
+      "coins": 999999,
+      "wallet": {
+        "x": 16,
+        "y": 12,
+        "right": 135,
+        "bottom": 60,
+        "width": 119,
+        "height": 48
+      },
+      "level": {
+        "x": 144,
+        "y": 16.359375,
+        "right": 245,
+        "bottom": 55.640625,
+        "width": 101,
+        "height": 39.28125
+      },
+      "settings": {
+        "x": 254,
+        "y": 11,
+        "right": 304,
+        "bottom": 61,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 26,
+          "right": 43,
+          "bottom": 46,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 47,
+          "y": 26.5,
+          "right": 113,
+          "bottom": 45.5,
+          "width": 66,
+          "height": 19
+        },
+        {
+          "x": 117,
+          "y": 25,
+          "right": 128,
+          "bottom": 47,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "theme": "blue",
+      "coins": 0,
+      "wallet": {
+        "x": 16,
+        "y": 22,
+        "right": 84,
+        "bottom": 70,
+        "width": 68,
+        "height": 48
+      },
+      "level": {
+        "x": 143.25,
+        "y": 24.46875,
+        "right": 264.75,
+        "bottom": 67.515625,
+        "width": 121.5,
+        "height": 43.046875
+      },
+      "settings": {
+        "x": 324,
+        "y": 21,
+        "right": 374,
+        "bottom": 71,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 23.5,
+          "y": 34.5,
+          "right": 46.5,
+          "bottom": 57.5,
+          "width": 23,
+          "height": 23
+        },
+        {
+          "x": 50.5,
+          "y": 36.5,
+          "right": 61.5,
+          "bottom": 55.5,
+          "width": 11,
+          "height": 19
+        },
+        {
+          "x": 65.5,
+          "y": 35,
+          "right": 76.5,
+          "bottom": 57,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "theme": "blue",
+      "coins": 420,
+      "wallet": {
+        "x": 16,
+        "y": 22,
+        "right": 106,
+        "bottom": 70,
+        "width": 90,
+        "height": 48
+      },
+      "level": {
+        "x": 154.25,
+        "y": 24.46875,
+        "right": 275.75,
+        "bottom": 67.515625,
+        "width": 121.5,
+        "height": 43.046875
+      },
+      "settings": {
+        "x": 324,
+        "y": 21,
+        "right": 374,
+        "bottom": 71,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 34.5,
+          "right": 46,
+          "bottom": 57.5,
+          "width": 23,
+          "height": 23
+        },
+        {
+          "x": 50,
+          "y": 36.5,
+          "right": 84,
+          "bottom": 55.5,
+          "width": 34,
+          "height": 19
+        },
+        {
+          "x": 88,
+          "y": 35,
+          "right": 99,
+          "bottom": 57,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "theme": "blue",
+      "coins": 99999,
+      "wallet": {
+        "x": 16,
+        "y": 22,
+        "right": 127,
+        "bottom": 70,
+        "width": 111,
+        "height": 48
+      },
+      "level": {
+        "x": 164.75,
+        "y": 24.46875,
+        "right": 286.25,
+        "bottom": 67.515625,
+        "width": 121.5,
+        "height": 43.046875
+      },
+      "settings": {
+        "x": 324,
+        "y": 21,
+        "right": 374,
+        "bottom": 71,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 34.5,
+          "right": 46,
+          "bottom": 57.5,
+          "width": 23,
+          "height": 23
+        },
+        {
+          "x": 50,
+          "y": 36.5,
+          "right": 105,
+          "bottom": 55.5,
+          "width": 55,
+          "height": 19
+        },
+        {
+          "x": 109,
+          "y": 35,
+          "right": 120,
+          "bottom": 57,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "theme": "blue",
+      "coins": 999999,
+      "wallet": {
+        "x": 16,
+        "y": 22,
+        "right": 138,
+        "bottom": 70,
+        "width": 122,
+        "height": 48
+      },
+      "level": {
+        "x": 170.25,
+        "y": 24.46875,
+        "right": 291.75,
+        "bottom": 67.515625,
+        "width": 121.5,
+        "height": 43.046875
+      },
+      "settings": {
+        "x": 324,
+        "y": 21,
+        "right": 374,
+        "bottom": 71,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 34.5,
+          "right": 46,
+          "bottom": 57.5,
+          "width": 23,
+          "height": 23
+        },
+        {
+          "x": 50,
+          "y": 36.5,
+          "right": 116,
+          "bottom": 55.5,
+          "width": 66,
+          "height": 19
+        },
+        {
+          "x": 120,
+          "y": 35,
+          "right": 131,
+          "bottom": 57,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 568,
+      "h": 320,
+      "theme": "blue",
+      "coins": 0,
+      "wallet": {
+        "x": 16,
+        "y": 4,
+        "right": 84,
+        "bottom": 52,
+        "width": 68,
+        "height": 48
+      },
+      "level": {
+        "x": 229,
+        "y": 9.203125,
+        "right": 357,
+        "bottom": 46.796875,
+        "width": 128,
+        "height": 37.59375
+      },
+      "settings": {
+        "x": 504,
+        "y": 4,
+        "right": 552,
+        "bottom": 52,
+        "width": 48,
+        "height": 48
+      },
+      "children": [
+        {
+          "x": 25,
+          "y": 18,
+          "right": 45,
+          "bottom": 38,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 49,
+          "y": 18.5,
+          "right": 60,
+          "bottom": 37.5,
+          "width": 11,
+          "height": 19
+        },
+        {
+          "x": 64,
+          "y": 17,
+          "right": 75,
+          "bottom": 39,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 568,
+      "h": 320,
+      "theme": "blue",
+      "coins": 420,
+      "wallet": {
+        "x": 16,
+        "y": 4,
+        "right": 103,
+        "bottom": 52,
+        "width": 87,
+        "height": 48
+      },
+      "level": {
+        "x": 238.5,
+        "y": 9.203125,
+        "right": 366.5,
+        "bottom": 46.796875,
+        "width": 128,
+        "height": 37.59375
+      },
+      "settings": {
+        "x": 504,
+        "y": 4,
+        "right": 552,
+        "bottom": 52,
+        "width": 48,
+        "height": 48
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 18,
+          "right": 43,
+          "bottom": 38,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 47,
+          "y": 18.5,
+          "right": 81,
+          "bottom": 37.5,
+          "width": 34,
+          "height": 19
+        },
+        {
+          "x": 85,
+          "y": 17,
+          "right": 96,
+          "bottom": 39,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 568,
+      "h": 320,
+      "theme": "blue",
+      "coins": 99999,
+      "wallet": {
+        "x": 16,
+        "y": 4,
+        "right": 124,
+        "bottom": 52,
+        "width": 108,
+        "height": 48
+      },
+      "level": {
+        "x": 249,
+        "y": 9.203125,
+        "right": 377,
+        "bottom": 46.796875,
+        "width": 128,
+        "height": 37.59375
+      },
+      "settings": {
+        "x": 504,
+        "y": 4,
+        "right": 552,
+        "bottom": 52,
+        "width": 48,
+        "height": 48
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 18,
+          "right": 43,
+          "bottom": 38,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 47,
+          "y": 18.5,
+          "right": 102,
+          "bottom": 37.5,
+          "width": 55,
+          "height": 19
+        },
+        {
+          "x": 106,
+          "y": 17,
+          "right": 117,
+          "bottom": 39,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 568,
+      "h": 320,
+      "theme": "blue",
+      "coins": 999999,
+      "wallet": {
+        "x": 16,
+        "y": 4,
+        "right": 135,
+        "bottom": 52,
+        "width": 119,
+        "height": 48
+      },
+      "level": {
+        "x": 254.5,
+        "y": 9.203125,
+        "right": 382.5,
+        "bottom": 46.796875,
+        "width": 128,
+        "height": 37.59375
+      },
+      "settings": {
+        "x": 504,
+        "y": 4,
+        "right": 552,
+        "bottom": 52,
+        "width": 48,
+        "height": 48
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 18,
+          "right": 43,
+          "bottom": 38,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 47,
+          "y": 18.5,
+          "right": 113,
+          "bottom": 37.5,
+          "width": 66,
+          "height": 19
+        },
+        {
+          "x": 117,
+          "y": 17,
+          "right": 128,
+          "bottom": 39,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 320,
+      "h": 480,
+      "theme": "ice",
+      "coins": 0,
+      "wallet": {
+        "x": 16,
+        "y": 12,
+        "right": 84,
+        "bottom": 60,
+        "width": 68,
+        "height": 48
+      },
+      "level": {
+        "x": 118.5,
+        "y": 16.359375,
+        "right": 219.5,
+        "bottom": 55.640625,
+        "width": 101,
+        "height": 39.28125
+      },
+      "settings": {
+        "x": 254,
+        "y": 11,
+        "right": 304,
+        "bottom": 61,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 25,
+          "y": 26,
+          "right": 45,
+          "bottom": 46,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 49,
+          "y": 26.5,
+          "right": 60,
+          "bottom": 45.5,
+          "width": 11,
+          "height": 19
+        },
+        {
+          "x": 64,
+          "y": 25,
+          "right": 75,
+          "bottom": 47,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 320,
+      "h": 480,
+      "theme": "ice",
+      "coins": 420,
+      "wallet": {
+        "x": 16,
+        "y": 12,
+        "right": 103,
+        "bottom": 60,
+        "width": 87,
+        "height": 48
+      },
+      "level": {
+        "x": 128,
+        "y": 16.359375,
+        "right": 229,
+        "bottom": 55.640625,
+        "width": 101,
+        "height": 39.28125
+      },
+      "settings": {
+        "x": 254,
+        "y": 11,
+        "right": 304,
+        "bottom": 61,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 26,
+          "right": 43,
+          "bottom": 46,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 47,
+          "y": 26.5,
+          "right": 81,
+          "bottom": 45.5,
+          "width": 34,
+          "height": 19
+        },
+        {
+          "x": 85,
+          "y": 25,
+          "right": 96,
+          "bottom": 47,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 320,
+      "h": 480,
+      "theme": "ice",
+      "coins": 99999,
+      "wallet": {
+        "x": 16,
+        "y": 12,
+        "right": 124,
+        "bottom": 60,
+        "width": 108,
+        "height": 48
+      },
+      "level": {
+        "x": 138.5,
+        "y": 16.359375,
+        "right": 239.5,
+        "bottom": 55.640625,
+        "width": 101,
+        "height": 39.28125
+      },
+      "settings": {
+        "x": 254,
+        "y": 11,
+        "right": 304,
+        "bottom": 61,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 26,
+          "right": 43,
+          "bottom": 46,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 47,
+          "y": 26.5,
+          "right": 102,
+          "bottom": 45.5,
+          "width": 55,
+          "height": 19
+        },
+        {
+          "x": 106,
+          "y": 25,
+          "right": 117,
+          "bottom": 47,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    },
+    {
+      "w": 320,
+      "h": 480,
+      "theme": "ice",
+      "coins": 999999,
+      "wallet": {
+        "x": 16,
+        "y": 12,
+        "right": 135,
+        "bottom": 60,
+        "width": 119,
+        "height": 48
+      },
+      "level": {
+        "x": 144,
+        "y": 16.359375,
+        "right": 245,
+        "bottom": 55.640625,
+        "width": 101,
+        "height": 39.28125
+      },
+      "settings": {
+        "x": 254,
+        "y": 11,
+        "right": 304,
+        "bottom": 61,
+        "width": 50,
+        "height": 50
+      },
+      "children": [
+        {
+          "x": 23,
+          "y": 26,
+          "right": 43,
+          "bottom": 46,
+          "width": 20,
+          "height": 20
+        },
+        {
+          "x": 47,
+          "y": 26.5,
+          "right": 113,
+          "bottom": 45.5,
+          "width": 66,
+          "height": 19
+        },
+        {
+          "x": 117,
+          "y": 25,
+          "right": 128,
+          "bottom": 47,
+          "width": 11,
+          "height": 22
+        }
+      ],
+      "numberClipped": false,
+      "background": "rgba(0, 0, 0, 0)",
+      "image": "none",
+      "border": "0px",
+      "shadow": "none"
+    }
+  ]
+}
