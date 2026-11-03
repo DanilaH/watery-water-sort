@@ -13,9 +13,9 @@ test('giant cork stays inside the field through its completion in landscape',asy
  await expect.poll(()=>page.evaluate(()=>(window as any).sharedGlassScene.board[0].length)).toBe(8);await page.waitForTimeout(1000);
  const ys=await page.evaluate(()=>(window as any).corkYs);expect(ys.length).toBeGreaterThan(3);expect(Math.min(...ys)).toBeGreaterThanOrEqual(3.9);expect(Math.max(...ys)-Math.min(...ys)).toBeGreaterThan(2);
 });
-test('tube action stays in the dock without phantom glass and opens the reward offer',async({page})=>{
+test('tube action stays in the dock without phantom glass and adds a stocked tube immediately',async({page})=>{
  const s={...fresh(),current:11};s.settings.sound=false;await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');await page.locator('#home-play').click();
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).sharedGlassScene=this;return fn.call(this);};});await toggleSymbols(page);
  await expect.poll(()=>page.evaluate(()=>{const s=(window as any).sharedGlassScene;return !!s&&!s.lockedExtra&&s.slots===s.board.length&&!s.glass.tubes.get(s.board.length)?.visible;})).toBe(true);
- await page.locator('#extra-tube').click();await expect(page.getByRole('heading',{name:'Дополнительная колба',exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'Смотреть рекламу',exact:true})).toBeVisible();
+ await page.locator('#extra-tube').click();await expect(page.locator('dialog')).toBeHidden();await expect.poll(()=>page.evaluate(()=>(window as any).sharedGlassScene.board.length)).toBe(displaySlots(s)+1);
 });

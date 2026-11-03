@@ -48,6 +48,6 @@ for(const [width,height]of [[320,480],[390,844],[568,320]])test(`two-goal field 
 });
 
 test('reward appends ordinary buffer, survives reload and restart without changing either receiver',async({page})=>{
- await open(page,18,2);await mockReward(page);const before=await saved(page);await page.locator('#extra-tube').click();await page.getByRole('button',{name:'Смотреть рекламу',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();expect(attempt(await saved(page)).board).toEqual([...attempt(before).board,[]]);
+ await open(page,18,2);await mockReward(page);const before=await saved(page);await page.locator('#extra-tube').click();await expect(page.locator('dialog')).toBeHidden();expect(attempt(await saved(page)).board).toEqual([...attempt(before).board,[]]);
  await page.reload();await page.locator('#home-play').click();expect(attempt(await saved(page)).extra).toBe(true);await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();expect(attempt(await saved(page)).board).toEqual(startingBoard(18,true));
 });

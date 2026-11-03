@@ -49,7 +49,7 @@ for(const [width,height]of [[320,480],[390,844],[568,320]])for(const index of [3
 });
 
 test('reward preserves knowledge and restarting keeps both reward and discovery',async({page})=>{
- await open(page,34,4);await mockReward(page);await page.locator('#extra-tube').click();await page.getByRole('button',{name:'Смотреть рекламу',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();const known=attempt(await saved(page)).known;await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();const s=await saved(page);expect(attempt(s).extra).toBe(true);expect(attempt(s).known).toEqual(known);expect(knowledgeFor(s)?.ids.at(-1)).toEqual([]);
+ await open(page,34,4);await mockReward(page);await page.locator('#extra-tube').click();await expect(page.locator('dialog')).toBeHidden();const known=attempt(await saved(page)).known;await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();const s=await saved(page);expect(attempt(s).extra).toBe(true);expect(attempt(s).known).toEqual(known);expect(knowledgeFor(s)?.ids.at(-1)).toEqual([]);
 });
 
 test('reduced motion reveals at receive; leaving early clears pending reveal effects',async({page})=>{

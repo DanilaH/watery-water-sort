@@ -47,7 +47,7 @@ for(const [width,height]of [[320,480],[390,844],[568,320]])test(`ice combined wi
 });
 
 test('rewarded ordinary buffer preserves locked ice; restart retains the ad slot and refreezes',async({page})=>{
- await open(page,29,2);await mockReward(page);const before=await saved(page);await page.locator('#extra-tube').click();await page.getByRole('button',{name:'Смотреть рекламу',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();let s=await saved(page);expect(attempt(s).board).toEqual([...attempt(before).board,[]]);expect(isFrozen(goalFor(s),0)).toBe(true);
+ await open(page,29,2);await mockReward(page);const before=await saved(page);await page.locator('#extra-tube').click();await expect(page.locator('dialog')).toBeHidden();let s=await saved(page);expect(attempt(s).board).toEqual([...attempt(before).board,[]]);expect(isFrozen(goalFor(s),0)).toBe(true);
  const unlock=levels[29].witness[2];await move(page,unlock.from,unlock.to);expect(iceOpen(goalFor(await saved(page)))).toBe(true);await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();s=await saved(page);expect(attempt(s).extra).toBe(true);expect(isFrozen(goalFor(s),0)).toBe(true);await page.reload();await page.locator('#home-play').click();expect(attempt(await saved(page)).extra).toBe(true);
 });
 

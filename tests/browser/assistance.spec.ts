@@ -44,7 +44,7 @@ for(const stall of [800,220])test(`pour cue respects remaining water phase after
 test('extra tube preserves history through a real move, reload and two undos',async({page})=>{
  const seeded=structuredClone(dead);seeded.completed=levels.slice(0,6).map((l:any)=>l.id);await open(page,seeded);await help48(page);await unlockReward(page);let s=await saved(page);
  expect(attempt(s).extra).toBe(true);expect(attempt(s).board.slice(0,-1)).toEqual(attempt(dead).board);expect(attempt(s).history).toEqual(attempt(dead).history);
- const intoExtra=moves(attempt(s).board).find(m=>m.to===7)!;await tap(page,intoExtra.from);await tap(page,7);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(8);
+ await expect(page.locator('#extra-tube')).toBeEnabled();const intoExtra=moves(attempt(s).board).find(m=>m.to===7)!;await tap(page,intoExtra.from);await tap(page,7);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(8);
  await reloadGame(page);await page.locator('canvas').waitFor();await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).board).toEqual(attempt(s).board);await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();s=await saved(page);expect(attempt(s).extra).toBe(true);expect(attempt(s).board).toHaveLength(8);expect(attempt(s).history).toHaveLength(6);
 });
 test('earned extra tube survives restart, help and level switching',async({page})=>{
@@ -56,7 +56,7 @@ test('earned extra tube survives restart, help and level switching',async({page}
 test('failed extra-tube save keeps the old board and offers retry',async({page})=>{
  await open(page,dead);await help48(page);const original=await saved(page);
  await page.evaluate(()=>{const set=Storage.prototype.setItem;(window as any).restoreWrite=()=>Storage.prototype.setItem=set;Storage.prototype.setItem=function(k,v){if(k.startsWith('water-sort-v1'))throw Error('full');set.call(this,k,v);};});
- await unlockReward(page);await expect(page.getByRole('alert')).toContainText('Изменение не принято');expect(await saved(page)).toEqual(original);await expect(page.locator('dialog')).toBeVisible();await page.evaluate(()=>(window as any).restoreWrite());await page.getByRole('button',{name:'Получить колбу',exact:true}).click();expect(attempt(await saved(page)).extra).toBe(true);
+ await unlockReward(page);await expect(page.getByRole('alert')).toContainText('Изменение не принято');expect(await saved(page)).toEqual(original);await expect(page.locator('dialog')).toBeVisible();await page.evaluate(()=>(window as any).restoreWrite());await page.locator('dialog').getByRole('button',{name:'Добавить колбу',exact:true}).click();expect(attempt(await saved(page)).extra).toBe(true);
 });
 test('proven dead end with legal moves offers help, then hints work with an extra tube',async({page})=>{
  const corpus=JSON.parse(gunzipSync(readFileSync(new URL('../../docs/audits/product-08/exploratory-corpus.json.gz',import.meta.url))).toString());const item=corpus.find((x:any)=>x.status==='UNSOLVABLE'&&moves(x.board).length>0),s=fresh();s.current=levels.findIndex((l:any)=>l.id===item.level);s.revision=item.history.length;s.attempts[levelKey(s.current)]={board:item.board,history:item.history,extra:false};

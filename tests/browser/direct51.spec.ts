@@ -1,0 +1,26 @@
+import {test,expect,type Page} from '@playwright/test';
+import {fresh,seededRestart,attempt,displaySlots,replay,type Level} from '../../src/core/session';
+import {campaign} from '../../src/core/campaign';
+import {layout} from '../../src/game/geometry';
+import oldLevels from '../../src/core/levels-v1.json' with {type:'json'};
+async function saved(p:Page){return p.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
+async function open(p:Page,coins=510,empty=false,legacy=false){const s=seededRestart({...fresh(),current:campaign[4]});if(legacy){const l=oldLevels[s.current]as Level;s.attempts={[`${l.id}@${l.version}`]:replay(l,[],false)};}s.settings.sound=false;s.wallet!.coins=coins;if(empty){s.wallet!.tubes=0;s.wallet!.hints=0;}await p.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await p.goto('/');await p.evaluate(async()=>{const path='/src/game/WaterScene.ts',m=await import(path),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).direct51=this;return fn.call(this);};});await p.locator('#home-play').click();await expect.poll(()=>p.evaluate(()=>!!(window as any).direct51?.ready)).toBe(true);return s;}
+for(const size of [{width:390,height:844,legacy:false},{width:320,height:480,legacy:false},{width:390,height:844,legacy:true}])test(`three direct tube additions reach the actual rendered grid ${size.width}x${size.height} legacy=${size.legacy}`,async({page})=>{
+ await page.setViewportSize(size);const s=await open(page,510,false,size.legacy);for(let n=1;n<=3;n++){
+  await page.locator('#extra-tube').click();await expect(page.locator('dialog')).toBeHidden();expect(attempt(await saved(page)).board).toHaveLength(displaySlots(s)+n);await page.waitForTimeout(850);
+  // Capture material positions before calling positions(): that call could itself
+  // clear the animation flag and conceal the original render-sleep regression.
+  const r=await page.evaluate(()=>{const s=(window as any).direct51;return {width:s.viewWidth,height:s.viewHeight,count:s.board.length,material:s.glass.enabled,glass:[...s.glass.tubes.entries()].filter(([,v]:any)=>v.visible).map(([i,v]:any)=>({i,x:v.x,y:v.y}))};});
+  expect(r.material).toBe(true);expect(r.glass).toHaveLength(r.count);const expected=layout(r.width,r.height,r.count);
+  for(const p of r.glass){expect(p.x).toBeCloseTo(expected[p.i].x,1);expect(p.y).toBeCloseTo(expected[p.i].y,1);}
+  if(n===1&&process.env.QA_SCREENSHOT_DIR)await page.screenshot({path:`${process.env.QA_SCREENSHOT_DIR}/grid51-one-${size.width}${size.legacy?'-legacy':''}.png`});
+  for(let i=0;i<expected.length;i++)for(let j=i+1;j<expected.length;j++){const a=expected[i],b=expected[j];expect(Math.abs(a.x-b.x)>=(a.w+b.w)/2||a.y+a.h<=b.y||b.y+b.h<=a.y).toBe(true);}
+ }
+ if(process.env.QA_SCREENSHOT_DIR)await page.screenshot({path:`${process.env.QA_SCREENSHOT_DIR}/grid51-${size.width}${size.legacy?'-legacy':''}.png`});
+});
+for(const kind of ['tube','shuffle']as const)test(`empty ${kind} has an inline price and one tap purchases only that stock`,async({page})=>{
+ await open(page,60,true);const id=kind==='tube'?'extra-tube':'shuffle',field=kind==='tube'?'tubes':'hints',badge=kind==='tube'?'tube-count':'shuffle-count';const before=await saved(page);await expect(page.locator('#'+badge)).toContainText('60');await expect(page.locator('#'+badge)).toContainText('×3');await page.locator('#'+id).click();await expect(page.locator('dialog')).toBeHidden();const next=await saved(page);expect(next.wallet.coins).toBe(0);expect(next.wallet[field]).toBe(3);expect(next.wallet[kind==='tube'?'hints':'tubes']).toBe(0);expect(attempt(next).board).toEqual(attempt(before).board);await expect(page.locator('#'+badge)).toHaveText('3');
+});
+test('insufficient coins opens a one-action coin shop; reward does not purchase or use a boost',async({page})=>{
+ await page.route('**/src/platform/rewarded.ts',r=>r.fulfill({contentType:'application/javascript',body:`export class Rewarded{async pending(){return []}async ack(){}async cancel(){}async request(level){return {status:'rewarded',receipt:{token:'direct-coin-51',level}}}}`}));await open(page,59,true);const before=await saved(page);await page.locator('#extra-tube').click();await expect(page.getByRole('heading',{name:'Монеты',exact:true})).toBeVisible();await expect(page.locator('.dialog-actions button')).toHaveCount(1);expect((await saved(page)).wallet.coins).toBe(59);await page.getByRole('button',{name:'Получить 80 монет · реклама',exact:true}).click();await expect(page.locator('.shop-balance')).toHaveText('139');expect((await saved(page)).wallet.tubes).toBe(0);expect(attempt(await saved(page)).board).toEqual(attempt(before).board);await page.getByRole('button',{name:'Закрыть',exact:true}).click();await page.locator('#extra-tube').click();expect((await saved(page)).wallet).toMatchObject({coins:79,tubes:3});await page.locator('#extra-tube').click();await expect(page.locator('dialog')).toBeHidden();expect((await saved(page)).wallet.tubes).toBe(2);
+});

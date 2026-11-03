@@ -38,7 +38,7 @@ test('real worker hint understands the locked receiver and its current fill',asy
 });
 test('rewarded ordinary slot preserves the goal, all accepted moves and Undo',async({page})=>{
  await seed(page,13,3);await mockReward(page);const before=await saved(page);
- await page.locator('#extra-tube').click();await page.getByRole('button',{name:'Смотреть рекламу',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();const after=await saved(page);expect(attempt(after).board).toEqual([...attempt(before).board,[]]);expect(attempt(after).history).toEqual(attempt(before).history);
+ await page.locator('#extra-tube').click();await expect(page.locator('dialog')).toBeHidden();const after=await saved(page);expect(attempt(after).board).toEqual([...attempt(before).board,[]]);expect(attempt(after).history).toEqual(attempt(before).history);
  await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(2);
  await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();expect(attempt(await saved(page)).board).toEqual(startingBoard(13,true));
 });

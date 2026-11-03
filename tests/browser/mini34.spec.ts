@@ -45,7 +45,7 @@ for(const [width,height]of [[320,480],[390,844],[568,320]])test(`mini plus paire
 });
 
 test('reward grants a full-size four-unit tube beside the mini; actual transfer, reload and restart keep them separate',async({page})=>{
- await open(page,22,3);await mockReward(page);await page.locator('#extra-tube').click();await page.getByRole('button',{name:'Смотреть рекламу',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();
+ await open(page,22,3);await mockReward(page);await page.locator('#extra-tube').click();await expect(page.locator('dialog')).toBeHidden();
  let s=await saved(page);const extra=attempt(s).board.length-1;expect(capacityAt(goalFor(s),extra)).toBe(4);await move(page,1,extra);s=await saved(page);expect(attempt(s).board[extra]).toHaveLength(4);expect(attempt(s).board[0]).toHaveLength(2);
  await page.reload();await page.locator('#home-play').click();expect(attempt(await saved(page)).board[extra]).toHaveLength(4);await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).board[extra]).toEqual([]);
  await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();expect(attempt(await saved(page)).board).toEqual(startingBoard(22,true));

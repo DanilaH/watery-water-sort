@@ -200,7 +200,7 @@ export class WaterScene extends Phaser.Scene {
     if(!!goalAt(this.goal,index))this.pedestal(r,sealedTube(this.board,index,this.goal)&&layers.reduce((v,l)=>v+l.amount,0)>=8-.001,index,now);
     const age=now-(this.settles.get(index)??-10000),shake=now-(this.pulses.get(index)??-10000),opening=this.corkOpen.get(index)??0;
     // Cache only settled, unselected vessels. Moving liquid, ripples, corks and glows stay live.
-    const stable=!layers.some(l=>l.reveal!==undefined&&l.reveal>0&&l.reveal<1)&&!this.bursts.some(b=>b.index===index&&!b.final)&&!selected&&!target&&!this.busyTube(index)&&!this.liquid.has(index)&&!this.bodyMotion.has(index)&&age>=650&&shake>=220&&opening===0&&(this.selectionY.get(index)??0)===0&&now-this.entrance>=260;
+    const stable=!this.arrangeFrom&&!layers.some(l=>l.reveal!==undefined&&l.reveal>0&&l.reveal<1)&&!this.bursts.some(b=>b.index===index&&!b.final)&&!selected&&!target&&!this.busyTube(index)&&!this.liquid.has(index)&&!this.bodyMotion.has(index)&&age>=650&&shake>=220&&opening===0&&(this.selectionY.get(index)??0)===0&&now-this.entrance>=260;
     const key=stable?JSON.stringify([r,layers,this.light,this.symbols,this.goal,this.popped.has(index)]):'',cached=this.tubes.get(index);
     if(stable&&cached?.key===key){
       this.glass?.restore(index,cached.cork,r);
@@ -339,7 +339,8 @@ export class WaterScene extends Phaser.Scene {
     const settling=[...this.selectionY].some(([i,y])=>Math.abs(y-((this.selected===i||this.hintMove?.from===i)&&!this.busyTube(i)?-17:0))>.1);
     const activeSettle=this.liquid.size>0||this.bodyMotion.size>0||[...this.settles.values()].some(t=>now-t<650),shaking=[...this.pulses.values()].some(t=>now-t<220);
     const corkAnimating=[...this.corkOpen.values()].some(v=>v>0&&v<1);
-    if(!this.reveals.size&&!this.iceRelease&&!this.flight&&!corkAnimating&&!settling&&!shaking&&!activeSettle&&!this.bursts.length&&!this.particles.length&&now-this.entrance>260&&signature===this.previousSignature)return;
+    // Keep rendering through reflow, including its terminal frame before sleeping.
+    if(!this.arrangeFrom&&!this.reveals.size&&!this.iceRelease&&!this.flight&&!corkAnimating&&!settling&&!shaking&&!activeSettle&&!this.bursts.length&&!this.particles.length&&now-this.entrance>260&&signature===this.previousSignature)return;
     this.previousSignature=signature;this.glass?.beginFrame();this.hitPolygons.clear();this.ink.clear();this.flyingInk.clear();this.fx.clear();for(const l of this.queueLabels)l.setVisible(false);for(const l of this.activeLabels){l.setVisible(false);this.labels.push(l);}this.activeLabels=[];
     const poses=this.positions(),f=this.flight;
     const frame=f?pourFrame(now-f.start,f.timing):{t:0,remaining:0,tail:-1},t=frame.t,transfer=f?pourTransfer(t):0;
