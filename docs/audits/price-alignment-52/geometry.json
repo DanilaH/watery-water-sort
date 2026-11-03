@@ -1,0 +1,258 @@
+{
+  "source": "99b76d45661ceada913f4e715b7e167b6f09248d",
+  "method": "Real browser geometry, seeded zero-stock QA states; not actual player progress",
+  "cases": [
+    {
+      "width": 320,
+      "height": 480,
+      "theme": "blue",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 126,
+          "right": 194,
+          "bottom": 475
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 210,
+          "right": 278,
+          "bottom": 475
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "height": 480,
+      "theme": "plum",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 126,
+          "right": 194,
+          "bottom": 475
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 210,
+          "right": 278,
+          "bottom": 475
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "height": 480,
+      "theme": "graphite",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 126,
+          "right": 194,
+          "bottom": 475
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 210,
+          "right": 278,
+          "bottom": 475
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "height": 480,
+      "theme": "ice",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 126,
+          "right": 194,
+          "bottom": 475
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 210,
+          "right": 278,
+          "bottom": 475
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "blue",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 161,
+          "right": 229,
+          "bottom": 839
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 245,
+          "right": 313,
+          "bottom": 839
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "plum",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 161,
+          "right": 229,
+          "bottom": 839
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 245,
+          "right": 313,
+          "bottom": 839
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "graphite",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 161,
+          "right": 229,
+          "bottom": 839
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 245,
+          "right": 313,
+          "bottom": 839
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "ice",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 161,
+          "right": 229,
+          "bottom": 839
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 245,
+          "right": 313,
+          "bottom": 839
+        }
+      ]
+    },
+    {
+      "width": 568,
+      "height": 320,
+      "theme": "blue",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 485,
+          "right": 553,
+          "bottom": 217
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 485,
+          "right": 553,
+          "bottom": 279
+        }
+      ]
+    },
+    {
+      "width": 568,
+      "height": 320,
+      "theme": "plum",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 485,
+          "right": 553,
+          "bottom": 217
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 485,
+          "right": 553,
+          "bottom": 279
+        }
+      ]
+    },
+    {
+      "width": 568,
+      "height": 320,
+      "theme": "graphite",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 485,
+          "right": 553,
+          "bottom": 217
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 485,
+          "right": 553,
+          "bottom": 279
+        }
+      ]
+    },
+    {
+      "width": 568,
+      "height": 320,
+      "theme": "ice",
+      "prices": [
+        {
+          "id": "shuffle",
+          "error": 0,
+          "left": 485,
+          "right": 553,
+          "bottom": 217
+        },
+        {
+          "id": "extra-tube",
+          "error": 0,
+          "left": 485,
+          "right": 553,
+          "bottom": 279
+        }
+      ]
+    }
+  ]
+}
