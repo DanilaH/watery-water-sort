@@ -1,0 +1,60 @@
+{
+  "source": "71a311ec5dfa915f37a0b52b85f9fbbffadf6087",
+  "runId": 41621537773,
+  "runUrl": "https://github.com/DanilaH/watery-water-sort/actions/runs/41621537773",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 125868203947,
+      "name": "native",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125868204149,
+      "name": "browser (1)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125868204154,
+      "name": "browser (3)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125868204238,
+      "name": "browser (2)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 125871320374,
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "developmentBrowserTests": 277,
+  "productionStartupTests": 4,
+  "unitTests": 111,
+  "jvmTests": 16,
+  "nativeControlFlowScenarios": 9,
+  "historicalAndCurrentProofPaths": 480,
+  "newDirectActionAndRenderedGridTests": 6,
+  "reflowIdleNegativeControlFailedAsExpected": true,
+  "baseline": "baseline.json",
+  "apk": "apk.json",
+  "android": "android.json",
+  "screenshots": {
+    "method": "Real browser seeded QA states, not actual player progress",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "dpr": 2,
+    "grid": "Old stage 5 @1 after one real button press adds the sixth tube",
+    "prices": "Current stage 5 @2, zero shuffle/tube stock, 59 coins"
+  },
+  "physicalDeviceTested": false
+}

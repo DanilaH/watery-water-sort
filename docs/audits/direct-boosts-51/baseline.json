@@ -1,0 +1,10 @@
+{
+  "variant": "0.51 UI with the pre-fix reflow cache and idle conditions temporarily restored",
+  "test": "direct51.spec.ts: three direct tube additions reach the actual rendered grid 390x844 legacy=true",
+  "failedAsExpected": true,
+  "assertion": "actual material x must equal final layout x",
+  "expectedX": 65,
+  "observedX": 88.48242613664213,
+  "correctedSourceRestoredAndGitClean": true,
+  "physicalDeviceTested": false
+}
