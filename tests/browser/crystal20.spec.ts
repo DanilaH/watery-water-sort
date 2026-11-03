@@ -1,3 +1,4 @@
+import {home48} from './navigation';
 import {toggleSymbols} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {advanceFrames} from './controlled-frames';
@@ -8,7 +9,7 @@ async function open(page:Page,partial=false){let s={...fresh(),current:12};if(pa
  await page.addInitScript(s=>{if(sessionStorage.crystal20)return;sessionStorage.crystal20='1';localStorage.setItem('water-sort-v1',JSON.stringify(s));},s);await page.goto('/');await page.locator('#home-play').click();await page.waitForTimeout(350);
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).crystalScene=this;return fn.call(this);};});await toggleSymbols(page);await expect.poll(()=>page.evaluate(()=>(window as any).crystalScene?.crystalBase?.visible)).toBe(true);
 }
-async function tap(page:Page,index:number){const state=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!)),b=(await page.locator('#board').boundingBox())!,r=goalLayout(b.width,b.height,displaySlots(state),0)[index];await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
+async function tap(page:Page,index:number){const state=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!)),b=(await page.locator('#board canvas').boundingBox())!,r=goalLayout(b.width,b.height,displaySlots(state),0)[index];await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
 for(const [width,height]of [[320,480],[390,844],[568,320]])test(`approved pedestal is loaded, fits the field and survives a cached redraw ${width}x${height}`,async({page})=>{
  await page.setViewportSize({width,height});await open(page);
  const result=await page.evaluate(()=>{const s=(window as any).crystalScene,b=s.crystalBase,r=b.getBounds();s.previousSignature='';s.update();return {key:b.texture.key,source:{w:b.texture.getSourceImage().width,h:b.texture.getSourceImage().height},x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:s.viewWidth*s.density,height:s.viewHeight*s.density,visible:b.visible,shards:s.crystalShards.filter((x:any)=>x.visible).length};});
@@ -26,5 +27,5 @@ test('art breaks into five textured pieces at visual fill; reload hides it and U
 test('reduced motion fades the whole pedestal without moving fragments; home clears sprites',async({page})=>{
  await page.clock.install();await page.emulateMedia({reducedMotion:'reduce'});await open(page,true);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await record(page);await tap(page,1);await tap(page,0);await advanceFrames(page,'crystalScene',1400);
  await expect.poll(()=>page.evaluate(()=>(window as any).crystalFrames.some((f:any)=>f.complete&&f.base&&f.alpha>0&&f.alpha<1))).toBe(true);expect(await page.evaluate(()=>(window as any).crystalFrames.every((f:any)=>f.pieces.length===0))).toBe(true);
- await expect.poll(()=>page.evaluate(()=>(window as any).crystalScene.crystalBase.visible)).toBe(false);await page.clock.resume();await page.locator('#menu').click();expect(await page.evaluate(()=>{const s=(window as any).crystalScene;return s.crystalBase.visible||s.crystalShards.some((s:any)=>s.visible);})).toBe(false);
+ await expect.poll(()=>page.evaluate(()=>(window as any).crystalScene.crystalBase.visible)).toBe(false);await page.clock.resume();await home48(page);expect(await page.evaluate(()=>{const s=(window as any).crystalScene;return s.crystalBase.visible||s.crystalShards.some((s:any)=>s.visible);})).toBe(false);
 });

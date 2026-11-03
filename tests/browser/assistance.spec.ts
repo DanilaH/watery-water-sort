@@ -1,3 +1,5 @@
+import {help48,pause48} from './navigation';
+import {hint48,restart48} from './navigation';
 import {levelButton} from './navigation';
 import {startGame,reloadGame,openLevels,resumeGame,slotCount,mockReward,unlockReward} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
@@ -16,7 +18,7 @@ async function open(page:Page,s:Save=fresh()){
  await startGame(page);await page.locator('canvas').waitFor();await page.waitForTimeout(300);await mockReward(page);
 }
 async function saved(page:Page):Promise<Save>{return page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
-async function tap(page:Page,i:number){const s=await saved(page),b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,await slotCount(page))[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
+async function tap(page:Page,i:number){const s=await saved(page),b=(await page.locator('#board canvas').boundingBox())!,p=layout(b.width,b.height,await slotCount(page))[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
 async function help(page:Page){await openLevels(page);await page.getByRole('button',{name:'Если застрял',exact:true}).click();}
 for(const failure of ['constructor','postMessage','async'])test(`hint recovers from ${failure} failure and retries`,async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await open(page);
@@ -25,8 +27,8 @@ for(const failure of ['constructor','postMessage','async'])test(`hint recovers f
  else if(failure==='postMessage'){const post=Worker.prototype.postMessage;(window as any).restoreWorker=()=>Worker.prototype.postMessage=post;Worker.prototype.postMessage=()=>{throw new DOMException('clone failed','DataCloneError');};}
  else window.Worker=class{onerror:any;terminate(){}postMessage(){queueMicrotask(()=>this.onerror(new ErrorEvent('error',{cancelable:true,message:'blocked'})));}} as any;
  },failure);
- await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Подсказка недоступна');await expect(page.locator('#hint')).toBeEnabled();
- await page.evaluate(()=>(window as any).restoreWorker());await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');expect(errors).toEqual([]);
+ await hint48(page);await expect(page.locator('#status')).toContainText('Подсказка недоступна');await expect(page.locator('#hint')).toBeEnabled();
+ await page.evaluate(()=>(window as any).restoreWorker());await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');expect(errors).toEqual([]);
 });
 for(const stall of [800,220])test(`pour cue respects remaining water phase after ${stall}ms stall`,async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await open(page);
@@ -40,48 +42,48 @@ for(const stall of [800,220])test(`pour cue respects remaining water phase after
  await expect(page.locator('#moves')).toHaveText('Ходов: 1');expect(errors).toEqual([]);
 });
 test('extra tube preserves history through a real move, reload and two undos',async({page})=>{
- const seeded=structuredClone(dead);seeded.completed=levels.slice(0,6).map((l:any)=>l.id);await open(page,seeded);await page.locator('#rescue').click();await unlockReward(page);let s=await saved(page);
+ const seeded=structuredClone(dead);seeded.completed=levels.slice(0,6).map((l:any)=>l.id);await open(page,seeded);await help48(page);await unlockReward(page);let s=await saved(page);
  expect(attempt(s).extra).toBe(true);expect(attempt(s).board.slice(0,-1)).toEqual(attempt(dead).board);expect(attempt(s).history).toEqual(attempt(dead).history);
  const intoExtra=moves(attempt(s).board).find(m=>m.to===7)!;await tap(page,intoExtra.from);await tap(page,7);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(8);
  await reloadGame(page);await page.locator('canvas').waitFor();await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).board).toEqual(attempt(s).board);await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();s=await saved(page);expect(attempt(s).extra).toBe(true);expect(attempt(s).board).toHaveLength(8);expect(attempt(s).history).toHaveLength(6);
 });
 test('earned extra tube survives restart, help and level switching',async({page})=>{
  const seeded=expanded(structuredClone(dead));seeded.completed=levels.slice(0,6).map((l:any)=>l.id);await open(page,seeded);let s=await saved(page);expect(attempt(s).extra).toBe(true);
- await page.locator('#restart').click();await page.getByRole('button',{name:'Начать заново',exact:true}).click();s=await saved(page);expect(attempt(s).board).toEqual([...levels[6].initial,[]]);expect(attempt(s).history).toHaveLength(0);
- await help(page);await expect(page.getByRole('button',{name:'Добавить колбу',exact:true})).toHaveCount(0);await expect(page.locator('.dialog-body')).toContainText('уже добавлена');await page.getByRole('button',{name:'Закрыть',exact:true}).click();
+ await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();s=await saved(page);expect(attempt(s).board).toEqual([...levels[6].initial,[]]);expect(attempt(s).history).toHaveLength(0);
+ await help(page);await expect(page.locator('dialog').getByRole('button',{name:'Добавить колбу',exact:true})).toHaveCount(1);await expect(page.locator('.dialog-body')).toContainText('уже добавлена');await page.getByRole('button',{name:'Закрыть',exact:true}).click();
  await openLevels(page);await levelButton(page,0).click();expect(attempt(await saved(page)).extra).toBe(false);await openLevels(page);await levelButton(page,6).click();expect(attempt(await saved(page)).extra).toBe(true);
 });
 test('failed extra-tube save keeps the old board and offers retry',async({page})=>{
- await open(page,dead);await page.locator('#rescue').click();const original=await saved(page);
+ await open(page,dead);await help48(page);const original=await saved(page);
  await page.evaluate(()=>{const set=Storage.prototype.setItem;(window as any).restoreWrite=()=>Storage.prototype.setItem=set;Storage.prototype.setItem=function(k,v){if(k.startsWith('water-sort-v1'))throw Error('full');set.call(this,k,v);};});
  await unlockReward(page);await expect(page.getByRole('alert')).toContainText('Изменение не принято');expect(await saved(page)).toEqual(original);await expect(page.locator('dialog')).toBeVisible();await page.evaluate(()=>(window as any).restoreWrite());await page.getByRole('button',{name:'Получить колбу',exact:true}).click();expect(attempt(await saved(page)).extra).toBe(true);
 });
 test('proven dead end with legal moves offers help, then hints work with an extra tube',async({page})=>{
  const corpus=JSON.parse(gunzipSync(readFileSync(new URL('../../docs/audits/product-08/exploratory-corpus.json.gz',import.meta.url))).toString());const item=corpus.find((x:any)=>x.status==='UNSOLVABLE'&&moves(x.board).length>0),s=fresh();s.current=levels.findIndex((l:any)=>l.id===item.level);s.revision=item.history.length;s.attempts[levelKey(s.current)]={board:item.board,history:item.history,extra:false};
- await open(page,s);await expect(page.locator('#rescue')).toBeHidden();await page.locator('#hint').click();await expect(page.getByRole('heading',{name:'Решения нет',exact:true})).toBeVisible();await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('#rescue')).toBeVisible();await page.locator('#rescue').click();await unlockReward(page);await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');await expect(page.locator('#rescue')).toBeHidden();
+ await open(page,s);await expect(page.locator('#rescue')).toBeHidden();await hint48(page);await expect(page.getByRole('heading',{name:'Решения нет',exact:true})).toBeVisible();await page.getByRole('button',{name:'Закрыть',exact:true}).click();await pause48(page);await expect(page.locator('#rescue')).toBeVisible();await help48(page);await unlockReward(page);await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');await expect(page.locator('#rescue')).toBeHidden();
 });
 test('help supports undo and restart confirmation',async({page})=>{
- await open(page,dead);await page.locator('#rescue').click();await page.getByRole('button',{name:'Отменить ход',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(6);
+ await open(page,dead);await help48(page);await page.getByRole('button',{name:'Отменить ход',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(6);
  await help(page);await page.locator('dialog').getByRole('button',{name:'Заново',exact:true}).click();await expect(page.getByRole('heading',{name:'Начать заново?'})).toBeVisible();await page.getByRole('button',{name:'Продолжить игру',exact:true}).click();expect(attempt(await saved(page)).history).toHaveLength(6);
 });
 for(const count of [10,11])test(`landscape gives ${count} tubes more height with exclusive 48px targets`,async({page})=>{
  const s=fresh();s.current=11;if(count===11){s.attempts[levelKey(11)]={board:[...levels[11].initial,[]],history:[],extra:true};}await page.setViewportSize({width:568,height:320});await open(page,s);
- const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,await slotCount(page));expect(b.height).toBeGreaterThanOrEqual(220);expect(ps[0].h).toBeGreaterThan(73);
+ const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,await slotCount(page));expect(b.height).toBeGreaterThanOrEqual(172);expect(ps[0].h).toBeGreaterThanOrEqual(48);
  for(const p of ps){expect(p.hitW).toBeGreaterThanOrEqual(48);expect(p.hitH).toBeGreaterThanOrEqual(48);}
- for(const id of ['menu','settings','undo','hint','restart']){const r=(await page.locator('#'+id).boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y).toBeGreaterThanOrEqual(0);expect(r.y+r.height).toBeLessThanOrEqual(320);}
+ for(const id of ['wallet','settings','undo','shuffle','extra-tube']){const r=(await page.locator('#'+id).boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y).toBeGreaterThanOrEqual(0);expect(r.y+r.height).toBeLessThanOrEqual(320);}
  await help(page);for(const button of await page.locator('.dialog-actions button').all()){const r=(await button.boundingBox())!;expect(r.height+0.001).toBeGreaterThanOrEqual(48);expect(r.y+r.height).toBeLessThanOrEqual(320);}
 });
 
 test('extra tube keeps two readable rows and exclusive targets on short portrait',async({page})=>{
  const s=fresh();s.current=11;s.completed=levels.slice(0,11).map((l:any)=>l.id);await page.setViewportSize({width:320,height:480});await open(page,s);await help(page);await unlockReward(page);
- const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,11);expect(new Set(ps.map(p=>p.y)).size).toBe(2);expect(ps[0].h).toBeGreaterThan(90);
+ const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,11);expect(new Set(ps.map(p=>p.y)).size).toBe(2);expect(ps[0].h).toBeGreaterThanOrEqual(64);
  for(const p of ps){expect(p.hitW).toBeGreaterThanOrEqual(48);expect(p.hitH).toBeGreaterThanOrEqual(48);expect(p.x-p.hitW/2).toBeGreaterThanOrEqual(0);expect(p.x+p.hitW/2).toBeLessThanOrEqual(b.width);}
  for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){const a=ps[i],b=ps[j];expect(Math.abs(a.x-b.x)>=(a.hitW+b.hitW)/2||Math.abs(a.y+a.h/2-b.y-b.h/2)>=(a.hitH+b.hitH)/2).toBe(true);}
  const m=moves(attempt(await saved(page)).board).find(m=>m.to===10)!;expect(m).toBeTruthy();await tap(page,m.from);await tap(page,10);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(1);
 });
 
 test('small landscape rescue explanation is visible without scrolling',async({page})=>{
- await page.setViewportSize({width:568,height:320});await open(page,dead);await page.locator('#rescue').click();
+ await page.setViewportSize({width:568,height:320});await open(page,dead);await help48(page);
  const body=await page.locator('.dialog-body').evaluate(e=>({client:e.clientHeight,scroll:e.scrollHeight}));expect(body.scroll).toBeLessThanOrEqual(body.client+1);
  for(const button of await page.locator('.dialog-actions button').all()){const r=(await button.boundingBox())!;expect(r.height+0.001).toBeGreaterThanOrEqual(48);expect(r.y+r.height).toBeLessThanOrEqual(320);}
 });

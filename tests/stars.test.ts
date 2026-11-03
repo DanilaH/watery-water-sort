@@ -16,5 +16,5 @@ it('legacy retained wins migrate honestly, completed markers alone do not create
 });
 it('invalid or fabricated best paths are rejected',()=>{const s=fresh();s.best={[levelKey(0)]:{history:[],extra:false}};expect(validSave(s)).toBe(false);});
 it('rewarding a different eligible level preserves the current attempt and is idempotent; tutorials have no offer',()=>{
- const s=moved(fresh(),levels[0].witness[0]);expect(displaySlots(s)).toBe(4);expect(()=>grantExtra(s,levelKey(0))).toThrow();const n=grantExtra(s,levelKey(2));expect(n.current).toBe(0);expect(attempt(n)).toEqual(attempt(s));expect(attempt({...n,current:2}).extra).toBe(true);expect(validSave(n)).toBe(true);expect(grantExtra(n,levelKey(2))).toEqual(n);expect(displaySlots({...s,current:2})).toBe(levels[2].initial.length+1);expect(displaySlots({...n,current:2})).toBe(levels[2].initial.length+1);
+ const s=moved(fresh(),levels[0].witness[0]);expect(displaySlots(s)).toBe(4);expect(()=>grantExtra(s,levelKey(0))).toThrow();const n=grantExtra(s,levelKey(2));expect(n.current).toBe(0);expect(attempt(n)).toEqual(attempt(s));expect(attempt({...n,current:2}).extra).toBe(true);expect(validSave(n)).toBe(true);expect(grantExtra(n,levelKey(2))).toEqual(n);expect(displaySlots({...s,current:2})).toBe(levels[2].initial.length);expect(displaySlots({...n,current:2})).toBe(levels[2].initial.length+1);
 });

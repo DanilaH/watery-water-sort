@@ -5,6 +5,7 @@ import java.util.Map;
 
 /** Pure state: failed persistence retains the award in memory; failed ack never deletes it. */
 public final class RewardLedger {
+ public static boolean validTarget(String target){return target!=null&&(target.matches("water-\\d{3}@\\d+")||target.matches("tube:water-\\d{3}@\\d+:[123]")||target.matches("coins:[a-zA-Z0-9-]{1,80}"));}
  public interface Store {Map<String,String> read();boolean write(Map<String,String> receipts);}
  private final Store store;
  private boolean dirty=false;

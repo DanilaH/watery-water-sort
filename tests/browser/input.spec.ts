@@ -1,3 +1,4 @@
+import {restart48} from './navigation';
 import {advanceFrames} from './controlled-frames';
 import {startGame,reloadGame,openLevels,resumeGame,slotCount} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
@@ -8,7 +9,7 @@ const initial=()=>({schema:1,artVersion:4,current:0,revision:0,completed:[],atte
 const hitPoints=new WeakMap<Page,{x:number;y:number}[]>();
 async function open(page:Page,state:unknown=initial()){
  await page.addInitScript(s=>{if(sessionStorage.getItem('input-test-seeded'))return;localStorage.setItem('water-sort-v1',JSON.stringify(s));sessionStorage.setItem('input-test-seeded','1');},state);
- await startGame(page);await page.locator('canvas').waitFor();await page.waitForTimeout(120);const b=(await page.locator('#board').boundingBox())!;hitPoints.set(page,layout(b.width,b.height,4).map(p=>({x:b.x+p.x,y:b.y+p.y+p.h/2})));
+ await startGame(page);await page.locator('canvas').waitFor();await page.waitForTimeout(120);const b=(await page.locator('#board canvas').boundingBox())!;hitPoints.set(page,layout(b.width,b.height,4).map(p=>({x:b.x+p.x,y:b.y+p.y+p.h/2})));
 }
 // Keep the intention pending while remote pointer events/assertions travel to the browser.
 async function openFrozen(page:Page,state:unknown=initial()){await page.clock.install();await open(page,state);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));}
@@ -72,16 +73,16 @@ test('no-move state offers undo without blocking the board',async({page})=>{
 });
 
 test('restart always asks, including before the first move',async({page})=>{
- await open(page);await tap(page,0);await page.locator('#restart').click({force:true});await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Продолжить игру',exact:true}).click();expect(await history(page)).toHaveLength(0);
- await tap(page,0);await tap(page,2);await page.locator('#restart').click({force:true});await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Продолжить игру',exact:true}).click({force:true});expect(await history(page)).toHaveLength(1);
- await page.locator('#restart').click({force:true});await page.getByRole('button',{name:'Начать заново',exact:true}).click({force:true});await expect(page.locator('dialog')).not.toBeVisible();expect(await history(page)).toHaveLength(0);
+ await open(page);await tap(page,0);await restart48(page);await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Продолжить игру',exact:true}).click();expect(await history(page)).toHaveLength(0);
+ await tap(page,0);await tap(page,2);await restart48(page);await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Продолжить игру',exact:true}).click({force:true});expect(await history(page)).toHaveLength(1);
+ await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click({force:true});await expect(page.locator('dialog')).not.toBeVisible();expect(await history(page)).toHaveLength(0);
 });
 
 for(const dense of [false,true])test(`queue badge belongs to its source (${dense?'dense small field':'tutorial'})`,async({page})=>{
  const state=initial();state.current=dense?11:0;state.completed=dense?levels.slice(0,11).map((l:any)=>l.id):[];
  if(dense)await page.setViewportSize({width:320,height:480});
  await openFrozen(page,state);
- const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,await slotCount(page));
+ const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,await slotCount(page));
  const click=async(i:number)=>page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);
  const [first,next]=levels[state.current].witness;
  for(const m of [first,next]){await click(m.from);await click(m.to);}
@@ -93,7 +94,7 @@ for(const dense of [false,true])test(`queue badge belongs to its source (${dense
 });
 
 test('raised rim remains part of the selected tube',async({page})=>{
- await open(page);const b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,4)[0];
+ await open(page);const b=(await page.locator('#board canvas').boundingBox())!,p=layout(b.width,b.height,4)[0];
  await page.evaluate(async()=>{const path='/src/audio/sound.ts',m=await import(path),original=m.Sound.prototype.tap;(window as any).__taps=0;m.Sound.prototype.tap=function(){(window as any).__taps++;return original.call(this);};});
  await tap(page,0);await page.waitForTimeout(400);
  await page.mouse.click(b.x+p.x,b.y+p.y-13);

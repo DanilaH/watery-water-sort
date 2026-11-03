@@ -4,6 +4,10 @@ import static org.junit.Assert.*;
 import java.util.*;
 
 public class RewardLedgerTest {
+ @Test public void validatesLegacyNumberedVesselsAndCoinsWithoutAcceptingUnboundedTargets(){
+  for(String value:new String[]{"water-003@1","water-003@2","tube:water-003@2:1","tube:water-003@2:2","tube:water-003@2:3","coins:valid-uuid"})assertTrue(value,RewardLedger.validTarget(value));
+  for(String value:new String[]{"tube:water-003@2:0","tube:water-003@2:4","tube:water-003@2:99","tube:water-003@2:-1","tube:water-3@2:1","coins:","water-003@2:2"})assertFalse(value,RewardLedger.validTarget(value));assertFalse(RewardLedger.validTarget(null));
+ }
  static class Disk implements RewardLedger.Store {
   Map<String,String> rows=new LinkedHashMap<>();boolean writable=true;
   public Map<String,String> read(){return new LinkedHashMap<>(rows);}

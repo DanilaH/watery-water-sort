@@ -1,3 +1,4 @@
+import {home48} from './navigation';
 import {toggleSymbols} from './navigation';
 import {advanceFrames} from './controlled-frames';
 import {test,expect,type Page} from '@playwright/test';
@@ -14,7 +15,7 @@ async function open(page:Page,fast=false){const s=fresh();s.settings.sound=false
  await toggleSymbols(page);await expect.poll(()=>page.evaluate(()=>!!(window as any).liquidScene)).toBe(true);
  return s;
 }
-async function tap(page:Page,index:number,s:ReturnType<typeof fresh>){const b=(await page.locator('#board').boundingBox())!,r=layout(b.width,b.height,displaySlots(s))[index];await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
+async function tap(page:Page,index:number,s:ReturnType<typeof fresh>){const b=(await page.locator('#board canvas').boundingBox())!,r=layout(b.width,b.height,displaySlots(s))[index];await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
 for(const fast of [false,true])test(`liquid survives receiving and return, settles and clears on navigation (${fast?'fast':'normal'})`,async({page})=>{
  await page.clock.install();const s=await open(page,fast);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await tap(page,1,s);await advanceFrames(page,'liquidScene',80);await tap(page,3,s);await advanceFrames(page,'liquidScene',1200);
  await expect.poll(()=>page.evaluate(()=>(window as any).liquidFrames.some((f:any)=>f.index===3&&f.received&&Math.abs(f.wave)>.1))).toBe(true);
@@ -22,7 +23,7 @@ for(const fast of [false,true])test(`liquid survives receiving and return, settl
  const impacts=await page.evaluate(()=>(window as any).liquidImpacts);expect(impacts.some((x:any)=>x.i===3)).toBe(true);expect(impacts.every((x:any)=>x.before===x.after)).toBe(true);
  // Drive four seconds of simulation, independently of host rAF delivery.
  // runFor(4000) advances timers but does not guarantee 240 Phaser updates.
- await page.evaluate(()=>{const scene=(window as any).liquidScene;if(scene.busy)throw Error('Expected completed pour');for(let i=0;i<240;i++){scene.lastFrame=performance.now()-1000/60;scene.update();}});expect(await page.evaluate(()=>(window as any).liquidScene.liquid.size)).toBe(0);await page.locator('#menu').click();expect(await page.evaluate(()=>(window as any).liquidScene.liquid.size)).toBe(0);await expect(page.locator('#home')).toBeVisible();await page.clock.resume();
+ await page.evaluate(()=>{const scene=(window as any).liquidScene;if(scene.busy)throw Error('Expected completed pour');for(let i=0;i<240;i++){scene.lastFrame=performance.now()-1000/60;scene.update();}});expect(await page.evaluate(()=>(window as any).liquidScene.liquid.size)).toBe(0);await home48(page);expect(await page.evaluate(()=>(window as any).liquidScene.liquid.size)).toBe(0);await expect(page.locator('#home')).toBeVisible();await page.clock.resume();
 });
 test('reduced motion does not keep a decorative wave loop running',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});const s=await open(page);await tap(page,1,s);await tap(page,3,s);await page.waitForTimeout(700);expect(await page.evaluate(()=>(window as any).liquidFrames.every((f:any)=>f.wave===0))).toBe(true);expect(await page.evaluate(()=>(window as any).liquidScene.liquid.size)).toBe(0);

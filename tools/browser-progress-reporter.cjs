@@ -1,0 +1,1 @@
+class Reporter{onTestEnd(test,result){if(result.status!=='passed'&&result.status!=='skipped')process.stdout.write('\nFAIL_DETAIL '+JSON.stringify({title:test.title,file:test.location.file,errors:result.errors.map(e=>e.message)})+'\n');}}module.exports=Reporter;

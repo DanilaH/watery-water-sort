@@ -1,3 +1,4 @@
+import {home48} from './navigation';
 import {toggleSymbols} from './navigation';
 import {advanceFrames} from './controlled-frames';
 import {test,expect,type Page} from '@playwright/test';
@@ -10,12 +11,12 @@ async function open(page:Page,fast=false){const s=moved(fresh(),levels[0].witnes
  await toggleSymbols(page);await expect.poll(()=>page.evaluate(()=>!!(window as any).materialScene)).toBe(true);
  await page.evaluate(()=>{const s=(window as any).materialScene,phase=s.onPhase,seal=s.onSeal;(window as any).materialBeats=[];(window as any).materialSeats=[];s.onPhase=(n:number,heavy:boolean)=>{(window as any).materialBeats.push(n);phase(n,heavy);};s.onSeal=()=>{(window as any).materialSeats.push(performance.now());seal();};});return s;
 }
-async function finishColour(page:Page,s:ReturnType<typeof fresh>){const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,displaySlots(s)),m=levels[0].witness[1];for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);return m.to;}
+async function finishColour(page:Page,s:ReturnType<typeof fresh>){const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,displaySlots(s)),m=levels[0].witness[1];for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);return m.to;}
 for(const fast of [false,true])test(`fill deforms area-preserving glass, reaches three beats, and Undo clears it (${fast?'fast':'normal'})`,async({page})=>{
  await page.clock.install();const s=await open(page,fast);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));const target=await finishColour(page,s);await advanceFrames(page,'materialScene',1600);await expect.poll(()=>page.evaluate(()=>(window as any).materialBeats)).toEqual([0,1,2]);
  const frames=await page.evaluate(i=>(window as any).bodyFrames.filter((f:any)=>f.index===i),target);expect(frames.some((f:any)=>f.motion>.2)).toBe(true);expect(frames.some((f:any)=>f.motion<-.2)).toBe(true);for(const f of frames)expect(Math.abs(f.area/f.reference-1)).toBeLessThan(.000001);
  expect(await page.evaluate(()=>(window as any).materialSeats.length)).toBe(1);await expect(page.locator('#continue')).toBeHidden();await page.locator('#undo').click();await expect(page.locator('#moves')).toHaveText('Ходов: 1');expect(await page.evaluate(()=>(window as any).materialScene.bodyMotion.size)).toBe(0);
- await advanceFrames(page,'materialScene',800);expect(await page.evaluate(()=>(window as any).materialSeats.length)).toBe(1);await page.locator('#menu').click();expect(await page.evaluate(()=>{const s=(window as any).materialScene;return s.bodyMotion.size+s.liquid.size+s.particles.length;})).toBe(0);await page.clock.resume();
+ await advanceFrames(page,'materialScene',800);expect(await page.evaluate(()=>(window as any).materialSeats.length)).toBe(1);await home48(page);expect(await page.evaluate(()=>{const s=(window as any).materialScene;return s.bodyMotion.size+s.liquid.size+s.particles.length;})).toBe(0);await page.clock.resume();
 });
 test('reduced motion omits body deformation and splashes while retaining the solved colour',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});const s=await open(page),target=await finishColour(page,s);await expect.poll(()=>page.evaluate(()=>(window as any).materialBeats)).toEqual([0,1,2]);expect(await page.evaluate(()=>{const s=(window as any).materialScene;return s.bodyMotion.size+s.liquid.size+s.particles.length;})).toBe(0);expect(await page.evaluate(i=>(window as any).materialScene.board[i].length,target)).toBe(4);

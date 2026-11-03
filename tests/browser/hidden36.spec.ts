@@ -1,3 +1,4 @@
+import {hint48,home48,restart48} from './navigation';
 import legacy from '../../src/core/levels-v1.json' with {type:'json'};
 import {goalStart,playerMoves} from '../../src/core/goalStart';
 import {startingBoard} from './navigation';
@@ -13,7 +14,7 @@ async function open(page:Page,index=34,n=0,old=false){let s={...fresh(),current:
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).hiddenScene=this;return fn.call(this);};});
  await page.locator('#home-play').click();await expect.poll(()=>page.evaluate(()=>!!(window as any).hiddenScene)).toBe(true);await page.waitForTimeout(280);return s;
 }
-async function tap(page:Page,i:number){const b=(await page.locator('#board').boundingBox())!,r=await page.evaluate(i=>(window as any).hiddenScene.positions()[i],i);await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
+async function tap(page:Page,i:number){const b=(await page.locator('#board canvas').boundingBox())!,r=await page.evaluate(i=>(window as any).hiddenScene.positions()[i],i);await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
 async function move(page:Page,from:number,to:number){await tap(page,from);await tap(page,to);await expect(page.locator('#hint')).toBeEnabled();}
 async function questions(page:Page){return page.evaluate(()=>(window as any).hiddenScene.activeLabels.filter((l:any)=>l.text==='?').length);}
 
@@ -33,12 +34,12 @@ test('discovery blends continuously at receive, with one tactile/audio cue and n
 
 test('exploration hint never starts omniscient worker; full knowledge enables normal solver',async({page})=>{
  await open(page,34);await page.evaluate(()=>{const Original=window.Worker;(window as any).workers36=0;window.Worker=class extends Original{constructor(...args:ConstructorParameters<typeof Worker>){super(...args);(window as any).workers36++;}};});
- await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Открой следующий слой');expect(await page.evaluate(()=>(window as any).workers36)).toBe(0);
+ await hint48(page);await expect(page.locator('#status')).toContainText('Открой следующий слой');expect(await page.evaluate(()=>(window as any).workers36)).toBe(0);
  const hint=await page.evaluate(()=>(window as any).hiddenScene.hintMove);await tap(page,hint.to);await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(1);
 });
 
 test('learned route restarts with no question marks and uses worker hints',async({page})=>{
- await open(page,34,levels[34].witness.length);await page.locator('#restart').click();await page.getByRole('button',{name:'Начать заново',exact:true}).click();expect(hasUnknown(knowledgeFor(await saved(page)))).toBe(false);expect(await questions(page)).toBe(0);await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');
+ await open(page,34,levels[34].witness.length);await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();expect(hasUnknown(knowledgeFor(await saved(page)))).toBe(false);expect(await questions(page)).toBe(0);await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');
 });
 
 for(const [width,height]of [[320,480],[390,844],[568,320]])for(const index of [38,39])test(`hidden combination ${index+1} wins and reselects at ${width}x${height}`,async({page})=>{
@@ -48,10 +49,10 @@ for(const [width,height]of [[320,480],[390,844],[568,320]])for(const index of [3
 });
 
 test('reward preserves knowledge and restarting keeps both reward and discovery',async({page})=>{
- await open(page,34,4);await mockReward(page);await page.locator('#extra-tube').click();await page.getByRole('button',{name:'Смотреть рекламу',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();const known=attempt(await saved(page)).known;await page.locator('#restart').click();await page.getByRole('button',{name:'Начать заново',exact:true}).click();const s=await saved(page);expect(attempt(s).extra).toBe(true);expect(attempt(s).known).toEqual(known);expect(knowledgeFor(s)?.ids.at(-1)).toEqual([]);
+ await open(page,34,4);await mockReward(page);await page.locator('#extra-tube').click();await page.getByRole('button',{name:'Смотреть рекламу',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();const known=attempt(await saved(page)).known;await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();const s=await saved(page);expect(attempt(s).extra).toBe(true);expect(attempt(s).known).toEqual(known);expect(knowledgeFor(s)?.ids.at(-1)).toEqual([]);
 });
 
 test('reduced motion reveals at receive; leaving early clears pending reveal effects',async({page})=>{
  await page.clock.install();await page.emulateMedia({reducedMotion:'reduce'});await open(page,34,3);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));const m=levels[34].witness[3];await tap(page,m.from);await tap(page,m.to);await advanceFrames(page,'hiddenScene',1300);expect(await page.evaluate(()=>{const s=(window as any).hiddenScene;return {reveals:s.reveals.size,waves:s.liquid.size};})).toEqual({reveals:0,waves:0});await page.clock.resume();
- await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();const next=levels[34].witness[3];await tap(page,next.from);await tap(page,next.to);await page.locator('#menu').click();expect(await page.evaluate(()=>(window as any).hiddenScene.reveals.size)).toBe(0);await page.locator('#home-play').click();expect(attempt(await saved(page)).known).toContain(1);
+ await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();const next=levels[34].witness[3];await tap(page,next.from);await tap(page,next.to);await home48(page);expect(await page.evaluate(()=>(window as any).hiddenScene.reveals.size)).toBe(0);await page.locator('#home-play').click();expect(attempt(await saved(page)).known).toContain(1);
 });

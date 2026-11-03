@@ -1,11 +1,12 @@
+import {home48,restart48} from './navigation';
 import {levelButton} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,levelKey,moved,expanded,attempt,type Save} from '../../src/core/session';
 import {layout} from '../../src/game/geometry';
 async function seed(page:Page,state:Save){await page.addInitScript(s=>{if(sessionStorage.nav13)return;sessionStorage.nav13='1';localStorage.setItem('water-sort-v1',JSON.stringify(s));},state);}
 async function saved(page:Page):Promise<Save>{return page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
-async function tap(page:Page,i:number,count=4){const b=(await page.locator('#board').boundingBox())!,p=layout(b.width,b.height,count)[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
-async function home(page:Page){await page.locator('#menu').click();await expect(page.locator('#home')).toBeVisible();}
+async function tap(page:Page,i:number,count=4){const b=(await page.locator('#board canvas').boundingBox())!,p=layout(b.width,b.height,count)[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
+async function home(page:Page){await home48(page);await expect(page.locator('#home')).toBeVisible();}
 
 test('first launch shows home; settings do not start the game; first Play persists a start',async({page})=>{
  await page.goto('/');await expect(page.getByRole('heading',{name:'Переливы',exact:true})).toBeVisible();await expect(page.locator('#home-play')).toHaveText('Играть');await expect(page.locator('#app')).toBeHidden();
@@ -15,7 +16,7 @@ test('first launch shows home; settings do not start the game; first Play persis
 });
 
 test('Continue retains the exact accepted attempt through home, settings, Escape and reload',async({page})=>{
- const state=moved(fresh(),levels[0].witness[0]);await seed(page,state);await page.goto('/');await expect(page.locator('#home-summary')).toHaveText('Уровень 1');await page.locator('#home-play').click();await expect(page.locator('#moves')).toHaveText('Ходов: 1');await page.keyboard.press('Escape');await expect(page.locator('#home')).toBeVisible();expect(await saved(page)).toEqual(state);
+ const state=moved(fresh(),levels[0].witness[0]);await seed(page,state);await page.goto('/');await expect(page.locator('#home-summary')).toHaveText('Уровень 1');await page.locator('#home-play').click();await expect(page.locator('#moves')).toHaveText('Ходов: 1');await page.keyboard.press('Escape');await expect(page.locator('dialog')).toBeVisible();await page.locator('#menu').click();await expect(page.locator('#home')).toBeVisible();expect(await saved(page)).toEqual(state);
  await page.locator('#home-settings').click();await page.keyboard.press('Escape');await expect(page.locator('#home')).toBeVisible();await page.reload();await expect(page.locator('#home')).toBeVisible();await page.locator('#home-play').click();expect(await saved(page)).toEqual(state);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
 });
 
@@ -31,9 +32,9 @@ test('choosing another previously played level resets that level, not the attemp
 });
 
 test('Restart cancellation leaves progress intact; confirmation retains extra tube and completed levels',async({page})=>{
- const state=expanded(moved(fresh(),levels[0].witness[0]));state.completed=[levels[0].id];await seed(page,state);await page.goto('/');await page.locator('#home-play').click();await page.locator('#restart').click();await page.getByRole('button',{name:'Продолжить игру',exact:true}).click();expect(await saved(page)).toEqual(state);
- await page.locator('#restart').click();await page.getByRole('button',{name:'Начать заново',exact:true}).click();const next=await saved(page);expect(attempt(next).board).toEqual([...levels[0].initial,[]]);expect(next.completed).toEqual(state.completed);expect(attempt(next).extra).toBe(true);
- await page.locator('#restart').click();await expect(page.getByRole('heading',{name:'Начать заново?',exact:true})).toBeVisible();
+ const state=expanded(moved(fresh(),levels[0].witness[0]));state.completed=[levels[0].id];await seed(page,state);await page.goto('/');await page.locator('#home-play').click();await restart48(page);await page.getByRole('button',{name:'Продолжить игру',exact:true}).click();expect(await saved(page)).toEqual(state);
+ await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();const next=await saved(page);expect(attempt(next).board).toEqual([...levels[0].initial,[]]);expect(next.completed).toEqual(state.completed);expect(attempt(next).extra).toBe(true);
+ await restart48(page);await expect(page.getByRole('heading',{name:'Начать заново?',exact:true})).toBeVisible();
 });
 
 test('failed level reset cannot discard the attempt; home Continue still restores it',async({page})=>{
@@ -41,7 +42,7 @@ test('failed level reset cannot discard the attempt; home Continue still restore
 });
 
 test('home interrupts queued actions, preserving only the accepted move',async({page})=>{
- await page.goto('/');await page.locator('#home-play').click();await page.locator('canvas').waitFor();await page.waitForTimeout(150);const box=(await page.locator('#board').boundingBox())!,poses=layout(box.width,box.height,4),click=(i:number)=>page.mouse.click(box.x+poses[i].x,box.y+poses[i].y+poses[i].h/2);
+ await page.goto('/');await page.locator('#home-play').click();await page.locator('canvas').waitFor();await page.waitForTimeout(150);const box=(await page.locator('#board canvas').boundingBox())!,poses=layout(box.width,box.height,4),click=(i:number)=>page.mouse.click(box.x+poses[i].x,box.y+poses[i].y+poses[i].h/2);
  await page.evaluate(()=>{new MutationObserver(()=>{if(document.getElementById('status')!.textContent!.includes('Следующий ход выбран')&&!(window as any).homeAtQueue){(window as any).homeAtQueue={moves:JSON.parse(localStorage.getItem('water-sort-v1')!).attempts['water-001@1'].history.length,busy:document.body.classList.contains('pouring')};document.getElementById('menu')!.click();}}).observe(document.getElementById('status')!,{childList:true,subtree:true,characterData:true});});
  await click(0);await click(2);await click(1);await click(0);await expect(page.locator('#home')).toBeVisible();expect(await page.evaluate(()=>(window as any).homeAtQueue)).toEqual({moves:1,busy:true});await page.waitForTimeout(700);expect(attempt(await saved(page)).history).toHaveLength(1);await page.locator('#home-play').click();await expect(page.locator('#moves')).toHaveText('Ходов: 1');
 });

@@ -1,3 +1,4 @@
+import {home48} from './navigation';
 import {levelButton} from './navigation';
 import {toggleSymbols} from './navigation';
 import {test,expect} from '@playwright/test';
@@ -8,7 +9,7 @@ test('generated glass and cork survive cached redraws, disappear on Undo and cle
  await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');await page.locator('#home-play').click();await page.waitForTimeout(300);
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).glassScene=this;return fn.call(this);};});
  await toggleSymbols(page);await expect.poll(()=>page.evaluate(()=>!!(window as any).glassScene)).toBe(true);
- const b=(await page.locator('#board').boundingBox())!,poses=layout(b.width,b.height,displaySlots(s)),move=levels[0].witness[1];
+ const b=(await page.locator('#board canvas').boundingBox())!,poses=layout(b.width,b.height,displaySlots(s)),move=levels[0].witness[1];
  for(const i of [move.from,move.to])await page.mouse.click(b.x+poses[i].x,b.y+poses[i].y+poses[i].h/2);
  await expect.poll(()=>page.evaluate(i=>(window as any).glassScene.glass.corkVisible(i),move.to)).toBe(true);
  await page.waitForTimeout(2200);
@@ -16,7 +17,7 @@ test('generated glass and cork survive cached redraws, disappear on Undo and cle
  await page.mouse.click(b.x+poses[move.from].x,b.y+poses[move.from].y+poses[move.from].h/2);
  await expect.poll(()=>page.evaluate(i=>{const s=(window as any).glassScene;return {glass:s.glass.tubes.get(i)?.visible,cork:s.glass.corkVisible(i)};},move.to)).toEqual({glass:true,cork:true});
  await page.locator('#undo').click();await expect.poll(()=>page.evaluate(i=>(window as any).glassScene.glass.corkVisible(i),move.to)).toBe(false);
- await page.locator('#menu').click();await expect(page.locator('#home')).toBeVisible();expect(await page.evaluate(()=>{const s=(window as any).glassScene;return [...s.glass.corks.values()].filter((v:any)=>v.visible).length+s.flyingInk.commandBuffer.length;})).toBe(0);
+ await home48(page);await expect(page.locator('#home')).toBeVisible();expect(await page.evaluate(()=>{const s=(window as any).glassScene;return [...s.glass.corks.values()].filter((v:any)=>v.visible).length+s.flyingInk.commandBuffer.length;})).toBe(0);
 });
 
 test('switching from ordinary to giant fits the shared glass to the giant goal',async({page})=>{
@@ -24,7 +25,7 @@ test('switching from ordinary to giant fits the shared glass to the giant goal',
  await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');await page.locator('#home-play').click();
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).glassScene=this;return fn.call(this);};});
  await toggleSymbols(page);await expect.poll(()=>page.evaluate(()=>(window as any).glassScene?.glass.tubes.get(0)?.visible)).toBe(true);
- await page.locator('#menu').click();await page.locator('#home-levels').click();await levelButton(page,12).click();await expect(page.locator('#level-title')).toHaveText('Уровень 4');await page.waitForTimeout(900);
+ await home48(page);await page.locator('#home-levels').click();await levelButton(page,12).click();await expect(page.locator('#level-title')).toHaveText('Уровень 4');await page.waitForTimeout(900);
  await toggleSymbols(page);await page.waitForTimeout(100);
  expect(await page.evaluate(()=>{const s=(window as any).glassScene;return {goal:s.goal.index,oldGlass:s.glass.tubes.get(0).visible,fitted:Math.abs(s.glass.tubes.get(0).height*s.glass.tubes.get(0).scaleY-66*s.glass.tubes.get(0).scaleY-s.positions()[0].h)<.01,ordinary:[...s.glass.tubes.entries()].some(([i,v]:any)=>i!==0&&v.visible)};})).toEqual({goal:0,oldGlass:true,fitted:true,ordinary:true});
 });
@@ -40,6 +41,6 @@ test('entrance returns cached glass to the exact settled pose without another in
   await page.waitForTimeout(120);
   const offsets=await page.evaluate(()=>{const s=(window as any).glassScene;return s.positions().slice(0,s.board.length).map((r:any,i:number)=>{const t=s.glass.tubes.get(i);return Math.abs(t.y-r.y)+Math.abs(t.x-r.x)+Math.abs(t.rotation);});});
   for(const d of offsets)expect(d).toBeLessThan(.01);
-  await page.locator('#menu').click();
+  await home48(page);
  }
 });

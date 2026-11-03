@@ -3,7 +3,7 @@ body{--gel-filter:none;--sheet-top:#295398;--sheet-base:#16366e;--sheet-line:#7c
 body[data-theme=plum]{--gel-filter:hue-rotate(46deg) saturate(.78);--sheet-top:#634289;--sheet-base:#3c265c;--sheet-line:#b79ada;--sheet-ink:#fff7ff;--sheet-muted:#e0cdef}
 body[data-theme=graphite]{--gel-filter:grayscale(.92) brightness(.82);--sheet-top:#48596c;--sheet-base:#273342;--sheet-line:#a3b7ca;--sheet-ink:#f5f8fc;--sheet-muted:#c8d5e2}
 body[data-theme=ice]{--gel-filter:grayscale(.65) brightness(2);--sheet-top:#f5fbff;--sheet-base:#dceefe;--sheet-line:#8ab9e4;--sheet-ink:#17386c;--sheet-muted:#47688b}
-body :is(#home-play,#home-levels,#home-settings,#menu,#settings,#undo,#hint,#restart,#continue,#rescue).gel-button,body .dialog-actions button.gel-button,body button.dialog-close.gel-button,body .levels button.gel-button,body .help-button.gel-button{position:relative;isolation:isolate;background:transparent;border:0;box-shadow:none;color:#fff;text-shadow:0 1px 2px #10367bb3}
+body :is(#home-play,#home-levels,#home-settings,#menu,#settings,#undo,#shuffle,#extra-tube,#hint,#restart,#continue,#rescue).gel-button,body .dialog-actions button.gel-button,body button.dialog-close.gel-button,body .levels button.gel-button,body .help-button.gel-button{position:relative;isolation:isolate;background:transparent;border:0;box-shadow:none;color:#fff;text-shadow:0 1px 2px #10367bb3}
 body .gel-button::before{content:"";position:absolute;inset:-2px -2px -4px;z-index:-1;border:12px solid transparent;border-image:url('/art/ui/button-blue-29.svg') 58 fill / 13px / 0 stretch;filter:var(--gel-filter);pointer-events:none;transition:filter 130ms,transform 130ms}
 body .gel-button.gel-primary::before{border-image-source:url('/art/ui/button-gold-29.svg');border-image-slice:70 100 fill;border-image-width:13px 19px;filter:none}
 body :is(#home-play,#continue).gel-primary,body .dialog-actions button.gel-primary,body .levels button.gel-primary{color:#593700;text-shadow:0 1px 0 #fff3b580}
@@ -11,7 +11,7 @@ body .gel-button:active:not(:disabled){box-shadow:none;transform:translateY(3px)
 body .gel-button:active:not(:disabled)::before{transform:scaleY(.96);filter:var(--gel-filter) brightness(.94)}
 body .gel-button.gel-primary:active:not(:disabled)::before{filter:brightness(.96)}
 body .gel-button:disabled::before{filter:var(--gel-filter) saturate(.25)}
-body[data-theme=ice] :is(#home-levels,#home-settings,#menu,#settings,#undo,#hint,#restart,#rescue).gel-button,body[data-theme=ice] .dialog-actions button.gel-button:not(.gel-primary),body[data-theme=ice] button.dialog-close.gel-button,body[data-theme=ice] .levels button.gel-button:not(.gel-primary){color:#17386c;text-shadow:none}
+body[data-theme=ice] :is(#home-levels,#home-settings,#menu,#settings,#undo,#shuffle,#extra-tube,#hint,#restart,#rescue).gel-button,body[data-theme=ice] .dialog-actions button.gel-button:not(.gel-primary),body[data-theme=ice] button.dialog-close.gel-button,body[data-theme=ice] .levels button.gel-button:not(.gel-primary){color:#17386c;text-shadow:none}
 body .levels button small{color:#e2f0ff;text-shadow:0 1px 1px #153d70}
 body .levels button.gel-primary small{color:#684617;text-shadow:none}
 body .levels button .level-hard{color:#ffe2f5}

@@ -1,3 +1,4 @@
+import {scoreMoves,type Shuffle} from './assist';
 import {clone,goalList,moves,transition,type Move} from './rules';
 import type {Level} from './session';
 /** Move existing exposed liquid into each receiver before the player's first turn.
@@ -14,4 +15,4 @@ export function goalStart(l:Level):Move[]{
  }
  return prefix;
 }
-export const playerMoves=(a:{history:Move[];setup?:number})=>a.history.length-(a.setup??0);
+export const playerMoves=(a:{history:Move[];setup?:number;shuffles?:Shuffle[]})=>scoreMoves(a)-(a.setup??0);

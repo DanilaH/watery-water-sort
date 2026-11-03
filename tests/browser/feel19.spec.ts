@@ -1,3 +1,4 @@
+import {stars48} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {advanceFrames} from './controlled-frames';
 import {fresh,levels,moved,displaySlots} from '../../src/core/session';
@@ -7,7 +8,7 @@ async function open(page:Page,index=0,last=false){
  await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');await page.locator('#home-play').click();await page.waitForTimeout(300);
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).scene19=this;return fn.call(this);};});
 }
-async function tap(page:Page,i:number){const b=(await page.locator('#board').boundingBox())!,s=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!)),ps=levels[s.current].goal?goalLayout(b.width,b.height,displaySlots(s),0):layout(b.width,b.height,displaySlots(s)),p=ps[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
+async function tap(page:Page,i:number){const b=(await page.locator('#board canvas').boundingBox())!,s=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!)),ps=levels[s.current].goal?goalLayout(b.width,b.height,displaySlots(s),0):layout(b.width,b.height,displaySlots(s)),p=ps[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
 async function move(page:Page,from:number,to:number){await tap(page,from);await tap(page,to);}
 for(const [width,height]of [[320,480],[390,844],[568,320]])test(`goal edges align with actual rows, without a fraction counter ${width}x${height}`,async({page})=>{
  await page.setViewportSize({width,height});await open(page,15);await tap(page,1);
@@ -17,7 +18,7 @@ for(const [width,height]of [[320,480],[390,844],[568,320]])test(`goal edges alig
 test('potential stars react to overspending and Undo; exact conditions remain reachable',async({page})=>{
  await open(page,0,true);await move(page,1,2);await expect(page.locator('#hint')).toBeEnabled();await move(page,2,1);await expect(page.locator('#hint')).toBeEnabled();
  await expect(page.locator('#star-target [data-filled=true]')).toHaveCount(2);await expect(page.locator('#star-target .star-lost')).toHaveCount(1);
- await page.locator('#undo').click();await expect(page.locator('#star-target [data-filled=true]')).toHaveCount(3);await page.locator('#star-target').click();await expect(page.getByRole('heading',{name:'Звёзды за уровень'})).toBeVisible();await expect(page.locator('.dialog-body')).toContainText('не больше 3 ходов');await expect(page.locator('.dialog-body')).toContainText('не больше 5');
+ await page.locator('#undo').click();await expect(page.locator('#star-target [data-filled=true]')).toHaveCount(3);await stars48(page);await expect(page.getByRole('heading',{name:'Звёзды за уровень'})).toBeVisible();await expect(page.locator('.dialog-body')).toContainText('не больше 3 ходов');await expect(page.locator('.dialog-body')).toContainText('не больше 5');
 });
 test('word, stars, fountains and breathing next button coexist, with continuing idle movement',async({page})=>{
  await open(page,0,true);const last=levels[0].witness.at(-1)!;await move(page,last.from,last.to);await expect(page.locator('#continue')).toBeVisible();

@@ -1,3 +1,4 @@
+import {restart48} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,moved,levelKey} from '../../src/core/session';
 import {layout} from '../../src/game/geometry';
@@ -16,7 +17,7 @@ async function prepare(page:Page,reduced=false){
  });
 }
 async function finish(page:Page){
- const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,4),m=levels[0].witness.at(-1)!;
+ const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,4),m=levels[0].witness.at(-1)!;
  for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);
  await expect(page.locator('#continue')).toBeVisible();
 }
@@ -29,8 +30,8 @@ test('saved best result precedes cosmetic collection; replay and reload cannot f
  await expect(page.locator('#star-total')).toHaveText('3');
  await page.reload();await page.locator('#home-play').click();await expect(page.locator('#earned-stars')).toHaveText('★★★');
  await page.waitForTimeout(1900);await expect(page.locator('.star-flight')).toHaveCount(0);
- await page.locator('#restart').click();await page.getByRole('button',{name:'Начать заново',exact:true}).click();
- const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,4);
+ await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();
+ const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,4);
  for(const m of levels[0].witness){for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);if(m!==levels[0].witness.at(-1))await expect(page.locator('#hint')).toBeEnabled();}
  await expect(page.locator('#continue')).toBeVisible();await page.waitForTimeout(1800);
  await expect(page.locator('.star-flight')).toHaveCount(0);await expect(page.locator('#star-total')).toHaveText('3');
@@ -56,7 +57,7 @@ test('an immediate next event cancels pending collection before its first arriva
    button.click();
   });observer.observe(button,{attributes:true,attributeFilter:['hidden']});
  });
- const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,4),m=levels[0].witness.at(-1)!;
+ const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,4),m=levels[0].witness.at(-1)!;
  for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);
  await expect(page.locator('#level-title')).toHaveText('Уровень 2');
  const atClick=await page.evaluate(()=>(window as any).immediateNext);expect(atClick.arrivals).toEqual([]);expect(atClick.revealing).toBe(true);expect(atClick.pendingBursts).toBeGreaterThan(0);
@@ -79,7 +80,7 @@ for(const [width,height]of [[320,480],[568,320]])test(`challenge label and rewar
  await page.setViewportSize({width,height});const s={...fresh(),current:7};
  await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');
  await expect(page.locator('#home-challenge')).toBeVisible();await page.locator('#home-play').click();await expect(page.locator('#hard-badge')).toBeVisible();
- for(const id of ['star-bank','hard-badge','menu','settings']){const r=(await page.locator('#'+id).boundingBox())!;expect(r.x).toBeGreaterThanOrEqual(0);expect(r.y).toBeGreaterThanOrEqual(0);expect(r.x+r.width).toBeLessThanOrEqual(width);expect(r.y+r.height).toBeLessThanOrEqual(height);}
+ for(const id of ['wallet','hard-badge','settings']){const r=(await page.locator('#'+id).boundingBox())!;expect(r.x).toBeGreaterThanOrEqual(0);expect(r.y).toBeGreaterThanOrEqual(0);expect(r.x+r.width).toBeLessThanOrEqual(width);expect(r.y+r.height).toBeLessThanOrEqual(height);}
 });
 test('a colour completes on the first filled frame before the flight is cleared',async({page})=>{
  const s=moved(fresh(),levels[0].witness[0]);s.settings.sound=false;
@@ -94,7 +95,7 @@ test('a colour completes on the first filled frame before the flight is cleared'
   };
   m.WaterScene.prototype.celebrate=function(index:number,final=false){const fullAt=this.flight.start+this.flight.timing.lift+this.flight.timing.flow;(window as any).completions.push({index,final,busy:this.busy,received:this.flight?.received,previousBeforeFill:this.fillPreviousFrame-fullAt,tail:performance.now()-fullAt});return fn.call(this,index,final);};
  });
- const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,4),m=levels[0].witness[1];
+ const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,4),m=levels[0].witness[1];
  for(const i of [m.from,m.to])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);
  await expect(page.locator('#hint')).toBeEnabled();const events=await page.evaluate(()=>(window as any).completions);
  expect(events).toHaveLength(1);expect(events[0]).toMatchObject({index:m.to,final:false,busy:true,received:true});expect(events[0].tail).toBeGreaterThanOrEqual(-1);expect(events[0].previousBeforeFill).toBeLessThan(1);
@@ -106,7 +107,7 @@ test('immediately reusing a completed vessel cancels its old cork contact',async
   const path='/src/game/WaterScene.ts',m=await import(path),fn=m.WaterScene.prototype.animate;(window as any).seals=0;
   m.WaterScene.prototype.animate=function(...args:any[]){if(!(window as any).sealHook){(window as any).sealHook=true;const seal=this.onSeal;this.onSeal=()=>{(window as any).seals++;seal();};}return fn.apply(this,args);};
  });
- const b=(await page.locator('#board').boundingBox())!,ps=layout(b.width,b.height,4);
+ const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,4);
  for(const i of [0,1,1,2])await page.mouse.click(b.x+ps[i].x,b.y+ps[i].y+ps[i].h/2);
  await expect(page.locator('#status')).toContainText('Следующий ход');
  await expect(page.locator('#moves')).toHaveText('Ходов: 3');await expect(page.locator('#hint')).toBeEnabled();

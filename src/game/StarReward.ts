@@ -18,7 +18,7 @@ export class StarReward{
   }
   run({earned,delta,before,total,reduced}:Options){
     this.cancel();this.total=total;
-    const target=document.getElementById('star-bank')!;
+    const bank=document.getElementById('star-bank')!,target=bank.getClientRects().length?bank:this.result;
     const items=Array.from({length:3},(_,i)=>{
       const e=starGlyph(i,i<earned,'result-star');
       e.setAttribute('aria-hidden','true');this.result.append(e);return e;

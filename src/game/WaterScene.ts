@@ -8,7 +8,7 @@ import {stepLiquid,smooth,streamEnvelope,completionCork,FILL_BEATS,type LiquidMo
 import { type Board, type Move, type Goals, goalAt, goalList, miniIndex, isMini, iceIndex, isFrozen, capacityAt, sealedTube, moveFor } from '../core/rules';
 import { area, clip, layout, goalLayout, miniLayout, surface, planPour, pourPose, vesselPolygon, LIQUID_FILL, pourTransfer, pourTiming, pourFrame, type PourPlan, type Point } from './geometry';
 // Clean candy hues: amber/yellow-green and cyan/royal blue stay separate at small sizes.
-export const COLORS=[0x00d9f5,0xffd000,0xad32ff,0x16df64,0xff2447,0x2463ff,0xbcef00,0xff7e14];
+export const COLORS=[0x00d8ff,0xffcf00,0xb324ff,0x20e83c,0xff254b,0x3047ff,0xb8f000,0xff7900];
 const SIGNS=['●','▲','◆','✚','♥','★','■','✦'];
 type Pose={x:number;y:number;w:number;h:number};
 type Layer={color:number;amount:number;reveal?:number};
@@ -102,8 +102,10 @@ export class WaterScene extends Phaser.Scene {
     this.crystalShards=Array.from({length:5},(_,i)=>{const shard=this.add.image(0,0,`goal-crystal-shard-${i}`).setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(shard);return shard;});this.root.sort('depth');
     this.secondCrystalBase=this.add.image(0,0,'goal-crystal-base').setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(this.secondCrystalBase);
     this.secondCrystalShards=Array.from({length:5},(_,i)=>{const shard=this.add.image(0,0,`goal-crystal-shard-${i}`).setOrigin(.5,.45).setDepth(-1).setVisible(false);this.root.add(shard);return shard;});this.root.sort('depth');
+    let scrollTap:{x:number;y:number;scroll:number}|undefined;
+    this.input.on('pointerup',(p:Phaser.Input.Pointer)=>{if(!scrollTap)return;const a=scrollTap;scrollTap=undefined;const el=this.game.canvas.parentElement!;if(Math.hypot(p.x-a.x,p.y-a.y)<10&&Math.abs(el.scrollTop-a.scroll)<5)this.onTap(this.hitTube(p.x/this.density,p.y/this.density));});
     this.input.on('pointerdown',(p:Phaser.Input.Pointer)=>{
-      if(!p.primaryDown)return;
+      if(!p.primaryDown)return;const el=this.game.canvas.parentElement!;if(el.classList.contains('scroll-field')){scrollTap={x:p.x,y:p.y,scroll:el.scrollTop};return;}
       this.onTap(this.hitTube(p.x/this.density,p.y/this.density));
     });this.ready=true;this.onReady();
   }
@@ -126,14 +128,17 @@ export class WaterScene extends Phaser.Scene {
     return null;
   }
   setViewport(width:number,height:number,density:number){this.viewWidth=Math.max(1,width);this.viewHeight=Math.max(1,height);this.density=density;this.root?.setScale(density);for(const label of [...this.labels,...this.activeLabels,...this.queueLabels])label.setResolution(density);this.previousSignature='';this.tubes.clear();}
-  positions(){const key=`${this.viewWidth}:${this.viewHeight}:${this.slots}:${goalList(this.goal).map(g=>g.index).join(',')}:${miniIndex(this.goal)??-1}`;if(key!==this.layoutKey){this.layoutKey=key;this.layoutCache=miniLayout(goalList(this.goal).length?goalLayout(this.viewWidth,this.viewHeight,this.slots,goalList(this.goal).map(g=>g.index)):layout(this.viewWidth,this.viewHeight,this.slots),miniIndex(this.goal));}return this.layoutCache;}
+  private arrangeFrom?:ReturnType<typeof layout>;private arrangeAt=0;
+  get arranging(){return !!this.arrangeFrom&&performance.now()-this.arrangeAt<480;}
+  reflow(from:ReturnType<typeof layout>){if(this.reduced)return;this.arrangeFrom=from;this.arrangeAt=performance.now();this.previousSignature='';}
+  positions(){const key=`${this.viewWidth}:${this.viewHeight}:${this.slots}:${goalList(this.goal).map(g=>g.index).join(',')}:${miniIndex(this.goal)??-1}`;if(key!==this.layoutKey){this.layoutKey=key;this.layoutCache=miniLayout(goalList(this.goal).length?goalLayout(this.viewWidth,this.viewHeight,this.slots,goalList(this.goal).map(g=>g.index)):layout(this.viewWidth,this.viewHeight,this.slots),miniIndex(this.goal));}const p=Math.min(1,(performance.now()-this.arrangeAt)/480);if(this.arrangeFrom&&p<1){const u=p*p*(3-2*p);return this.layoutCache.map((r,i)=>{const a=this.arrangeFrom![i]??{...r,y:r.y+24};return {...r,x:a.x+(r.x-a.x)*u,y:a.y+(r.y-a.y)*u,w:a.w+(r.w-a.w)*u,h:a.h+(r.h-a.h)*u};});}this.arrangeFrom=undefined;return this.layoutCache;}
   reveal(){this.entrance=performance.now();this.previousSignature='';}
   setBoard(b:Board){this.board=b;}
   animate(before:Board,m:Move,fast:boolean,view?:KnowledgeView){this.flight={...m,before,ids:view?.ids,start:performance.now(),duration:pourTiming(m.amount,fast).duration,timing:pourTiming(m.amount,fast),received:false,lifted:(this.selectionY.get(m.from)??0)+12*Math.max(0,1-(performance.now()-this.entrance)/240)**2,plan:planPour(this.positions()[m.from],this.positions()[m.to],this.viewWidth,this.viewHeight,before[m.from].length*4/capacityAt(this.goal,m.from),(before[m.from].length-m.amount)*4/capacityAt(this.goal,m.from))};this.startedSound=false;this.selectionY.set(m.from,0);this.selectionV.set(m.from,0);this.selectionY.set(m.to,0);this.selectionV.set(m.to,0);}
   get busy(){return !!this.flight;}
   busyTube(i:number){return this.flight?.from===i||this.flight?.to===i;}
   skip(){this.flight=undefined;this.startedSound=false;this.previousSignature='';}
-  resetEffects(){this.reveals.clear();this.iceHeld=null;this.iceRelease=undefined;this.glass?.reset();this.crystalBase?.setVisible(false);this.crystalShards.forEach(s=>s.setVisible(false));this.secondCrystalBase?.setVisible(false);this.secondCrystalShards.forEach(s=>s.setVisible(false));this.overlay.clear();this.popped.clear();this.lastSelected=null;this.skip();this.tubes.clear();this.hitPolygons.clear();this.corkOpen.clear();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.impulses.clear();this.liquid.clear();this.bodyMotion.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.flyingInk?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
+  resetEffects(){this.arrangeFrom=undefined;this.reveals.clear();this.iceHeld=null;this.iceRelease=undefined;this.glass?.reset();this.crystalBase?.setVisible(false);this.crystalShards.forEach(s=>s.setVisible(false));this.secondCrystalBase?.setVisible(false);this.secondCrystalShards.forEach(s=>s.setVisible(false));this.overlay.clear();this.popped.clear();this.lastSelected=null;this.skip();this.tubes.clear();this.hitPolygons.clear();this.corkOpen.clear();for(const l of this.queueLabels)l.setVisible(false);this.bursts=[];this.particles=[];this.settles.clear();this.impulses.clear();this.liquid.clear();this.bodyMotion.clear();this.pulses.clear();this.selectionY.clear();this.selectionV.clear();this.entrance=0;this.ink?.clear();this.flyingInk?.clear();this.fx?.clear();for(const l of this.floatLabels){this.tweens.killTweensOf(l);l.destroy();}this.floatLabels=[];}
   reject(i:number){this.pulses.set(i,performance.now());}
   land(i:number,amount=1){this.settles.set(i,performance.now());this.impulses.set(i,.55+amount*.16);if(!this.reduced){const s=this.liquid.get(i)??{x:0,v:0};s.v=Math.min(120,s.v+(34+amount*14)*(!!goalAt(this.goal,i)?1.18:1));this.liquid.set(i,s);}}
   celebrate(index:number,final=false){
@@ -236,7 +241,7 @@ export class WaterScene extends Phaser.Scene {
     const boundaries=mesh?.boundaries??fractions.map(f=>({y:surface(poly,f),amplitude:0})),frameBounds={left:bounds.lo,right:bounds.hi};
     for(let n=0;n<layers.length;n++){
       const layer=layers[n];if(layer.amount<.001)continue;
-      const low=boundaries[n].y,high=boundaries[n+1].y,base=blend(0x657ba8,COLORS[layer.color],layer.reveal??1),wave=boundaries[n+1].amplitude;
+      const low=boundaries[n].y,high=boundaries[n+1].y,base=blend(0x121638,COLORS[layer.color],layer.reveal??1),wave=boundaries[n+1].amplitude;
       const band=mesh?liquidContour(mesh,n,n+1):clip(clip(poly,high,true),low,false);
       const receiving=this.flight?.to===index&&!this.flight.received&&now>=this.flight.start+this.flight.timing.lift;
       const flowAge=receiving?now-this.flight!.start-this.flight!.timing.lift:0;
@@ -246,13 +251,13 @@ export class WaterScene extends Phaser.Scene {
         // A narrow glossy reflection leaves the body saturated. Neutral edge shade
         // keeps warm liquid warm instead of mixing every hue with the blue glass.
         let col=blend(base,0x000000,.14*Math.pow(Math.abs(t-.43)*1.75,2));
-        col=blend(col,0xffffff,Math.exp(-Math.pow((t-(.18+Math.sin(angle)*.055+Math.tanh((this.liquid.get(index)?.x??0)/4)*.014))/.065,2))*.17);
+        col=blend(col,0xffffff,Math.exp(-Math.pow((t-(.18+Math.sin(angle)*.055+Math.tanh((this.liquid.get(index)?.x??0)/4)*.014))/.048,2))*.10);
         this.polygon(clipX(clipX(band,x0,true),x1,false),col);
       }
       if(n===layers.length-1&&Math.abs(angle)<.09){
         
         const cap=clip(poly,high+3,true);const left=cap.length?Math.min(...cap.map(p=>p.x)):r.x-w,right=cap.length?Math.max(...cap.map(p=>p.x)):r.x+w;
-        if(Math.abs(wave)<.5){g.fillStyle(blend(base,0xffffff,.10),.94*(1-smooth(Math.abs(wave)/.5)));g.fillEllipse((left+right)/2,high+.7,(right-left)-1,Math.max(3,r.w*.105));}
+        if(Math.abs(wave)<.5){g.fillStyle(blend(base,0xffffff,.075),.94*(1-smooth(Math.abs(wave)/.5)));g.fillEllipse((left+right)/2,high+.7,(right-left)-1,Math.max(3,r.w*.105));}
         g.lineStyle(1.2,0xffffff,n===layers.length-1?.18:.08);g.beginPath();for(let k=0;k<=14;k++){const x=left+(right-left)*k/14,y=boundaryY(frameBounds,boundaries[n+1],x);if(k===0)g.moveTo(x,y);else g.lineTo(x,y);}g.strokePath();
         if(n===layers.length-1&&(receiving||age<280)){const p=(receiving?flowAge%140:age)/280;g.lineStyle(1.2,0xffffff,.55*(1-p));g.strokeEllipse(r.x,high+2,r.w*.8*p,4+3*p);}
       }

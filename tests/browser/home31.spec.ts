@@ -1,3 +1,4 @@
+import {home48} from './navigation';
 import {test,expect} from '@playwright/test';
 
 test('menu glass and liquid move without changing progress, and sleep behind navigation',async({page})=>{
@@ -6,7 +7,7 @@ test('menu glass and liquid move without changing progress, and sleep behind nav
  await page.locator('#home-settings').click();await expect(hero).toHaveAttribute('data-motion','paused');const paused=await hero.innerHTML();await page.waitForTimeout(200);expect(await hero.innerHTML()).toBe(paused);
  await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(hero).toHaveAttribute('data-motion','playing');await expect.poll(()=>hero.innerHTML()).not.toBe(paused);
  await page.locator('#home-play').click();await expect(hero).toHaveAttribute('data-motion','paused');const inGame=await hero.innerHTML();await page.waitForTimeout(200);expect(await hero.innerHTML()).toBe(inGame);
- await page.locator('#menu').click();await expect(hero).toHaveAttribute('data-motion','playing');await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));await expect(hero).toHaveAttribute('data-motion','paused');const background=await hero.innerHTML();await page.waitForTimeout(200);expect(await hero.innerHTML()).toBe(background);await page.evaluate(()=>window.dispatchEvent(new Event('pageshow')));await expect(hero).toHaveAttribute('data-motion','playing');await expect.poll(()=>hero.innerHTML()).not.toBe(background);
+ await home48(page);await expect(hero).toHaveAttribute('data-motion','playing');await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));await expect(hero).toHaveAttribute('data-motion','paused');const background=await hero.innerHTML();await page.waitForTimeout(200);expect(await hero.innerHTML()).toBe(background);await page.evaluate(()=>window.dispatchEvent(new Event('pageshow')));await expect(hero).toHaveAttribute('data-motion','playing');await expect.poll(()=>hero.innerHTML()).not.toBe(background);
 });
 
 test('reduced motion keeps a static illustration and live preference changes preserve layout',async({page})=>{

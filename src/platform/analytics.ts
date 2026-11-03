@@ -1,5 +1,5 @@
 import {Capacitor,registerPlugin} from '@capacitor/core';
-export type EventName='level_start'|'level_resume'|'tutorial_complete'|'save_recovered'|'extra_tube_offer'|'level_complete'|'level_leave'|'level_restart'|'undo'|'hint_request'|'hint_result'|'reward_request'|'reward_result'|'reward_granted'|'save_error'|'hint_spent'|'hint_shop'|'hint_purchase'|'coins_earned'|'interstitial_request'|'interstitial_result';
+export type EventName='level_start'|'level_resume'|'tutorial_complete'|'save_recovered'|'extra_tube_offer'|'level_complete'|'level_leave'|'level_restart'|'undo'|'hint_request'|'hint_result'|'reward_request'|'reward_result'|'reward_granted'|'save_error'|'hint_spent'|'hint_shop'|'hint_purchase'|'coins_earned'|'interstitial_request'|'interstitial_result'|'shuffle_request'|'shuffle_result'|'boost_spent'|'boost_purchase';
 export type EventData={level:string;stage:number;moves:number;extra:boolean;revision:number;reason?:string;status?:string;stars?:number;first?:boolean;active_ms?:number;amount?:number;balance?:number;hints?:number};
 export type GameEvent={name:EventName;data:EventData};
 const native=registerPlugin<{event(e:GameEvent):Promise<void>}>('WaterAnalytics');

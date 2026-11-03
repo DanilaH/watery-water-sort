@@ -128,3 +128,10 @@ export function miniLayout(poses:TubePose[],index:number|undefined):TubePose[]{
  if(index===undefined||!poses[index])return poses;
  return poses.map((r,i)=>{if(i!==index)return r;const h=Math.min(r.h,Math.max(20,r.h*.5+r.w*.054));return {...r,y:r.y+r.h-h,h,hitY:r.y+r.h/2};});
 }
+
+/** Grow only the scrollable play surface when a small viewport cannot retain 48px targets. */
+export function fieldHeight(width:number,visible:number,count:number,goals=0){
+ const reserved=goals===2?2*Math.max(56,Math.min(86,width*.19))+8:goals===1?(width<340?64:Math.max(64,Math.min(110,width*.24)))+4:0;
+ const cols=Math.max(2,Math.min(6,Math.floor((width-reserved-16)/50))),rows=Math.ceil((count-goals)/cols);
+ return Math.max(visible,rows*58+56);
+}

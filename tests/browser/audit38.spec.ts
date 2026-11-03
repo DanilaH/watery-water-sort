@@ -1,3 +1,4 @@
+import {hint48,home48} from './navigation';
 import legacy from '../../src/core/levels-v1.json' with {type:'json'};
 import {mockReward} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
@@ -6,32 +7,32 @@ import {won,moves} from '../../src/core/rules';
 import {advanceFrames} from './controlled-frames';
 async function saved(p:Page){return p.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
 async function open(p:Page,index=4,n=0,old=false){let s={...fresh(),current:index};s.settings.sound=false;s.wallet!.hints=100;const l=old?legacy[index]as Level:levels[index];if(old)s.attempts[`${l.id}@1`]=replay(l,[],false);for(const m of l.witness.slice(0,n))s=moved(s,m);await p.addInitScript(s=>{if(sessionStorage.audit38)return;sessionStorage.audit38='1';localStorage.setItem('water-sort-v1',JSON.stringify(s));},s);await p.goto('/');await p.evaluate(async()=>{const path='/src/game/WaterScene.ts',m=await import(path),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).auditScene=this;return fn.call(this);};const WorkerBase=window.Worker;(window as any).workerCalls38=0;window.Worker=class extends WorkerBase{constructor(...args:ConstructorParameters<typeof Worker>){super(...args);(window as any).workerCalls38++;}};});await p.locator('#home-play').click();await expect.poll(()=>p.evaluate(()=>!!(window as any).auditScene?.ready)).toBe(true);await p.waitForTimeout(300);}
-async function tap(p:Page,i:number){const b=(await p.locator('#board').boundingBox())!,r=await p.evaluate(i=>(window as any).auditScene.positions()[i],i);await p.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
+async function tap(p:Page,i:number){const b=(await p.locator('#board canvas').boundingBox())!,r=await p.evaluate(i=>(window as any).auditScene.positions()[i],i);await p.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
 
 test('following successive UI hints finishes the formerly cycling puzzle using one verified Worker route',async({page})=>{
  test.setTimeout(60000);await page.clock.install();await open(page);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));let n=0;
  while(!won(attempt(await saved(page)).board,goalFor(await saved(page)))){
-  await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');const m=await page.evaluate(()=>(window as any).auditScene.hintMove);expect(m).not.toBeNull();await tap(page,m.to);
+  await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');const m=await page.evaluate(()=>(window as any).auditScene.hintMove);expect(m).not.toBeNull();await tap(page,m.to);
   // This checks route continuity, not intermediate rendering (covered in the effect tests).
-  await page.clock.fastForward(1200);await page.evaluate(()=>(window as any).auditScene.update());expect(++n).toBeLessThan(40);if(n===4){await page.locator('#menu').click();await page.locator('#home-play').click();}
+  await page.clock.fastForward(1200);await page.evaluate(()=>(window as any).auditScene.update());expect(++n).toBeLessThan(40);if(n===4){await home48(page);await page.locator('#home-play').click();}
  }
  expect(await page.evaluate(()=>(window as any).workerCalls38)).toBe(1);expect(n).toBe(12);await page.clock.resume();await expect(page.locator('#continue')).toBeVisible();
 });
 
 test('deviation and Undo discard the old recommendation instead of consuming stale moves',async({page})=>{
- await page.clock.install();await open(page,0);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');const m=await page.evaluate(()=>(window as any).auditScene.hintMove),s=await saved(page),other=moves(attempt(s).board,goalFor(s)).find(q=>q.from!==m.from||q.to!==m.to)!;
- await tap(page,m.from);await tap(page,other.from);await tap(page,other.to);await advanceFrames(page,'auditScene',1200);expect(attempt(await saved(page)).history).toHaveLength(1);await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');expect(await page.evaluate(()=>(window as any).workerCalls38)).toBe(2);
- await page.locator('#undo').click();await advanceFrames(page,'auditScene',1000);await page.locator('#hint').click();await expect(page.locator('#status')).toContainText('Перелей');expect(await page.evaluate(()=>(window as any).workerCalls38)).toBe(3);await page.clock.resume();
+ await page.clock.install();await open(page,0);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');const m=await page.evaluate(()=>(window as any).auditScene.hintMove),s=await saved(page),other=moves(attempt(s).board,goalFor(s)).find(q=>q.from!==m.from||q.to!==m.to)!;
+ await tap(page,m.from);await tap(page,other.from);await tap(page,other.to);await advanceFrames(page,'auditScene',1200);expect(attempt(await saved(page)).history).toHaveLength(1);await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');expect(await page.evaluate(()=>(window as any).workerCalls38)).toBe(2);
+ await page.locator('#undo').click();await advanceFrames(page,'auditScene',1000);await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');expect(await page.evaluate(()=>(window as any).workerCalls38)).toBe(3);await page.clock.resume();
 });
 
 test('engine and covered game animations sleep while menu hero keeps moving; nested blockers wake only when all close',async({page})=>{
- await open(page,0);const running=()=>page.evaluate(()=>(window as any).auditScene.game.loop.running);expect(await running()).toBe(true);await page.locator('#menu').click();expect(await running()).toBe(false);const hero=page.locator('.home-hero[data-material=glass]'),first=await hero.innerHTML();await page.waitForTimeout(200);expect(await hero.innerHTML()).not.toBe(first);
+ await open(page,0);const running=()=>page.evaluate(()=>(window as any).auditScene.game.loop.running);expect(await running()).toBe(true);await home48(page);expect(await running()).toBe(false);const hero=page.locator('.home-hero[data-material=glass]'),first=await hero.innerHTML();await page.waitForTimeout(200);expect(await hero.innerHTML()).not.toBe(first);
  await page.locator('#home-settings').click();expect(await running()).toBe(false);await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));await page.getByRole('button',{name:'Готово',exact:true}).click();expect(await running()).toBe(false);await page.evaluate(()=>window.dispatchEvent(new Event('pageshow')));expect(await running()).toBe(false);await page.locator('#home-play').click();expect(await running()).toBe(true);
  await page.locator('#settings').click();expect(await running()).toBe(false);await page.getByRole('button',{name:'Готово',exact:true}).click();expect(await running()).toBe(true);await tap(page,0);await tap(page,2);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
 });
 
 test('sleeping during an accepted pour clears its visual work and resumes the durable board without replay',async({page})=>{
- await page.clock.install();await open(page,0);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await tap(page,0);await tap(page,2);const before=await saved(page);await page.locator('#menu').click();expect(await page.evaluate(()=>(window as any).auditScene.game.loop.running)).toBe(false);await page.clock.fastForward(2000);expect(await saved(page)).toEqual(before);await page.locator('#home-play').click();await advanceFrames(page,'auditScene',500);expect(attempt(await saved(page)).board).toEqual(attempt(before).board);expect(await page.evaluate(()=>{const s=(window as any).auditScene;return !s.flight&&!s.bursts.length&&!s.particles.length;})).toBe(true);await page.clock.resume();
+ await page.clock.install();await open(page,0);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await tap(page,0);await tap(page,2);const before=await saved(page);await home48(page);expect(await page.evaluate(()=>(window as any).auditScene.game.loop.running)).toBe(false);await page.clock.fastForward(2000);expect(await saved(page)).toEqual(before);await page.locator('#home-play').click();await advanceFrames(page,'auditScene',500);expect(attempt(await saved(page)).board).toEqual(attempt(before).board);expect(await page.evaluate(()=>{const s=(window as any).auditScene;return !s.flight&&!s.bursts.length&&!s.particles.length;})).toBe(true);await page.clock.resume();
 });
 
 test('a reveal redraws only affected vessels while unchanged neighbours retain material and cached commands',async({page})=>{
@@ -41,7 +42,7 @@ test('a reveal redraws only affected vessels while unchanged neighbours retain m
 
 test('repeated home/settings cycles retain one canvas and bounded pools',async({page})=>{
  test.setTimeout(60000);await open(page,37);const stats=()=>page.evaluate(()=>{const s=(window as any).auditScene;return {canvas:document.querySelectorAll('canvas').length,labels:s.labels.length+s.activeLabels.length,glass:s.glass.tubes.size,events:s.input.listenerCount('pointerdown')};});const before=await stats();
- for(let i=0;i<20;i++){await page.locator('#menu').click();await page.locator('#home-play').click();await page.locator('#settings').click();await page.getByRole('button',{name:'Готово',exact:true}).click();}
+ for(let i=0;i<20;i++){await home48(page);await page.locator('#home-play').click();await page.locator('#settings').click();await page.getByRole('button',{name:'Готово',exact:true}).click();}
  await page.waitForTimeout(350);expect(await stats()).toEqual(before);
 });
 

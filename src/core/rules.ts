@@ -51,7 +51,7 @@ export const completeTube = (t: number[],capacity=4) => t.length === capacity &&
 export const sealedTube=(b:Board,index:number,goal?:Goals)=>!isFrozen(goal,index)&&!isMini(goal,index)&&completeTube(b[index],capacityAt(goal,index))&&(!goalList(goal).some(g=>g.color===b[index][0])||!!goalAt(goal,index));
 export const won = (b: Board,goal?:Goals) => validGoal(goal,b.length)&&(iceIndex(goal)===undefined||iceOpen(goal))&&goalList(goal).every(g=>sealedTube(b,g.index,goal))&&b.some(t=>t.length)&&b.every((t,i)=>!t.length||sealedTube(b,i,goal))&&validBoard(b,goal);
 export function validBoard(value: unknown,goal?:Goals): value is Board {
-  if (!Array.isArray(value) || value.length < 4 || value.length > 11 || !validGoal(goal,value.length)) return false;
+  if (!Array.isArray(value) || value.length < 4 || value.length > 13 || !validGoal(goal,value.length)) return false;
   const counts = new Map<number, number>();
   for (const [index,t] of value.entries()) {
     if (!Array.isArray(t) || t.length > capacityAt(goal,index)) return false;

@@ -35,7 +35,7 @@ public class WaterRewardedPlugin extends Plugin {
    public boolean write(Map<String,String> rows){JSONArray next=new JSONArray();for(Map.Entry<String,String> row:rows.entrySet()){JSObject r=new JSObject();r.put("token",row.getKey());r.put("level",row.getValue());next.put(r);}return storage.edit().putString("pending",next.toString()).commit();}
   });
  }
- private static boolean validTarget(String target){return target.matches("water-\\d{3}@\\d+")||target.matches("coins:[a-zA-Z0-9-]{1,80}");}
+ private static boolean validTarget(String target){return RewardLedger.validTarget(target); }
  private JSONArray receipts(){JSONArray result=new JSONArray();for(Map.Entry<String,String> row:ledger().pending().entrySet()){JSObject r=new JSObject();r.put("token",row.getKey());r.put("level",row.getValue());result.put(r);}return result;}
  @PluginMethod public void pending(PluginCall call){getActivity().runOnUiThread(()->{try{ledger().flush();JSObject r=new JSObject();r.put("receipts",receipts());call.resolve(r);}catch(Exception e){call.reject("Receipt journal unavailable");}});}
  @PluginMethod public void ack(PluginCall call){getActivity().runOnUiThread(()->{try{if(!ledger().ack(call.getString("token",""))){call.reject("Receipt acknowledgement failed");return;}call.resolve();}catch(Exception e){call.reject("Receipt journal unavailable");}});}

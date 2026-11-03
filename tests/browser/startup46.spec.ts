@@ -1,3 +1,4 @@
+import {home48} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 const home=(p:Page)=>p.locator('#home');
 async function ready(page:Page){await expect(page.locator('body')).not.toHaveAttribute('data-booting','');await expect(home(page)).toBeVisible();expect(await page.locator('body').evaluate(b=>(b as HTMLElement).inert)).toBe(false);}
@@ -18,7 +19,7 @@ test('delayed gold skin never exposes the old green button, and the first menu i
  try{await page.goto('/',{waitUntil:'domcontentloaded'});await expect(page.locator('body')).toHaveAttribute('data-theme','blue');await expect(home(page)).toBeHidden();expect(await page.locator('body').evaluate(b=>(b as HTMLElement).inert)).toBe(true);}
  finally{release();}
  await ready(page);await expect(page.locator('.home-hero[data-material=glass]')).toBeVisible();expect(await page.evaluate(()=>document.fonts.check('650 20px Rubik'))).toBe(true);await expect(page.locator('body')).not.toHaveAttribute('data-gold-fallback','');expect((await skin(page)).image).toContain('button-gold-29.svg');
- await page.locator('#home-play').click();await expect(home(page)).toBeHidden();await page.locator('#menu').click();await expect(home(page)).toBeVisible();
+ await page.locator('#home-play').click();await expect(home(page)).toBeHidden();await home48(page);await expect(home(page)).toBeVisible();
 });
 
 test('failed skins and font show usable stable fallback controls instead of trapping startup',async({page})=>{

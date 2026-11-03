@@ -2,7 +2,7 @@ import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,moved,attempt,type Save} from '../../src/core/session';
 import {campaign} from '../../src/core/campaign';
 async function open(page:Page,s:Save){s.settings.sound=false;await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);await page.goto('/');await page.evaluate(async()=>{const path='/src/game/WaterScene.ts',m=await import(path),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).scene39=this;return fn.call(this);};});await page.locator('#home-play').click();await expect.poll(()=>page.evaluate(()=>!!(window as any).scene39?.ready)).toBe(true);await page.waitForTimeout(300);}
-async function tap(page:Page,i:number){const b=(await page.locator('#board').boundingBox())!,r=await page.evaluate(i=>(window as any).scene39.positions()[i],i);await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
+async function tap(page:Page,i:number){const b=(await page.locator('#board canvas').boundingBox())!,r=await page.evaluate(i=>(window as any).scene39.positions()[i],i);await page.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
 for(const fast of [false,true])test(`flow raises the rendered source lip and lands at its slot, fast=${fast}`,async({page})=>{
  await page.clock.install();const s={...fresh(),current:40};s.settings.fast=fast;await open(page,s);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));
  await page.evaluate(()=>{const s=(window as any).scene39,fn=s.tube;s.tube=function(...a:any[]){if(this.flight?.from===a[5])this.sourcePose39={...a[0],angle:a[2]};return fn.apply(this,a);};});

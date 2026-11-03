@@ -7,7 +7,7 @@ import java.util.*;
 
 @CapacitorPlugin(name="WaterAnalytics")
 public class WaterAnalyticsPlugin extends Plugin {
- private static final Set<String> EVENTS=new HashSet<>(Arrays.asList("level_start","level_resume","tutorial_complete","save_recovered","extra_tube_offer","level_complete","level_leave","level_restart","undo","hint_request","hint_result","reward_request","reward_result","reward_granted","save_error","hint_spent","hint_shop","hint_purchase","coins_earned","interstitial_request","interstitial_result"));
+ private static final Set<String> EVENTS=new HashSet<>(Arrays.asList("level_start","level_resume","tutorial_complete","save_recovered","extra_tube_offer","level_complete","level_leave","level_restart","undo","hint_request","hint_result","reward_request","reward_result","reward_granted","save_error","hint_spent","hint_shop","hint_purchase","coins_earned","interstitial_request","interstitial_result","shuffle_request","shuffle_result","boost_spent","boost_purchase"));
  private static final Set<String> KEYS=new HashSet<>(Arrays.asList("level","stage","revision","moves","extra","reason","status","stars","first","active_ms","amount","balance","hints"));
  static void ad(String format,String phase){if(!WaterApplication.analyticsReady)return;try{AppMetrica.reportEvent("ad_"+phase,Collections.<String,Object>singletonMap("format",format));}catch(Exception ignored){}}
  @PluginMethod public void event(PluginCall call){
