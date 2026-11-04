@@ -140,9 +140,19 @@ export class WaterScene extends Phaser.Scene {
   get arranging(){return !!this.arrangeFrom&&performance.now()-this.arrangeAt<480;}
   reflow(from:ReturnType<typeof layout>){if(this.reduced)return;this.arrangeFrom=from;this.arrangeAt=performance.now();this.previousSignature='';}
   positions(){const key=`${this.viewWidth}:${this.viewHeight}:${this.slots}:${goalList(this.goal).map(g=>g.index).join(',')}:${miniIndex(this.goal)??-1}`;if(key!==this.layoutKey){this.layoutKey=key;this.layoutCache=miniLayout(goalList(this.goal).length?goalLayout(this.viewWidth,this.viewHeight,this.slots,goalList(this.goal).map(g=>g.index)):layout(this.viewWidth,this.viewHeight,this.slots),miniIndex(this.goal));}const p=Math.min(1,(performance.now()-this.arrangeAt)/480);if(this.arrangeFrom&&p<1){const u=p*p*(3-2*p);return this.layoutCache.map((r,i)=>{const a=this.arrangeFrom![i]??{...r,y:r.y+24};return {...r,x:a.x+(r.x-a.x)*u,y:a.y+(r.y-a.y)*u,w:a.w+(r.w-a.w)*u,h:a.h+(r.h-a.h)*u};});}this.arrangeFrom=undefined;return this.layoutCache;}
-  reveal(){this.entrance=performance.now();this.previousSignature='';}
+  reveal(){this.entrance=this.reduced?0:performance.now();this.previousSignature='';}
+  stallReaction(){
+    if(this.reduced)return;
+    this.board.forEach((tube,i)=>{if(tube.length&&!sealedTube(this.board,i,this.goal)&&!this.frozen(i)){this.bodyImpulse(i,18);this.land(i);}});
+    this.previousSignature='';
+  }
+  private arrival(i:number,now:number){
+    if(!this.entrance)return 0;
+    const p=Math.max(0,Math.min(1,1-(now-this.entrance-Math.min(i,8)*9)/178));
+    return 18*p*p;
+  }
   setBoard(b:Board){this.board=b;}
-  animate(before:Board,m:Move,fast:boolean,view?:KnowledgeView){this.flight={...m,before,ids:view?.ids,start:performance.now(),duration:pourTiming(m.amount,fast).duration,timing:pourTiming(m.amount,fast),received:false,lifted:(this.selectionY.get(m.from)??0)+12*Math.max(0,1-(performance.now()-this.entrance)/240)**2,plan:planPour(this.positions()[m.from],this.positions()[m.to],this.viewWidth,this.viewHeight,before[m.from].length*4/capacityAt(this.goal,m.from),(before[m.from].length-m.amount)*4/capacityAt(this.goal,m.from))};this.startedSound=false;this.selectionY.set(m.from,0);this.selectionV.set(m.from,0);this.selectionY.set(m.to,0);this.selectionV.set(m.to,0);}
+  animate(before:Board,m:Move,fast:boolean,view?:KnowledgeView){this.flight={...m,before,ids:view?.ids,start:performance.now(),duration:pourTiming(m.amount,fast).duration,timing:pourTiming(m.amount,fast),received:false,lifted:(this.selectionY.get(m.from)??0)+this.arrival(m.from,performance.now()),plan:planPour(this.positions()[m.from],this.positions()[m.to],this.viewWidth,this.viewHeight,before[m.from].length*4/capacityAt(this.goal,m.from),(before[m.from].length-m.amount)*4/capacityAt(this.goal,m.from))};this.startedSound=false;this.selectionY.set(m.from,0);this.selectionV.set(m.from,0);this.selectionY.set(m.to,0);this.selectionV.set(m.to,0);}
   get busy(){return !!this.flight;}
   busyTube(i:number){return this.flight?.from===i||this.flight?.to===i;}
   skip(){this.flight=undefined;this.startedSound=false;this.previousSignature='';}
@@ -351,7 +361,7 @@ export class WaterScene extends Phaser.Scene {
       const r={...poses[i]},chosen=(this.selected===i||this.hintMove?.from===i)&&!goalAt(this.goal,i);
       const target=!this.queuedMove&&(this.selected!==null&&!!moveFor(this.board,this.selected,i,this.goal)||this.hintMove?.to===i);
       const aim=chosen&&!this.busyTube(i)?-17:0,prev=this.selectionY.get(i)??0;let velocity=this.selectionV.get(i)??0;velocity+=((aim-prev)*520-velocity*28)*dt;let offset=prev+velocity*dt;if(Math.abs(offset-aim)<.04&&Math.abs(velocity)<.2){offset=aim;velocity=0;}this.selectionY.set(i,offset);this.selectionV.set(i,velocity);r.y+=offset;
-      if(now-this.entrance<240){const p=Math.max(0,1-(now-this.entrance)/240);r.y+=p*p*12;}
+      r.y+=this.arrival(i,now);
       let ls=this.layers(f?f.before[i]:this.board[i],f?f.ids?.[i]:this.knowledge?.ids[i],now);
       if(f&&i===f.to){const last=ls.at(-1);if(last?.color===f.color)last.amount+=f.amount*transfer;else ls.push({color:f.color,amount:f.amount*transfer});if(t<.73)this.impulses.set(i,.6+f.amount*.15);}
       this.restingTube(r,ls,chosen,target,i,now);

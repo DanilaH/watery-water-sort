@@ -1,28 +1,27 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {fresh,levels,moved} from '../../src/core/session';
+import {fresh,levels,moved,attempt} from '../../src/core/session';
 import {moves,transition,type Board,type Move} from '../../src/core/rules';
 import {positionKey} from '../../src/core/solver';
 import {layout} from '../../src/game/geometry';
 
-test('a cyclic pour in a proven dead board shows help above the dock without spending stock',async({page})=>{
+test('a resumed cyclic dead board shows help before any pour and restarts directly',async({page})=>{
  const corpus=JSON.parse(gunzipSync(readFileSync('docs/audits/product-08/exploratory-corpus.json.gz')).toString()) as {level:string;board:Board;history:Move[];status:string}[];
  const repeat=(b:Board)=>moves(b).find(m=>positionKey(b)===positionKey(transition(b,m).board));
- const item=corpus.find(x=>x.status==='UNSOLVABLE'&&repeat(x.board))!,m=repeat(item.board)!;
+ const item=corpus.find(x=>x.status==='UNSOLVABLE'&&repeat(x.board))!;
  const s=fresh();s.current=levels.findIndex(l=>l.id===item.level);s.attempts[item.level+'@1']={board:item.board,history:item.history,extra:false};
  await page.setViewportSize({width:360,height:800});
  await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);
  await page.goto('/');await page.locator('#home-play').click();
- const canvas=page.locator('#board canvas');await expect(canvas).toBeVisible();await page.waitForTimeout(350);
- const b=(await canvas.boundingBox())!,p=layout(b.width,b.height,item.board.length);
- for(const i of [m.from,m.to])await page.mouse.click(b.x+p[i].x,b.y+p[i].y+p[i].h/2);
  await expect(page.locator('#status')).toContainText('Решения нет');
  await expect(page.locator('#shuffle')).toHaveClass(/rescue-highlight/);
  expect((await page.locator('#notice').boundingBox())!.y+(await page.locator('#notice').boundingBox())!.height).toBeLessThan((await page.locator('#shuffle').boundingBox())!.y);
  await expect(page.locator('#shuffle-count')).toHaveText(String(s.wallet!.hints));
  await page.locator('#notice-restart').click();
- await expect(page.getByRole('heading',{name:'Начать заново?'})).toBeVisible();
+ await expect(page.locator('dialog')).toBeHidden();
+ await expect(page.locator('#moves')).toHaveText('Ходов: 0');
+ expect(attempt(await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!))).history).toHaveLength(0);
 });
 
 for(const [width,height] of [[360,760],[640,320]])test(`pause stays inside native insets at ${width}×${height}`,async({page})=>{
@@ -59,4 +58,17 @@ test('a repeated board with an exit does not suggest rescue',async({page})=>{
  await expect(page.locator('#hint')).toBeEnabled();
  await expect(page.locator('#notice-restart')).toBeHidden();
  await expect(page.locator('#shuffle')).not.toHaveClass(/rescue-highlight/);
+});
+
+test('the first losing pour warns even when legal pours remain',async({page})=>{
+ const s={...fresh(),current:2},l=levels[s.current];
+ await page.addInitScript(s=>localStorage.setItem('water-sort-v1',JSON.stringify(s)),s);
+ await page.goto('/');await page.locator('#home-play').click();
+ const canvas=page.locator('#board canvas');await expect(canvas).toBeVisible();await page.waitForTimeout(300);
+ const b=(await canvas.boundingBox())!,p=layout(b.width,b.height,l.initial.length);
+ for(const i of [1,3])await page.mouse.click(b.x+p[i].x,b.y+p[i].y+p[i].h/2);
+ await expect(page.locator('#status')).toContainText('Решения нет');
+ await expect(page.locator('#moves')).toHaveText('Ходов: 1');
+ const a=attempt(await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!)));
+ expect(moves(a.board).length).toBeGreaterThan(0);
 });

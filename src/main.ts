@@ -21,6 +21,7 @@ import './economy42.css';
 import './play48.css';
 import './entry53.css';
 import './pause55.css';
+import './motion56.css';
 import {mountAmbient} from './game/Ambient';
 import {mountHomeHero} from './game/HomeHero';
 import { Sound } from './audio/sound';
@@ -64,23 +65,24 @@ let mixActive=false,assistFrame=0,assistRequestId=0;
 let assistWorker:Worker|undefined,assistTimer:ReturnType<typeof setTimeout>|undefined;
 let worker:Worker|undefined,requestId=0,searching=false,queued:Move|null=null,lastMove:Move|null=null,kind:'pour'|'undo'='pour',newColor=false,pendingIce:number|null=null,pendingReveal=false;
 let deadRevision:number|null=null;
-const seenPositions=new Set<string>(),checkedPositions=new Map<string,Result['status']>();
-let stallWorker:Worker|undefined,stallTimer:number|undefined;
+const checkedPositions=new Map<string,Result['status']>();
+let stallWorker:Worker|undefined,stallTimer:number|undefined,checkingPosition:string|undefined;
+let signaledStall:string|undefined;
 const stallKey=()=>activeKey(state)+':'+positionKey(attempt(state).board,goalFor(state));
-function cancelStall(){stallWorker?.terminate();stallWorker=undefined;clearTimeout(stallTimer);}
-function rememberPosition(key:string){
- if(seenPositions.size>=256)seenPositions.delete(seenPositions.values().next().value!);
- seenPositions.add(key);
-}
-function checkCycle(key:string){
- if(checkedPositions.has(key)||!moves(attempt(state).board,goalFor(state)).length||won(attempt(state).board,goalFor(state)))return;
+function cancelStall(){stallWorker?.terminate();stallWorker=undefined;checkingPosition=undefined;clearTimeout(stallTimer);}
+function checkPosition(){
+ const a=attempt(state),rules=goalFor(state),key=stallKey();
+ if(checkingPosition===key)return;
+ cancelStall();
+ // An untouched level has an authored solution. Check changed or restored boards proactively.
+ if(atHome||blockers.size||(!playerMoves(a)&&!a.shuffles?.length)||checkedPositions.has(key)||!moves(a.board,rules).length||won(a.board,rules))return;
  try{
   const probe=new Worker(new URL('./core/stall.worker.ts',import.meta.url),{type:'module'});
-  stallWorker=probe;
+  stallWorker=probe;checkingPosition=key;
   probe.onmessage=({data:status}:MessageEvent<Result['status']>)=>{
    if(stallWorker!==probe)return;cancelStall();
    if(checkedPositions.size>=256)checkedPositions.delete(checkedPositions.keys().next().value!);
-   checkedPositions.set(key,status);
+   if(status!=='UNKNOWN')checkedPositions.set(key,status);
    if(!blockers.size&&!scene.busy&&stallKey()===key){paint();message(guidance());}
   };
   probe.onerror=e=>{e.preventDefault();if(stallWorker===probe)cancelStall();};
@@ -124,7 +126,7 @@ function clearIntent(){queued=null;scene.queuedMove=null;scene.selected=null;sce
 function interrupt(){cancelStall();mixActive=false;cancelAnimationFrame(assistFrame);$('board').classList.remove('mixing48');$('board').querySelectorAll('.shuffle-veil').forEach(e=>e.remove());if(assistWorker&&dialog.open){const h=content.querySelector('h2');if(h)h.textContent='Перемешивание отменено';const p=content.querySelector('.dialog-body p');if(p)p.textContent='Заряд сохранён.';}cancelAssist();pendingReveal=false;pendingIce=null;reward.cancel();coinReward.cancel();$('earned-coins').hidden=true;pendingCoins=0;pendingStars=undefined;scene.resetEffects();clearIntent();cancelSearch();audio.stop();scene.setBoard(attempt(state).board);}
 function syncLoop(){document.body.dataset.gamePaused=String(blockers.size>0);if(!scene.ready)return;if(blockers.size)game.loop.sleep();else game.loop.wake();}
 scene.onReady=()=>{paint();if(!completeEntry())syncLoop();};
-function block(reason:string,on:boolean){measureActive();if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();syncLoop();syncActive();if(!on){completePendingNext();completeEntry();}}
+function block(reason:string,on:boolean){measureActive();if(on){blockers.add(reason);interrupt();}else blockers.delete(reason);audio.block([...blockers].some(x=>x!=='dialog'&&x!=='home'));paint();syncLoop();syncActive();if(!on){completePendingNext();completeEntry();checkPosition();}}
 function commit(next:Save){try{next=settleEconomy(next);store.write(next);state=next;recoveryNotice='';$('home-error').hidden=true;return true;}catch{track('save_error');paint();const error='Не удалось сохранить. Изменение не принято — попробуй ещё раз.';message(error,true);if(atHome&&!dialog.open){$('home-error').textContent=error;$('home-error').hidden=false;}if(dialog.open){const body=content.querySelector('.dialog-body');let note=body?.querySelector<HTMLElement>('[role=alert]');if(body&&!note){note=document.createElement('p');note.setAttribute('role','alert');body.prepend(note);}if(note)note.textContent=error;if(body)body.scrollTop=0;}return false;}}
 function paint(){
  const a=attempt(state),finished=won(a.board,goalFor(state))&&!scene.busy;
@@ -164,7 +166,10 @@ function paint(){
  paintBoost('tube',state.wallet!.tubes??0);paintBoost('shuffle',state.wallet!.hints);
  $<HTMLButtonElement>('shuffle').disabled=mixActive||scene.arranging||scene.busy||rewardBusy||recoveringRewards||finished||!!assistWorker;
  $('continue').hidden=!finished;
- const dead=!!stuck();
+ const dead=!!stuck(),noticeKey=dead?stallKey():undefined;
+ if(!scene.busy&&!blockers.size&&!atHome&&noticeKey!==signaledStall){
+  signaledStall=noticeKey;if(dead)scene.stallReaction();
+ }
  $('rescue').hidden=!dead;$('notice-restart').hidden=!dead;
  $('notice').classList.toggle('is-stuck',dead);
  for(const id of ['shuffle','extra-tube']){
@@ -184,7 +189,7 @@ function paintBoost(kind:Boost,count:number){
  if(kind==='shuffle')button.title=button.getAttribute('aria-label')!;
 }
 function parkControls(){for(const id of ['menu','restart','hint','star-target','rescue'])$('park').append($(id));}
-function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;cancelAssist();dialog.close();parkControls();block('dialog',false);message(guidance());}
+function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;cancelAssist();dialog.close();parkControls();block('dialog',false);checkPosition();message(guidance());}
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
  entryRequest=undefined;pendingNext=undefined;
  block('dialog',true);parkControls();content.replaceChildren();dialog.classList.remove('compact-pause');
@@ -195,7 +200,7 @@ function modal(title:string,description:string,buttons:{label:string;action:()=>
  if(description){const p=document.createElement('p');p.textContent=description;body.append(p);}
  const footer=document.createElement('footer');footer.className='dialog-actions';
  for(const item of buttons){const b=document.createElement('button');b.textContent=item.label;b.className=item.primary?'primary gel-button gel-primary':'gel-button';b.onclick=()=>{audio.ui();item.action();};footer.append(b);}
- content.append(header,body,footer);footer.hidden=!buttons.length;if(!dialog.open)dialog.showModal();h.focus({preventScroll:true});return body;
+ content.append(header,body,footer);content.getAnimations().forEach(a=>a.cancel());if(!reduced.matches)content.animate([{opacity:.35,translate:'0 6px'},{opacity:1,translate:'0 0'}],{duration:180,easing:'ease-out'});footer.hidden=!buttons.length;if(!dialog.open)dialog.showModal();h.focus({preventScroll:true});return body;
 }
 function completeEntry(){
  if(entryRequest===undefined||!scene.ready||document.hidden||[...blockers].some(b=>b!=='home'))return false;
@@ -204,7 +209,7 @@ function completeEntry(){
 function activateGame(reason='resume'){
  if(!scene.ready){entryRequest=reason;atHome=true;dialog.close();parkControls();blockers.delete('dialog');block('home',true);return;}
  entryRequest=undefined;atHome=false;dialog.close();parkControls();blockers.delete('dialog');blockers.delete('home');
- audio.block(blockers.size>0);paint();scene.reveal();message(guidance());$('settings').focus({preventScroll:true});$('hard-badge').classList.remove('challenge-enter');if(isHard(state.current)){void $('hard-badge').offsetWidth;$('hard-badge').classList.add('challenge-enter');}syncLoop();syncActive();if(stageNumber(state.current)>2)ads.prepare();track(playerMoves(attempt(state))?'level_resume':'level_start',{reason});
+ audio.block(blockers.size>0);paint();scene.reveal();checkPosition();message(guidance());$('settings').focus({preventScroll:true});$('hard-badge').classList.remove('challenge-enter');if(isHard(state.current)){void $('hard-badge').offsetWidth;$('hard-badge').classList.add('challenge-enter');}syncLoop();syncActive();if(stageNumber(state.current)>2)ads.prepare();track(playerMoves(attempt(state))?'level_resume':'level_start',{reason});
 }
 function resumeGame(){
  if(locked)return;
@@ -225,11 +230,11 @@ function restart(){pendingNext=undefined;const n=seededRestart(state);if(commit(
 function drainQueue(){if(!queued)return;const q=queued;clearIntent();const m=moveFor(attempt(state).board,q.from,q.to,goalFor(state));if(m)accept(m,true);}
 function accept(m:Move,acknowledged=false){
  if(locked||blockers.size)return;
- cancelSearch();cancelStall();const previousPosition=stallKey(),before=attempt(state).board,beforeStars=totalStars(state),beforeRules=goalFor(state),beforeKnowledge=knowledgeFor(state);const first=!state.completed.includes(levelFor(state).id),next=moved(state,m);
+ cancelSearch();const before=attempt(state).board,beforeStars=totalStars(state),beforeRules=goalFor(state),beforeKnowledge=knowledgeFor(state);const first=!state.completed.includes(levelFor(state).id),next=moved(state,m);
  if(won(attempt(next).board,goalFor(next))&&!next.completed.includes(levels[next.current].id))next.completed.push(levels[next.current].id);
  const beforeCoins=state.wallet!.coins;
  if(!commit(next))return;
- rememberPosition(previousPosition);const position=stallKey();if(seenPositions.has(position))checkCycle(position);rememberPosition(position);
+ checkPosition();
  pendingCoins=state.wallet!.coins-beforeCoins;if(pendingCoins)track('coins_earned',{reason:'stars',amount:pendingCoins,balance:state.wallet!.coins});
  if(won(attempt(state).board,goalFor(state))){track('level_complete',{first,stars:stars(activeKey(state),scoreMoves(attempt(state)))});if(first&&state.current===1&&state.completed.includes(levels[0].id))track('tutorial_complete');}
  hintRoute.accepted(before,m,beforeRules);clearIntent();lastMove=m;kind='pour';pendingReveal=(knowledgeFor(next)?.known.length??0)>(beforeKnowledge?.known.length??0);pendingIce=!iceOpen(beforeRules)&&iceOpen(goalFor(next))?iceIndex(goalFor(next))!:null;scene.iceHeld=pendingIce;newColor=!sealedTube(before,m.from,goalFor(state))&&sealedTube(attempt(next).board,m.to,goalFor(state));
@@ -284,13 +289,13 @@ scene.onComplete=()=>{
 function undo(){
  pendingNext=undefined;
  const a=attempt(state),m=a.history.at(-1);if(playerMoves(a)===0)return;
- if(a.shuffles?.at(-1)?.at===a.history.length){interrupt();if(commit(undone(state))){hintRoute.clear();scene.reveal();paint();audio.undo();}return;}if(!m)return;const before=a.board,beforeKnowledge=knowledgeFor(state);
+ if(a.shuffles?.at(-1)?.at===a.history.length){interrupt();if(commit(undone(state))){hintRoute.clear();scene.reveal();paint();checkPosition();message(guidance());audio.undo();}return;}if(!m)return;const before=a.board,beforeKnowledge=knowledgeFor(state);
  interrupt();if(commit(undone(state))){track('undo');hintRoute.clear();kind='undo';lastMove=null;scene.setBoard(attempt(state).board);
   if(goalAt(goalFor(state),m.to)){scene.land(m.from,m.amount);scene.land(m.to,m.amount);}else scene.animate(before,{from:m.to,to:m.from,amount:m.amount,color:m.color},true,beforeKnowledge);
-  audio.undo();paint();message(guidance());}
+  audio.undo();paint();checkPosition();message(guidance());}
 }
 $('undo').onclick=undo;
-function askRestart(){audio.ui();modal('Начать заново?','Текущие ходы будут сброшены. Открытая дополнительная колба сохранится.',[{label:'Продолжить игру',primary:true,action:close},{label:'Начать заново',action:restart}]);}
+function askRestart(){audio.ui();if(stuck()){restart();return;}modal('Начать заново?','Текущие ходы будут сброшены. Открытая дополнительная колба сохранится.',[{label:'Продолжить игру',primary:true,action:close},{label:'Начать заново',action:restart}]);}
 $('restart').onclick=$('notice-restart').onclick=askRestart;
 $('continue').onclick=()=>{void continueAfterWin();};
 /** A dismissed SDK screen and a resumed WebView are independent events, in either order. */

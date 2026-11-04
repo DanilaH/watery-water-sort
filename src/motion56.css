@@ -1,0 +1,17 @@
+/* Put the glow behind the gel art; keep its hit area and focus ring fixed. */
+nav.boosters button.rescue-highlight:not(:focus-visible){outline:none}
+nav.boosters button.rescue-highlight{
+ animation:help-breathe56 1.15s ease-in-out 3;
+ filter:drop-shadow(0 0 5px #f9c8709c);
+}
+@keyframes help-breathe56{
+ 0%,100%{filter:drop-shadow(0 0 5px #f9c8709c);scale:1}
+ 50%{filter:drop-shadow(0 0 11px #ffdb93);scale:1.045}
+}
+#notice.is-stuck{animation:stall-in56 .22s ease-out both}
+@keyframes stall-in56{from{opacity:0;translate:0 5px}to{opacity:1;translate:0 0}}
+body[data-startup-ready] #home .home-actions{animation:home-actions56 .28s ease-out both}
+@keyframes home-actions56{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
+@media(prefers-reduced-motion:reduce){
+ nav.boosters button.rescue-highlight,#notice.is-stuck,body[data-startup-ready] #home .home-actions{animation:none}
+}
