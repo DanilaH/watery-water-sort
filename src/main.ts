@@ -488,6 +488,13 @@ function preferences(){
   b.onclick=()=>{const n=structuredClone(state);n.settings.theme=theme.id;n.settings.light=theme.light;if(commit(n)){paint();selected();}};choices.append(b);
  }
  themes.append(choices);body.append(themes);selected();
+ if(ads.native)void ads.bannerDiagnostics?.().then(text=>{
+  if(!text||!body.isConnected)return;
+  const diagnostics=document.createElement('details');diagnostics.className='banner-diagnostics';
+  const title=document.createElement('summary');title.textContent='Диагностика баннера';
+  const report=document.createElement('pre');report.textContent=text;
+  diagnostics.append(title,report);body.append(diagnostics);
+ });
 }
 $('settings').onclick=settings;
 reduced.addEventListener('change',()=>{fieldTransition?.cancel();interrupt();paint();});

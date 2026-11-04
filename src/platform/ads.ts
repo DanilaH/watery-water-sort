@@ -1,12 +1,13 @@
 import {Capacitor,registerPlugin,type PluginListenerHandle} from '@capacitor/core';
 export type InterstitialResult={status:'shown'|'unavailable'|'failed'|'closed'};
-const native=registerPlugin<{addListener(eventName:string,listener:()=>void):Promise<PluginListenerHandle>;prepare():Promise<void>;show():Promise<InterstitialResult>;banner(o:{visible:boolean;slot?:{x:number;y:number;width:number;height:number};viewport?:{width:number;height:number}}):Promise<{heightCss?:number;status?:string;safeLeftCss?:number;safeRightCss?:number;safeBottomCss?:number}>}>('WaterAds');
+const native=registerPlugin<{addListener(eventName:string,listener:()=>void):Promise<PluginListenerHandle>;prepare():Promise<void>;bannerDiagnostics():Promise<{text?:string}>;show():Promise<InterstitialResult>;banner(o:{visible:boolean;slot?:{x:number;y:number;width:number;height:number};viewport?:{width:number;height:number}}):Promise<{heightCss?:number;status?:string;safeLeftCss?:number;safeRightCss?:number;safeBottomCss?:number}>}>('WaterAds');
 export class Ads{
  readonly native=Capacitor.isNativePlatform();
  private frame=0;private epoch=0;private busy=false;private again=false;private visible=false;private geometry='';private reserved=0;
  constructor(private slot:HTMLElement){
   if(!this.native)return;try{void native.addListener('ready',()=>this.schedule()).catch(()=>{});}catch{}new ResizeObserver(()=>this.schedule()).observe(slot);window.addEventListener('resize',()=>this.schedule());document.addEventListener('visibilitychange',()=>this.schedule());window.addEventListener('scroll',()=>this.schedule(),{passive:true});
  }
+ async bannerDiagnostics(){if(!this.native)return;try{return (await native.bannerDiagnostics()).text;}catch{return;}}
  prepare(){this.schedule();if(this.native)try{void native.prepare().catch(()=>{});}catch{}}
  async show():Promise<InterstitialResult>{if(!this.native)return {status:'unavailable'};try{return await native.show();}catch{return {status:'failed'};}}
  banner(visible:boolean){if(this.visible!==visible){this.visible=visible;this.epoch++;this.schedule();}}

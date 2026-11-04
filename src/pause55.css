@@ -82,3 +82,5 @@ body .game-pause .pause-resume{position:relative;isolation:isolate}
  body .game-pause .pause-stage{display:none}
  body .game-pause .dialog-body{gap:6px}
 }
+
+.banner-diagnostics{margin-top:12px;color:var(--sheet-muted);font-size:12px}.banner-diagnostics summary{padding:8px 0;cursor:pointer}.banner-diagnostics pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:4px 0 0}

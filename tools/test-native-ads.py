@@ -33,7 +33,7 @@ S={
 'com/yandex/mobile/ads/banner/BannerAdSize.java':'''package com.yandex.mobile.ads.banner;public class BannerAdSize {public static BannerAdSize sticky(android.content.Context c,int w){return new BannerAdSize();}public int getHeightInPixels(android.content.Context c){return 50;} }''',
 'com/yandex/mobile/ads/banner/BannerAdEventListener.java':'''package com.yandex.mobile.ads.banner;import com.yandex.mobile.ads.common.*;public interface BannerAdEventListener {void onAdLoaded();void onAdFailedToLoad(AdRequestError e);void onAdClicked();void onImpression(ImpressionData d);}''',
 'com/yandex/mobile/ads/banner/BannerAdView.java':'''package com.yandex.mobile.ads.banner;public class BannerAdView extends android.view.View {public BannerAdView(android.content.Context c){} public void setBannerAdEventListener(BannerAdEventListener l){}public void destroy(){}public void setAdSize(BannerAdSize s){}public void loadAd(com.yandex.mobile.ads.common.AdRequest r){} }''',
-'com/danilah/waterywatersort/BuildConfig.java':'''package com.danilah.waterywatersort;public class BuildConfig {public static final String INTERSTITIAL_AD_UNIT_ID="demo",BANNER_AD_UNIT_ID="demo";}''',
+'com/danilah/waterywatersort/BuildConfig.java':'''package com.danilah.waterywatersort;public class BuildConfig {public static final boolean DEBUG=true;public static final String INTERSTITIAL_AD_UNIT_ID="demo",BANNER_AD_UNIT_ID="demo";}''',
 'com/danilah/waterywatersort/WaterAnalyticsPlugin.java':'''package com.danilah.waterywatersort;public class WaterAnalyticsPlugin {static void ad(String f,String s){} }''',
 }
 for name in ['NonNull','Nullable']:S[f'androidx/annotation/{name}.java']=f'package androidx.annotation;public @interface {name} {{}}'

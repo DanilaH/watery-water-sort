@@ -63,13 +63,20 @@ public class WaterAdsPlugin extends Plugin {
  private void result(PluginCall c,String status){JSObject r=new JSObject();r.put("status",status);c.resolve(r);}
  private void finish(InterstitialAd current,String status){current.setAdEventListener(null);displayed=null;generation++;PluginCall c=active;active=null;FullscreenAds.release(this,getContext(),shown);shown=false;if(c!=null)result(c,status);preload();}
  private void destroyBanner(){bannerGeneration++;if(banner!=null){banner.setBannerAdEventListener(null);banner.destroy();banner=null;}if(container!=null){ViewGroup p=(ViewGroup)container.getParent();if(p!=null)p.removeView(container);container=null;}bannerWidth=0;}
+ private String bannerPlacement="no visible request",bannerSdk="not requested",bannerGeometry="";
+ private int bannerRequests=0,bannerImpressions=0;
+ @PluginMethod public void bannerDiagnostics(PluginCall call){getActivity().runOnUiThread(()->{
+  JSObject reply=new JSObject();if(BuildConfig.DEBUG){
+   reply.put("text","Слот: "+bannerPlacement+"\nSDK: "+bannerSdk+"\nЗапросов: "+bannerRequests+" · показов: "+bannerImpressions+"\n"+bannerGeometry);
+  }call.resolve(reply);
+ });}
  @PluginMethod public void banner(PluginCall call){getActivity().runOnUiThread(()->{
-  wanted=call.getBoolean("visible",false);if(destroyed||!foreground||FullscreenAds.busy()){geometryValid=false;if(container!=null)container.setVisibility(View.INVISIBLE);call.resolve();return;}
+  wanted=call.getBoolean("visible",false);if(wanted)bannerPlacement="received";if(destroyed||!foreground||FullscreenAds.busy()){geometryValid=false;if(container!=null)container.setVisibility(View.INVISIBLE);call.resolve();return;}
   if(!wanted&&container!=null){geometryValid=false;container.setVisibility(View.INVISIBLE);}
-  if(!sdkReady){call.resolve();return;}
+  if(!sdkReady){if(wanted)bannerPlacement="waiting for SDK";call.resolve();return;}
   try{
    JSObject slot=call.getObject("slot"),viewport=call.getObject("viewport");View web=getBridge().getWebView();FrameLayout root=getActivity().findViewById(android.R.id.content);
-   if(slot==null||viewport==null||root==null){call.resolve();return;}
+   if(slot==null||viewport==null||root==null){if(wanted)bannerPlacement="missing bounds";call.resolve();return;}
    double vw=viewport.getDouble("width"),vh=viewport.getDouble("height"),x=slot.getDouble("x"),y=slot.getDouble("y"),w=slot.getDouble("width"),h=slot.getDouble("height");
    int[] wp=new int[2],rp=new int[2];web.getLocationOnScreen(wp);root.getLocationOnScreen(rp);
    WindowInsetsCompat insets=ViewCompat.getRootWindowInsets(root);Insets safe=insets==null?Insets.NONE:insets.getInsets(WindowInsetsCompat.Type.systemBars()|WindowInsetsCompat.Type.displayCutout());
@@ -84,26 +91,30 @@ public class WaterAdsPlugin extends Plugin {
     reply.put("safeRightCss",Math.ceil(Math.max(0,webLeft+web.getWidth()-root.getWidth()+safeR)/scale));
     reply.put("safeBottomCss",Math.ceil(Math.max(0,webTop+web.getHeight()-root.getHeight()+safeB)/scale));
    }
+   if(wanted)bannerGeometry=String.format(java.util.Locale.ROOT,"CSS %.1f,%.1f %.1fx%.1f / %.1fx%.1f; WebView %dx%d; root %dx%d; safe %d,%d,%d,%d",x,y,w,h,vw,vh,web.getWidth(),web.getHeight(),root.getWidth(),root.getHeight(),safeL,safeT,safeR,safeB);
    BannerGeometry.Mapped mapped=BannerGeometry.map(x,y,w,h,vw,vh,wp[0]-rp[0],wp[1]-rp[1],web.getWidth(),web.getHeight(),root.getWidth(),root.getHeight(),safeL,safeT,safeR,safeB);
-   if(mapped==null){geometryValid=false;if(container!=null)container.setVisibility(View.INVISIBLE);reply.put("status","unsafe");call.resolve(reply);return;}
+   if(mapped==null){if(wanted)bannerPlacement="outside safe bounds";geometryValid=false;if(container!=null)container.setVisibility(View.INVISIBLE);reply.put("status","unsafe");call.resolve(reply);return;}
    final int width=mapped.width;float density=getContext().getResources().getDisplayMetrics().density;int dp=(int)Math.floor(width/density);if(dp<1){call.resolve();return;}
    BannerAdSize size=BannerAdSize.sticky(getContext(),dp);int height=size.getHeightInPixels(getContext());
    reply.put("heightCss",mapped.requiredCss(height));
    if(!wanted){call.resolve(reply);return;}
-   if(mapped.height<height){if(container!=null)container.setVisibility(View.INVISIBLE);reply.put("status","reserve");call.resolve(reply);return;}
+   if(mapped.height<height){bannerPlacement="reserving "+height+"px (have "+mapped.height+"px)";if(container!=null)container.setVisibility(View.INVISIBLE);reply.put("status","reserve");call.resolve(reply);return;}
    int offset=mapped.centeredTop(height);
-   if(banner==null||bannerWidth!=width||bannerFailedAt>0&&System.currentTimeMillis()-bannerFailedAt>=30000){destroyBanner();bannerFailedAt=0;bannerWidth=width;container=new FrameLayout(getActivity());container.setClipChildren(true);root.addView(container);banner=new BannerAdView(getActivity());container.addView(banner,new FrameLayout.LayoutParams(width,height));banner.setAdSize(size);final int g=++bannerGeneration;
+   boolean needsLoad=banner==null||bannerWidth!=width||bannerFailedAt>0&&System.currentTimeMillis()-bannerFailedAt>=30000;
+   if(needsLoad){destroyBanner();bannerFailedAt=0;bannerWidth=width;container=new FrameLayout(getActivity());container.setClipChildren(true);root.addView(container);banner=new BannerAdView(getActivity());container.addView(banner,new FrameLayout.LayoutParams(width,height));banner.setAdSize(size);final int g=++bannerGeneration;
     banner.setBannerAdEventListener(new BannerAdEventListener(){
-     @Override public void onAdLoaded(){if(destroyed||g!=bannerGeneration)return;WaterAnalyticsPlugin.ad("banner","loaded");visibility.run();}
-     @Override public void onAdFailedToLoad(@NonNull AdRequestError error){if(g==bannerGeneration){bannerFailedAt=System.currentTimeMillis();WaterAnalyticsPlugin.ad("banner","load_error");handler.postDelayed(()->{if(!destroyed&&g==bannerGeneration)notifyListeners("ready",new JSObject());},30100);}}
+     @Override public void onAdLoaded(){if(destroyed||g!=bannerGeneration)return;bannerSdk="loaded";visibility.run();WaterAnalyticsPlugin.ad("banner","loaded");}
+     @Override public void onAdFailedToLoad(@NonNull AdRequestError error){if(g==bannerGeneration){bannerSdk="load error: "+error;bannerFailedAt=System.currentTimeMillis();WaterAnalyticsPlugin.ad("banner","load_error");handler.postDelayed(()->{if(!destroyed&&g==bannerGeneration)notifyListeners("ready",new JSObject());},30100);}}
      @Override public void onAdClicked(){}
      public void onLeftApplication(){}
      public void onReturnedToApplication(){}
-     @Override public void onImpression(@Nullable ImpressionData data){if(g==bannerGeneration)WaterAnalyticsPlugin.ad("banner","impression");}
-    });WaterAnalyticsPlugin.ad("banner","request");banner.loadAd(new AdRequest.Builder(BuildConfig.BANNER_AD_UNIT_ID).build());
+     @Override public void onImpression(@Nullable ImpressionData data){if(g==bannerGeneration){bannerImpressions++;WaterAnalyticsPlugin.ad("banner","impression");}}
+    });
    }
-   FrameLayout.LayoutParams params=new FrameLayout.LayoutParams(width,height);params.gravity=Gravity.TOP|Gravity.LEFT;params.leftMargin=mapped.x-root.getPaddingLeft();params.topMargin=offset-root.getPaddingTop();container.setLayoutParams(params);geometryValid=true;visibility.run();reply.put("status","placed");call.resolve(reply);
-  }catch(Exception e){if(container!=null)container.setVisibility(View.INVISIBLE);call.resolve();}
+   FrameLayout.LayoutParams params=new FrameLayout.LayoutParams(width,height);params.gravity=Gravity.TOP|Gravity.LEFT;params.leftMargin=mapped.x-root.getPaddingLeft();params.topMargin=offset-root.getPaddingTop();container.setLayoutParams(params);geometryValid=true;visibility.run();bannerPlacement="placed "+width+"x"+height+"px";
+   if(needsLoad){bannerRequests++;bannerSdk="loading";WaterAnalyticsPlugin.ad("banner","request");banner.loadAd(new AdRequest.Builder(BuildConfig.BANNER_AD_UNIT_ID).build());}
+   reply.put("status","placed");call.resolve(reply);
+  }catch(Exception e){if(wanted)bannerPlacement="exception: "+e.getClass().getSimpleName()+" "+e.getMessage();if(container!=null)container.setVisibility(View.INVISIBLE);call.resolve();}
  });}
  @Override protected void handleOnPause(){foreground=false;geometryValid=false;if(container!=null)container.setVisibility(View.INVISIBLE);}
  @Override protected void handleOnResume(){foreground=true;preload();/* DOM must remeasure before a banner becomes visible. */}
