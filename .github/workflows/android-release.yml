@@ -1,6 +1,9 @@
 name: Android release APK
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/android-release.yml']
 permissions:
   contents: read
 
