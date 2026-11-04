@@ -147,7 +147,8 @@ function paint(){
  $('coins').textContent=$('home-coins').textContent=String(state.wallet!.coins);
  const dead=!!stuck(),freeAdvice=levelFor(state).colors<=2,ownedAdvice=state.wallet!.hintAdvice?.key===adviceKey(state);
  const needsPack=!dead&&!freeAdvice&&!ownedAdvice&&!state.wallet!.hints;
- const adviceBadge=$('hint-count');adviceBadge.textContent=dead?'?':freeAdvice?'∞':ownedAdvice?'✓':needsPack?`${ECONOMY.packPrice}`:'−1';
+ const adviceBadge=$('hint-count');adviceBadge.textContent=dead?'?':freeAdvice?'':ownedAdvice?'✓':needsPack?`${ECONOMY.packPrice}`:'−1';
+ adviceBadge.hidden=freeAdvice&&!dead;
  adviceBadge.classList.toggle('needs-pack',needsPack);
  const advice=$('hint'),adviceLabel=dead?'Помощь в тупике':freeAdvice?'Подсказать ход · бесплатно':ownedAdvice?'Показать купленную подсказку':needsPack?`Купить 3 заряда за ${ECONOMY.packPrice} монет`:'Подсказать ход · 1 заряд перемешивания';
  advice.setAttribute('aria-label',adviceLabel);advice.title=adviceLabel;
