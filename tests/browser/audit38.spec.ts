@@ -27,8 +27,8 @@ test('deviation and Undo discard the old recommendation instead of consuming sta
 
 test('engine and covered game animations sleep while menu hero keeps moving; nested blockers wake only when all close',async({page})=>{
  await open(page,0);const running=()=>page.evaluate(()=>(window as any).auditScene.game.loop.running);expect(await running()).toBe(true);await home48(page);expect(await running()).toBe(false);const hero=page.locator('.home-hero[data-material=glass]'),first=await hero.innerHTML();await page.waitForTimeout(200);expect(await hero.innerHTML()).not.toBe(first);
- await page.locator('#home-settings').click();expect(await running()).toBe(false);await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));await page.getByRole('button',{name:'Готово',exact:true}).click();expect(await running()).toBe(false);await page.evaluate(()=>window.dispatchEvent(new Event('pageshow')));expect(await running()).toBe(false);await page.locator('#home-play').click();expect(await running()).toBe(true);
- await page.locator('#settings').click();expect(await running()).toBe(false);await page.getByRole('button',{name:'Готово',exact:true}).click();expect(await running()).toBe(true);await tap(page,0);await tap(page,2);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
+ await page.locator('#home-settings').click();expect(await running()).toBe(false);await page.evaluate(()=>window.dispatchEvent(new Event('pagehide')));await page.getByRole('button',{name:'Закрыть',exact:true}).click();expect(await running()).toBe(false);await page.evaluate(()=>window.dispatchEvent(new Event('pageshow')));expect(await running()).toBe(false);await page.locator('#home-play').click();expect(await running()).toBe(true);
+ await page.locator('#settings').click();expect(await running()).toBe(false);await page.getByRole('button',{name:'Закрыть',exact:true}).click();expect(await running()).toBe(true);await tap(page,0);await tap(page,2);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
 });
 
 test('sleeping during an accepted pour clears its visual work and resumes the durable board without replay',async({page})=>{
@@ -44,12 +44,12 @@ test('repeated home/settings cycles retain one canvas and bounded pools',async({
  // Twenty real pointer cycles now include the pause menu on every trip home.
  // Keep every cycle and its animation/actionability checks on slower CI runners.
  test.setTimeout(120000);await open(page,37);const stats=()=>page.evaluate(()=>{const s=(window as any).auditScene;return {canvas:document.querySelectorAll('canvas').length,labels:s.labels.length+s.activeLabels.length,glass:s.glass.tubes.size,events:s.input.listenerCount('pointerdown')};});const before=await stats();
- for(let i=0;i<20;i++){await home48(page);await page.locator('#home-play').click();await page.locator('#settings').click();await page.getByRole('button',{name:'Готово',exact:true}).click();}
+ for(let i=0;i<20;i++){await home48(page);await page.locator('#home-play').click();await page.locator('#settings').click();await page.getByRole('button',{name:'Закрыть',exact:true}).click();}
  await page.waitForTimeout(350);expect(await stats()).toEqual(before);
 });
 
 test('covered victory letter/star/button animations freeze without changing the recorded result',async({page})=>{
- await open(page,0,levels[0].witness.length);await page.waitForTimeout(600);const before=await saved(page);await page.locator('#settings').click();const state=await page.locator('#continue').evaluate(e=>getComputedStyle(e).animationPlayState);expect(state).toBe('paused');await page.waitForTimeout(150);expect(await saved(page)).toEqual(before);await page.getByRole('button',{name:'Готово',exact:true}).click();expect(await page.locator('#continue').evaluate(e=>getComputedStyle(e).animationPlayState)).toBe('running');
+ await open(page,0,levels[0].witness.length);await page.waitForTimeout(600);const before=await saved(page);await page.locator('#settings').click();const state=await page.locator('#continue').evaluate(e=>getComputedStyle(e).animationPlayState);expect(state).toBe('paused');await page.waitForTimeout(150);expect(await saved(page)).toEqual(before);await page.getByRole('button',{name:'Закрыть',exact:true}).click();expect(await page.locator('#continue').evaluate(e=>getComputedStyle(e).animationPlayState)).toBe('running');
 });
 
 test('all campaign role layouts reuse bounded glass/label pools and keep one live input listener',async({page})=>{

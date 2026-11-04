@@ -10,7 +10,7 @@ async function home(page:Page){await home48(page);await expect(page.locator('#ho
 
 test('first launch shows home; settings do not start the game; first Play persists a start',async({page})=>{
  await page.goto('/');await expect(page.getByRole('heading',{name:'Переливы',exact:true})).toBeVisible();await expect(page.locator('#home-play')).toHaveText('Играть');await expect(page.locator('#app')).toBeHidden();
- await page.locator('#home-settings').click();await page.getByRole('switch',{name:'Звуки',exact:true}).uncheck();await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('#home-play')).toHaveText('Играть');
+ await page.locator('#home-settings').click();await page.getByRole('switch',{name:'Звуки',exact:true}).uncheck();await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('#home-play')).toHaveText('Играть');
  await page.locator('#home-play').click();await expect(page.locator('#home')).toBeHidden();expect(attempt(await saved(page)).history).toHaveLength(0);await home(page);await expect(page.locator('#home-play')).toHaveText('Продолжить');
  await page.reload();await expect(page.locator('#home-play')).toHaveText('Продолжить');expect((await saved(page)).settings.sound).toBe(false);
 });
@@ -49,5 +49,5 @@ test('home interrupts queued actions, preserving only the accepted move',async({
 
 for(const [width,height]of [[320,480],[568,320]])test(`home fits ${width}x${height} with full controls and independent settings`,async({page})=>{
  await page.setViewportSize({width,height});await page.goto('/');for(const id of ['home-play','home-levels','home-settings']){const r=(await page.locator('#'+id).boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y).toBeGreaterThanOrEqual(0);expect(r.y+r.height).toBeLessThanOrEqual(height);}
- await page.locator('#home-settings').click();await expect(page.getByRole('heading',{name:'Настройки',exact:true})).toBeVisible();await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('#home')).toBeVisible();
+ await page.locator('#home-settings').click();await expect(page.getByRole('heading',{name:'Настройки',exact:true})).toBeVisible();await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('#home')).toBeVisible();
 });

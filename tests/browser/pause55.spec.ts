@@ -16,6 +16,7 @@ test('a resumed cyclic dead board shows help before any pour and restarts direct
  await page.goto('/');await page.locator('#home-play').click();
  await expect(page.locator('#status')).toContainText('Решения нет');
  await expect(page.locator('#shuffle')).toHaveClass(/rescue-highlight/);
+ await expect(page.locator('.boosters .rescue-highlight')).toHaveCount(1);
  expect((await page.locator('#notice').boundingBox())!.y+(await page.locator('#notice').boundingBox())!.height).toBeLessThan((await page.locator('#shuffle').boundingBox())!.y);
  await expect(page.locator('#shuffle-count')).toHaveText(String(s.wallet!.hints));
  await page.locator('#notice-restart').click();
@@ -24,7 +25,7 @@ test('a resumed cyclic dead board shows help before any pour and restarts direct
  expect(attempt(await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!))).history).toHaveLength(0);
 });
 
-for(const [width,height] of [[360,760],[640,320]])test(`pause stays inside native insets at ${width}×${height}`,async({page})=>{
+for(const [width,height] of [[360,760],[320,480],[640,320]])test(`pause stays inside native insets at ${width}×${height}`,async({page})=>{
  await page.setViewportSize({width,height});await page.goto('/');
  await page.evaluate(()=>{for(const [side,n]of Object.entries({top:37,bottom:44,left:24,right:16}))document.documentElement.style.setProperty('--safe-area-inset-'+side,n+'px');});
  await page.locator('#home-play').click();await page.locator('#settings').click();
@@ -33,9 +34,11 @@ for(const [width,height] of [[360,760],[640,320]])test(`pause stays inside nativ
  expect(b.x).toBeGreaterThanOrEqual(24);expect(b.x+b.width).toBeLessThanOrEqual(width-16);
  expect(b.y).toBeGreaterThanOrEqual(37);expect(b.y+b.height).toBeLessThanOrEqual(height-44);
  await expect(page.getByRole('button',{name:'Варианты',exact:true})).toHaveCount(0);
- await page.getByRole('button',{name:'Лагуна',exact:true}).click();
+ const scroll=()=>page.locator('.dialog-body').evaluate(el=>el.scrollTop);
+ const lagoon=page.getByRole('button',{name:'Лагуна',exact:true});await lagoon.scrollIntoViewIfNeeded();const before=await scroll();
+ await lagoon.click();expect(await scroll()).toBe(before);
  await expect(page.locator('body')).toHaveAttribute('data-theme','plum');
- await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();
+ await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();
 });
 
 test('a repeated board with an exit does not suggest rescue',async({page})=>{

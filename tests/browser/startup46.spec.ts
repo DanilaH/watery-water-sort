@@ -10,7 +10,7 @@ test('cold HTML stays hidden and inert until JavaScript is ready; static buttons
  try{await page.goto('/',{waitUntil:'commit'});await expect(page.locator('body')).toHaveAttribute('data-booting','');await expect(page.locator('#home-play')).toHaveClass('gel-button gel-primary');await expect(home(page)).toBeHidden();expect(await page.locator('body').evaluate(b=>(b as HTMLElement).inert)).toBe(true);}
  finally{release();}
  await ready(page);expect((await skin(page)).image).toContain('button-gold-29.svg');expect((await skin(page)).background).toBe('rgba(0, 0, 0, 0)');
- await page.locator('#home-settings').click();await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();
+ await page.locator('#home-settings').click();await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();
 });
 
 test('delayed gold skin never exposes the old green button, and the first menu includes its final artwork and font',async({page})=>{
@@ -26,7 +26,7 @@ test('failed skins and font show usable stable fallback controls instead of trap
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/art/ui/*-29.svg',r=>r.fulfill({status:404,body:''}));await page.route('**/fonts/rubik.woff',r=>r.fulfill({status:404,body:''}));await page.goto('/');await ready(page);
  for(const name of ['gold','blue','star','font'])await expect(page.locator('body')).toHaveAttribute(`data-${name}-fallback`,'');
- const s=await skin(page);expect(s.image).toBe('none');expect(s.fallback).toContain('linear-gradient');expect(s.background).toBe('rgba(0, 0, 0, 0)');await page.locator('#home-settings').click();await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Готово',exact:true}).click();expect(errors).toEqual([]);
+ const s=await skin(page);expect(s.image).toBe('none');expect(s.fallback).toContain('linear-gradient');expect(s.background).toBe('rgba(0, 0, 0, 0)');await page.locator('#home-settings').click();await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Закрыть',exact:true}).click();expect(errors).toEqual([]);
 });
 
 test('stalled image has a bounded startup and does not change the visible button when it eventually loads',async({page})=>{

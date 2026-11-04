@@ -26,7 +26,7 @@ test('blank tap cancels the queued move',async({page})=>{
 });
 test('small landscape dialog keeps close and confirmation visible',async({page})=>{
  await page.setViewportSize({width:568,height:320});await start(page,11);await page.locator('#settings').click();
- for(const button of [page.getByRole('button',{name:'Закрыть',exact:true}),page.getByRole('button',{name:'Готово',exact:true})]){const r=(await button.boundingBox())!;expect(r.y).toBeGreaterThanOrEqual(0);expect(r.y+r.height).toBeLessThanOrEqual(320);}
+ for(const button of [page.getByRole('button',{name:'Закрыть',exact:true})]){const r=(await button.boundingBox())!;expect(r.y).toBeGreaterThanOrEqual(0);expect(r.y+r.height).toBeLessThanOrEqual(320);}
  await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('dialog')).not.toBeVisible();
 });
 

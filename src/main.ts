@@ -147,8 +147,8 @@ function paint(){
  $('coins').textContent=$('home-coins').textContent=String(state.wallet!.coins);
  const dead=!!stuck(),freeAdvice=levelFor(state).colors<=2,ownedAdvice=state.wallet!.hintAdvice?.key===adviceKey(state);
  const needsPack=!dead&&!freeAdvice&&!ownedAdvice&&!state.wallet!.hints;
- const adviceBadge=$('hint-count');adviceBadge.textContent=dead?'?':freeAdvice?'':ownedAdvice?'✓':needsPack?`${ECONOMY.packPrice}`:'−1';
- adviceBadge.hidden=freeAdvice&&!dead;
+ const adviceBadge=$('hint-count');adviceBadge.textContent=dead||freeAdvice?'':ownedAdvice?'✓':needsPack?`${ECONOMY.packPrice}`:'−1';
+ adviceBadge.hidden=dead||freeAdvice;
  adviceBadge.classList.toggle('needs-pack',needsPack);
  const advice=$('hint'),adviceLabel=dead?'Помощь в тупике':freeAdvice?'Подсказать ход · бесплатно':ownedAdvice?'Показать купленную подсказку':needsPack?`Купить 3 заряда за ${ECONOMY.packPrice} монет`:'Подсказать ход · 1 заряд перемешивания';
  advice.setAttribute('aria-label',adviceLabel);advice.title=adviceLabel;
@@ -180,9 +180,10 @@ function paint(){
  }
  $('rescue').hidden=!dead;$('notice-restart').hidden=!dead;
  $('notice').classList.toggle('is-stuck',dead);
- for(const id of ['shuffle','extra-tube']){
-  const b=$<HTMLButtonElement>(id);b.classList.toggle('rescue-highlight',dead&&!b.disabled&&!b.hidden);
- }
+ const rescueButtons=['shuffle','extra-tube'].map(id=>$<HTMLButtonElement>(id));
+ const available=dead?rescueButtons.filter(b=>!b.disabled&&!b.hidden):[];
+ const recommended=available.find(b=>b.id==='shuffle'?state.wallet!.hints>0:(state.wallet!.tubes??0)>0)??available[0];
+ for(const b of rescueButtons)b.classList.toggle('rescue-highlight',b===recommended);
  $('continue').textContent=continuation(state)===undefined?'К уровням →':'Дальше →';
  const starGoal=$('next-star-goal'),target=targets(activeKey(state));
  starGoal.hidden=!finished||earned===3;
@@ -200,7 +201,11 @@ function paintBoost(kind:Boost,count:number){
  if(kind==='shuffle')button.title=button.getAttribute('aria-label')!;
 }
 function parkControls(){for(const id of ['menu','restart','star-target','rescue'])$('park').append($(id));}
-function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;cancelAssist();dialog.close();parkControls();block('dialog',false);checkPosition();message(guidance());}
+let fieldTransition:Animation|undefined;
+function easeField(from:number,duration:number){
+ fieldTransition?.cancel();if(!reduced.matches)fieldTransition=$('board').animate([{opacity:from},{opacity:1}],{duration,easing:'ease-out'});
+}
+function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;const resumeField=!atHome&&dialog.classList.contains('compact-pause');cancelAssist();dialog.close();parkControls();block('dialog',false);checkPosition();message(guidance());if(resumeField)easeField(.78,150);}
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
  entryRequest=undefined;pendingNext=undefined;
  block('dialog',true);parkControls();content.replaceChildren();dialog.classList.remove('compact-pause','pack-dialog');
@@ -237,7 +242,7 @@ function switchLevel(index:number,reason='select'){
  measureActive();track('level_leave',{reason});interrupt();const selected={...state,current:index},existing=selected.attempts[activeKey(selected)];
  const unfinished=reason==='select'&&existing&&!won(existing.board,goalFor(selected));
  const n=unfinished?selected:startLatest(selected);
- if(commit(n)){activeMs=0;hintRoute.clear();activateGame(reason);}
+ if(commit(n)){activeMs=0;hintRoute.clear();activateGame(reason);if(reason==='next'&&!atHome)easeField(.42,160);}
 }
 function restart(){pendingNext=undefined;const n=seededRestart(state);if(commit(n)){track('level_restart');measureActive();activeMs=0;interrupt();hintRoute.clear();activateGame('restart');message(guidance());}}
 function drainQueue(){if(!queued)return;const q=queued;clearIntent();const m=moveFor(attempt(state).board,q.from,q.to,goalFor(state));if(m)accept(m,true);}
@@ -416,7 +421,7 @@ $('home-play').onclick=resumeGame;
 $('home-levels').onclick=menu;
 $('home-settings').onclick=settings;
 function settings(){
- audio.ui();const body=modal(atHome?'Настройки':'Пауза','',[{label:'Готово',primary:true,action:close}]);dialog.classList.add('compact-pause');
+ audio.ui();const body=modal(atHome?'Настройки':'Пауза','',[]);dialog.classList.add('compact-pause');
  if(!atHome){const actions=document.createElement('div');actions.className='pause-actions';for(const id of ['menu','restart','star-target','rescue'])actions.append($(id));body.append(actions);}
  for(const [key,label]of Object.entries({sound:'Звуки',haptics:'Вибрация',fast:'Быстрое переливание',symbols:'Символы на цветах'})){
   const row=document.createElement('label');row.className='setting';const text=document.createElement('span');text.textContent=label;const input=document.createElement('input');input.type='checkbox';input.setAttribute('role','switch');input.checked=state.settings[key as keyof typeof state.settings]!==false;
@@ -431,7 +436,7 @@ function settings(){
  themes.append(choices);body.append(themes);selected();
 }
 $('settings').onclick=settings;
-reduced.addEventListener('change',()=>{interrupt();paint();});
+reduced.addEventListener('change',()=>{fieldTransition?.cancel();interrupt();paint();});
 document.addEventListener('click',event=>{const button=(event.target as Element).closest('button');if(button&&!button.disabled)haptic('ui');},{capture:true});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!dialog.open&&!atHome){e.preventDefault();settings();}});
 dialog.addEventListener('cancel',e=>{e.preventDefault();close();});

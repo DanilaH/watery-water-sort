@@ -10,7 +10,7 @@ test('all four themes persist without changing an accepted attempt',async({page}
   await page.locator('#settings').click();await page.getByRole('button',{name:t.name,exact:true}).click();
   await expect(page.locator('body')).toHaveAttribute('data-theme',t.id);await expect(page.getByRole('button',{name:t.name,exact:true})).toHaveAttribute('aria-pressed','true');
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));expect(saved.attempts).toEqual(s.attempts);expect(saved.revision).toBe(s.revision);expect(saved.settings.theme).toBe(t.id);
-  await page.getByRole('button',{name:'Готово',exact:true}).click();await reloadGame(page);await expect(page.locator('body')).toHaveAttribute('data-theme',t.id);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
+  await page.getByRole('button',{name:'Закрыть',exact:true}).click();await reloadGame(page);await expect(page.locator('body')).toHaveAttribute('data-theme',t.id);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
  }
 });
 
@@ -27,5 +27,5 @@ test('failed theme save keeps the current theme and selected button',async({page
 test('all themes fit small portrait and landscape with reduced motion',async({page})=>{
  await page.emulateMedia({reducedMotion:'reduce'});for(const [width,height]of [[568,320],[320,480]]){await page.setViewportSize({width,height});await startGame(page);await page.locator('#settings').click();
  for(const t of THEMES){const b=page.getByRole('button',{name:t.name,exact:true});await b.scrollIntoViewIfNeeded();const r=(await b.boundingBox())!;expect(r.width).toBeGreaterThanOrEqual(48);expect(r.height).toBeGreaterThanOrEqual(48);await b.click();await expect(page.locator('body')).toHaveAttribute('data-theme',t.id);expect(await b.evaluate(e=>e.scrollWidth<=e.clientWidth)).toBe(true);}
- await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('dialog')).not.toBeVisible();expect(await page.locator('#app').evaluate(e=>getComputedStyle(e).animationName)).toBe('none');}
+ await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('dialog')).not.toBeVisible();expect(await page.locator('#app').evaluate(e=>getComputedStyle(e).animationName)).toBe('none');}
 });
