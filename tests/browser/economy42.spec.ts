@@ -27,6 +27,13 @@ for(const size of [{width:320,height:480},{width:568,height:320},{width:390,heig
  await page.setViewportSize(size);await page.route('**/src/platform/ads.ts',r=>r.fulfill({contentType:'application/javascript',body:`export class Ads{native=true;constructor(slot){this.slot=slot}prepare(){}async show(){return {status:'unavailable'}}banner(v){if(v){this.slot.style.setProperty('--banner-height','60px');document.getElementById('app').style.setProperty('--banner-height','60px')}}}`}));await open(page,{...fresh(),current:11});
  const slot=(await page.locator('#banner-slot').boundingBox())!,board=(await page.locator('#board canvas').boundingBox())!;expect(board.height).toBeGreaterThan(90);expect(slot.y+slot.height).toBeLessThanOrEqual(size.height+1);for(const id of ['undo','hint','shuffle','extra-tube','wallet']){const box=(await page.locator('#'+id).boundingBox())!;expect(box.y+box.height).toBeLessThanOrEqual(slot.y+.1);expect(box.height).toBeGreaterThanOrEqual(id==='wallet'?28:48);}await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');
 });
+test('short portrait banner fits before the native SDK can report a height',async({page})=>{
+ await page.setViewportSize({width:390,height:420});
+ await page.route('**/src/platform/ads.ts',r=>r.fulfill({contentType:'application/javascript',body:'export class Ads{native=true;prepare(){}banner(){}}'}));
+ await open(page,{...fresh(),current:2});
+ const slot=(await page.locator('#banner-slot').boundingBox())!;
+ expect(slot.height).toBe(50);expect(slot.y+slot.height).toBeLessThanOrEqual(420);
+});
 test('interstitial only runs on Next, no-fill continues immediately, and its opportunity survives reload',async({page})=>{
  let s=fresh();s.current=2;s.completed=[levels[0].id,levels[1].id];for(const m of levels[2].witness)s=moved(s,m);s=settleEconomy(s);
  await page.route('**/src/platform/ads.ts',r=>r.fulfill({contentType:'application/javascript',body:`export class Ads{native=true;prepare(){}banner(){}async show(){sessionStorage.ads42=String(Number(sessionStorage.ads42||0)+1);return {status:'unavailable'}}}`}));await open(page,s);expect(await page.evaluate(()=>sessionStorage.ads42||'0')).toBe('0');await page.locator('#continue').click();await expect(page.locator('#level-title')).not.toContainText('Уровень 3');expect(await page.evaluate(()=>sessionStorage.ads42)).toBe('1');expect((await saved(page)).wallet!.adAttemptAfter).toBeGreaterThan(Date.now());
