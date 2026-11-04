@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    # Rebuild the signed package when the release pipeline changes.
     paths: ['.github/workflows/android-release.yml']
 permissions:
   contents: read
