@@ -21,7 +21,7 @@ test('legacy light preference loads as Ice without resetting progress',async({pa
 
 test('failed theme save keeps the current theme and selected button',async({page})=>{
  await startGame(page);await page.locator('#settings').click();await page.evaluate(()=>{Storage.prototype.setItem=()=>{throw new Error('storage failed');};});
- await page.getByRole('button',{name:'Сливовый',exact:true}).click();await expect(page.locator('body')).toHaveAttribute('data-theme','blue');await expect(page.getByRole('button',{name:'Синий',exact:true})).toHaveAttribute('aria-pressed','true');await expect(page.getByRole('button',{name:'Сливовый',exact:true})).toHaveAttribute('aria-pressed','false');await expect(page.locator('.dialog-body [role=alert]')).toBeVisible();
+ await page.getByRole('button',{name:'Лагуна',exact:true}).click();await expect(page.locator('body')).toHaveAttribute('data-theme','blue');await expect(page.getByRole('button',{name:'Синий',exact:true})).toHaveAttribute('aria-pressed','true');await expect(page.getByRole('button',{name:'Лагуна',exact:true})).toHaveAttribute('aria-pressed','false');await expect(page.locator('.dialog-body [role=alert]')).toBeVisible();
 });
 
 test('all themes fit small portrait and landscape with reduced motion',async({page})=>{
