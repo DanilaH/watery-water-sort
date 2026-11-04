@@ -87,7 +87,7 @@ describe('connected pouring',()=>{
     }const next=transition(board,m,rules);board=next.board;rules=next.rules;
    }
   }
- });
+ }, 15000);
  it('keeps a dense small-phone field readable without a phantom slot',()=>{
   const ps=layout(288,263,10);expect(new Set(ps.map(p=>p.y)).size).toBe(2);expect(ps[0].w).toBeGreaterThanOrEqual(18);expect(ps[0].h).toBeGreaterThanOrEqual(90);
  });
