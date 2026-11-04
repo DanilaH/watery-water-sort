@@ -52,3 +52,33 @@ nav.boosters button.rescue-highlight{outline:2px solid #ffce70;outline-offset:2p
 }
 
 body.with-banner #app{--app-left:max(var(--app-side),var(--safe-left),var(--banner-safe-left,0px));--app-right:max(var(--app-side),var(--safe-right),var(--banner-safe-right,0px));padding-bottom:max(var(--safe-bottom),var(--banner-safe-bottom,0px))}
+
+body dialog.game-pause{
+ width:min(90vw,370px);border:2px solid var(--sheet-line);border-radius:28px;
+ background:radial-gradient(ellipse at 50% 0%,#467dba35,transparent 72%),linear-gradient(160deg,var(--sheet-top),var(--sheet-base));
+ box-shadow:inset 0 1px #e1efff44,0 20px 56px #08142e99;
+}
+body .game-pause .dialog-header{position:relative;justify-content:center;min-height:62px;padding:12px 58px 8px;border-bottom:0}
+body .game-pause .dialog-header h2{font-size:34px;line-height:1.05;letter-spacing:-.025em;text-shadow:0 3px #07142b44}
+body #dialog.game-pause .dialog-close{position:absolute;right:9px;top:7px;background:transparent}
+body #dialog.game-pause .dialog-close::before{display:block}
+body .game-pause .dialog-body{display:grid;gap:13px;padding:0 17px 17px}
+.pause-stage{justify-self:center;color:var(--sheet-muted);font-size:13px;font-weight:700;padding:5px 12px;border-radius:20px;background:#7bb6f01a}
+body .game-pause .pause-resume{min-height:58px;border:0;background:transparent;color:#593700;font-size:20px;box-shadow:none;text-shadow:0 1px #fff3b5}
+body .game-pause .pause-actions{gap:8px;margin:0}
+body .game-pause :is(#menu,#restart){background:transparent;min-height:52px;color:#fff}
+body .game-pause :is(#menu,#restart)::before{display:block}
+body[data-theme=ice] .game-pause :is(#menu,#restart){color:#17386c}
+body .game-pause #star-target{font-size:17px;min-height:48px}
+body .game-pause .pause-preferences{justify-self:center;min-height:48px;padding:3px 18px;border:0;background:transparent;color:var(--sheet-muted);box-shadow:none}
+@media(max-height:430px){
+ body .game-pause .dialog-header{min-height:54px}
+ body .game-pause .dialog-header h2{font-size:29px}
+ body .game-pause .dialog-body{gap:8px;padding-bottom:10px}
+ body .game-pause .pause-resume{min-height:50px}
+}
+body .game-pause .pause-resume{position:relative;isolation:isolate}
+@media(orientation:landscape) and (max-height:430px){
+ body .game-pause .pause-stage{display:none}
+ body .game-pause .dialog-body{gap:6px}
+}

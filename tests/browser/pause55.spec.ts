@@ -37,11 +37,14 @@ for(const [width,height] of [[360,760],[320,480],[640,320]])test(`pause stays in
  expect(b.x).toBeGreaterThanOrEqual(24);expect(b.x+b.width).toBeLessThanOrEqual(width-16);
  expect(b.y).toBeGreaterThanOrEqual(37);expect(b.y+b.height).toBeLessThanOrEqual(height-44);
  await expect(page.getByRole('button',{name:'Варианты',exact:true})).toHaveCount(0);
+ await expect(page.getByRole('switch')).toHaveCount(0);
+ await page.locator('dialog').getByRole('button',{name:'Настройки',exact:true}).click();
  const scroll=()=>page.locator('.dialog-body').evaluate(el=>el.scrollTop);
  const lagoon=page.getByRole('button',{name:'Лагуна',exact:true});await lagoon.scrollIntoViewIfNeeded();const before=await scroll();
  await lagoon.click();expect(await scroll()).toBe(before);
  await expect(page.locator('body')).toHaveAttribute('data-theme','plum');
- await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();
+ await page.getByRole('button',{name:'Назад',exact:true}).click();await expect(page.getByRole('heading',{name:'Пауза',exact:true})).toBeVisible();
+ await page.getByRole('button',{name:'Продолжить',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();
 });
 
 test('a repeated board with an exit does not suggest rescue',async({page})=>{

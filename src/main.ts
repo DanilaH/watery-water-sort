@@ -234,7 +234,7 @@ function enterPanel(origin:DOMRect|undefined,duration:number,pack=false){
 }
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[],back?:()=>void){
  panelBack=back;entryRequest=undefined;pendingNext=undefined;
- block('dialog',true);parkControls();content.replaceChildren();dialog.classList.remove('compact-pause','pack-dialog','rescue-dialog');
+ block('dialog',true);parkControls();content.replaceChildren();dialog.classList.remove('compact-pause','pack-dialog','rescue-dialog','game-pause');
  const header=document.createElement('header');header.className='dialog-header';
  const h=document.createElement('h2');h.textContent=title;h.tabIndex=-1;header.append(h);
  const x=document.createElement('button');x.className='dialog-close gel-button';x.textContent=back?'‹':'×';x.setAttribute('aria-label',back?'Назад':'Закрыть');x.onclick=dismissPanel;x.hidden=locked;header.append(x);
@@ -467,8 +467,16 @@ $('home-play').onclick=resumeGame;
 $('home-levels').onclick=menu;
 $('home-settings').onclick=settings;
 function settings(){
- const body=modal(atHome?'Настройки':'Пауза','',[]);dialog.classList.add('compact-pause');
- if(!atHome){const actions=document.createElement('div');actions.className='pause-actions';for(const id of ['menu','restart','star-target','rescue'])actions.append($(id));body.append(actions);}
+ if(atHome){preferences();return;}
+ const body=modal('Пауза','',[]);dialog.classList.add('compact-pause','game-pause');
+ const stage=document.createElement('div');stage.className='pause-stage';stage.textContent=`Уровень ${stageNumber(state.current)}`;body.append(stage);
+ const resume=document.createElement('button');resume.className='gel-button gel-primary pause-resume';resume.textContent='Продолжить';resume.onclick=close;body.append(resume);
+ const actions=document.createElement('div');actions.className='pause-actions';
+ for(const id of ['restart','menu','star-target','rescue'])actions.append($(id));body.append(actions);
+ const options=document.createElement('button');options.className='pause-preferences';options.textContent='Настройки';options.onclick=preferences;body.append(options);
+}
+function preferences(){
+ const body=modal('Настройки','',[],atHome?undefined:settings);dialog.classList.add('compact-pause');
  for(const [key,label]of Object.entries({sound:'Звуки',haptics:'Вибрация',fast:'Быстрое переливание',symbols:'Символы на цветах'})){
   const row=document.createElement('label');row.className='setting';const text=document.createElement('span');text.textContent=label;const input=document.createElement('input');input.type='checkbox';input.setAttribute('role','switch');input.checked=state.settings[key as keyof typeof state.settings]!==false;
   input.onchange=()=>{const n=structuredClone(state);n.settings[key as 'sound'|'haptics'|'fast'|'symbols']=input.checked;if(commit(n)){paint();audio.ui();haptic('ui');}else input.checked=!input.checked;};row.append(text,input);body.append(row);

@@ -14,7 +14,7 @@ test('complete tutorial, retain move during animation, undo after reload',async(
 });
 test('hint, symbols, fast mode, themes and layouts',async({page})=>{
  await startGame(page);await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');await toggleSymbols(page);expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!).settings.symbols)).toBe(true);
- await page.locator('#settings').click();await page.getByLabel('Быстрое переливание').check();await page.getByRole('button',{name:'Лёд',exact:true}).click();await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('body')).toHaveClass('light');
+ await page.locator('#settings').click();await page.locator('dialog').getByRole('button',{name:'Настройки',exact:true}).click();await page.getByLabel('Быстрое переливание').check();await page.getByRole('button',{name:'Лёд',exact:true}).click();await page.getByRole('button',{name:'Назад',exact:true}).click();await page.getByRole('button',{name:'Закрыть',exact:true}).click();await expect(page.locator('body')).toHaveClass('light');
  for(const [width,height]of [[320,568],[844,390],[768,1024]]){await page.setViewportSize({width,height});await page.waitForTimeout(150);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);for(const id of ['undo','shuffle','wallet','board','banner-slot']){const b=(await page.locator('#'+id).boundingBox())!;expect(b.x).toBeGreaterThanOrEqual(0);expect(b.x+b.width).toBeLessThanOrEqual(width+1);expect(b.y+b.height).toBeLessThanOrEqual(height+1);}}
 });
 

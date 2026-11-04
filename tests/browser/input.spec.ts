@@ -105,5 +105,5 @@ test('raised rim remains part of the selected tube',async({page})=>{
 test('modal actions keep 48px targets and all settings stay reachable',async({page})=>{
  await page.setViewportSize({width:568,height:320});await open(page);await page.locator('#settings').click();
  const button=page.getByRole('button',{name:'Закрыть',exact:true});expect((await button.boundingBox())!.height+0.001).toBeGreaterThanOrEqual(48);
- const theme=page.getByRole('button',{name:'Лёд',exact:true});await theme.scrollIntoViewIfNeeded();await theme.click();await expect(page.locator('body')).toHaveClass(/light/);await button.click();await expect(page.locator('dialog')).not.toBeVisible();
+ await page.locator('dialog').getByRole('button',{name:'Настройки',exact:true}).click();const theme=page.getByRole('button',{name:'Лёд',exact:true});await theme.scrollIntoViewIfNeeded();await theme.click();await expect(page.locator('body')).toHaveClass(/light/);await page.getByRole('button',{name:'Назад',exact:true}).click();await button.click();await expect(page.locator('dialog')).not.toBeVisible();
 });
