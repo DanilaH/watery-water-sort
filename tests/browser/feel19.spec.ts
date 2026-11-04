@@ -18,7 +18,7 @@ for(const [width,height]of [[320,480],[390,844],[568,320]])test(`goal edges alig
 test('potential stars react to overspending and Undo; exact conditions remain reachable',async({page})=>{
  await open(page,0,true);await move(page,1,2);await expect(page.locator('#hint')).toBeEnabled();await move(page,2,1);await expect(page.locator('#hint')).toBeEnabled();
  await expect(page.locator('#star-target [data-filled=true]')).toHaveCount(2);await expect(page.locator('#star-target .star-lost')).toHaveCount(1);
- await page.locator('#undo').click();await expect(page.locator('#star-target [data-filled=true]')).toHaveCount(3);await stars48(page);await expect(page.getByRole('heading',{name:'Звёзды за уровень'})).toBeVisible();await expect(page.locator('.dialog-body')).toContainText('не больше 3 ходов');await expect(page.locator('.dialog-body')).toContainText('не больше 5');
+ await page.locator('#undo').click();await expect(page.locator('#star-target [data-filled=true]')).toHaveCount(3);await stars48(page);await expect(page.getByRole('heading',{name:'Звёзды за уровень'})).toBeVisible();await expect(page.locator('.dialog-body')).toContainText('До 3 ходов');await expect(page.locator('.dialog-body')).toContainText('До 5 ходов');await page.getByRole('button',{name:'Понятно',exact:true}).click();await expect(page.getByRole('heading',{name:'Пауза',exact:true})).toBeVisible();
 });
 test('word, stars, fountains and breathing next button coexist, with continuing idle movement',async({page})=>{
  await open(page,0,true);const last=levels[0].witness.at(-1)!;await move(page,last.from,last.to);await expect(page.locator('#continue')).toBeVisible();

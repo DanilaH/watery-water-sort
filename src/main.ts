@@ -108,7 +108,19 @@ let atHome=true,rewardBusy=false,recoveringRewards=false;
 const rewarded=new Rewarded();let pendingReceipt:Receipt|undefined;
 const hasStarted=()=>Object.keys(state.attempts).length>0||state.completed.length>0;
 function haptic(event:Touch='select',heavy=false){touch.enabled=state.settings.haptics!==false;touch.blocked=event==='ui'?[...blockers].some(b=>b!=='home'&&b!=='dialog'):blockers.size>0;touch.play(event,heavy);}
-function message(text:string,important=false){const value=important?text:recoveryNotice||text;$('status').textContent=value;$('objective').hidden=!!value||!goalFor(state)||!$('objective').textContent||document.body.classList.contains('finished');}
+function updateCoach(){
+ const a=attempt(state),index=state.current,rules=goalFor(state);
+ scene.coachTube=null;
+ if(atHome||blockers.size||scene.busy||scene.hintMove||playerMoves(a)||state.completed.includes(levelFor(state).id))return;
+ if(index===0){
+  const board=a.board;
+  scene.coachTube=scene.selected===null?(levels[0].witness[0]?.from??null):moves(board,rules).find(m=>m.from===scene.selected&&board[m.to].length===0)?.to??null;
+ }else if(scene.selected===null){
+  if(index===campaign.find(i=>goalList(levelGoals(levels[i])).length>0))scene.coachTube=goalList(rules)[0]?.index??null;
+  if(index===campaign.find(i=>iceIndex(levelGoals(levels[i]))!==undefined)&&!iceOpen(rules))scene.coachTube=iceIndex(rules)??null;
+ }
+}
+function message(text:string,important=false){updateCoach();const value=important?text:recoveryNotice||text;$('status').textContent=value;$('objective').hidden=!!value||!goalFor(state)||!$('objective').textContent||document.body.classList.contains('finished');}
 function guidance(){
  if(won(attempt(state).board,goalFor(state)))return '';
  if(queued)return 'Следующий ход выбран · фон — отмена';
@@ -180,14 +192,14 @@ function paint(){
  }
  $('rescue').hidden=!dead;$('notice-restart').hidden=!dead;
  $('notice').classList.toggle('is-stuck',dead);
- const rescueButtons=['shuffle','extra-tube'].map(id=>$<HTMLButtonElement>(id));
- const available=dead?rescueButtons.filter(b=>!b.disabled&&!b.hidden):[];
- const recommended=available.find(b=>b.id==='shuffle'?boostStock(state.wallet!,'shuffle')>0:(state.wallet!.tubes??0)>0)??available[0];
- for(const b of rescueButtons)b.classList.toggle('rescue-highlight',b===recommended);
+ const recommended=dead?rescueChoice():undefined;
+ for(const kind of ['shuffle','tube'] as const)$(BOOST_UI[kind].id).classList.toggle('rescue-highlight',kind===recommended);
  $('continue').textContent=continuation(state)===undefined?'К уровням →':'Дальше →';
  const starGoal=$('next-star-goal'),target=targets(activeKey(state));
  starGoal.hidden=!finished||earned===3;
- starGoal.textContent=earned===3?'':`Для ${earned+1} ★: не больше ${(earned===1?target.two:target.three)-(a.setup??0)} ходов`;
+ const scored=scoreMoves(a)-(a.setup??0),shortBy=Math.max(1,scoreMoves(a)-(earned===1?target.two:target.three));
+ const moveWord=(n:number)=>n%100>=11&&n%100<=14?'ходов':n%10===1?'ход':n%10>=2&&n%10<=4?'хода':'ходов';
+ starGoal.textContent=earned===3?'':`${scored} ${moveWord(scored)} · до ${earned+1} ★ не хватило ${shortBy} ${moveWord(shortBy)}`;
  $('finish-title').hidden=!finished;renderVictoryTitle($('finish-title'),continuation(state)===undefined?'Пройдено!':earned===3?'Идеально!':'Получилось!');
  if(finished)message('');
  // Measure only after all layout classes, result controls and labels are final.
@@ -207,6 +219,8 @@ function easeField(from:number,duration:number){
  fieldTransition?.cancel();if(!reduced.matches)fieldTransition=$('board').animate([{opacity:from},{opacity:1}],{duration,easing:'ease-out'});
 }
 function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;const resumeField=!atHome&&dialog.classList.contains('compact-pause');cancelAssist();dialog.close();parkControls();block('dialog',false);checkPosition();message(guidance());if(resumeField)easeField(.78,150);}
+let panelBack:(()=>void)|undefined;
+function dismissPanel(){if(rewardBusy||interstitialBusy||locked||!panelBack)close();else panelBack();}
 let opener:DOMRect|undefined;
 const uiClicks=new WeakSet<Event>();
 function enterPanel(origin:DOMRect|undefined,duration:number,pack=false){
@@ -214,16 +228,16 @@ function enterPanel(origin:DOMRect|undefined,duration:number,pack=false){
  const r=content.getBoundingClientRect(),limit=(n:number)=>Math.max(-18,Math.min(18,n*.14));
  const x=origin?limit(origin.x+origin.width/2-r.x-r.width/2):0;
  const y=origin?limit(origin.y+origin.height/2-r.y-r.height/2):8;
- const frames:Keyframe[]=[{opacity:pack?0:.45,transform:`translate(${x}px,${y}px) scale(${pack?.95:.98})`},{opacity:1,transform:'none'}];
- if(pack)frames.splice(1,0,{opacity:1,transform:'translateY(-2px) scale(1.009)',offset:.74});
+ const frames:Keyframe[]=[{opacity:pack?0:.45,transform:`translate(${x}px,${y}px)`},{opacity:1,transform:'none'}];
+ if(pack)frames.splice(1,0,{opacity:1,transform:'translateY(-2px)',offset:.74});
  content.animate(frames,{duration,easing:'cubic-bezier(.2,.75,.25,1)'});
 }
-function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
- entryRequest=undefined;pendingNext=undefined;
+function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[],back?:()=>void){
+ panelBack=back;entryRequest=undefined;pendingNext=undefined;
  block('dialog',true);parkControls();content.replaceChildren();dialog.classList.remove('compact-pause','pack-dialog');
  const header=document.createElement('header');header.className='dialog-header';
  const h=document.createElement('h2');h.textContent=title;h.tabIndex=-1;header.append(h);
- const x=document.createElement('button');x.className='dialog-close gel-button';x.textContent='×';x.setAttribute('aria-label','Закрыть');x.onclick=close;x.hidden=locked;header.append(x);
+ const x=document.createElement('button');x.className='dialog-close gel-button';x.textContent=back?'‹':'×';x.setAttribute('aria-label',back?'Назад':'Закрыть');x.onclick=dismissPanel;x.hidden=locked;header.append(x);
  const body=document.createElement('div');body.className='dialog-body';
  if(description){const p=document.createElement('p');p.textContent=description;body.append(p);}
  const footer=document.createElement('footer');footer.className='dialog-actions';
@@ -324,7 +338,13 @@ function undo(){
   audio.undo();paint();checkPosition();message(guidance());}
 }
 $('undo').onclick=undo;
-function askRestart(){if(stuck()){restart();return;}modal('Начать заново?','Текущие ходы будут сброшены. Открытая дополнительная колба сохранится.',[{label:'Продолжить игру',primary:true,action:close},{label:'Начать заново',action:restart}]);}
+function askRestart(){if(stuck()){restart();return;}
+ const fromPause=dialog.open&&dialog.classList.contains('compact-pause'),added=extraCount(attempt(state));
+ modal('Начать заново?',added?'Ходы будут сброшены. Добавленные колбы останутся.':'Ходы будут сброшены.',[
+  {label:fromPause?'Назад в паузу':'Продолжить игру',primary:true,action:fromPause?settings:close},
+  {label:'Начать заново',action:restart}
+ ],fromPause?settings:undefined);
+}
 $('restart').onclick=$('notice-restart').onclick=askRestart;
 $('continue').onclick=()=>{void continueAfterWin();};
 /** A dismissed SDK screen and a resumed WebView are independent events, in either order. */
@@ -396,20 +416,34 @@ function askExtra(){
  if(spent&&commit(grantExtra(spent,activeKey(state),extraCount(attempt(state))+1))){track('boost_spent',{reason:'tube',amount:1});finishTube(before);}
 }
 $('extra-tube').onclick=askExtra;
-$('star-target').onclick=()=>{const t=targets(activeKey(state)),offset=attempt(state).setup??0;modal('Звёзды за уровень',`★★★ — не больше ${t.three-offset} ходов. ★★ — не больше ${t.two-offset}. ★ — за любое прохождение. Отмена хода возвращает и шанс на звезду.`,[{label:'Понятно',primary:true,action:close}]);};
+$('star-target').onclick=()=>{
+ const t=targets(activeKey(state)),offset=attempt(state).setup??0;
+ const body=modal('Звёзды за уровень','',[{label:'Понятно',primary:true,action:settings}],settings);
+ const rules=document.createElement('dl');rules.className='star-rules';
+ for(const [rating,rule]of [['★★★',`До ${t.three-offset} ходов`],['★★',`До ${t.two-offset} ходов`],['★','Пройти уровень']]){
+  const mark=document.createElement('dt'),label=document.createElement('dd');mark.textContent=rating;label.textContent=rule;rules.append(mark,label);
+ }
+ body.append(rules);
+};
 async function recoverRewards(){
  if(rewardBusy||recoveringRewards)return;recoveringRewards=true;try{const receipts=await rewarded.pending();if(!receipts.length)return;block('receipt-recovery',true);for(const r of receipts){if(!await applyReceipt(r)){pendingReceipt=r;break;}}}
  catch{/* Offline/native bridge unavailability never blocks playing. */}
  finally{recoveringRewards=false;block('receipt-recovery',false);}
 }
 
+function rescueOptions(){
+ return (['shuffle','tube'] as const).filter(kind=>{const b=$<HTMLButtonElement>(BOOST_UI[kind].id);return !b.disabled&&!b.hidden;}).sort((a,b)=>Number(boostStock(state.wallet!,b)>0)-Number(boostStock(state.wallet!,a)>0));
+}
+function rescueChoice(){return rescueOptions()[0];}
 function help(proven=deadRevision===state.revision){
- const a=attempt(state),buttons:{label:string;action:()=>void;primary?:boolean}[]=[];
- if(offerExtra(state))buttons.push({label:'Добавить колбу',primary:true,action:askExtra});
- if(playerMoves(a)>0)buttons.push({label:'Отменить ход',primary:a.extra,action:()=>{activateGame();undo();}});
+ const a=attempt(state),options=rescueOptions(),recommended=options[0],buttons:{label:string;action:()=>void;primary?:boolean}[]=[];
+ for(const kind of options){
+  const stock=boostStock(state.wallet!,kind),ui=BOOST_UI[kind];
+  buttons.push({label:stock?`${ui.action} · осталось ${stock}`:`${ui.pack} · ${ECONOMY.packPrice} монет`,primary:kind===recommended,action:kind==='shuffle'?askShuffle:askExtra});
+ }
+ if(playerMoves(a)>0)buttons.push({label:'Отменить ход',primary:!recommended,action:()=>{activateGame();undo();}});
  buttons.push({label:'Заново',action:askRestart});
- modal(proven?'Решения нет':'Если застрял',
-  (proven?'Из этой раскладки цвета уже не собрать. ':'')+(a.extra?'Дополнительная колба уже добавлена. Она останется при перезапуске.':offerExtra(state)?'Добавь пустую колбу или отмени ход.':'Можно отменить ход или начать уровень заново.'),buttons);
+ modal(proven?'Решения нет':'Если застрял',proven?'Из этой раскладки цвета уже не собрать.':'Выбери, как продолжить.',buttons);
  message(guidance());
 }
 $('rescue').onclick=()=>help();
@@ -419,9 +453,9 @@ function menu(){
  campaign.forEach(i=>{const l=levels[i],b=document.createElement('button'),done=state.completed.includes(l.id),available=levelAvailable(state,i);b.dataset.level=l.id;
   b.disabled=!available;b.classList.add('gel-button');if(i===state.current)b.classList.add('gel-primary');b.textContent=String(stageNumber(i));b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
   b.setAttribute('aria-label',`Уровень ${stageNumber(i)}${l.goals?', две большие колбы':l.goal?', большая бутылка':''}${l.mini!==undefined?', мини-колба':''}${l.ice!==undefined?', лёд':''}${l.hidden?', скрытые слои':''}${done?', пройден':!available?', закрыт':''}`);
-  const earned=earnedStars(state,i);if(isHard(i)){const difficulty=document.createElement('small');difficulty.className='level-hard';difficulty.textContent='Сложный';b.append(difficulty);}
+  const earned=earnedStars(state,i);if(available&&isHard(i)){const difficulty=document.createElement('small');difficulty.className='level-hard';difficulty.textContent='Сложный';b.append(difficulty);}
 
-  const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);b.onclick=()=>switchLevel(i);grid.append(b);
+  const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);if(done)b.append(mark);else if(i===state.current){const label=document.createElement('small');label.className='map-current';label.textContent='Текущий';b.append(label);}b.onclick=()=>switchLevel(i);grid.append(b);
  });body.append(grid);
  const current=grid.querySelector<HTMLElement>('[aria-current="step"]');
  if(current)body.scrollTop+=current.getBoundingClientRect().top-body.getBoundingClientRect().top-(body.clientHeight-current.offsetHeight)/2;
@@ -461,7 +495,7 @@ document.addEventListener('click',event=>{
  if(event.target instanceof Element&&!event.target.closest('#undo'))audio.ui();
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!dialog.open&&!atHome){e.preventDefault();settings();}});
-dialog.addEventListener('cancel',e=>{e.preventDefault();close();});
+dialog.addEventListener('cancel',e=>{e.preventDefault();dismissPanel();});
 document.addEventListener('visibilitychange',()=>{block('hidden',document.hidden);if(!document.hidden)message(guidance());});
 window.addEventListener('pagehide',()=>block('page',true));window.addEventListener('pageshow',()=>block('page',false));
 function syncField(){if(!game)return;const width=$('board').clientWidth,visible=$('board').clientHeight,reserve=document.body.classList.contains('finished')?0:innerHeight<=430?76:114,height=fieldHeight(width,Math.max(1,visible-reserve),scene.slots,goalList(scene.goal).length),key=`${width}x${height}`;
@@ -472,7 +506,7 @@ let previousWindow=`${innerWidth}x${innerHeight}`;const observer=new ResizeObser
 function onNativeActivity(isActive:boolean){block('native',!isActive);if(isActive){message(guidance());ads.prepare();}}
 if(Capacitor.isNativePlatform()){
  void App.addListener('appStateChange',({isActive})=>onNativeActivity(isActive));
- void App.addListener('backButton',()=>{if(dialog.open)close();else if(!atHome)settings();else void App.exitApp();});
+ void App.addListener('backButton',()=>{if(dialog.open)dismissPanel();else if(!atHome)settings();else void App.exitApp();});
 }
 function cancelAssist(){assistRequestId++;assistWorker?.terminate();assistWorker=undefined;clearTimeout(assistTimer);}
 function finishTube(before=scene.positions().map(r=>({...r}))){interrupt();hintRoute.clear();activateGame();scene.reflow(before);audio.land();haptic('land',true);paint();setTimeout(()=>paint(),500);}
@@ -572,7 +606,10 @@ function coinShop(notice='',kind?:Boost){
 $('wallet').onclick=()=>coinShop();$('home-wallet').onclick=()=>coinShop();
 async function watchForCoins(kind?:Boost){
  if(rewardBusy||recoveringRewards||interstitialBusy||locked)return;
- rewardBusy=true;block('reward',true);for(const button of content.querySelectorAll<HTMLButtonElement>('.dialog-actions button'))button.disabled=true;
+ rewardBusy=true;block('reward',true);
+ const footer=content.querySelector('.dialog-actions'),cta=footer?.querySelector<HTMLButtonElement>('button');
+ if(cta){cta.disabled=true;cta.textContent=pendingReceipt?'Сохраняем награду…':'Загружаем рекламу…';cta.setAttribute('aria-busy','true');}
+ if(footer&&!pendingReceipt){const cancel=document.createElement('button');cancel.className='gel-button';cancel.textContent='Отменить';cancel.onclick=()=>{cancel.disabled=true;void rewarded.cancel().catch(()=>{cancel.disabled=false;});};footer.append(cancel);}
  let credited=false;
  let notice='Реклама пока недоступна. Попробуй позже.',cooldown=false;
  try{

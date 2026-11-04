@@ -65,6 +65,7 @@ export class WaterScene extends Phaser.Scene {
   private corkOpen=new Map<number,number>();
   private selectionV=new Map<number,number>();
   private pulses=new Map<number,number>();
+  coachTube:number|null=null;
   private settles=new Map<number,number>();
   private impulses=new Map<number,number>();
   private liquid=new Map<number,LiquidMotion>();
@@ -345,7 +346,7 @@ export class WaterScene extends Phaser.Scene {
     }
     for(const [i,body]of this.bodyMotion){stepLiquid(body,dt);if(Math.abs(body.x)+Math.abs(body.v)*.04<.008)this.bodyMotion.delete(i);}
     for(const [id,start] of this.reveals)if(now>=start+(this.reduced?0:280)){this.reveals.delete(id);this.previousSignature='';}
-    const signature=JSON.stringify([this.knowledge,this.board,this.goal,this.iceHeld,this.iceRelease?.start??0,this.lockedExtra,this.selected,this.hintMove,this.queuedMove,this.symbols,this.light,this.viewWidth,this.viewHeight,now-this.entrance>=260]);
+    const signature=JSON.stringify([this.knowledge,this.board,this.goal,this.iceHeld,this.iceRelease?.start??0,this.lockedExtra,this.selected,this.hintMove,this.coachTube,this.queuedMove,this.symbols,this.light,this.viewWidth,this.viewHeight,now-this.entrance>=260]);
     const settling=[...this.selectionY].some(([i,y])=>Math.abs(y-((this.selected===i||this.hintMove?.from===i)&&!this.busyTube(i)?-17:0))>.1);
     const activeSettle=this.liquid.size>0||this.bodyMotion.size>0||[...this.settles.values()].some(t=>now-t<650),shaking=[...this.pulses.values()].some(t=>now-t<220);
     const corkAnimating=[...this.corkOpen.values()].some(v=>v>0&&v<1);
@@ -365,7 +366,7 @@ export class WaterScene extends Phaser.Scene {
       let ls=this.layers(f?f.before[i]:this.board[i],f?f.ids?.[i]:this.knowledge?.ids[i],now);
       if(f&&i===f.to){const last=ls.at(-1);if(last?.color===f.color)last.amount+=f.amount*transfer;else ls.push({color:f.color,amount:f.amount*transfer});if(t<.73)this.impulses.set(i,.6+f.amount*.15);}
       this.restingTube(r,ls,chosen,target,i,now);
-      if(target){const color=this.light?0x23649b:0xa6e8ff;this.fx.lineStyle(2,color,.8);this.fx.strokeEllipse(r.x,r.y+r.h+10,r.w*1.25,9);if(this.hintMove?.to===i){const y=r.y-12;this.fx.lineStyle(2.5,color,1);this.fx.beginPath();this.fx.moveTo(r.x,y-9);this.fx.lineTo(r.x,y+2);this.fx.moveTo(r.x-4,y-2);this.fx.lineTo(r.x,y+2);this.fx.lineTo(r.x+4,y-2);this.fx.strokePath();}}
+      if(target||this.coachTube===i){const color=this.light?0x23649b:0xa6e8ff;this.fx.lineStyle(2,color,.8);this.fx.strokeEllipse(r.x,r.y+r.h+10,r.w*1.25,9);if(this.hintMove?.to===i||this.coachTube===i){const y=r.y-12;this.fx.lineStyle(2.5,color,1);this.fx.beginPath();this.fx.moveTo(r.x,y-9);this.fx.lineTo(r.x,y+2);this.fx.moveTo(r.x-4,y-2);this.fx.lineTo(r.x,y+2);this.fx.lineTo(r.x+4,y-2);this.fx.strokePath();}}
     }
     if(this.lockedExtra&&poses[this.board.length])this.restingTube({...poses[this.board.length]},[],false,false,this.board.length,now);
     if(f){

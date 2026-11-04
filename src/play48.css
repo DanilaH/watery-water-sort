@@ -63,3 +63,19 @@ nav.boosters button:has(>.boost-count.is-price)>svg{translate:0 -4px}
 @keyframes pack-arrow60{from{opacity:0;translate:-5px 0}to{opacity:1;translate:0 0}}
 @keyframes pack-reward60{from{opacity:0;scale:.84}to{opacity:1;scale:1}}
 @media(prefers-reduced-motion:reduce){.pack-dialog .pack-arrow,.pack-dialog .pack-reward{animation:none}}
+
+/* Preserve the centered title while giving the balance the space between it and the edge. */
+.game-header{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.game-header .wallet-button{min-width:48px;gap:3px}
+.game-header #coins{flex:0 0 auto;overflow:visible;text-overflow:clip;font-variant-numeric:tabular-nums}
+@media(max-width:390px){
+ .game-header .wallet-button{font-size:14px;padding-inline:5px}
+ .game-header .wallet-button .coin-icon{width:17px;height:17px}
+ .game-header .wallet-button>span{display:none}
+}
+body .levels button:disabled{background:#62779518;color:var(--sheet-muted);text-shadow:none;opacity:.65}
+body .levels button:disabled::before{display:none}
+body .levels button .map-current{font-size:10px;line-height:1.1}
+.star-rules{display:grid;grid-template-columns:64px 1fr;gap:8px 10px;margin:0;color:var(--sheet-ink);font-size:15px}
+.star-rules dt{color:#e5aa38;letter-spacing:1px}
+.star-rules dd{margin:0}

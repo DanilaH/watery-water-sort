@@ -73,8 +73,8 @@ test('no-move state offers undo without blocking the board',async({page})=>{
 });
 
 test('restart always asks, including before the first move',async({page})=>{
- await open(page);await tap(page,0);await restart48(page);await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Продолжить игру',exact:true}).click();expect(await history(page)).toHaveLength(0);
- await tap(page,0);await tap(page,2);await restart48(page);await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Продолжить игру',exact:true}).click({force:true});expect(await history(page)).toHaveLength(1);
+ await open(page);await tap(page,0);await restart48(page);await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Назад в паузу',exact:true}).click();await expect(page.getByRole('heading',{name:'Пауза',exact:true})).toBeVisible();await page.getByRole('button',{name:'Закрыть',exact:true}).click();expect(await history(page)).toHaveLength(0);
+ await tap(page,0);await tap(page,2);await restart48(page);await expect(page.locator('dialog')).toBeVisible();await page.getByRole('button',{name:'Назад в паузу',exact:true}).click();await expect(page.getByRole('heading',{name:'Пауза',exact:true})).toBeVisible();await page.getByRole('button',{name:'Закрыть',exact:true}).click();expect(await history(page)).toHaveLength(1);
  await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click({force:true});await expect(page.locator('dialog')).not.toBeVisible();expect(await history(page)).toHaveLength(0);
 });
 

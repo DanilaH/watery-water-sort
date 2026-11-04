@@ -32,7 +32,7 @@ test('choosing another previously played level resumes it and preserves the atte
 });
 
 test('Restart cancellation leaves progress intact; confirmation retains extra tube and completed levels',async({page})=>{
- const state=expanded(moved(fresh(),levels[0].witness[0]));state.completed=[levels[0].id];await seed(page,state);await page.goto('/');await page.locator('#home-play').click();await restart48(page);await page.getByRole('button',{name:'Продолжить игру',exact:true}).click();expect(await saved(page)).toEqual(state);
+ const state=expanded(moved(fresh(),levels[0].witness[0]));state.completed=[levels[0].id];await seed(page,state);await page.goto('/');await page.locator('#home-play').click();await restart48(page);await page.getByRole('button',{name:'Назад в паузу',exact:true}).click();await expect(page.getByRole('heading',{name:'Пауза',exact:true})).toBeVisible();await page.getByRole('button',{name:'Закрыть',exact:true}).click();expect(await saved(page)).toEqual(state);
  await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();const next=await saved(page);expect(attempt(next).board).toEqual([...levels[0].initial,[]]);expect(next.completed).toEqual(state.completed);expect(attempt(next).extra).toBe(true);
  await restart48(page);await expect(page.getByRole('heading',{name:'Начать заново?',exact:true})).toBeVisible();
 });
