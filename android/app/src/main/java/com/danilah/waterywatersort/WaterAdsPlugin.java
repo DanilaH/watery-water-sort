@@ -89,7 +89,7 @@ public class WaterAdsPlugin extends Plugin {
     int webLeft=wp[0]-rp[0],webTop=wp[1]-rp[1];
     reply.put("safeLeftCss",Math.ceil(Math.max(0,safeL-webLeft)/scale));
     reply.put("safeRightCss",Math.ceil(Math.max(0,webLeft+web.getWidth()-root.getWidth()+safeR)/scale));
-    reply.put("safeBottomCss",Math.ceil(Math.max(0,webTop+web.getHeight()-root.getHeight()+safeB)/scale));
+    reply.put("safeBottomCss",BannerGeometry.requiredBottomInsetCss(vh,scale,webTop,web.getHeight(),root.getHeight(),safeB));
    }
    if(wanted)bannerGeometry=String.format(java.util.Locale.ROOT,"CSS %.1f,%.1f %.1fx%.1f / %.1fx%.1f; WebView %dx%d; root %dx%d; safe %d,%d,%d,%d",x,y,w,h,vw,vh,web.getWidth(),web.getHeight(),root.getWidth(),root.getHeight(),safeL,safeT,safeR,safeB);
    BannerGeometry.Mapped mapped=BannerGeometry.map(x,y,w,h,vw,vh,wp[0]-rp[0],wp[1]-rp[1],web.getWidth(),web.getHeight(),root.getWidth(),root.getHeight(),safeL,safeT,safeR,safeB);

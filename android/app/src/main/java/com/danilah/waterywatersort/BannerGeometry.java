@@ -7,6 +7,11 @@ final class BannerGeometry {
   int requiredCss(int sdkHeight){return (int)Math.ceil((y+sdkHeight-webY)/scale-slotY);}
   int centeredTop(int sdkHeight){return y+(height-sdkHeight)/2;}
  }
+ /** Invert the same width-based projection used by map(), including rounded CSS viewport heights. */
+ static int requiredBottomInsetCss(double vh,double scale,int webTop,int webHeight,int rootHeight,int safeBottom){
+  int bottom=Math.min(webTop+webHeight,rootHeight-safeBottom);
+  return (int)Math.ceil(Math.max(0,vh-(bottom-webTop)/scale));
+ }
  static Mapped map(double x,double y,double w,double h,double vw,double vh,int wx,int wy,int ww,int wh,int rw,int rh,int sl,int st,int sr,int sb){
   for(double n:new double[]{x,y,w,h,vw,vh})if(!Double.isFinite(n))return null;
   if(x<0||y<0||w<=0||h<=0||vw<=0||vh<=0||ww<=0||wh<=0||rw<=0||rh<=0||x+w>vw||y+h>vh||sl<0||st<0||sr<0||sb<0)return null;

@@ -10,4 +10,13 @@ public class BannerGeometryTest {
  @Test public void honorsWebViewOffsetAndRootSafeAreas(){BannerGeometry.Mapped m=BannerGeometry.map(0,250,300,50,300,300,30,40,600,600,680,700,20,30,20,30);assertNotNull(m);assertEquals(30,m.x);assertEquals(540,m.y);assertNull(BannerGeometry.map(0,250,300,50,300,300,10,40,600,600,680,700,20,30,20,30));}
  @Test public void shortLandscapeUsesItsOwnMeasuredHeight(){BannerGeometry.Mapped m=BannerGeometry.map(16,260,536,50,568,320,0,0,1136,640,1136,640,0,0,0,0);assertNotNull(m);assertEquals(1072,m.width);assertEquals(520,m.centeredTop(100));assertEquals(50,m.requiredCss(100));}
  @Test public void rejectsRectOutsideNativeWebViewDespiteCssContainment(){assertNull(BannerGeometry.map(0,70,100,30,100,100,0,0,300,250,300,400,0,0,0,0));}
+ @Test public void roundsBottomInsetInTheSameCoordinateSpaceAsTheDeviceSlot(){
+  double scale=1080.0/392;
+  int oldInset=(int)Math.ceil(130/scale);
+  int inset=BannerGeometry.requiredBottomInsetCss(872,scale,0,2400,2400,130);
+  assertEquals(48,oldInset);assertEquals(49,inset);
+  assertNull(BannerGeometry.map(12,764.7,368.7,60,392,872,0,0,1080,2400,1080,2400,0,94,0,130));
+  BannerGeometry.Mapped fixed=BannerGeometry.map(12,764.7-(inset-oldInset),368.7,60,392,872,0,0,1080,2400,1080,2400,0,94,0,130);
+  assertNotNull(fixed);assertTrue(fixed.y+fixed.height<=2270);
+ }
 }
