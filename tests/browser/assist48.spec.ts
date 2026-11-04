@@ -10,10 +10,10 @@ async function open(p:Page,s=seededRestart({...fresh(),current:2})){
  await p.goto('/');await p.evaluate(async()=>{const path='/src/game/WaterScene.ts',m=await import(path),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).scene48=this;return fn.call(this);};});await p.locator('#home-play').click();await expect(p.locator('canvas')).toBeVisible();
 }
 async function add(p:Page){await p.locator('#extra-tube').click();}
-test('quiet HUD has only currency, stage, pause and three actions; pause retains settings, restart, stars and old advice',async({page})=>{
- await open(page);for(const id of ['moves','star-bank','star-target','hint','restart','menu'])await expect(page.locator('#'+id)).toBeHidden();
- await expect(page.locator('nav button:visible')).toHaveCount(3);await expect(page.locator('.locked-vessel')).toHaveCount(0);await expect(page.locator('#coins')).toBeVisible();
- await pause48(page);for(const id of ['menu','restart','star-target','hint'])await expect(page.locator('#'+id)).toBeVisible();await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();
+test('quiet HUD has only currency, stage, pause and four actions; advice is on the field and pause retains settings, restart and stars',async({page})=>{
+ await open(page);for(const id of ['moves','star-bank','star-target','restart','menu'])await expect(page.locator('#'+id)).toBeHidden();
+ await expect(page.locator('nav button:visible')).toHaveCount(4);await expect(page.locator('.locked-vessel')).toHaveCount(0);await expect(page.locator('#coins')).toBeVisible();
+ await pause48(page);await expect(page.locator('dialog #hint')).toHaveCount(0);for(const id of ['menu','restart','star-target'])await expect(page.locator('#'+id)).toBeVisible();await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();
 });
 for(const [w,h]of [[320,480],[390,844],[568,320]])test(`three ordinary tubes merge into the grid and survive Undo/restart/reload ${w}x${h}`,async({page})=>{
  await page.setViewportSize({width:w,height:h});const s=seededRestart({...fresh(),current:59}),before=structuredClone(attempt(s));await open(page,s);

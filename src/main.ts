@@ -75,7 +75,7 @@ function checkPosition(){
  if(checkingPosition===key)return;
  cancelStall();
  // An untouched level has an authored solution. Check changed or restored boards proactively.
- if(atHome||blockers.size||(!playerMoves(a)&&!a.shuffles?.length)||checkedPositions.has(key)||!moves(a.board,rules).length||won(a.board,rules))return;
+ if(atHome||blockers.size||(!playerMoves(a)&&!a.shuffles?.length)||checkedPositions.has(key)||hintRoute.get(a.board,rules)||!moves(a.board,rules).length||won(a.board,rules))return;
  try{
   const probe=new Worker(new URL('./core/stall.worker.ts',import.meta.url),{type:'module'});
   stallWorker=probe;checkingPosition=key;
@@ -141,9 +141,10 @@ function paint(){
  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content=theme.color;
  scene.reduced=reduced.matches;scene.setKnowledge(knowledgeFor(state));touch.enabled=state.settings.haptics!==false;reward.setTotal(totalStars(state),pendingStars?.before);
  $('coins').textContent=$('home-coins').textContent=String(state.wallet!.coins);
- $('hint-count').textContent=levelFor(state).colors<=2?'∞':String(state.wallet!.hints);
- const advice=$('hint'),adviceLabel=levelFor(state).colors<=2?'Подсказать ход · бесплатно':'Совет · 1 перемешивание';
- advice.querySelector('span')!.textContent='Совет';advice.setAttribute('aria-label',adviceLabel);advice.title=adviceLabel;
+ const dead=!!stuck(),freeAdvice=levelFor(state).colors<=2,ownedAdvice=state.wallet!.hintAdvice?.key===adviceKey(state);
+ $('hint-count').textContent=dead?'?':freeAdvice?'∞':ownedAdvice?'✓':'−1';
+ const advice=$('hint'),adviceLabel=dead?'Помощь в тупике':freeAdvice?'Подсказать ход · бесплатно':ownedAdvice?'Показать купленную подсказку':'Подсказать ход · 1 заряд перемешивания';
+ advice.setAttribute('aria-label',adviceLabel);advice.title=adviceLabel;
  $<HTMLButtonElement>('wallet').disabled=$<HTMLButtonElement>('home-wallet').disabled=rewardBusy||recoveringRewards||interstitialBusy;
  const adsAllowed=!atHome&&!blockers.size&&stageNumber(state.current)>2&&!document.hidden;document.body.classList.toggle('with-banner',ads.native&&stageNumber(state.current)>2);ads.banner(adsAllowed);
  $('star-capacity').textContent=`/ ${levels.length*3}`;
@@ -152,7 +153,7 @@ function paint(){
  document.body.classList.toggle('packed-board',displaySlots(state)>=10);document.body.classList.toggle('pouring',scene.busy);document.body.classList.toggle('dense-board',displaySlots(state)>10);document.body.classList.toggle('goal-board',goalList(goalFor(state)).length>0);document.body.classList.toggle('light',theme.light);document.body.classList.toggle('finished',finished);
  $('level-title').innerHTML=`<span>Уровень</span> <strong>${stageNumber(state.current)}</strong>`;$('moves').textContent=`Ходов: ${playerMoves(a)}`;
  ($('undo') as HTMLButtonElement).disabled=playerMoves(a)===0||mixActive||scene.arranging;
- ($('hint') as HTMLButtonElement).disabled=scene.busy||searching||finished;
+ ($('hint') as HTMLButtonElement).disabled=scene.busy||scene.arranging||mixActive||searching||finished;
  const objective=goalFor(state);
  const colourNames=['голубой','жёлтый','фиолетовый','зелёный','розовый','синий','лимонный','оранжевый'];
  $('board').setAttribute('aria-label','Игровое поле'+goalList(objective).map(g=>` · большая колба: ${colourNames[g.color]} цвет`).join(''));
@@ -166,7 +167,7 @@ function paint(){
  paintBoost('tube',state.wallet!.tubes??0);paintBoost('shuffle',state.wallet!.hints);
  $<HTMLButtonElement>('shuffle').disabled=mixActive||scene.arranging||scene.busy||rewardBusy||recoveringRewards||finished||!!assistWorker;
  $('continue').hidden=!finished;
- const dead=!!stuck(),noticeKey=dead?stallKey():undefined;
+ const noticeKey=dead?stallKey():undefined;
  if(!scene.busy&&!blockers.size&&!atHome&&noticeKey!==signaledStall){
   signaledStall=noticeKey;if(dead)scene.stallReaction();
  }
@@ -188,7 +189,7 @@ function paintBoost(kind:Boost,count:number){
  else{const coin=document.createElement('i');coin.className='coin-icon';coin.setAttribute('aria-hidden','true');const price=document.createElement('strong');price.textContent=String(ECONOMY.packPrice);const pack=document.createElement('small');pack.textContent='×3';badge.append(coin,price,pack);button.setAttribute('aria-label',`Купить 3 ${name} за ${ECONOMY.packPrice} монет`);}
  if(kind==='shuffle')button.title=button.getAttribute('aria-label')!;
 }
-function parkControls(){for(const id of ['menu','restart','hint','star-target','rescue'])$('park').append($(id));}
+function parkControls(){for(const id of ['menu','restart','star-target','rescue'])$('park').append($(id));}
 function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;cancelAssist();dialog.close();parkControls();block('dialog',false);checkPosition();message(guidance());}
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
  entryRequest=undefined;pendingNext=undefined;
@@ -234,10 +235,9 @@ function accept(m:Move,acknowledged=false){
  if(won(attempt(next).board,goalFor(next))&&!next.completed.includes(levels[next.current].id))next.completed.push(levels[next.current].id);
  const beforeCoins=state.wallet!.coins;
  if(!commit(next))return;
- checkPosition();
  pendingCoins=state.wallet!.coins-beforeCoins;if(pendingCoins)track('coins_earned',{reason:'stars',amount:pendingCoins,balance:state.wallet!.coins});
  if(won(attempt(state).board,goalFor(state))){track('level_complete',{first,stars:stars(activeKey(state),scoreMoves(attempt(state)))});if(first&&state.current===1&&state.completed.includes(levels[0].id))track('tutorial_complete');}
- hintRoute.accepted(before,m,beforeRules);clearIntent();lastMove=m;kind='pour';pendingReveal=(knowledgeFor(next)?.known.length??0)>(beforeKnowledge?.known.length??0);pendingIce=!iceOpen(beforeRules)&&iceOpen(goalFor(next))?iceIndex(goalFor(next))!:null;scene.iceHeld=pendingIce;newColor=!sealedTube(before,m.from,goalFor(state))&&sealedTube(attempt(next).board,m.to,goalFor(state));
+ hintRoute.accepted(before,m,beforeRules);checkPosition();clearIntent();lastMove=m;kind='pour';pendingReveal=(knowledgeFor(next)?.known.length??0)>(beforeKnowledge?.known.length??0);pendingIce=!iceOpen(beforeRules)&&iceOpen(goalFor(next))?iceIndex(goalFor(next))!:null;scene.iceHeld=pendingIce;newColor=!sealedTube(before,m.from,goalFor(state))&&sealedTube(attempt(next).board,m.to,goalFor(state));
  if(won(attempt(next).board,goalFor(next)))pendingStars={before:beforeStars,total:totalStars(next),delta:totalStars(next)-beforeStars,earned:stars(activeKey(next),scoreMoves(attempt(next)))};
  if(!acknowledged){audio.accept();haptic('accept');}scene.setBoard(attempt(state).board);scene.animate(before,m,state.settings.fast,beforeKnowledge);paint();message('');
 }
@@ -329,6 +329,7 @@ async function continueAfterWin(){
 function showHint(m:Move){const key=adviceKey(state),free=levelFor(state).colors<=2;const next=ownHint(state,key,m,free);if(!next){hintShop();return;}const spent=state.wallet!.hints-next.wallet!.hints;if(next!==state&&!commit(next))return;if(spent)track('hint_spent',{amount:spent,balance:state.wallet!.coins,hints:state.wallet!.hints});paint();track('hint_result',{status:'FOUND'});clearIntent();scene.selected=m.from;scene.hintMove=m;audio.hint();message(guidance());}
 function requestHint(){
  if(scene.busy||blockers.size||locked||won(attempt(state).board,goalFor(state)))return;audio.prime();track('hint_request');
+ if(stuck()){track('hint_result',{status:'UNSOLVABLE'});help(true);return;}
  const owned=state.wallet!.hintAdvice;if(owned?.key===adviceKey(state)){const legal=moveFor(attempt(state).board,owned.move.from,owned.move.to,goalFor(state));if(legal&&legal.amount===owned.move.amount&&legal.color===owned.move.color){showHint(owned.move);return;}}
  if(levelFor(state).colors>2&&!state.wallet!.hints){hintShop();return;}
  const view=knowledgeFor(state);if(hasUnknown(view)){const m=visibleHint(attempt(state).board,view!,goalFor(state));if(m){showHint(m);message('Открой следующий слой · отмена доступна');}else{track('hint_result',{status:'NO_VISIBLE_MOVE'});message('Нет доступного перелива · можно отменить ход');}return;}
@@ -349,7 +350,7 @@ function requestHint(){
   worker.postMessage({board:attempt(state).board,goal:goalFor(state),revision,requestId:id,level:activeKey(state),extra:extraCount(attempt(state))});
  }catch{failed();}
 }
-$('hint').onclick=()=>{close();requestHint();};
+$('hint').onclick=requestHint;
 async function applyReceipt(receipt:Receipt){
  if(receipt.level.startsWith('coins:')){const next=creditCoins(state,receipt.token,receipt.level);if(!next)return false;const fresh=next!==state;if(fresh&&!commit(next))return false;if(fresh)track('reward_granted',{reason:'coins',amount:ECONOMY.adCoins,balance:state.wallet!.coins});await rewarded.ack(receipt.token).catch(()=>{});return true;}
  const target=parseTubeTarget(receipt.level);if(!target){await rewarded.ack(receipt.token);return true;}
@@ -402,7 +403,7 @@ $('home-levels').onclick=menu;
 $('home-settings').onclick=settings;
 function settings(){
  audio.ui();const body=modal(atHome?'Настройки':'Пауза','',[{label:'Готово',primary:true,action:close}]);dialog.classList.add('compact-pause');
- if(!atHome){const actions=document.createElement('div');actions.className='pause-actions';for(const id of ['menu','restart','star-target','hint','rescue'])actions.append($(id));body.append(actions);}
+ if(!atHome){const actions=document.createElement('div');actions.className='pause-actions';for(const id of ['menu','restart','star-target','rescue'])actions.append($(id));body.append(actions);}
  for(const [key,label]of Object.entries({sound:'Звуки',haptics:'Вибрация',fast:'Быстрое переливание',symbols:'Символы на цветах'})){
   const row=document.createElement('label');row.className='setting';const text=document.createElement('span');text.textContent=label;const input=document.createElement('input');input.type='checkbox';input.setAttribute('role','switch');input.checked=state.settings[key as keyof typeof state.settings]!==false;
   input.onchange=()=>{const n=structuredClone(state);n.settings[key as 'sound'|'haptics'|'fast'|'symbols']=input.checked;if(commit(n)){paint();audio.ui();haptic('ui');}else input.checked=!input.checked;};row.append(text,input);body.append(row);

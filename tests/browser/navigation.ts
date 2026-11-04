@@ -25,6 +25,6 @@ export async function pause48(page:Page){
 }
 export async function home48(page:Page){if(await page.locator('#home').isVisible())return;await pause48(page);await page.locator('#menu').click();}
 export async function restart48(page:Page){await pause48(page);await page.locator('#restart').click();}
-export async function hint48(page:Page){await pause48(page);await page.locator('#hint').click();}
+export async function hint48(page:Page){await page.locator('#hint').click();}
 export async function stars48(page:Page){await pause48(page);await page.locator('#star-target').click();}
 export async function help48(page:Page){await pause48(page);await page.locator('#rescue').click();}
