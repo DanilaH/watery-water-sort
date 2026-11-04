@@ -7,9 +7,9 @@ body :is(#home-play,#home-levels,#home-settings,#menu,#settings,#undo,#shuffle,#
 body .gel-button::before{content:"";position:absolute;inset:-2px -2px -4px;z-index:-1;border:12px solid transparent;border-image:url('/art/ui/button-blue-29.svg') 58 fill / 13px / 0 stretch;filter:var(--gel-filter);pointer-events:none;transition:filter 130ms,transform 130ms}
 body .gel-button.gel-primary::before{border-image-source:url('/art/ui/button-gold-29.svg');border-image-slice:70 100 fill;border-image-width:13px 19px;filter:none}
 body :is(#home-play,#continue).gel-primary,body .dialog-actions button.gel-primary,body .levels button.gel-primary{color:#593700;text-shadow:0 1px 0 #fff3b580}
-body .gel-button:active:not(:disabled){box-shadow:none;transform:translateY(3px)}
-body .gel-button:active:not(:disabled)::before{transform:scaleY(.96);filter:var(--gel-filter) brightness(.94)}
-body .gel-button.gel-primary:active:not(:disabled)::before{filter:brightness(.96)}
+body .gel-button:active:not(:disabled){box-shadow:none;transform:translateY(2px) scale(.96);transition-duration:35ms}
+body .gel-button:active:not(:disabled)::before{transform:scaleY(.93);filter:var(--gel-filter) brightness(.92);transition-duration:35ms;animation:none}
+body .gel-button.gel-primary:active:not(:disabled)::before{filter:brightness(.94)}
 body .gel-button:disabled::before{filter:var(--gel-filter) saturate(.25)}
 body[data-theme=ice] :is(#home-levels,#home-settings,#menu,#settings,#undo,#shuffle,#extra-tube,#hint,#restart,#rescue).gel-button,body[data-theme=ice] .dialog-actions button.gel-button:not(.gel-primary),body[data-theme=ice] button.dialog-close.gel-button,body[data-theme=ice] .levels button.gel-button:not(.gel-primary){color:#17386c;text-shadow:none}
 body .levels button small{color:#e2f0ff;text-shadow:0 1px 1px #153d70}
@@ -57,3 +57,6 @@ body[data-blue-fallback] .gel-button:not(.gel-primary)::before{border-image:none
 body[data-gold-fallback] .gel-button.gel-primary::before{border-image:none;border:0;border-radius:18px;background:linear-gradient(#ffe789,#ffc526 48%,#e9a600);box-shadow:inset 0 2px 2px #fff7c2,0 3px 0 #b87d00}
 body[data-star-fallback] :is(#star-bank,.home-star-bank)>span{font-size:25px;background:none}
 body[data-font-fallback],body[data-font-fallback] *{font-family:system-ui,sans-serif!important}
+
+body.finished #continue.gel-button:active:not(:disabled)::before{animation:none}
+@media(prefers-reduced-motion:reduce){body .gel-button:active:not(:disabled),body .gel-button:active:not(:disabled)::before{transform:none;transition:none}}

@@ -206,6 +206,17 @@ function easeField(from:number,duration:number){
  fieldTransition?.cancel();if(!reduced.matches)fieldTransition=$('board').animate([{opacity:from},{opacity:1}],{duration,easing:'ease-out'});
 }
 function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;const resumeField=!atHome&&dialog.classList.contains('compact-pause');cancelAssist();dialog.close();parkControls();block('dialog',false);checkPosition();message(guidance());if(resumeField)easeField(.78,150);}
+let opener:DOMRect|undefined;
+const uiClicks=new WeakSet<Event>();
+function enterPanel(origin:DOMRect|undefined,duration:number,pack=false){
+ content.getAnimations().forEach(a=>a.cancel());if(reduced.matches)return;
+ const r=content.getBoundingClientRect(),limit=(n:number)=>Math.max(-18,Math.min(18,n*.14));
+ const x=origin?limit(origin.x+origin.width/2-r.x-r.width/2):0;
+ const y=origin?limit(origin.y+origin.height/2-r.y-r.height/2):8;
+ const frames:Keyframe[]=[{opacity:pack?0:.45,transform:`translate(${x}px,${y}px) scale(${pack?.95:.98})`},{opacity:1,transform:'none'}];
+ if(pack)frames.splice(1,0,{opacity:1,transform:'translateY(-2px) scale(1.009)',offset:.74});
+ content.animate(frames,{duration,easing:'cubic-bezier(.2,.75,.25,1)'});
+}
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
  entryRequest=undefined;pendingNext=undefined;
  block('dialog',true);parkControls();content.replaceChildren();dialog.classList.remove('compact-pause','pack-dialog');
@@ -215,8 +226,8 @@ function modal(title:string,description:string,buttons:{label:string;action:()=>
  const body=document.createElement('div');body.className='dialog-body';
  if(description){const p=document.createElement('p');p.textContent=description;body.append(p);}
  const footer=document.createElement('footer');footer.className='dialog-actions';
- for(const item of buttons){const b=document.createElement('button');b.textContent=item.label;b.className=item.primary?'primary gel-button gel-primary':'gel-button';b.onclick=()=>{audio.ui();item.action();};footer.append(b);}
- content.append(header,body,footer);content.getAnimations().forEach(a=>a.cancel());if(!reduced.matches)content.animate([{opacity:.35,translate:'0 6px'},{opacity:1,translate:'0 0'}],{duration:180,easing:'ease-out'});footer.hidden=!buttons.length;if(!dialog.open)dialog.showModal();h.focus({preventScroll:true});return body;
+ for(const item of buttons){const b=document.createElement('button');b.textContent=item.label;b.className=item.primary?'primary gel-button gel-primary':'gel-button';b.onclick=item.action;footer.append(b);}
+ content.append(header,body,footer);footer.hidden=!buttons.length;if(!dialog.open)dialog.showModal();h.focus({preventScroll:true});enterPanel(opener,180);return body;
 }
 function completeEntry(){
  if(entryRequest===undefined||!scene.ready||document.hidden||[...blockers].some(b=>b!=='home'))return false;
@@ -231,7 +242,7 @@ function resumeGame(){
  if(locked)return;
  // Persist the first start too, so returning without moves still says Continue.
  if(!state.attempts[activeKey(state)]&&!commit(seededRestart(state)))return;
- audio.ui();activateGame();
+ activateGame();
 }
 function showHome(){
  if(locked)return;entryRequest=undefined;pendingNext=undefined;
@@ -276,9 +287,9 @@ scene.onTap=(i)=>{
   }
  }
  scene.hintMove=null;scene.queuedMove=null;
- if(goalAt(goalFor(state),i)){scene.reject(i);audio.reject();message('Цель принимает только свой цвет. Выбери обычную колбу.');return;}
+ if(goalAt(goalFor(state),i)){scene.reject(i);audio.reject();haptic('ui');message('Цель принимает только свой цвет. Выбери обычную колбу.');return;}
  if(board[i].length){scene.selected=i;audio.tap();haptic();message(guidance());}
- else{scene.selected=null;scene.reject(i);audio.reject();message('Сначала выбери цветную колбу');}
+ else{scene.selected=null;scene.reject(i);audio.reject();haptic('ui');message('Сначала выбери цветную колбу');}
 };
 scene.onPour=(remainingMs,fill,endFill)=>{if(lastMove&&kind==='pour')audio.pour(remainingMs,lastMove.amount,fill,endFill,isMini(goalFor(state),lastMove.from));};
 scene.onReceive=()=>{
@@ -312,7 +323,7 @@ function undo(){
   audio.undo();paint();checkPosition();message(guidance());}
 }
 $('undo').onclick=undo;
-function askRestart(){audio.ui();if(stuck()){restart();return;}modal('Начать заново?','Текущие ходы будут сброшены. Открытая дополнительная колба сохранится.',[{label:'Продолжить игру',primary:true,action:close},{label:'Начать заново',action:restart}]);}
+function askRestart(){if(stuck()){restart();return;}modal('Начать заново?','Текущие ходы будут сброшены. Открытая дополнительная колба сохранится.',[{label:'Продолжить игру',primary:true,action:close},{label:'Начать заново',action:restart}]);}
 $('restart').onclick=$('notice-restart').onclick=askRestart;
 $('continue').onclick=()=>{void continueAfterWin();};
 /** A dismissed SDK screen and a resumed WebView are independent events, in either order. */
@@ -327,7 +338,7 @@ function completePendingNext(){
 async function continueAfterWin(){
  if(pendingNext){completePendingNext();return;}
  if(interstitialBusy||rewardBusy||recoveringRewards||locked||blockers.size||!won(attempt(state).board,goalFor(state)))return;
- audio.ui();const index=state.current,next=continuation(state),key=activeKey(state,index),now=Date.now();
+ const index=state.current,next=continuation(state),key=activeKey(state,index),now=Date.now();
  const tutorialDone=levels.slice(0,2).every(l=>state.completed.includes(l.id));
  let after=state.wallet!.adAfter??0,attemptAfter=state.wallet!.adAttemptAfter??0;
  if(after>now+60000||attemptAfter>now+60000){const n=structuredClone(state);n.wallet!.adAfter=after=Math.min(after,now+60000);n.wallet!.adAttemptAfter=attemptAfter=Math.min(attemptAfter,now+60000);n.revision++;if(!commit(n))return;}
@@ -400,28 +411,28 @@ function help(proven=deadRevision===state.revision){
   (proven?'Из этой раскладки цвета уже не собрать. ':'')+(a.extra?'Дополнительная колба уже добавлена. Она останется при перезапуске.':offerExtra(state)?'Добавь пустую колбу или отмени ход.':'Можно отменить ход или начать уровень заново.'),buttons);
  message(guidance());
 }
-$('rescue').onclick=()=>{audio.ui();help();};
+$('rescue').onclick=()=>help();
 function menu(){
- audio.ui();const body=modal('Уровни',`Пройдено ${state.completed.length} из ${levels.length}`,[{label:atHome?'В главное меню':'Продолжить игру',primary:true,action:close}]);
+ const body=modal('Уровни',`Пройдено ${state.completed.length} из ${levels.length}`,[{label:atHome?'В главное меню':'Продолжить игру',primary:true,action:close}]);
  const grid=document.createElement('div');grid.className='levels';
  campaign.forEach(i=>{const l=levels[i],b=document.createElement('button'),done=state.completed.includes(l.id),available=levelAvailable(state,i);b.dataset.level=l.id;
   b.disabled=!available;b.classList.add('gel-button');if(i===state.current)b.classList.add('gel-primary');b.textContent=String(stageNumber(i));b.classList.toggle('completed',done);if(i===state.current)b.setAttribute('aria-current','step');
   b.setAttribute('aria-label',`Уровень ${stageNumber(i)}${l.goals?', две большие колбы':l.goal?', большая бутылка':''}${l.mini!==undefined?', мини-колба':''}${l.ice!==undefined?', лёд':''}${l.hidden?', скрытые слои':''}${done?', пройден':!available?', закрыт':''}`);
   const earned=earnedStars(state,i);if(isHard(i)){const difficulty=document.createElement('small');difficulty.className='level-hard';difficulty.textContent='Сложный';b.append(difficulty);}
 
-  const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
+  const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);b.onclick=()=>switchLevel(i);grid.append(b);
  });body.append(grid);
  const current=grid.querySelector<HTMLElement>('[aria-current="step"]');
  if(current)body.scrollTop+=current.getBoundingClientRect().top-body.getBoundingClientRect().top-(body.clientHeight-current.offsetHeight)/2;
 
 
 }
-$('menu').onclick=()=>{audio.ui();showHome();};
+$('menu').onclick=showHome;
 $('home-play').onclick=resumeGame;
 $('home-levels').onclick=menu;
 $('home-settings').onclick=settings;
 function settings(){
- audio.ui();const body=modal(atHome?'Настройки':'Пауза','',[]);dialog.classList.add('compact-pause');
+ const body=modal(atHome?'Настройки':'Пауза','',[]);dialog.classList.add('compact-pause');
  if(!atHome){const actions=document.createElement('div');actions.className='pause-actions';for(const id of ['menu','restart','star-target','rescue'])actions.append($(id));body.append(actions);}
  for(const [key,label]of Object.entries({sound:'Звуки',haptics:'Вибрация',fast:'Быстрое переливание',symbols:'Символы на цветах'})){
   const row=document.createElement('label');row.className='setting';const text=document.createElement('span');text.textContent=label;const input=document.createElement('input');input.type='checkbox';input.setAttribute('role','switch');input.checked=state.settings[key as keyof typeof state.settings]!==false;
@@ -431,13 +442,23 @@ function settings(){
  const choices=document.createElement('div');choices.className='theme-options';
  const selected=()=>{for(const b of choices.querySelectorAll<HTMLButtonElement>('button'))b.setAttribute('aria-pressed',String(b.dataset.themeChoice===themeFor(state.settings).id));};
  for(const theme of THEMES){const b=document.createElement('button');b.type='button';b.dataset.themeChoice=theme.id;b.textContent=theme.name;b.title=theme.name;b.setAttribute('aria-label',theme.name);b.style.setProperty('--swatch',theme.color);
-  b.onclick=()=>{const n=structuredClone(state);n.settings.theme=theme.id;n.settings.light=theme.light;if(commit(n)){paint();selected();audio.ui();}};choices.append(b);
+  b.onclick=()=>{const n=structuredClone(state);n.settings.theme=theme.id;n.settings.light=theme.light;if(commit(n)){paint();selected();}};choices.append(b);
  }
  themes.append(choices);body.append(themes);selected();
 }
 $('settings').onclick=settings;
 reduced.addEventListener('change',()=>{fieldTransition?.cancel();interrupt();paint();});
-document.addEventListener('click',event=>{const button=(event.target as Element).closest('button');if(button&&!button.disabled)haptic('ui');},{capture:true});
+document.addEventListener('click',event=>{
+ const button=event.target instanceof Element?event.target.closest('button'):null;
+ if(!button||button.disabled)return;
+ const origin=opener=button.getBoundingClientRect();uiClicks.add(event);
+ setTimeout(()=>{if(opener===origin)opener=undefined;},0);
+},{capture:true});
+document.addEventListener('click',event=>{
+ if(!uiClicks.has(event))return;
+ opener=undefined;haptic('ui');
+ if(event.target instanceof Element&&!event.target.closest('#undo'))audio.ui();
+});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!dialog.open&&!atHome){e.preventDefault();settings();}});
 dialog.addEventListener('cancel',e=>{e.preventDefault();close();});
 document.addEventListener('visibilitychange',()=>{block('hidden',document.hidden);if(!document.hidden)message(guidance());});
@@ -457,7 +478,9 @@ function finishTube(before=scene.positions().map(r=>({...r}))){interrupt();hintR
 function buyBoost(kind:Boost){
  if(rewardBusy||recoveringRewards||interstitialBusy||locked)return;
  if(state.wallet!.coins<ECONOMY.packPrice){coinShop();return;}
- const next=purchaseBoost(state,kind);if(next&&commit(next)){track('boost_purchase',{reason:kind,amount:ECONOMY.packPrice});audio.ui();close();paint();}
+ const next=purchaseBoost(state,kind);if(next&&commit(next)){track('boost_purchase',{reason:kind,amount:ECONOMY.packPrice});close();paint();if(!reduced.matches)$(kind==='tube'?'tube-count':'shuffle-count').animate([
+  {transform:'scale(.88)'},{transform:'scale(1.22)',offset:.48},{transform:'scale(1)'}
+ ],{duration:250,easing:'ease-out'});}
 }
 function askShuffle(){
  if(scene.busy||scene.arranging||mixActive||rewardBusy||recoveringRewards||assistWorker||won(attempt(state).board,goalFor(state))||locked)return;
@@ -513,17 +536,13 @@ function hintShop(){offerPack('shuffle');}
 function offerPack(kind:Boost){
  if(state.wallet!.coins<ECONOMY.packPrice){coinShop();return;}
  const tube=kind==='tube',price=ECONOMY.packPrice;
+ const origin=opener??$(tube?'extra-tube':'hint').getBoundingClientRect();
  const body=modal(tube?'Три колбы':'Купить заряды?','',[
   {label:`Купить за ${price} монет`,primary:true,action:()=>{if(dialog.open&&dialog.classList.contains('pack-dialog'))buyBoost(kind);}},
   {label:'Отмена',action:close}
  ]);
  dialog.classList.add('pack-dialog');
- content.getAnimations().forEach(a=>a.cancel());
- if(!reduced.matches)content.animate([
-  {opacity:0,transform:'translateY(14px) scale(.95)'},
-  {opacity:1,transform:'translateY(-3px) scale(1.012)',offset:.72},
-  {opacity:1,transform:'none'}
- ],{duration:330,easing:'ease-out'});
+
  const exchange=document.createElement('div');exchange.className='pack-exchange';
  const cost=document.createElement('div');cost.className='pack-token pack-cost';
  const coin=document.createElement('i');coin.className='coin-icon';coin.setAttribute('aria-hidden','true');
@@ -535,7 +554,7 @@ function offerPack(kind:Boost){
  for(let i=0;i<3;i++)symbols.append(icon.cloneNode(true));
  const label=document.createElement('strong');label.textContent=tube?'3 колбы':'3 заряда';reward.append(symbols,label);
  if(!tube){const uses=document.createElement('small');uses.textContent='Подсказка или перемешивание';reward.append(uses);}
- exchange.append(cost,arrow,reward);body.append(exchange);
+ exchange.append(cost,arrow,reward);body.append(exchange);enterPanel(origin,310,true);
 }
 function coinShop(notice=''){
  const body=modal('Монеты',notice||`+${ECONOMY.adCoins} монет за просмотр рекламы`,[{label:`Получить ${ECONOMY.adCoins} монет · реклама`,primary:true,action:()=>{void watchForCoins();}}]);
