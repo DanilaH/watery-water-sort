@@ -19,4 +19,21 @@ public class BannerGeometryTest {
   BannerGeometry.Mapped fixed=BannerGeometry.map(12,764.7-(inset-oldInset),368.7,60,392,872,0,0,1080,2400,1080,2400,0,94,0,130);
   assertNotNull(fixed);assertTrue(fixed.y+fixed.height<=2270);
  }
+ @Test public void fitsDifferentPortraitDensitiesAndNavigationModes(){
+  // CSS viewport, native width/height, WebView top/height, native bottom inset.
+  int[][] screens={
+   {360,800,720,1600,0,1600,48},
+   {393,852,1080,2340,0,2340,72},
+   {412,915,1440,3200,0,3200,168},
+   {360,704,720,1600,48,1408,144},
+   {480,880,1200,2400,75,2200,120}
+  };
+  for(int[] screen:screens){
+   int vw=screen[0],vh=screen[1],width=screen[2],rootHeight=screen[3],top=screen[4],height=screen[5],bottom=screen[6];
+   int inset=BannerGeometry.requiredBottomInsetCss(vh,(double)width/vw,top,height,rootHeight,bottom);
+   BannerGeometry.Mapped slot=BannerGeometry.map(12,vh-inset-60, vw-24,60,vw,vh,0,top,width,height,width,rootHeight,0,0,0,bottom);
+   assertNotNull(java.util.Arrays.toString(screen),slot);
+   assertTrue(slot.y+slot.height<=Math.min(top+height,rootHeight-bottom));
+  }
+ }
 }
