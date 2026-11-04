@@ -6,7 +6,9 @@ def manifest(variant):
  paths=[p for p in root.rglob('AndroidManifest.xml') if variant in p.parts and any(x in p.parts for x in ['merged_manifest','merged_manifests'])]
  assert paths,variant
  p=sorted(paths,key=lambda p:len(str(p)))[0];r=E.parse(p).getroot();app=r.find('application')
- return {'package':r.get('package'),'application':app.get(ns+'name'),'debuggable':app.get(ns+'debuggable','false'),'permissions':sorted({n.get(ns+'name') for n in r.findall('uses-permission')})}
+ main=next(a for a in app.findall('activity') if a.get(ns+'name','').endswith('.MainActivity'))
+ assert app.get(ns+'appCategory')=='game' and main.get(ns+'screenOrientation')=='portrait',variant
+ return {'orientation':main.get(ns+'screenOrientation'),'package':r.get('package'),'application':app.get(ns+'name'),'debuggable':app.get(ns+'debuggable','false'),'permissions':sorted({n.get(ns+'name') for n in r.findall('uses-permission')})}
 debug,release=manifest('debug'),manifest('release');assert debug['package']=='com.danilah.waterywatersort.preview3' and release['package']=='com.danilah.waterywatersort';assert debug['debuggable']=='true' and release['debuggable']=='false';assert release['application']=='com.danilah.waterywatersort.WaterApplication'
 configs=list((root/'generated/source/buildConfig/debug').rglob('BuildConfig.java'));assert len(configs)==1;s=configs[0].read_text();assert re.search(r'ANALYTICS_API_KEY\s*=\s*""',s) and all(unit in s for unit in ['demo-rewarded-yandex','demo-banner-yandex','demo-interstitial-yandex'])
 results=[E.parse(p).getroot()for p in (root/'test-results/testDebugUnitTest').glob('TEST-*.xml')];assert results
