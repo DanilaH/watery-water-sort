@@ -91,7 +91,7 @@ function checkCycle(key:string){
 function stuck(){
  const board=attempt(state).board,rules=goalFor(state);
  if(scene.busy||won(board,rules))return '';
- if(!moves(board,rules).length)return 'Нет доступных ходов · отмени ход или выбери помощь';
+ if(!moves(board,rules).length)return 'Нет доступных ходов · можно отменить ход или взять помощь';
  if(deadRevision===state.revision||checkedPositions.get(stallKey())==='UNSOLVABLE')return 'Решения нет · отмени ход или используй помощь';
  return '';
 }
@@ -140,7 +140,8 @@ function paint(){
  scene.reduced=reduced.matches;scene.setKnowledge(knowledgeFor(state));touch.enabled=state.settings.haptics!==false;reward.setTotal(totalStars(state),pendingStars?.before);
  $('coins').textContent=$('home-coins').textContent=String(state.wallet!.coins);
  $('hint-count').textContent=levelFor(state).colors<=2?'∞':String(state.wallet!.hints);
- $('hint').querySelector('span')!.textContent=levelFor(state).colors<=2?'Подсказать ход · бесплатно':'Совет · 1 перемешивание';
+ const advice=$('hint'),adviceLabel=levelFor(state).colors<=2?'Подсказать ход · бесплатно':'Совет · 1 перемешивание';
+ advice.querySelector('span')!.textContent='Совет';advice.setAttribute('aria-label',adviceLabel);advice.title=adviceLabel;
  $<HTMLButtonElement>('wallet').disabled=$<HTMLButtonElement>('home-wallet').disabled=rewardBusy||recoveringRewards||interstitialBusy;
  const adsAllowed=!atHome&&!blockers.size&&stageNumber(state.current)>2&&!document.hidden;document.body.classList.toggle('with-banner',ads.native&&stageNumber(state.current)>2);ads.banner(adsAllowed);
  $('star-capacity').textContent=`/ ${levels.length*3}`;

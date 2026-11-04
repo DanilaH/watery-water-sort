@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
-import {fresh,levels} from '../../src/core/session';
+import {fresh,levels,moved} from '../../src/core/session';
 import {moves,transition,type Board,type Move} from '../../src/core/rules';
 import {positionKey} from '../../src/core/solver';
 import {layout} from '../../src/game/geometry';
@@ -37,4 +37,26 @@ for(const [width,height] of [[360,760],[640,320]])test(`pause stays inside nativ
  await page.getByRole('button',{name:'Лагуна',exact:true}).click();
  await expect(page.locator('body')).toHaveAttribute('data-theme','plum');
  await page.getByRole('button',{name:'Готово',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();
+});
+
+test('a repeated board with an exit does not suggest rescue',async({page})=>{
+ const l=levels[0],s=moved(fresh(),l.witness[0]);
+ await page.addInitScript(s=>{
+  localStorage.setItem('water-sort-v1',JSON.stringify(s));
+  const NativeWorker=window.Worker;
+  window.Worker=class extends NativeWorker{
+   constructor(url:string|URL,options?:WorkerOptions){
+    super(url,options);
+    if(String(url).includes('stall.worker'))this.addEventListener('message',e=>document.documentElement.dataset.stallResult=e.data);
+   }
+  };
+ },s);
+ await page.goto('/');await page.locator('#home-play').click();
+ const canvas=page.locator('#board canvas');await expect(canvas).toBeVisible();await page.waitForTimeout(350);
+ const b=(await canvas.boundingBox())!,p=layout(b.width,b.height,l.initial.length);
+ for(const i of [1,2])await page.mouse.click(b.x+p[i].x,b.y+p[i].y+p[i].h/2);
+ await expect(page.locator('html')).toHaveAttribute('data-stall-result','FOUND');
+ await expect(page.locator('#hint')).toBeEnabled();
+ await expect(page.locator('#notice-restart')).toBeHidden();
+ await expect(page.locator('#shuffle')).not.toHaveClass(/rescue-highlight/);
 });
