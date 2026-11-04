@@ -1,6 +1,7 @@
 package com.danilah.waterywatersort;
 
 import android.os.Bundle;
+import android.content.pm.ActivityInfo;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
@@ -11,5 +12,8 @@ public class MainActivity extends BridgeActivity {
         registerPlugin(WaterAdsPlugin.class);
         registerPlugin(WaterAnalyticsPlugin.class);
         super.onCreate(savedInstanceState);
+        if (getResources().getConfiguration().smallestScreenWidthDp < 600) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 }

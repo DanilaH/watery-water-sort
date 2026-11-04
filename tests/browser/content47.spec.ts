@@ -8,11 +8,11 @@ async function saved(page:Page){return page.evaluate(()=>JSON.parse(localStorage
 async function openLegacy(page:Page,index=2,win=false){const s={...fresh(),current:index,completed:levels.map(l=>l.id)};s.settings.sound=false;const l=legacy[index]as Level;s.attempts[`${l.id}@1`]=replay(l,win?legacyProof.find(p=>p.level===index&&!p.extra)!.path:l.witness.slice(0,1),false);
  await page.addInitScript(s=>{if(sessionStorage.content47)return;sessionStorage.content47='1';localStorage.setItem('water-sort-v1',JSON.stringify(s));},s);await page.goto('/');await page.locator('#home-play').click();return s;
 }
-test('legacy Continue and restart retain the exact old board; explicit map selection starts the new revision',async({page})=>{
+test('legacy Continue and restart retain the exact old board; map selection resumes the saved revision',async({page})=>{
  const s=await openLegacy(page);expect(attempt(await saved(page))).toEqual(attempt(s));expect(activeKey(await saved(page))).toBe('water-003@1');
  await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();expect(activeKey(await saved(page))).toBe('water-003@1');expect(attempt(await saved(page)).board).toEqual(legacy[2].initial);
- await home48(page);await page.locator('#home-levels').click();await page.locator('[data-level="water-003"]').click();const next=await saved(page);expect(activeKey(next)).toBe(levelKey(2));expect(attempt(next).board).toEqual(levels[2].initial);expect(next.attempts['water-003@1']).toBeDefined();
- await page.reload();await page.locator('#home-play').click();expect(activeKey(await saved(page))).toBe(levelKey(2));
+ await home48(page);await page.locator('#home-levels').click();await page.locator('[data-level="water-003"]').click();const next=await saved(page);expect(activeKey(next)).toBe('water-003@1');expect(attempt(next).board).toEqual(legacy[2].initial);expect(next.attempts['water-003@1']).toBeDefined();
+ await page.reload();await page.locator('#home-play').click();expect(activeKey(await saved(page))).toBe('water-003@1');
 });
 test('legacy stars remain on the map after the revised board starts and old Next still advances',async({page})=>{
  await openLegacy(page,2,true);await expect(page.locator('#continue')).toBeVisible();await page.locator('#continue').click();await expect(page.locator('#level-title')).toHaveText('Уровень 4');

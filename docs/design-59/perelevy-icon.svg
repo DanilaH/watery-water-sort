@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="back" x2="0" y2="1">
+      <stop stop-color="#173657"/><stop offset="1" stop-color="#081527"/>
+    </linearGradient>
+    <linearGradient id="water" x2="0" y2="1">
+      <stop stop-color="#40f2f2"/><stop offset="1" stop-color="#038cf5"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#back)"/>
+  <g id="mark" transform="translate(0 -4)">
+    <path d="M174 196h154v137a77 77 0 0 1-154 0z" fill="#112b48" stroke="#a1d7ff" stroke-width="12"/>
+    <path d="M183 282q35 17 69 3t67-4v52a68 68 0 0 1-136 0z" fill="url(#water)"/>
+    <path d="M183 326q35-9 69 2t67 0v5a68 68 0 0 1-136 0z" fill="#4278ff"/>
+    <path d="M201 220v108q0 21 14 34" fill="none" stroke="#effaff" stroke-opacity=".64" stroke-linecap="round" stroke-width="8"/>
+    <rect x="160" y="179" width="182" height="24" rx="12" fill="#183c5d" stroke="#d0f0ff" stroke-width="9"/>
+    <path d="M334 113c-44-4-82 18-82 66v68" fill="none" stroke="#093651" stroke-linecap="round" stroke-width="30"/>
+    <path d="M334 113c-44-4-82 18-82 66v68" fill="none" stroke="#52f6f0" stroke-linecap="round" stroke-width="17"/>
+    <path d="M256 251q13 15 0 25q-13-10 0-25" fill="#8afffb"/>
+    <path d="M369 161l5 12 12 5-12 5-5 12-5-12-12-5 12-5z" fill="#ffcf6a"/>
+  </g>
+</svg>

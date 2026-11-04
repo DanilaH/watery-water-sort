@@ -20,15 +20,15 @@ test('Continue retains the exact accepted attempt through home, settings, Escape
  await page.locator('#home-settings').click();await page.keyboard.press('Escape');await expect(page.locator('#home')).toBeVisible();await page.reload();await expect(page.locator('#home')).toBeVisible();await page.locator('#home-play').click();expect(await saved(page)).toEqual(state);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
 });
 
-for(const solved of [false,true])test(`selecting the current ${solved?'completed':'unfinished'} level starts fresh and preserves completion and extra tube`,async({page})=>{
+for(const solved of [false,true])test(`selecting the current ${solved?'completed':'unfinished'} level preserves unfinished progress, completion and extra tube`,async({page})=>{
  let state=fresh();for(const move of levels[0].witness.slice(0,solved?undefined:1))state=moved(state,move);state=expanded(state);if(solved)state.completed=[levels[0].id];await seed(page,state);await page.goto('/');await page.locator('#home-levels').click();await page.locator('.levels button').first().click();
- const next=await saved(page);expect(attempt(next).history).toHaveLength(0);expect(attempt(next).board).toEqual([...levels[0].initial,[]]);expect(attempt(next).extra).toBe(true);expect(next.completed).toEqual(state.completed);await expect(page.locator('#continue')).toBeHidden();
- await page.locator('canvas').waitFor();await page.waitForTimeout(150);await tap(page,0,5);await tap(page,4,5);await expect(page.locator('#moves')).toHaveText('Ходов: 1');
+ const next=await saved(page);expect(attempt(next).history).toHaveLength(solved?0:1);expect(attempt(next).board).toEqual(solved?[...levels[0].initial,[]]:attempt(state).board);expect(attempt(next).extra).toBe(true);expect(next.completed).toEqual(state.completed);await expect(page.locator('#continue')).toBeHidden();
+ if(solved){await page.locator('canvas').waitFor();await page.waitForTimeout(150);await tap(page,0,5);await tap(page,4,5);await expect(page.locator('#moves')).toHaveText('Ходов: 1');}
 });
 
-test('choosing another previously played level resets that level, not the attempt being left',async({page})=>{
+test('choosing another previously played level resumes it and preserves the attempt being left',async({page})=>{
  let state=moved(fresh(),levels[0].witness[0]);state.completed=[levels[0].id];state.current=1;state=moved(state,levels[1].witness[0]);state=expanded(state);state.current=0;const old=structuredClone(attempt(state));await seed(page,state);await page.goto('/');await page.locator('#home-levels').click();await levelButton(page,1).click();const next=await saved(page);
- expect(next.current).toBe(1);expect(next.attempts[levelKey(0)]).toEqual(old);expect(attempt(next).board).toEqual([...levels[1].initial,[]]);expect(attempt(next).history).toHaveLength(0);expect(attempt(next).extra).toBe(true);
+ expect(next.current).toBe(1);expect(next.attempts[levelKey(0)]).toEqual(old);expect(attempt(next)).toEqual(state.attempts[levelKey(1)]);expect(attempt(next).extra).toBe(true);
 });
 
 test('Restart cancellation leaves progress intact; confirmation retains extra tube and completed levels',async({page})=>{

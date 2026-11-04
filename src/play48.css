@@ -41,3 +41,8 @@ nav.boosters #hint-count{top:auto;bottom:-4px;right:-4px;min-width:22px;height:2
 @media(orientation:landscape) and (max-height:430px){
  body.with-banner nav.boosters{gap:2px;padding-block:2px 4px}
 }
+
+body .levels .level-stars{display:flex;flex-wrap:nowrap;gap:1px}
+body .levels .level-stars .map-star{flex:0 1 17px;min-width:0;margin:0}
+nav.boosters #hint-count.needs-pack{min-width:0;width:max-content;white-space:nowrap;background:#ffdf84;color:#321e08;border-color:#7e5419}
+#next-star-goal{margin:3px 0 0;font-size:11px;line-height:14px;color:var(--muted)}

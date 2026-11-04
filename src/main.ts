@@ -142,8 +142,10 @@ function paint(){
  scene.reduced=reduced.matches;scene.setKnowledge(knowledgeFor(state));touch.enabled=state.settings.haptics!==false;reward.setTotal(totalStars(state),pendingStars?.before);
  $('coins').textContent=$('home-coins').textContent=String(state.wallet!.coins);
  const dead=!!stuck(),freeAdvice=levelFor(state).colors<=2,ownedAdvice=state.wallet!.hintAdvice?.key===adviceKey(state);
- $('hint-count').textContent=dead?'?':freeAdvice?'∞':ownedAdvice?'✓':'−1';
- const advice=$('hint'),adviceLabel=dead?'Помощь в тупике':freeAdvice?'Подсказать ход · бесплатно':ownedAdvice?'Показать купленную подсказку':'Подсказать ход · 1 заряд перемешивания';
+ const needsPack=!dead&&!freeAdvice&&!ownedAdvice&&!state.wallet!.hints;
+ const adviceBadge=$('hint-count');adviceBadge.textContent=dead?'?':freeAdvice?'∞':ownedAdvice?'✓':needsPack?`${ECONOMY.packPrice} ×3`:'−1';
+ adviceBadge.classList.toggle('needs-pack',needsPack);
+ const advice=$('hint'),adviceLabel=dead?'Помощь в тупике':freeAdvice?'Подсказать ход · бесплатно':ownedAdvice?'Показать купленную подсказку':needsPack?`Купить 3 заряда за ${ECONOMY.packPrice} монет`:'Подсказать ход · 1 заряд перемешивания';
  advice.setAttribute('aria-label',adviceLabel);advice.title=adviceLabel;
  $<HTMLButtonElement>('wallet').disabled=$<HTMLButtonElement>('home-wallet').disabled=rewardBusy||recoveringRewards||interstitialBusy;
  const adsAllowed=!atHome&&!blockers.size&&stageNumber(state.current)>2&&!document.hidden;document.body.classList.toggle('with-banner',ads.native&&stageNumber(state.current)>2);ads.banner(adsAllowed);
@@ -177,6 +179,9 @@ function paint(){
   const b=$<HTMLButtonElement>(id);b.classList.toggle('rescue-highlight',dead&&!b.disabled&&!b.hidden);
  }
  $('continue').textContent=continuation(state)===undefined?'К уровням →':'Дальше →';
+ const starGoal=$('next-star-goal'),target=targets(activeKey(state));
+ starGoal.hidden=!finished||earned===3;
+ starGoal.textContent=earned===3?'':`Для ${earned+1} ★: не больше ${(earned===1?target.two:target.three)-(a.setup??0)} ходов`;
  $('finish-title').hidden=!finished;renderVictoryTitle($('finish-title'),continuation(state)===undefined?'Пройдено!':earned===3?'Идеально!':'Получилось!');
  if(finished)message('');
  // Measure only after all layout classes, result controls and labels are final.
@@ -224,7 +229,9 @@ function showHome(){
 }
 function switchLevel(index:number,reason='select'){
  if(index<0||index>=levels.length)return;pendingNext=undefined;
- measureActive();track('level_leave',{reason});interrupt();const n=startLatest({...state,current:index});
+ measureActive();track('level_leave',{reason});interrupt();const selected={...state,current:index},existing=selected.attempts[activeKey(selected)];
+ const unfinished=reason==='select'&&existing&&!won(existing.board,goalFor(selected));
+ const n=unfinished?selected:startLatest(selected);
  if(commit(n)){activeMs=0;hintRoute.clear();activateGame(reason);}
 }
 function restart(){pendingNext=undefined;const n=seededRestart(state);if(commit(n)){track('level_restart');measureActive();activeMs=0;interrupt();hintRoute.clear();activateGame('restart');message(guidance());}}
@@ -394,7 +401,7 @@ function menu(){
 
   const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
  });body.append(grid);
- if(!won(attempt(state).board,goalFor(state))){const helpButton=document.createElement('button');helpButton.className='help-button gel-button';helpButton.textContent='Если застрял';helpButton.onclick=()=>{audio.ui();help();};body.append(helpButton);}
+
 
 }
 $('menu').onclick=()=>{audio.ui();showHome();};
@@ -490,7 +497,13 @@ startupIssue();
 if(!locked)void recoverRewards();
 
 function postRewardCooldown(){const n=structuredClone(state);n.wallet!.adAfter=Date.now()+60000;n.revision++;commit(n);}
-function hintShop(){buyBoost('shuffle');}
+function hintShop(){
+ if(state.wallet!.coins<ECONOMY.packPrice){coinShop();return;}
+ modal('Купить заряды?',`3 общих заряда для подсказок и перемешивания · ${ECONOMY.packPrice} монет.`,[
+  {label:`Купить за ${ECONOMY.packPrice} монет`,primary:true,action:()=>{if(dialog.open)buyBoost('shuffle');}},
+  {label:'Отмена',action:close}
+ ]);
+}
 function coinShop(notice=''){
  const body=modal('Монеты',notice||`+${ECONOMY.adCoins} монет за просмотр рекламы`,[{label:`Получить ${ECONOMY.adCoins} монет · реклама`,primary:true,action:()=>{void watchForCoins();}}]);
  const balance=document.createElement('div');balance.className='shop-balance';balance.innerHTML='<i class="coin-icon" aria-hidden="true"></i>';const count=document.createElement('strong');count.textContent=String(state.wallet!.coins);balance.append(count);body.prepend(balance);

@@ -20,7 +20,7 @@ async function open(page:Page,s:Save=fresh()){
 }
 async function saved(page:Page):Promise<Save>{return page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
 async function tap(page:Page,i:number){const s=await saved(page),b=(await page.locator('#board canvas').boundingBox())!,p=layout(b.width,b.height,await slotCount(page))[i];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
-async function help(page:Page){await openLevels(page);await page.getByRole('button',{name:'Если застрял',exact:true}).click();}
+
 for(const failure of ['constructor','postMessage','async'])test(`hint recovers from ${failure} failure and retries`,async({page})=>{
  const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await open(page);
  await page.evaluate(failure=>{const Original=window.Worker;(window as any).restoreWorker=()=>window.Worker=Original;
@@ -51,8 +51,8 @@ test('extra tube preserves history through a real move, reload and two undos',as
 test('earned extra tube survives restart, help and level switching',async({page})=>{
  const seeded=expanded(structuredClone(dead));seeded.completed=levels.slice(0,6).map((l:any)=>l.id);await open(page,seeded);let s=await saved(page);expect(attempt(s).extra).toBe(true);
  await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();s=await saved(page);expect(attempt(s).board).toEqual([...levelFor(s).initial,[]]);expect(attempt(s).history).toHaveLength(0);
- await help(page);await expect(page.locator('dialog').getByRole('button',{name:'Добавить колбу',exact:true})).toHaveCount(1);await expect(page.locator('.dialog-body')).toContainText('уже добавлена');await page.getByRole('button',{name:'Закрыть',exact:true}).click();
- await openLevels(page);await levelButton(page,0).click();expect(attempt(await saved(page)).extra).toBe(false);await openLevels(page);await levelButton(page,6).click();const latest=await saved(page);expect(latest.attempts[levelKey(6)].extra).toBe(true);expect(attempt(latest).extra).toBe(false);
+ await expect(page.locator('#extra-tube')).toBeEnabled();
+ await openLevels(page);await levelButton(page,0).click();expect(attempt(await saved(page)).extra).toBe(false);await openLevels(page);await levelButton(page,6).click();const latest=await saved(page);expect(latest.attempts[levelKey(6)].extra).toBe(true);expect(attempt(latest).extra).toBe(true);
 });
 test('failed extra-tube save keeps the old board and offers retry',async({page})=>{
  await open(page,dead);await help48(page);const original=await saved(page);
@@ -65,18 +65,18 @@ test('proven dead end with legal moves offers help, then hints work with an extr
 });
 test('help supports undo and direct restart when the earlier position is still dead',async({page})=>{
  await open(page,dead);await help48(page);await page.getByRole('button',{name:'Отменить ход',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(6);
- await expect(page.locator('#status')).toContainText('Решения нет');await help(page);await page.locator('dialog').getByRole('button',{name:'Заново',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();expect(attempt(await saved(page)).history).toHaveLength(0);
+ await expect(page.locator('#status')).toContainText('Решения нет');await help48(page);await page.locator('dialog').getByRole('button',{name:'Заново',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();expect(attempt(await saved(page)).history).toHaveLength(0);
 });
 for(const count of [10,11])test(`landscape gives ${count} tubes more height with exclusive 48px targets`,async({page})=>{
  const s=fresh();s.current=11;if(count===11){s.attempts[levelKey(11)]={board:[...levels[11].initial,[]],history:[],extra:true};}await page.setViewportSize({width:568,height:320});await open(page,s);
  const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,await slotCount(page));expect(b.height).toBeGreaterThanOrEqual(172);expect(ps[0].h).toBeGreaterThanOrEqual(48);
  for(const p of ps){expect(p.hitW).toBeGreaterThanOrEqual(48);expect(p.hitH).toBeGreaterThanOrEqual(48);}
  for(const id of ['wallet','settings','undo','shuffle','extra-tube']){const r=(await page.locator('#'+id).boundingBox())!;expect(r.height).toBeGreaterThanOrEqual(48);expect(r.y).toBeGreaterThanOrEqual(0);expect(r.y+r.height).toBeLessThanOrEqual(320);}
- await help(page);for(const button of await page.locator('.dialog-actions button').all()){const r=(await button.boundingBox())!;expect(r.height+0.001).toBeGreaterThanOrEqual(48);expect(r.y+r.height).toBeLessThanOrEqual(320);}
+ await pause48(page);for(const button of await page.locator('.dialog-actions button').all()){const r=(await button.boundingBox())!;expect(r.height+0.001).toBeGreaterThanOrEqual(48);expect(r.y+r.height).toBeLessThanOrEqual(320);}
 });
 
 test('extra tube keeps two readable rows and exclusive targets on short portrait',async({page})=>{
- const s=fresh();s.current=11;s.completed=levels.slice(0,11).map((l:any)=>l.id);await page.setViewportSize({width:320,height:480});await open(page,s);await help(page);await unlockReward(page);
+ const s=fresh();s.current=11;s.completed=levels.slice(0,11).map((l:any)=>l.id);await page.setViewportSize({width:320,height:480});await open(page,s);await page.locator('#extra-tube').click();await expect(page.locator('#extra-tube')).toBeEnabled();
  const b=(await page.locator('#board canvas').boundingBox())!,ps=layout(b.width,b.height,11);expect(new Set(ps.map(p=>p.y)).size).toBe(2);expect(ps[0].h).toBeGreaterThanOrEqual(64);
  for(const p of ps){expect(p.hitW).toBeGreaterThanOrEqual(48);expect(p.hitH).toBeGreaterThanOrEqual(48);expect(p.x-p.hitW/2).toBeGreaterThanOrEqual(0);expect(p.x+p.hitW/2).toBeLessThanOrEqual(b.width);}
  for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){const a=ps[i],b=ps[j];expect(Math.abs(a.x-b.x)>=(a.hitW+b.hitW)/2||Math.abs(a.y+a.h/2-b.y-b.h/2)>=(a.hitH+b.hitH)/2).toBe(true);}
