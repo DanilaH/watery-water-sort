@@ -38,3 +38,6 @@ nav.boosters #hint-count{top:auto;bottom:-4px;right:-4px;min-width:22px;height:2
  nav.boosters button,nav.boosters #extra-tube{width:56px!important;height:56px!important;min-height:56px;padding:10px}
  nav.boosters button svg{width:28px;height:28px}
 }
+@media(orientation:landscape) and (max-height:430px){
+ body.with-banner nav.boosters{gap:2px;padding-block:2px 4px}
+}
