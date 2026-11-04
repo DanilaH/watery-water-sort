@@ -52,7 +52,7 @@ for(const [width,height]of [[320,480],[568,320],[390,844]])test(`large-goal fiel
 });
 test('Undo out of the goal restores layers without lifting the fixed receiver',async({page})=>{
  await seed(page,12,1);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.animate;(window as any).goalFlights=[];m.WaterScene.prototype.animate=function(...args:any[]){(window as any).goalFlights.push(args[1]);return fn.apply(this,args);};});
- await page.locator('#undo').click();await expect(page.locator('#status')).toHaveText('');expect(await page.evaluate(()=>(window as any).goalFlights)).toEqual([]);expect(attempt(await saved(page)).board[0]).toEqual([]);await expect(page.locator('#hint')).toBeEnabled();
+ await page.locator('#undo').click();await expect(page.locator('#status')).toHaveText('В большую колбу собирай только её цвет');expect(await page.evaluate(()=>(window as any).goalFlights)).toEqual([]);expect(attempt(await saved(page)).board[0]).toEqual([]);await expect(page.locator('#hint')).toBeEnabled();
 });
 test('a goal may finish before the level; its completion neither wins nor disables remaining moves',async({page})=>{
  let s={...fresh(),current:12};for(const [from,to]of [[3,0],[2,0],[1,4]])s=moved(s,moveFor(attempt(s).board,from,to,goalFor(s))!);s.settings.sound=false;

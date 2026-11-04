@@ -44,7 +44,7 @@ test('third numbered rewarded tube recovers from old backup, persists before ack
  await open(page,s);await expect.poll(async()=>extraCount(attempt(await saved(page)))).toBe(3);const ack=await page.evaluate(()=>(window as any).ack48);expect(extraCount(attempt(ack))).toBe(3);await page.reload();await page.locator('#home-play').click();expect(extraCount(attempt(await saved(page)))).toBe(3);await expect(page.locator('#extra-tube')).toBeDisabled();
 });
 test('inline tube price buys only the selected stock without applying a tube',async({page})=>{
- const s=seededRestart({...fresh(),current:2});s.wallet!.tubes=0;s.wallet!.coins=60;await open(page,s);await page.locator('#extra-tube').click();const n=await saved(page);expect(n.wallet!.coins).toBe(0);expect(n.wallet!.tubes).toBe(3);expect(n.wallet!.hints).toBe(s.wallet!.hints);expect(attempt(n).board).toEqual(attempt(s).board);
+ const s=seededRestart({...fresh(),current:2});s.wallet!.tubes=0;s.wallet!.coins=60;await open(page,s);await page.locator('#extra-tube').click();await page.getByRole('button',{name:'Купить за 60 монет',exact:true}).click();const n=await saved(page);expect(n.wallet!.coins).toBe(0);expect(n.wallet!.tubes).toBe(3);expect(n.wallet!.hints).toBe(s.wallet!.hints);expect(attempt(n).board).toEqual(attempt(s).board);
 });
 
 test('an already queued worker reply after Cancel is rejected even when the board revision did not change',async({page})=>{

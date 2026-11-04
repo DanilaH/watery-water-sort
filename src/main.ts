@@ -27,7 +27,7 @@ import {mountHomeHero} from './game/HomeHero';
 import { Sound } from './audio/sound';
 import { WaterScene } from './game/WaterScene';
 import { goalList, goalAt, isMini, iceIndex, iceOpen, moveFor, sealedTube, won, moves, type Move } from './core/rules';
-import { attempt, levels, moved, undone, seededRestart, startLatest, activeKey, levelByKey, levelFor, offerExtra, displaySlots, grantExtra, goalFor, knowledgeFor, reshuffled, type Save } from './core/session';
+import { attempt, levels, moved, undone, seededRestart, startLatest, activeKey, levelByKey, levelFor, levelGoals, offerExtra, displaySlots, grantExtra, goalFor, knowledgeFor, reshuffled, type Save } from './core/session';
 import { SaveStore } from './platform/storage';
 import {stars,targets} from './core/ratings';
 import {Rewarded,type Receipt} from './platform/rewarded';
@@ -116,7 +116,11 @@ function guidance(){
  if(scene.hintMove)return 'Перелей в колбу со стрелкой';
  if(scene.selected!==null)return scene.busy?'Следующий ход: выбери цель':state.current<2?'Выбери пустую или с тем же цветом сверху':'';
  if(state.current===34&&attempt(state).history.length===0&&!state.completed.includes(levels[34].id)&&hasUnknown(knowledgeFor(state)))return 'Открой цвета · отмена их не спрячет';
- if(goalFor(state)&&attempt(state).history.length===0)return '';
+ if(playerMoves(attempt(state))===0&&!state.completed.includes(levelFor(state).id)){
+  const rules=goalFor(state),index=state.current;
+  if(index===campaign.find(i=>goalList(levelGoals(levels[i])).length>0))return 'В большую колбу собирай только её цвет';
+  if(index===campaign.find(i=>iceIndex(levelGoals(levels[i]))!==undefined)&&!iceOpen(rules))return 'Собери полный цвет, чтобы растопить лёд';
+ }
  if(state.current===0&&attempt(state).history.length===0)return 'Выбери цветную колбу, затем пустую';
  if(state.current<2)return 'Одинаковые верхние слои льются вместе';
  return '';
@@ -143,7 +147,7 @@ function paint(){
  $('coins').textContent=$('home-coins').textContent=String(state.wallet!.coins);
  const dead=!!stuck(),freeAdvice=levelFor(state).colors<=2,ownedAdvice=state.wallet!.hintAdvice?.key===adviceKey(state);
  const needsPack=!dead&&!freeAdvice&&!ownedAdvice&&!state.wallet!.hints;
- const adviceBadge=$('hint-count');adviceBadge.textContent=dead?'?':freeAdvice?'∞':ownedAdvice?'✓':needsPack?`${ECONOMY.packPrice} ×3`:'−1';
+ const adviceBadge=$('hint-count');adviceBadge.textContent=dead?'?':freeAdvice?'∞':ownedAdvice?'✓':needsPack?`${ECONOMY.packPrice}`:'−1';
  adviceBadge.classList.toggle('needs-pack',needsPack);
  const advice=$('hint'),adviceLabel=dead?'Помощь в тупике':freeAdvice?'Подсказать ход · бесплатно':ownedAdvice?'Показать купленную подсказку':needsPack?`Купить 3 заряда за ${ECONOMY.packPrice} монет`:'Подсказать ход · 1 заряд перемешивания';
  advice.setAttribute('aria-label',adviceLabel);advice.title=adviceLabel;
@@ -191,14 +195,14 @@ function paintBoost(kind:Boost,count:number){
  const button=$(kind==='tube'?'extra-tube':'shuffle'),badge=$(kind==='tube'?'tube-count':'shuffle-count'),name=kind==='tube'?'колбы':'перемешивания',action=kind==='tube'?'Добавить колбу':'Перемешать';
  badge.hidden=kind==='tube'&&extraCount(attempt(state))>=3;badge.classList.toggle('is-price',count===0);badge.replaceChildren();
  if(count){badge.textContent=String(count);button.setAttribute('aria-label',action);}
- else{const coin=document.createElement('i');coin.className='coin-icon';coin.setAttribute('aria-hidden','true');const price=document.createElement('strong');price.textContent=String(ECONOMY.packPrice);const pack=document.createElement('small');pack.textContent='×3';badge.append(coin,price,pack);button.setAttribute('aria-label',`Купить 3 ${name} за ${ECONOMY.packPrice} монет`);}
+ else{const coin=document.createElement('i');coin.className='coin-icon';coin.setAttribute('aria-hidden','true');const price=document.createElement('strong');price.textContent=String(ECONOMY.packPrice);badge.append(coin,price);button.setAttribute('aria-label',`Купить 3 ${name} за ${ECONOMY.packPrice} монет`);}
  if(kind==='shuffle')button.title=button.getAttribute('aria-label')!;
 }
 function parkControls(){for(const id of ['menu','restart','star-target','rescue'])$('park').append($(id));}
 function close(){if(interstitialBusy)return;if(rewardBusy){void rewarded.cancel().catch(()=>{});return;}if(locked)return;cancelAssist();dialog.close();parkControls();block('dialog',false);checkPosition();message(guidance());}
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[]){
  entryRequest=undefined;pendingNext=undefined;
- block('dialog',true);parkControls();content.replaceChildren();dialog.classList.remove('compact-pause');
+ block('dialog',true);parkControls();content.replaceChildren();dialog.classList.remove('compact-pause','pack-dialog');
  const header=document.createElement('header');header.className='dialog-header';
  const h=document.createElement('h2');h.textContent=title;h.tabIndex=-1;header.append(h);
  const x=document.createElement('button');x.className='dialog-close gel-button';x.textContent='×';x.setAttribute('aria-label','Закрыть');x.onclick=close;x.hidden=locked;header.append(x);
@@ -369,7 +373,7 @@ async function applyReceipt(receipt:Receipt){
 }
 function askExtra(){
  if(locked||scene.busy||scene.arranging||mixActive||rewardBusy||recoveringRewards||!offerExtra(state)||won(attempt(state).board,goalFor(state)))return;
- if(!state.wallet!.tubes){buyBoost('tube');return;}
+ if(!state.wallet!.tubes){offerPack('tube');return;}
  const before=scene.positions().map(r=>({...r})),spent=spendBoost(state,'tube');
  if(spent&&commit(grantExtra(spent,activeKey(state),extraCount(attempt(state))+1))){track('boost_spent',{reason:'tube',amount:1});finishTube(before);}
 }
@@ -401,6 +405,8 @@ function menu(){
 
   const mark=document.createElement('small');mark.className='level-stars';mark.replaceChildren(...Array.from({length:3},(_,index)=>{const star=document.createElement('span');star.className='map-star';star.dataset.filled=String(index<earned);star.textContent=index<earned?'★':'☆';star.setAttribute('aria-hidden','true');return star;}));mark.setAttribute('aria-label',`${earned} из 3 звёзд`);b.append(mark);b.onclick=()=>{audio.ui();switchLevel(i);};grid.append(b);
  });body.append(grid);
+ const current=grid.querySelector<HTMLElement>('[aria-current="step"]');
+ if(current)body.scrollTop+=current.getBoundingClientRect().top-body.getBoundingClientRect().top-(body.clientHeight-current.offsetHeight)/2;
 
 
 }
@@ -449,7 +455,7 @@ function buyBoost(kind:Boost){
 }
 function askShuffle(){
  if(scene.busy||scene.arranging||mixActive||rewardBusy||recoveringRewards||assistWorker||won(attempt(state).board,goalFor(state))||locked)return;
- if(!state.wallet!.hints){buyBoost('shuffle');return;}
+ if(!state.wallet!.hints){offerPack('shuffle');return;}
  beginShuffle();
 }
 function beginShuffle(){
@@ -497,12 +503,33 @@ startupIssue();
 if(!locked)void recoverRewards();
 
 function postRewardCooldown(){const n=structuredClone(state);n.wallet!.adAfter=Date.now()+60000;n.revision++;commit(n);}
-function hintShop(){
+function hintShop(){offerPack('shuffle');}
+function offerPack(kind:Boost){
  if(state.wallet!.coins<ECONOMY.packPrice){coinShop();return;}
- modal('Купить заряды?',`3 общих заряда для подсказок и перемешивания · ${ECONOMY.packPrice} монет.`,[
-  {label:`Купить за ${ECONOMY.packPrice} монет`,primary:true,action:()=>{if(dialog.open)buyBoost('shuffle');}},
+ const tube=kind==='tube',price=ECONOMY.packPrice;
+ const body=modal(tube?'Три колбы':'Купить заряды?','',[
+  {label:`Купить за ${price} монет`,primary:true,action:()=>{if(dialog.open&&dialog.classList.contains('pack-dialog'))buyBoost(kind);}},
   {label:'Отмена',action:close}
  ]);
+ dialog.classList.add('pack-dialog');
+ content.getAnimations().forEach(a=>a.cancel());
+ if(!reduced.matches)content.animate([
+  {opacity:0,transform:'translateY(14px) scale(.95)'},
+  {opacity:1,transform:'translateY(-3px) scale(1.012)',offset:.72},
+  {opacity:1,transform:'none'}
+ ],{duration:330,easing:'ease-out'});
+ const exchange=document.createElement('div');exchange.className='pack-exchange';
+ const cost=document.createElement('div');cost.className='pack-token pack-cost';
+ const coin=document.createElement('i');coin.className='coin-icon';coin.setAttribute('aria-hidden','true');
+ const amount=document.createElement('strong');amount.textContent=String(price);cost.append(coin,amount);cost.setAttribute('aria-label',`${price} монет`);
+ const arrow=document.createElement('span');arrow.className='pack-arrow';arrow.textContent='→';arrow.setAttribute('aria-hidden','true');
+ const reward=document.createElement('div');reward.className='pack-token pack-reward';
+ const symbols=document.createElement('span');symbols.className='pack-symbols';symbols.setAttribute('aria-hidden','true');
+ const icon=$(tube?'extra-tube':'shuffle').querySelector('svg')!;
+ for(let i=0;i<3;i++)symbols.append(icon.cloneNode(true));
+ const label=document.createElement('strong');label.textContent=tube?'3 колбы':'3 заряда';reward.append(symbols,label);
+ if(!tube){const uses=document.createElement('small');uses.textContent='Подсказка или перемешивание';reward.append(uses);}
+ exchange.append(cost,arrow,reward);body.append(exchange);
 }
 function coinShop(notice=''){
  const body=modal('Монеты',notice||`+${ECONOMY.adCoins} монет за просмотр рекламы`,[{label:`Получить ${ECONOMY.adCoins} монет · реклама`,primary:true,action:()=>{void watchForCoins();}}]);

@@ -46,3 +46,22 @@ body .levels .level-stars{display:flex;flex-wrap:nowrap;gap:1px}
 body .levels .level-stars .map-star{flex:0 1 17px;min-width:0;margin:0}
 nav.boosters #hint-count.needs-pack{min-width:0;width:max-content;white-space:nowrap;background:#ffdf84;color:#321e08;border-color:#7e5419}
 #next-star-goal{margin:3px 0 0;font-size:11px;line-height:14px;color:var(--muted)}
+
+/* A compact exchange: coins on the left, the pack landing on the right. */
+nav.boosters .boost-count.is-price{min-width:0;gap:3px;padding-inline:5px}
+nav.boosters .boost-count.is-price .coin-icon{width:12px;height:12px}
+.pack-exchange{display:grid;grid-template-columns:minmax(58px,.65fr) 24px minmax(110px,1.35fr);gap:8px;align-items:center;padding:8px 0}
+.pack-token{min-width:0;min-height:104px;border:1px solid #7098cf55;border-radius:17px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px;text-align:center;padding:8px}
+.pack-cost{background:#b47b2720;color:var(--sheet-ink)}
+.pack-reward{background:#489dff20;color:var(--sheet-ink)}
+.pack-token strong{font-size:18px}
+.pack-token small{font-size:10px;line-height:1.2;color:var(--sheet-muted)}
+.pack-cost .coin-icon{width:28px;height:28px}
+.pack-arrow{font-size:23px;text-align:center;color:var(--sheet-muted)}
+.pack-symbols{display:flex;justify-content:center;gap:4px;color:var(--sheet-ink)}
+.pack-symbols svg{width:22px;height:22px}
+.pack-dialog .pack-arrow{animation:pack-arrow60 .3s .06s ease-out both}
+.pack-dialog .pack-reward{animation:pack-reward60 .33s .08s cubic-bezier(.2,.9,.3,1.25) both}
+@keyframes pack-arrow60{from{opacity:0;translate:-5px 0}to{opacity:1;translate:0 0}}
+@keyframes pack-reward60{from{opacity:0;scale:.84}to{opacity:1;scale:1}}
+@media(prefers-reduced-motion:reduce){.pack-dialog .pack-arrow,.pack-dialog .pack-reward{animation:none}}
