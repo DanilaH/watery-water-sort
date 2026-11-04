@@ -2,7 +2,7 @@ import {test,expect} from 'vitest';
 import {apply,reverse,moveFor,moves,won,validBoard,sealedTube,type Board} from '../src/core/rules';
 import {fresh,levels,moved,undone,restarted,attempt,validSave,levelKey,goalFor,expanded,migrateBest} from '../src/core/session';
 import {solve} from '../src/core/solver';import {targets} from '../src/core/ratings';import {goalLayout} from '../src/game/geometry';
-import currentProof from '../docs/audits/campaign-balance-47/optimal.json';
+import currentProof from '../docs/audits/campaign-54/optimal.json';
 const proof=currentProof.filter(p=>p.level>=12&&p.level<16);
 const level=levels[12],goal=level.goal!;
 test('goal is colour locked, receive only, eight units; four-unit goal-colour vessels are unfinished',()=>{
@@ -20,7 +20,7 @@ test('all eight new exact paths replay through durable state; best records survi
   for(const m of p.path){const before=attempt(s).board;s=moved(s,m);expect(reverse(attempt(s).board,m,goalFor(s))).toEqual(before);expect(validSave(s)).toBe(true);}
   expect(won(attempt(s).board,goalFor(s))).toBe(true);expect(targets(levelKey(p.level)).three).toBe(p.optimal);expect(p.independentNoShorterPath).toBe(true);
   const best=structuredClone(s.best);expect(migrateBest(s).best).toEqual(best);s=undone(s);expect(won(attempt(s).board,goalFor(s))).toBe(false);expect(s.best).toEqual(best);expect(validSave(s)).toBe(true);
-  s=restarted(s);expect(attempt(s).board[0]).toEqual([]);expect(s.best).toEqual(best);expect(validSave(s)).toBe(true);
+  s=restarted(s);expect(attempt(s).board[0]).toEqual(levels[p.level].initial[0]);expect(s.best).toEqual(best);expect(validSave(s)).toBe(true);
  }
 });
 test('solver keeps goal identity separate while ordinary slots may permute',()=>{

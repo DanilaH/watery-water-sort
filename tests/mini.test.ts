@@ -4,7 +4,7 @@ import {apply,reverse,moves,moveFor,validBoard,validGoal,won,sealedTube,capacity
 import {solve} from '../src/core/solver';
 import {layout,goalLayout,miniLayout} from '../src/game/geometry';
 import {stars} from '../src/core/ratings';
-import currentProof from '../docs/audits/campaign-balance-47/optimal.json';
+import currentProof from '../docs/audits/campaign-54/optimal.json';
 const proof=currentProof.filter(p=>p.level>=22&&p.level<28);
 
 test('mini accepts only two units, clips contiguous groups, stays pourable and never seals',()=>{

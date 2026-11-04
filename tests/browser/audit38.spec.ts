@@ -10,7 +10,7 @@ async function open(p:Page,index=4,n=0,old=false){let s={...fresh(),current:inde
 async function tap(p:Page,i:number){const b=(await p.locator('#board canvas').boundingBox())!,r=await p.evaluate(i=>(window as any).auditScene.positions()[i],i);await p.mouse.click(b.x+r.x,b.y+r.y+r.h/2);}
 
 test('following successive UI hints finishes the formerly cycling puzzle using one verified Worker route',async({page})=>{
- test.setTimeout(60000);await page.clock.install();await open(page);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));let n=0;
+ test.setTimeout(60000);await page.clock.install();await open(page,4,0,true);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));let n=0;
  while(!won(attempt(await saved(page)).board,goalFor(await saved(page)))){
   await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');const m=await page.evaluate(()=>(window as any).auditScene.hintMove);expect(m).not.toBeNull();await tap(page,m.to);
   // This checks route continuity, not intermediate rendering (covered in the effect tests).
@@ -70,7 +70,7 @@ test('all campaign role layouts reuse bounded glass/label pools and keep one liv
 
 
 test('the sampled mini trap explains free Undo; a mocked rewarded buffer preserves the move and restores legal options',async({page})=>{
- await page.clock.install();await open(page,23);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await tap(page,3);await tap(page,0);await advanceFrames(page,'auditScene',1200);await expect(page.locator('#status')).toContainText('Нет доступных ходов');await expect(page.locator('#status')).toContainText('отменить');await expect(page.locator('#undo')).toBeEnabled();expect(moves(attempt(await saved(page)).board,goalFor(await saved(page)))).toHaveLength(0);
- await page.locator('#undo').click();await advanceFrames(page,'auditScene',1200);expect(attempt(await saved(page)).board).toEqual(levels[23].initial);await expect(page.locator('#moves')).toHaveText('Ходов: 0');
+ await page.clock.install();await open(page,23,0,true);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));await tap(page,3);await tap(page,0);await advanceFrames(page,'auditScene',1200);await expect(page.locator('#status')).toContainText('Нет доступных ходов');await expect(page.locator('#status')).toContainText('отменить');await expect(page.locator('#undo')).toBeEnabled();expect(moves(attempt(await saved(page)).board,goalFor(await saved(page)))).toHaveLength(0);
+ await page.locator('#undo').click();await advanceFrames(page,'auditScene',1200);expect(attempt(await saved(page)).board).toEqual(legacy[23].initial);await expect(page.locator('#moves')).toHaveText('Ходов: 0');
  await tap(page,3);await tap(page,0);await advanceFrames(page,'auditScene',1200);await mockReward(page);await page.locator('#extra-tube').click();await expect(page.locator('dialog')).toBeHidden();const s=await saved(page);expect(attempt(s).history).toHaveLength(1);expect(attempt(s).extra).toBe(true);expect(moves(attempt(s).board,goalFor(s)).length).toBeGreaterThan(0);await page.clock.resume();
 });

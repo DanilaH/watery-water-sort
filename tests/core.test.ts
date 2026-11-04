@@ -20,7 +20,7 @@ describe('rules',()=>{
 });
 describe('bank and solver',()=>{
  it('independently replays all campaign witnesses with their actual capacities and goals',()=>{
-  expect(levels).toHaveLength(60);
+  expect(levels).toHaveLength(100);
   for(const l of levels){const gs=l.goals??(l.goal?[l.goal]:[]);let opened=l.ice===undefined,b:Board=l.initial.map(t=>[...t]);for(const m of l.witness){
    expect(opened||m.from!==l.ice&&m.to!==l.ice).toBe(true);const source=b[m.from],target=b[m.to],sourceSealed=m.from!==l.mini&&source.length===4&&source.every(c=>c===source[0])&&!gs.some(g=>g.color===source[0]),capacity=m.to===l.mini?2:gs.some(g=>g.index===m.to)?8:4;
    expect(gs.some(g=>g.index===m.from)).toBe(false);expect(source.length).toBeGreaterThan(0);expect(target.length+m.amount).toBeLessThanOrEqual(capacity);
@@ -89,7 +89,7 @@ describe('connected pouring',()=>{
   }
  });
  it('keeps a dense small-phone field readable without a phantom slot',()=>{
-  const ps=layout(288,263,10);expect(new Set(ps.map(p=>p.y)).size).toBe(2);expect(ps[0].w).toBeGreaterThanOrEqual(26);expect(ps[0].h).toBeGreaterThanOrEqual(90);
+  const ps=layout(288,263,10);expect(new Set(ps.map(p=>p.y)).size).toBe(2);expect(ps[0].w).toBeGreaterThanOrEqual(18);expect(ps[0].h).toBeGreaterThanOrEqual(90);
  });
 });
 

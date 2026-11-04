@@ -22,7 +22,7 @@ test('legacy unlocked frontier stays selectable even when its new predecessor wa
 });
 
 for(const [width,height]of [[320,480],[568,320],[390,844]])test(`new final level ends the campaign at ${width}x${height}`,async({page})=>{
- await page.setViewportSize({width,height});let s={...fresh(),current:59,completed:levels.filter((_,i)=>i!==59).map(l=>l.id)};for(const m of levels[59].witness.slice(0,-1))s=moved(s,m);await open(page,s);await expect(page.locator('#level-title')).toHaveText('Уровень 60');const last=levels[59].witness.at(-1)!;await tap(page,last.from);await tap(page,last.to);await expect(page.locator('#continue')).toHaveText('К уровням →');await expect(page.getByRole('heading',{name:'Пройдено!',exact:true})).toBeVisible();await page.locator('#continue').click();await expect(page.getByRole('heading',{name:'Уровни',exact:true})).toBeVisible();expect((await saved(page)).completed).toHaveLength(60);
+ await page.setViewportSize({width,height});let s={...fresh(),current:99,completed:levels.filter((_,i)=>i!==99).map(l=>l.id)};for(const m of levels[99].witness.slice(0,-1))s=moved(s,m);await open(page,s);await expect(page.locator('#level-title')).toHaveText('Уровень 100');const last=levels[99].witness.at(-1)!;await tap(page,last.from);await tap(page,last.to);await expect(page.locator('#continue')).toHaveText('К уровням →');await expect(page.getByRole('heading',{name:'Пройдено!',exact:true})).toBeVisible();await page.locator('#continue').click();await expect(page.getByRole('heading',{name:'Уровни',exact:true})).toBeVisible();expect((await saved(page)).completed).toHaveLength(100);
 });
 
 test('failed write while changing campaign stage leaves the completed puzzle and its saved record intact',async({page})=>{

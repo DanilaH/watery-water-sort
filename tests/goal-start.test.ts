@@ -3,8 +3,8 @@ import {goalStart,playerMoves} from '../src/core/goalStart';
 import {fresh,levels,levelKey,levelGoals,goalFor,attempt,moved,undone,seededRestart,replay,validSave,expanded,migrateBest} from '../src/core/session';
 import {goalList,validBoard,moves,won} from '../src/core/rules';
 import {solveHint} from '../src/core/hintSolver';import {stars,targets} from '../src/core/ratings';
-import {SaveStore} from '../src/platform/storage';import {settleEconomy} from '../src/core/economy';import proof from '../docs/audits/campaign-balance-47/prepared.json';import legacyProof from '../docs/audits/campaign-balance-47/optimal.json';
-test('all 120 prepared boards conserve liquid, have zero player moves and keep exact star targets',()=>{
+import {SaveStore} from '../src/platform/storage';import {settleEconomy} from '../src/core/economy';import proof from '../docs/audits/campaign-54/prepared.json';import legacyProof from '../docs/audits/campaign-54/optimal.json';
+test('all 200 prepared boards conserve liquid, have zero player moves and keep exact star targets',()=>{
  for(const p of proof){let s={...fresh(),current:p.level};if(p.extra)s=expanded(s);s=seededRestart(s);const a=attempt(s),l=levels[p.level],prefix=goalStart(l);
  expect(validSave(s)).toBe(true);expect(validBoard(a.board,goalFor(s))).toBe(true);expect(a.board.flat().sort()).toEqual(l.initial.flat().sort());expect(playerMoves(a)).toBe(0);expect(a.history).toEqual(prefix);
  for(const g of goalList(levelGoals(l))){expect(a.board[g.index].length).toBeGreaterThan(0);expect(a.board[g.index].every(c=>c===g.color)).toBe(true);}
@@ -25,7 +25,7 @@ test('saved legacy games, records and coin awards survive loading unchanged',()=
  const seeded=seededRestart(again);expect(seeded.best).toEqual(again.best);expect(settleEconomy(seeded).wallet).toEqual(again.wallet);
 });
 test('Undo stops at setup, restarts retain the buffer and setup metadata cannot forge a path',()=>{
- const s=seededRestart(expanded({...fresh(),current:13})),m=moves(attempt(s).board,goalFor(s))[0],next=moved(s,m);
+ const s=seededRestart(expanded({...fresh(),current:12})),m=moves(attempt(s).board,goalFor(s))[0],next=moved(s,m);
  expect(playerMoves(attempt(next))).toBe(1);expect(attempt(undone(next))).toEqual(attempt(s));expect(attempt(undone(undone(next)))).toEqual(attempt(s));expect(attempt(seededRestart(next)).extra).toBe(true);
  for(const value of [-1,0,2,1.5,999]){const bad=structuredClone(s);attempt(bad).setup=value;expect(validSave(bad)).toBe(false);}
  const bad=structuredClone(s);attempt(bad).history=[];expect(validSave(bad)).toBe(false);

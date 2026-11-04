@@ -286,5 +286,365 @@
   "water-037@2": {
     "three": 8,
     "two": 10
+  },
+  "water-004@3": {
+    "three": 9,
+    "two": 11
+  },
+  "water-005@3": {
+    "three": 11,
+    "two": 14
+  },
+  "water-006@3": {
+    "three": 13,
+    "two": 16
+  },
+  "water-007@2": {
+    "three": 18,
+    "two": 22
+  },
+  "water-008@2": {
+    "three": 16,
+    "two": 20
+  },
+  "water-009@2": {
+    "three": 14,
+    "two": 17
+  },
+  "water-010@2": {
+    "three": 17,
+    "two": 21
+  },
+  "water-011@2": {
+    "three": 15,
+    "two": 18
+  },
+  "water-012@2": {
+    "three": 17,
+    "two": 21
+  },
+  "water-014@2": {
+    "three": 11,
+    "two": 14
+  },
+  "water-015@2": {
+    "three": 15,
+    "two": 18
+  },
+  "water-016@2": {
+    "three": 15,
+    "two": 18
+  },
+  "water-017@3": {
+    "three": 14,
+    "two": 17
+  },
+  "water-018@2": {
+    "three": 16,
+    "two": 20
+  },
+  "water-019@2": {
+    "three": 17,
+    "two": 21
+  },
+  "water-020@2": {
+    "three": 16,
+    "two": 20
+  },
+  "water-021@2": {
+    "three": 20,
+    "two": 24
+  },
+  "water-022@2": {
+    "three": 15,
+    "two": 18
+  },
+  "water-027@3": {
+    "three": 14,
+    "two": 17
+  },
+  "water-028@2": {
+    "three": 16,
+    "two": 20
+  },
+  "water-031@2": {
+    "three": 18,
+    "two": 22
+  },
+  "water-032@3": {
+    "three": 14,
+    "two": 17
+  },
+  "water-033@2": {
+    "three": 13,
+    "two": 16
+  },
+  "water-034@2": {
+    "three": 16,
+    "two": 20
+  },
+  "water-035@3": {
+    "three": 12,
+    "two": 15
+  },
+  "water-036@3": {
+    "three": 14,
+    "two": 17
+  },
+  "water-037@3": {
+    "three": 13,
+    "two": 16
+  },
+  "water-038@2": {
+    "three": 15,
+    "two": 18
+  },
+  "water-039@2": {
+    "three": 15,
+    "two": 18
+  },
+  "water-040@2": {
+    "three": 12,
+    "two": 15
+  },
+  "water-041@2": {
+    "three": 15,
+    "two": 18
+  },
+  "water-042@2": {
+    "three": 16,
+    "two": 20
+  },
+  "water-043@2": {
+    "three": 19,
+    "two": 23
+  },
+  "water-044@2": {
+    "three": 19,
+    "two": 23
+  },
+  "water-045@2": {
+    "three": 19,
+    "two": 23
+  },
+  "water-046@2": {
+    "three": 19,
+    "two": 23
+  },
+  "water-047@2": {
+    "three": 18,
+    "two": 22
+  },
+  "water-048@2": {
+    "three": 21,
+    "two": 26
+  },
+  "water-049@2": {
+    "three": 17,
+    "two": 21
+  },
+  "water-050@2": {
+    "three": 21,
+    "two": 26
+  },
+  "water-051@2": {
+    "three": 20,
+    "two": 24
+  },
+  "water-052@2": {
+    "three": 18,
+    "two": 22
+  },
+  "water-053@2": {
+    "three": 17,
+    "two": 21
+  },
+  "water-054@2": {
+    "three": 18,
+    "two": 22
+  },
+  "water-055@2": {
+    "three": 16,
+    "two": 20
+  },
+  "water-056@2": {
+    "three": 21,
+    "two": 26
+  },
+  "water-057@2": {
+    "three": 16,
+    "two": 20
+  },
+  "water-058@2": {
+    "three": 19,
+    "two": 23
+  },
+  "water-059@2": {
+    "three": 16,
+    "two": 20
+  },
+  "water-060@2": {
+    "three": 17,
+    "two": 21
+  },
+  "water-061@1": {
+    "three": 20,
+    "two": 24
+  },
+  "water-062@1": {
+    "three": 19,
+    "two": 23
+  },
+  "water-063@1": {
+    "three": 19,
+    "two": 23
+  },
+  "water-064@1": {
+    "three": 22,
+    "two": 27
+  },
+  "water-065@1": {
+    "three": 21,
+    "two": 26
+  },
+  "water-066@1": {
+    "three": 23,
+    "two": 28
+  },
+  "water-067@1": {
+    "three": 16,
+    "two": 20
+  },
+  "water-068@1": {
+    "three": 22,
+    "two": 27
+  },
+  "water-069@1": {
+    "three": 20,
+    "two": 24
+  },
+  "water-070@1": {
+    "three": 22,
+    "two": 27
+  },
+  "water-071@1": {
+    "three": 22,
+    "two": 27
+  },
+  "water-072@1": {
+    "three": 17,
+    "two": 21
+  },
+  "water-073@1": {
+    "three": 21,
+    "two": 26
+  },
+  "water-074@1": {
+    "three": 22,
+    "two": 27
+  },
+  "water-075@1": {
+    "three": 21,
+    "two": 26
+  },
+  "water-076@1": {
+    "three": 19,
+    "two": 23
+  },
+  "water-077@1": {
+    "three": 18,
+    "two": 22
+  },
+  "water-078@1": {
+    "three": 20,
+    "two": 24
+  },
+  "water-079@1": {
+    "three": 20,
+    "two": 24
+  },
+  "water-080@1": {
+    "three": 21,
+    "two": 26
+  },
+  "water-081@1": {
+    "three": 20,
+    "two": 24
+  },
+  "water-082@1": {
+    "three": 19,
+    "two": 23
+  },
+  "water-083@1": {
+    "three": 21,
+    "two": 26
+  },
+  "water-084@1": {
+    "three": 21,
+    "two": 26
+  },
+  "water-085@1": {
+    "three": 21,
+    "two": 26
+  },
+  "water-086@1": {
+    "three": 22,
+    "two": 27
+  },
+  "water-087@1": {
+    "three": 16,
+    "two": 20
+  },
+  "water-088@1": {
+    "three": 21,
+    "two": 26
+  },
+  "water-089@1": {
+    "three": 21,
+    "two": 26
+  },
+  "water-090@1": {
+    "three": 21,
+    "two": 26
+  },
+  "water-091@1": {
+    "three": 20,
+    "two": 24
+  },
+  "water-092@1": {
+    "three": 16,
+    "two": 20
+  },
+  "water-093@1": {
+    "three": 20,
+    "two": 24
+  },
+  "water-094@1": {
+    "three": 23,
+    "two": 28
+  },
+  "water-095@1": {
+    "three": 23,
+    "two": 28
+  },
+  "water-096@1": {
+    "three": 22,
+    "two": 27
+  },
+  "water-097@1": {
+    "three": 19,
+    "two": 23
+  },
+  "water-098@1": {
+    "three": 24,
+    "two": 29
+  },
+  "water-099@1": {
+    "three": 19,
+    "two": 23
+  },
+  "water-100@1": {
+    "three": 21,
+    "two": 26
   }
 }

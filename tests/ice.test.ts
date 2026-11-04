@@ -2,7 +2,7 @@ import {test,expect} from 'vitest';
 import {levels,levelGoals,goalFor,fresh,moved,undone,restarted,expanded,attempt,validSave,levelKey,replay} from '../src/core/session';
 import {moves,moveFor,validBoard,validGoal,won,sealedTube,transition,iceOpen,isFrozen,type VesselRules} from '../src/core/rules';
 import {solve} from '../src/core/solver';import {stars} from '../src/core/ratings';
-import currentProof from '../docs/audits/campaign-balance-47/optimal.json';
+import currentProof from '../docs/audits/campaign-54/optimal.json';
 const proof=currentProof.filter(p=>p.level>=28&&p.level<34);
 
 test('ice blocks both directions; earning one complete colour opens it once',()=>{

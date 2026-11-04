@@ -1,7 +1,7 @@
 import {it,expect} from 'vitest';
 import {fresh,levels,levelKey,moved,restarted,undone,attempt,expanded,validSave,migrateBest,grantExtra,displaySlots} from '../src/core/session';
 import {moveFor,won} from '../src/core/rules';import {stars,targets} from '../src/core/ratings';
-import currentProof from '../docs/audits/campaign-balance-47/optimal.json';
+import currentProof from '../docs/audits/campaign-54/optimal.json';
 const proof=currentProof.filter(p=>p.level>=0&&p.level<12);
 it('all three-star thresholds have independently verified winning paths, with and without an extra tube',()=>{
  for(const p of proof){let s=fresh();s.current=p.level;if(p.extra)s=expanded(s);for(const move of p.path)s=moved(s,move);expect(won(attempt(s).board)).toBe(true);expect(validSave(s)).toBe(true);expect(p.independentNoShorterPath).toBe(true);expect(targets(levelKey(p.level)).three).toBe(proof.find(v=>v.level===p.level&&!v.extra)!.optimal);expect(stars(levelKey(p.level),p.path.length)).toBe(3);}

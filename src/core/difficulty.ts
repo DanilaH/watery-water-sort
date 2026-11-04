@@ -1,5 +1,3 @@
-import {levelKey} from './session';
-// Curated challenge milestones for the current bank; independent of star thresholds.
-// 8 introduces six colours; 12 is the final eight-colour challenge.
-const HARD=new Set(['water-008@1','water-012@1']);
-export const isHard=(index:number)=>HARD.has(levelKey(index));
+import {stageNumber} from './campaign';
+const HARD=new Set([15,18,26,...Array.from({length:17},(_,i)=>20+i*5)]);
+export const isHard=(index:number)=>HARD.has(stageNumber(index));

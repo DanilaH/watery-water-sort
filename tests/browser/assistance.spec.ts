@@ -6,14 +6,15 @@ import {test,expect,type Page} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {gunzipSync} from 'node:zlib';
 import {layout,pourTiming} from '../../src/game/geometry';
-import {expanded,type Save} from '../../src/core/session';
-const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
+import {expanded,attempt,levelFor,replay,type Level,type Save} from '../../src/core/session';
+import legacy from '../../src/core/levels-v1.json' with {type:'json'};
+const levels=legacy as Level[];
 const fresh=():Save=>({schema:1,artVersion:4,current:0,revision:0,completed:[],attempts:{},settings:{sound:true,fast:false,symbols:false,light:false}});
-const levelKey=(i:number)=>`${levels[i].id}@${levels[i].version}`;
-const attempt=(s:Save)=>s.attempts[levelKey(s.current)]??{board:levels[s.current].initial,history:[],extra:false};
+const levelKey=(i:number)=>`${levels[i].id}@1`;
 import {moves} from '../../src/core/rules';
 const dead=JSON.parse(readFileSync(new URL('../../docs/audits/review-05/deadend-save.json',import.meta.url),'utf8')) as Save;
 async function open(page:Page,s:Save=fresh()){
+ s=structuredClone(s);s.attempts[levelKey(s.current)]??=replay(levels[s.current],[],false);
  await page.addInitScript(s=>{if(sessionStorage.seed09)return;localStorage.setItem('water-sort-v1',JSON.stringify(s));sessionStorage.seed09='1';},s);
  await startGame(page);await page.locator('canvas').waitFor();await page.waitForTimeout(300);await mockReward(page);
 }
@@ -49,9 +50,9 @@ test('extra tube preserves history through a real move, reload and two undos',as
 });
 test('earned extra tube survives restart, help and level switching',async({page})=>{
  const seeded=expanded(structuredClone(dead));seeded.completed=levels.slice(0,6).map((l:any)=>l.id);await open(page,seeded);let s=await saved(page);expect(attempt(s).extra).toBe(true);
- await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();s=await saved(page);expect(attempt(s).board).toEqual([...levels[6].initial,[]]);expect(attempt(s).history).toHaveLength(0);
+ await restart48(page);await page.getByRole('button',{name:'Начать заново',exact:true}).click();s=await saved(page);expect(attempt(s).board).toEqual([...levelFor(s).initial,[]]);expect(attempt(s).history).toHaveLength(0);
  await help(page);await expect(page.locator('dialog').getByRole('button',{name:'Добавить колбу',exact:true})).toHaveCount(1);await expect(page.locator('.dialog-body')).toContainText('уже добавлена');await page.getByRole('button',{name:'Закрыть',exact:true}).click();
- await openLevels(page);await levelButton(page,0).click();expect(attempt(await saved(page)).extra).toBe(false);await openLevels(page);await levelButton(page,6).click();expect(attempt(await saved(page)).extra).toBe(true);
+ await openLevels(page);await levelButton(page,0).click();expect(attempt(await saved(page)).extra).toBe(false);await openLevels(page);await levelButton(page,6).click();const latest=await saved(page);expect(latest.attempts[levelKey(6)].extra).toBe(true);expect(attempt(latest).extra).toBe(false);
 });
 test('failed extra-tube save keeps the old board and offers retry',async({page})=>{
  await open(page,dead);await help48(page);const original=await saved(page);

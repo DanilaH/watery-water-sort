@@ -2,6 +2,7 @@ import {extraCount,extraFields,validExtras,scoreMoves,type Shuffle} from './assi
 import {goalStart} from './goalStart';
 import {emptyWallet,validWallet,type Wallet} from './economy';
 import levelData from './levels.json' with {type:'json'};
+import previousData from './levels-v47.json' with {type:'json'};
 import legacyData from './levels-v1.json' with {type:'json'};
 import { clone, validBoard, won, type Board, type Move, type Goal, goalList, type Goals, transition, iceOpen } from './rules';
 import {walk,validKnowledge,knowledgeView} from './knowledge';
@@ -9,7 +10,7 @@ import {isTheme,type ThemeId} from './themes';
 export type Level={id:string;version:number;colors:number;seed:number;initial:Board;witness:Move[];goal?:Goal;goals?:Goal[];mini?:number;ice?:number;hidden?:{index:number;layers:number[]}[]};
 export const levels=levelData as Level[];
 /** Historical boards remain replayable; newest content is used only for a genuinely new attempt. */
-export const allLevels=[...new Map([...(legacyData as Level[]),...levels].map(l=>[`${l.id}@${l.version}`,l])).values()];
+export const allLevels=[...new Map([...(legacyData as Level[]),...(previousData as Level[]),...levels].map(l=>[`${l.id}@${l.version}`,l])).values()];
 export const levelByKey=(key:string)=>allLevels.find(l=>`${l.id}@${l.version}`===key);
 export function levelFor(s:Pick<Save,'current'|'attempts'>,index=s.current):Level{
  const latest=levels[index];return allLevels.filter(l=>l.id===latest.id&&s.attempts[`${l.id}@${l.version}`]).sort((a,b)=>b.version-a.version)[0]??latest;

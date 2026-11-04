@@ -3,7 +3,7 @@ import {levelButton} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
 import {fresh,levels,levelKey,moved,attempt,displaySlots,seededRestart,type Save} from '../../src/core/session';
 import {settleEconomy} from '../../src/core/economy';
-import {layout} from '../../src/game/geometry';import proof from '../../docs/audits/campaign-balance-47/optimal.json' with {type:'json'};
+import {layout} from '../../src/game/geometry';import proof from '../../docs/audits/campaign-54/optimal.json' with {type:'json'};
 const fake=`export class Rewarded{
  async pending(){const r=JSON.parse(localStorage.getItem('receipts14')||'[]');if(window.failRecovery14&&r.length){window.failRecovery14=false;const set=Storage.prototype.setItem;window.restoreWrite=()=>Storage.prototype.setItem=set;Storage.prototype.setItem=function(k,v){if(k.startsWith('water-sort-v1'))throw Error('full');return set.call(this,k,v)}}return r}
  async ack(token){window.ackState=JSON.parse(localStorage.getItem('water-sort-v1'));localStorage.setItem('receipts14',JSON.stringify((await this.pending()).filter(r=>r.token!==token)))}
@@ -44,5 +44,5 @@ test('three stars and the best move record survive replay and show in level sele
  await home48(page);await page.locator('#home-levels').click();await expect(levelButton(page,2)).toContainText('★★★');await expect(levelButton(page,2)).not.toContainText('ходов');await levelButton(page,2).click();await expect(page.locator('#moves')).toHaveText('Ходов: 0');expect((await saved(page)).best?.[levelKey(2)].history).toHaveLength(p.optimal);await page.reload();expect((await saved(page)).best?.[levelKey(2)].history).toHaveLength(p.optimal);
 });
 for(const [width,height]of [[320,480],[568,320],[390,844]])test(`locked maximum field fits ${width}x${height} without overlapping hit areas`,async({page})=>{
- await page.setViewportSize({width,height});await open(page,level(11));const b=(await page.locator('#board canvas').boundingBox())!,lock=(await page.locator('#extra-tube').boundingBox())!;expect(lock.width).toBeGreaterThanOrEqual(48);expect(lock.height).toBeGreaterThanOrEqual(48);expect(lock.x).toBeGreaterThanOrEqual(0);expect(lock.x>=b.x+b.width||lock.y>=b.y+b.height).toBe(true);await page.locator('#extra-tube').click();await expect(page.locator('#extra-tube')).toBeEnabled();expect(attempt(await saved(page)).board).toHaveLength(11);
+ await page.setViewportSize({width,height});await open(page,level(11));const b=(await page.locator('#board canvas').boundingBox())!,lock=(await page.locator('#extra-tube').boundingBox())!;expect(lock.width).toBeGreaterThanOrEqual(48);expect(lock.height).toBeGreaterThanOrEqual(48);expect(lock.x).toBeGreaterThanOrEqual(0);expect(lock.x>=b.x+b.width||lock.y>=b.y+b.height).toBe(true);await page.locator('#extra-tube').click();await expect(page.locator('#extra-tube')).toBeEnabled();expect(attempt(await saved(page)).board).toHaveLength(levels[11].initial.length+1);
 });

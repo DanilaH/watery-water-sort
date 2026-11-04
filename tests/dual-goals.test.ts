@@ -6,7 +6,7 @@ import {apply,reverse,moves,moveFor,validBoard,validGoal,won,sealedTube,type Goa
 import {solve} from '../src/core/solver';
 import {goalLayout} from '../src/game/geometry';
 import {stars} from '../src/core/ratings';
-import currentProof from '../docs/audits/campaign-balance-47/optimal.json';
+import currentProof from '../docs/audits/campaign-54/optimal.json';
 const proof=currentProof.filter(p=>p.level>=16&&p.level<22);
 
 test('two receivers have distinct colours and identities; each must fill in its own slot',()=>{

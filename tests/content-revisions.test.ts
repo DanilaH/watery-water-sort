@@ -1,14 +1,14 @@
 import {test,expect} from 'vitest';
 import legacy from '../src/core/levels-v1.json';
 import oldProof from '../docs/audits/campaign-39/optimal.json';
-import proof from '../docs/audits/campaign-balance-47/optimal.json';
+import proof from '../docs/audits/campaign-54/optimal.json';
 import {levels,allLevels,levelByKey,levelFor,activeKey,levelKey,fresh,attempt,replay,moved,undone,seededRestart,startLatest,grantExtra,validSave,knowledgeFor,goalFor,type Level} from '../src/core/session';
 import {settleEconomy} from '../src/core/economy';import {totalStars,earnedStars} from '../src/core/progress';
 import {SaveStore} from '../src/platform/storage';import {solveHint} from '../src/core/hintSolver';import {won} from '../src/core/rules';
-const changed=levels.map((l,i)=>l.version>1?i:-1).filter(i=>i>=0);
-test('only the twelve approved stages change; all original content identities remain replayable',()=>{
- expect(changed).toHaveLength(12);expect(allLevels).toHaveLength(72);
- levels.forEach((l,i)=>{expect(levelByKey(`${l.id}@1`)).toEqual(legacy[i]);if(l.version===1)expect(l).toEqual(legacy[i]);else expect(l.id).toBe(legacy[i].id);});
+const changed=levels.slice(0,60).map((l,i)=>l.version>1?i:-1).filter(i=>i>=0);
+test('the hardcore campaign adds forty stages; all original content identities remain replayable',()=>{
+ expect(levels).toHaveLength(100);expect(allLevels).toHaveLength(162);
+ levels.slice(0,60).forEach((l,i)=>{expect(levelByKey(`${l.id}@1`)).toEqual(legacy[i]);if(l.version===1)expect(l).toEqual(legacy[i]);else expect(l.id).toBe(legacy[i].id);});
 });
 test('every historical path still loads, resumes, restarts and earns its original stars, including hidden memory and buffers',()=>{
  for(const p of oldProof){const l=legacy[p.level]as Level,key=`${l.id}@1`;let s={...fresh(),current:p.level};s.attempts[key]=replay(l,p.path.slice(0,1),!!p.extra);
