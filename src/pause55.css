@@ -50,3 +50,5 @@ nav.boosters button.rescue-highlight{outline:2px solid #ffce70;outline-offset:2p
 @media(orientation:portrait) and (max-height:600px) and (max-width:340px){
  body.dense-board #app{--app-side:2px;padding-left:var(--app-left);padding-right:var(--app-right)}
 }
+
+body.with-banner #app{--app-left:max(var(--app-side),var(--safe-left),var(--banner-safe-left,0px));--app-right:max(var(--app-side),var(--safe-right),var(--banner-safe-right,0px));padding-bottom:max(var(--safe-bottom),var(--banner-safe-bottom,0px))}

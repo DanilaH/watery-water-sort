@@ -74,18 +74,28 @@ public class WaterAdsPlugin extends Plugin {
    int[] wp=new int[2],rp=new int[2];web.getLocationOnScreen(wp);root.getLocationOnScreen(rp);
    WindowInsetsCompat insets=ViewCompat.getRootWindowInsets(root);Insets safe=insets==null?Insets.NONE:insets.getInsets(WindowInsetsCompat.Type.systemBars()|WindowInsetsCompat.Type.displayCutout());
    int safeL=Math.max(0,safe.left-rp[0]),safeT=Math.max(0,safe.top-rp[1]),safeR=Math.max(0,root.getWidth()-(root.getRootView().getWidth()-safe.right-rp[0])),safeB=Math.max(0,root.getHeight()-(root.getRootView().getHeight()-safe.bottom-rp[1]));
+   // The WebView can extend behind system bars even when CSS reports zero safe-area insets.
+   // Send the overlap before rejecting a slot so the web layout can reserve a safe row.
+   JSObject reply=new JSObject();
+   double scale=web.getWidth()/vw;
+   if(Double.isFinite(scale)&&scale>0){
+    int webLeft=wp[0]-rp[0],webTop=wp[1]-rp[1];
+    reply.put("safeLeftCss",Math.ceil(Math.max(0,safeL-webLeft)/scale));
+    reply.put("safeRightCss",Math.ceil(Math.max(0,webLeft+web.getWidth()-root.getWidth()+safeR)/scale));
+    reply.put("safeBottomCss",Math.ceil(Math.max(0,webTop+web.getHeight()-root.getHeight()+safeB)/scale));
+   }
    BannerGeometry.Mapped mapped=BannerGeometry.map(x,y,w,h,vw,vh,wp[0]-rp[0],wp[1]-rp[1],web.getWidth(),web.getHeight(),root.getWidth(),root.getHeight(),safeL,safeT,safeR,safeB);
-   if(mapped==null){geometryValid=false;if(container!=null)container.setVisibility(View.INVISIBLE);call.resolve();return;}
+   if(mapped==null){geometryValid=false;if(container!=null)container.setVisibility(View.INVISIBLE);reply.put("status","unsafe");call.resolve(reply);return;}
    final int width=mapped.width;float density=getContext().getResources().getDisplayMetrics().density;int dp=(int)Math.floor(width/density);if(dp<1){call.resolve();return;}
    BannerAdSize size=BannerAdSize.sticky(getContext(),dp);int height=size.getHeightInPixels(getContext());
-   JSObject reply=new JSObject();reply.put("heightCss",mapped.requiredCss(height));
+   reply.put("heightCss",mapped.requiredCss(height));
    if(!wanted){call.resolve(reply);return;}
    if(mapped.height<height){if(container!=null)container.setVisibility(View.INVISIBLE);reply.put("status","reserve");call.resolve(reply);return;}
    int offset=mapped.centeredTop(height);
    if(banner==null||bannerWidth!=width||bannerFailedAt>0&&System.currentTimeMillis()-bannerFailedAt>=30000){destroyBanner();bannerFailedAt=0;bannerWidth=width;container=new FrameLayout(getActivity());container.setClipChildren(true);root.addView(container);banner=new BannerAdView(getActivity());container.addView(banner,new FrameLayout.LayoutParams(width,height));banner.setAdSize(size);final int g=++bannerGeneration;
     banner.setBannerAdEventListener(new BannerAdEventListener(){
      @Override public void onAdLoaded(){if(destroyed||g!=bannerGeneration)return;WaterAnalyticsPlugin.ad("banner","loaded");visibility.run();}
-     @Override public void onAdFailedToLoad(@NonNull AdRequestError error){if(g==bannerGeneration){bannerFailedAt=System.currentTimeMillis();WaterAnalyticsPlugin.ad("banner","load_error");}}
+     @Override public void onAdFailedToLoad(@NonNull AdRequestError error){if(g==bannerGeneration){bannerFailedAt=System.currentTimeMillis();WaterAnalyticsPlugin.ad("banner","load_error");handler.postDelayed(()->{if(!destroyed&&g==bannerGeneration)notifyListeners("ready",new JSObject());},30100);}}
      @Override public void onAdClicked(){}
      public void onLeftApplication(){}
      public void onReturnedToApplication(){}

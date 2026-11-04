@@ -20,3 +20,13 @@ test('a late native banner measurement does not shrink the reserved space or mov
  await page.route(/\/node_modules\/\.vite\/deps\/@capacitor_core\.js/,r=>r.fulfill({contentType:'application/javascript',body:`export const Capacitor={isNativePlatform:()=>true};export function registerPlugin(name){return new Proxy({},{get(_,method){return async (...args)=>{if(method==='addListener')return {remove:async()=>{}};if(method==='pending')return {receipts:[]};if(name==='WaterAds'&&method==='banner'){if(!window.bannerReleased53)await new Promise(resolve=>window.releaseBanner53=()=>{window.bannerReleased53=true;resolve()});return {heightCss:50,status:'placed'}}return {status:'unavailable'}}}})}`}));
  const s={...fresh(),current:2};await seed(page,s);await page.goto('/');await readyMenu(page);await page.locator('#home-play').click();await expect(page.locator('#home')).toBeHidden();await expect(page.locator('body')).toHaveClass(/with-banner/);const before=await page.locator('#board canvas').boundingBox();await expect.poll(()=>page.evaluate(()=>typeof(window as any).releaseBanner53)).toBe('function');await page.evaluate(()=>(window as any).releaseBanner53());await page.waitForTimeout(180);expect(await page.locator('#board canvas').boundingBox()).toEqual(before);expect(await page.locator('#banner-slot').evaluate(e=>e.getBoundingClientRect().height)).toBe(60);
 });
+
+test('native system bar overlap moves the banner row into the safe area and retries placement',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.route(/\/node_modules\/\.vite\/deps\/@capacitor_core\.js/,r=>r.fulfill({contentType:'application/javascript',body:`export const Capacitor={isNativePlatform:()=>true};export function registerPlugin(name){return new Proxy({},{get(_,method){return async (args)=>{if(method==='addListener')return {remove:async()=>{}};if(method==='pending')return {receipts:[]};if(name==='WaterAds'&&method==='banner'&&args.visible){const fits=args.slot.y+args.slot.height<=args.viewport.height-24;(window.bannerFitHistory??=[]).push(fits);return {safeBottomCss:24,status:fits?'placed':'unsafe',heightCss:fits?60:undefined};}return {status:'unavailable'}}}})}`}));
+ await seed(page,{...fresh(),current:2});await page.goto('/');await readyMenu(page);await page.locator('#home-play').click();
+ await expect.poll(()=>page.evaluate(()=>(window as any).bannerFitHistory?.includes(true))).toBe(true);
+ expect(await page.evaluate(()=>(window as any).bannerFitHistory[0])).toBe(false);
+ const slot=(await page.locator('#banner-slot').boundingBox())!;
+ expect(slot.y+slot.height).toBeLessThanOrEqual(820);
+});
