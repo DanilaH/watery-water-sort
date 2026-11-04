@@ -63,9 +63,9 @@ test('proven dead end with legal moves offers help, then hints work with an extr
  const corpus=JSON.parse(gunzipSync(readFileSync(new URL('../../docs/audits/product-08/exploratory-corpus.json.gz',import.meta.url))).toString());const item=corpus.find((x:any)=>x.status==='UNSOLVABLE'&&moves(x.board).length>0),s=fresh();s.current=levels.findIndex((l:any)=>l.id===item.level);s.revision=item.history.length;s.attempts[levelKey(s.current)]={board:item.board,history:item.history,extra:false};
  await open(page,s);await expect(page.locator('#rescue')).toBeHidden();await hint48(page);await expect(page.getByRole('heading',{name:'Решения нет',exact:true})).toBeVisible();await page.getByRole('button',{name:'Закрыть',exact:true}).click();await pause48(page);await expect(page.locator('#rescue')).toBeVisible();await help48(page);await unlockReward(page);await hint48(page);await expect(page.locator('#status')).toContainText('Перелей');await expect(page.locator('#rescue')).toBeHidden();
 });
-test('help supports undo and restart confirmation',async({page})=>{
+test('help supports undo and direct restart when the earlier position is still dead',async({page})=>{
  await open(page,dead);await help48(page);await page.getByRole('button',{name:'Отменить ход',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();await expect(page.locator('#hint')).toBeEnabled();expect(attempt(await saved(page)).history).toHaveLength(6);
- await help(page);await page.locator('dialog').getByRole('button',{name:'Заново',exact:true}).click();await expect(page.getByRole('heading',{name:'Начать заново?'})).toBeVisible();await page.getByRole('button',{name:'Продолжить игру',exact:true}).click();expect(attempt(await saved(page)).history).toHaveLength(6);
+ await expect(page.locator('#status')).toContainText('Решения нет');await help(page);await page.locator('dialog').getByRole('button',{name:'Заново',exact:true}).click();await expect(page.locator('dialog')).toBeHidden();expect(attempt(await saved(page)).history).toHaveLength(0);
 });
 for(const count of [10,11])test(`landscape gives ${count} tubes more height with exclusive 48px targets`,async({page})=>{
  const s=fresh();s.current=11;if(count===11){s.attempts[levelKey(11)]={board:[...levels[11].initial,[]],history:[],extra:true};}await page.setViewportSize({width:568,height:320});await open(page,s);
