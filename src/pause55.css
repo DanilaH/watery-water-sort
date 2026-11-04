@@ -4,7 +4,9 @@
  --safe-bottom:max(env(safe-area-inset-bottom,0px),var(--safe-area-inset-bottom,0px));
  --safe-left:max(env(safe-area-inset-left,0px),var(--safe-area-inset-left,0px));
 }
-body #app{padding-top:max(6px,var(--safe-top));padding-right:max(12px,var(--safe-right));padding-bottom:var(--safe-bottom);padding-left:max(12px,var(--safe-left))}
+body #app{--app-side:12px;--app-left:max(var(--app-side),var(--safe-left));--app-right:max(var(--app-side),var(--safe-right));padding-top:max(6px,var(--safe-top));padding-right:var(--app-right);padding-bottom:var(--safe-bottom);padding-left:var(--app-left)}
+/* Balance asymmetric cutouts without narrowing the playing field. */
+.game-header{margin-left:max(0px,calc(var(--app-right) - var(--app-left)));margin-right:max(0px,calc(var(--app-left) - var(--app-right)))}
 body #home{padding:max(16px,var(--safe-top)) max(16px,var(--safe-right)) max(16px,var(--safe-bottom)) max(16px,var(--safe-left))}
 body dialog{
  --dialog-space:calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px);
@@ -50,5 +52,5 @@ nav.boosters button.rescue-highlight{outline:2px solid #ffce70;outline-offset:2p
 @keyframes rescue-nudge55{25%{translate:0 -3px}70%{translate:0 1px}}
 @media(prefers-reduced-motion:reduce){nav.boosters button.rescue-highlight{animation:none}}
 @media(orientation:portrait) and (max-height:600px) and (max-width:340px){
- body.dense-board #app{padding-left:max(2px,var(--safe-left));padding-right:max(2px,var(--safe-right))}
+ body.dense-board #app{--app-side:2px;padding-left:var(--app-left);padding-right:var(--app-right)}
 }
