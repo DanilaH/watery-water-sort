@@ -234,7 +234,7 @@ function enterPanel(origin:DOMRect|undefined,duration:number,pack=false){
 }
 function modal(title:string,description:string,buttons:{label:string;action:()=>void;primary?:boolean}[],back?:()=>void){
  panelBack=back;entryRequest=undefined;pendingNext=undefined;
- block('dialog',true);parkControls();content.replaceChildren();dialog.classList.remove('compact-pause','pack-dialog');
+ block('dialog',true);parkControls();content.replaceChildren();dialog.classList.remove('compact-pause','pack-dialog','rescue-dialog');
  const header=document.createElement('header');header.className='dialog-header';
  const h=document.createElement('h2');h.textContent=title;h.tabIndex=-1;header.append(h);
  const x=document.createElement('button');x.className='dialog-close gel-button';x.textContent=back?'‹':'×';x.setAttribute('aria-label',back?'Назад':'Закрыть');x.onclick=dismissPanel;x.hidden=locked;header.append(x);
@@ -443,7 +443,7 @@ function help(proven=deadRevision===state.revision){
  }
  if(playerMoves(a)>0)buttons.push({label:'Отменить ход',primary:!recommended,action:()=>{activateGame();undo();}});
  buttons.push({label:'Заново',action:askRestart});
- modal(proven?'Решения нет':'Если застрял',proven?'Из этой раскладки цвета уже не собрать.':'Выбери, как продолжить.',buttons);
+ modal(proven?'Решения нет':'Если застрял',proven?'Из этой раскладки цвета уже не собрать.':'Выбери, как продолжить.',buttons);dialog.classList.add('rescue-dialog');
  message(guidance());
 }
 $('rescue').onclick=()=>help();

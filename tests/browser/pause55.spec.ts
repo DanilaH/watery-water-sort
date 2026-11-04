@@ -19,6 +19,9 @@ test('a resumed cyclic dead board shows help before any pour and restarts direct
  await expect(page.locator('.boosters .rescue-highlight')).toHaveCount(1);
  expect((await page.locator('#notice').boundingBox())!.y+(await page.locator('#notice').boundingBox())!.height).toBeLessThan((await page.locator('#shuffle').boundingBox())!.y);
  await expect(page.locator('#shuffle-count')).toHaveText(String(s.wallet!.shuffles));
+ await page.locator('#hint').click();
+ await expect(page.locator('dialog .primary')).toHaveText(`Перемешать · осталось ${s.wallet!.shuffles}`);
+ await page.getByRole('button',{name:'Закрыть',exact:true}).click();
  await page.locator('#notice-restart').click();
  await expect(page.locator('dialog')).toBeHidden();
  await expect(page.locator('#moves')).toHaveText('Ходов: 0');

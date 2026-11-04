@@ -57,7 +57,7 @@ test('earned extra tube survives restart, help and level switching',async({page}
 test('failed extra-tube save keeps the old board and offers retry',async({page})=>{
  await open(page,dead);await help48(page);const original=await saved(page);
  await page.evaluate(()=>{const set=Storage.prototype.setItem;(window as any).restoreWrite=()=>Storage.prototype.setItem=set;Storage.prototype.setItem=function(k,v){if(k.startsWith('water-sort-v1'))throw Error('full');set.call(this,k,v);};});
- await unlockReward(page);await expect(page.getByRole('alert')).toContainText('Изменение не принято');expect(await saved(page)).toEqual(original);await expect(page.locator('dialog')).toBeVisible();await page.evaluate(()=>(window as any).restoreWrite());await page.locator('dialog').getByRole('button',{name:'Добавить колбу',exact:true}).click();expect(attempt(await saved(page)).extra).toBe(true);
+ await unlockReward(page);await expect(page.getByRole('alert')).toContainText('Изменение не принято');expect(await saved(page)).toEqual(original);await expect(page.locator('dialog')).toBeVisible();await page.evaluate(()=>(window as any).restoreWrite());await unlockReward(page);expect(attempt(await saved(page)).extra).toBe(true);
 });
 test('proven dead end with legal moves offers help, then hints work with an extra tube',async({page})=>{
  const corpus=JSON.parse(gunzipSync(readFileSync(new URL('../../docs/audits/product-08/exploratory-corpus.json.gz',import.meta.url))).toString());const item=corpus.find((x:any)=>x.status==='UNSOLVABLE'&&moves(x.board).length>0),s=fresh();s.current=levels.findIndex((l:any)=>l.id===item.level);s.revision=item.history.length;s.attempts[levelKey(s.current)]={board:item.board,history:item.history,extra:false};
