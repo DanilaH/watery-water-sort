@@ -4,11 +4,12 @@ import {campaign,stageNumber} from '../../src/core/campaign';
 import {levelButton} from './navigation';
 import {toggleSymbols} from './navigation';
 import {test,expect,type Page} from '@playwright/test';
-import {fresh,levels,moved,attempt,goalFor,displaySlots,levelKey} from '../../src/core/session';
+import previous from '../../src/core/levels-v47.json' with {type:'json'};
+import {fresh,levels,moved,attempt,goalFor,displaySlots,levelKey,replay,type Level} from '../../src/core/session';
 import {goalLayout} from '../../src/game/geometry';
 import {moveFor} from '../../src/core/rules';
 import {mockReward} from './navigation';
-async function seed(page:Page,index=12,history=0){let s={...fresh(),current:index,completed:campaign.slice(0,stageNumber(index)-1).map(i=>levels[i].id)};for(const m of levels[index].witness.slice(0,history))s=moved(s,m);s.settings.sound=false;s.attempts[levelKey(index)]??=attempt(s);
+async function seed(page:Page,index=12,history=0,archived=false){let s={...fresh(),current:index,completed:campaign.slice(0,stageNumber(index)-1).map(i=>levels[i].id)};const l=archived?previous[index] as Level:levels[index],key=l.id+'@'+l.version;s.attempts[key]=replay(l,[],false);for(const m of l.witness.slice(0,history))s=moved(s,m);s.settings.sound=false;
  await page.addInitScript(s=>{if(sessionStorage.giant17)return;sessionStorage.giant17='1';localStorage.setItem('water-sort-v1',JSON.stringify(s));},s);await page.goto('/');await page.locator('#home-play').click();await page.waitForTimeout(280);return s;}
 async function saved(page:Page){return page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
 async function tap(page:Page,index:number){const s=await saved(page),b=(await page.locator('#board canvas').boundingBox())!,ps=goalLayout(b.width,b.height,displaySlots(s),0),p=ps[index];await page.mouse.click(b.x+p.x,b.y+p.y+p.h/2);}
@@ -64,6 +65,6 @@ test('queued deliveries fill only their accepted portions without a premature co
  expect(attempt(await saved(page)).board[0]).toHaveLength(6);expect(await page.evaluate(()=>(window as any).goalFinishes)).toEqual([]);await expect(page.locator('#continue')).toBeHidden();
 });
 test('symbol mode identifies an empty goal by the same mark as its required colour',async({page})=>{
- await seed(page,13);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).symbolGoalScene=this;return fn.call(this);};});
+ await seed(page,13,0,true);await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).symbolGoalScene=this;return fn.call(this);};});
  await toggleSymbols(page);await expect.poll(()=>page.evaluate(()=>{const s=(window as any).symbolGoalScene;if(!s)return false;return s.activeLabels.some((l:any)=>l.text==='◆'&&Math.abs(l.x-s.positions()[0].x)<1);})).toBe(true);
 });

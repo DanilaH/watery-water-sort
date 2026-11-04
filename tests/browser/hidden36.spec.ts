@@ -1,3 +1,4 @@
+import previous from '../../src/core/levels-v47.json' with {type:'json'};
 import {hint48,home48,restart48} from './navigation';
 import legacy from '../../src/core/levels-v1.json' with {type:'json'};
 import {goalStart,playerMoves} from '../../src/core/goalStart';
@@ -9,7 +10,7 @@ import {hasUnknown} from '../../src/core/knowledge';
 import {mockReward,toggleSymbols,openLevels} from './navigation';
 import {advanceFrames} from './controlled-frames';
 async function saved(page:Page){return page.evaluate(()=>JSON.parse(localStorage.getItem('water-sort-v1')!));}
-async function open(page:Page,index=34,n=0,old=false){let s={...fresh(),current:index};s.settings.sound=false;s.completed=levels.slice(0,index).map(l=>l.id);const l=old?legacy[index]as Level:levels[index];if(old)s.attempts[`${l.id}@1`]=replay(l,[],false);for(const m of l.witness.slice(0,n))s=moved(s,m);
+async function open(page:Page,index=34,n=0,old:boolean|'previous'=false){let s={...fresh(),current:index};s.settings.sound=false;s.completed=levels.slice(0,index).map(l=>l.id);const l=old==='previous'?previous[index] as Level:old?legacy[index] as Level:levels[index];if(old)s.attempts[`${l.id}@${l.version}`]=replay(l,[],false);for(const m of l.witness.slice(0,n))s=moved(s,m);
  await page.addInitScript(s=>{if(sessionStorage.hidden36)return;sessionStorage.hidden36='1';localStorage.setItem('water-sort-v1',JSON.stringify(s));},s);await page.goto('/');
  await page.evaluate(async()=>{const p='/src/game/WaterScene.ts',m=await import(p),fn=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).hiddenScene=this;return fn.call(this);};});
  await page.locator('#home-play').click();await expect.poll(()=>page.evaluate(()=>!!(window as any).hiddenScene)).toBe(true);await page.waitForTimeout(280);return s;
@@ -53,6 +54,6 @@ test('reward preserves knowledge and restarting keeps both reward and discovery'
 });
 
 test('reduced motion reveals at receive; leaving early clears pending reveal effects',async({page})=>{
- await page.clock.install();await page.emulateMedia({reducedMotion:'reduce'});await open(page,34,3);await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));const m=levels[34].witness[3];await tap(page,m.from);await tap(page,m.to);await advanceFrames(page,'hiddenScene',1300);expect(await page.evaluate(()=>{const s=(window as any).hiddenScene;return {reveals:s.reveals.size,waves:s.liquid.size};})).toEqual({reveals:0,waves:0});await page.clock.resume();
- await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();const next=levels[34].witness[3];await tap(page,next.from);await tap(page,next.to);await home48(page);expect(await page.evaluate(()=>(window as any).hiddenScene.reveals.size)).toBe(0);await page.locator('#home-play').click();expect(attempt(await saved(page)).known).toContain(1);
+ await page.clock.install();await page.emulateMedia({reducedMotion:'reduce'});await open(page,34,3,'previous');await page.clock.pauseAt(new Date(await page.evaluate(()=>Date.now())+1000));const m=previous[34].witness[3];await tap(page,m.from);await tap(page,m.to);await advanceFrames(page,'hiddenScene',1300);expect(await page.evaluate(()=>{const s=(window as any).hiddenScene;return {reveals:s.reveals.size,waves:s.liquid.size};})).toEqual({reveals:0,waves:0});await page.clock.resume();
+ await page.locator('#undo').click();await expect(page.locator('#hint')).toBeEnabled();const next=previous[34].witness[3];await tap(page,next.from);await tap(page,next.to);await home48(page);expect(await page.evaluate(()=>(window as any).hiddenScene.reveals.size)).toBe(0);await page.locator('#home-play').click();expect(attempt(await saved(page)).known).toContain(1);
 });

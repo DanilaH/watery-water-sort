@@ -1,3 +1,4 @@
+import previous from '../../src/core/levels-v47.json' with {type:'json'};
 import {startGame,reloadGame,openLevels,resumeGame} from './navigation';
 import {test,expect,type Page} from '@playwright/test';import {readFileSync} from 'node:fs';import {layout} from '../../src/game/geometry';
 const levels=JSON.parse(readFileSync(new URL('../../src/core/levels.json',import.meta.url),'utf8'));
@@ -31,7 +32,7 @@ for(const lastLevel of [false,true])test(`victory target fits small viewports ($
 });
 
 test('cached vessels reproduce the same commands and symbols as a fresh render',async({page})=>{
- const s={...fresh(),current:11,completed:levels.slice(0,11).map((l:any)=>l.id)};await seed(page,s);await startGame(page);await points(page);
+ const l=previous[11],s={...fresh(),current:11,completed:levels.slice(0,11).map((l:any)=>l.id),attempts:{[l.id+'@'+l.version]:{board:l.initial,history:[],extra:false}}};await seed(page,s);await startGame(page);await points(page);
  await page.evaluate(async()=>{const path='/src/game/WaterScene.ts',m=await import(path),original=m.WaterScene.prototype.positions;m.WaterScene.prototype.positions=function(){(window as any).cacheScene=this;m.WaterScene.prototype.positions=original;return original.call(this);};});
  const b=(await page.locator('#board canvas').boundingBox())!;await page.mouse.click(b.x+1,b.y+1);await page.waitForTimeout(800);
  for(const symbols of [false,true])for(const light of [false,true]){
