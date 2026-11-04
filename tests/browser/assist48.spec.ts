@@ -26,8 +26,8 @@ for(const [w,h]of [[320,480],[390,844],[568,320]])test(`three ordinary tubes mer
 });
 test('real Worker shuffle spends one stock only after a proved change; Undo restores the board without refunding the stock',async({page})=>{
  await open(page,seededRestart({...fresh(),current:34}));const before=await saved(page);await page.locator('#shuffle').click();
- await expect.poll(async()=>(await saved(page)).wallet!.hints).toBe(before.wallet!.hints-1);await expect(page.locator('dialog')).toBeHidden();const n=await saved(page);expect(attempt(n).shuffles).toHaveLength(1);expect(attempt(n).board.flat().sort()).toEqual(attempt(before).board.flat().sort());expect(attempt(n).board).not.toEqual(attempt(before).board);
- await expect(page.locator('#undo')).toBeEnabled();await page.locator('#undo').click();expect(attempt(await saved(page)).board).toEqual(attempt(before).board);expect((await saved(page)).wallet!.hints).toBe(before.wallet!.hints-1);
+ await expect.poll(async()=>(await saved(page)).wallet!.shuffles).toBe(before.wallet!.shuffles!-1);await expect(page.locator('dialog')).toBeHidden();const n=await saved(page);expect(attempt(n).shuffles).toHaveLength(1);expect(attempt(n).board.flat().sort()).toEqual(attempt(before).board.flat().sort());expect(attempt(n).board).not.toEqual(attempt(before).board);
+ await expect(page.locator('#undo')).toBeEnabled();await page.locator('#undo').click();expect(attempt(await saved(page)).board).toEqual(attempt(before).board);expect((await saved(page)).wallet!.shuffles).toBe(before.wallet!.shuffles!-1);
  await page.reload();await page.locator('#home-play').click();expect(attempt(await saved(page)).board).toEqual(attempt(before).board);
 });
 test('no proved shuffle means no stock or board change',async({page})=>{

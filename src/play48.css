@@ -30,10 +30,8 @@ body.finished #feedback{height:114px!important;min-height:114px!important;max-he
 
 .boost-count.is-price{display:flex;align-items:center;justify-content:center;gap:3px;min-width:68px;width:max-content;left:50%;right:auto;transform:translateX(-50%);bottom:-7px;height:27px;padding:3px 5px;background:linear-gradient(#fff2b3,#ffcc51);border-color:#fff3c4;border-radius:12px;color:#593b10;font-size:13px;line-height:17px;text-shadow:none}.boost-count.is-price .coin-icon{width:14px;height:14px;border-width:1px;box-shadow:inset 0 0 0 1px #d58b2699;flex:none}.boost-count.is-price .coin-icon:after{inset:3px 4px}.boost-count.is-price small{font-size:10px;font-weight:700}
 
-.boost-count[hidden],nav.boosters #hint-count[hidden]{display:none!important}
+.boost-count[hidden]{display:none!important}
 
-/* The advice chip shows cost, not a second inventory. */
-nav.boosters #hint-count{top:auto;bottom:-4px;right:-4px;min-width:22px;height:21px;padding:0 4px;background:#14233d;color:#f5dcaa;border-color:#6e83a6;box-shadow:0 2px 3px #07132688}
 @media(max-width:360px) and (min-height:431px){
  nav.boosters button,nav.boosters #extra-tube{width:56px!important;height:56px!important;min-height:56px;padding:10px}
  nav.boosters button svg{width:28px;height:28px}
@@ -44,7 +42,6 @@ nav.boosters #hint-count{top:auto;bottom:-4px;right:-4px;min-width:22px;height:2
 
 body .levels .level-stars{display:flex;flex-wrap:nowrap;gap:1px}
 body .levels .level-stars .map-star{flex:0 1 17px;min-width:0;margin:0}
-nav.boosters #hint-count.needs-pack{min-width:0;width:max-content;white-space:nowrap;background:#ffdf84;color:#321e08;border-color:#7e5419}
 #next-star-goal{margin:3px 0 0;font-size:11px;line-height:14px;color:var(--muted)}
 
 /* A compact exchange: coins on the left, the pack landing on the right. */

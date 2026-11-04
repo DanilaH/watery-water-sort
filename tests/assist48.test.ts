@@ -20,7 +20,7 @@ test('all cached original routes still win with three tubes; caps and forged cou
  const s=grantExtra({...fresh(),current:2},`${levels[2].id}@${levels[2].version}`,3);for(const extras of [-1,0,1,4,2.5]){const bad=structuredClone(s);attempt(bad).extras=extras;expect(validSave(bad)).toBe(false);}
 });
 test('old hint stocks retain their full count; purchases, spends and failed storage are atomic',()=>{
- const s=fresh();s.wallet!.hints=17;delete s.wallet!.tubes;const n=settleEconomy(s);expect(n.wallet!.hints).toBe(17);expect(n.wallet!.tubes).toBe(3);expect(settleEconomy(n)).toEqual(n);
+ const s=fresh();s.wallet!.hints=17;delete s.wallet!.tubes;delete s.wallet!.shuffles;const n=settleEconomy(s);expect(n.wallet!.hints).toBe(17);expect(n.wallet!.shuffles).toBe(17);expect(n.wallet!.tubes).toBe(3);expect(settleEconomy(n)).toEqual(n);
  n.wallet!.coins=60;const bought=purchaseBoost(n,'tube')!;expect(bought.wallet!.coins).toBe(0);expect(bought.wallet!.tubes).toBe(6);expect(spendBoost(bought,'tube')!.wallet!.tubes).toBe(5);
  const raw=JSON.stringify(n),store=new SaveStore({getItem:()=>raw,setItem:()=>{throw Error('Full');}});expect(()=>store.write(bought)).toThrow();expect(store.load().state.wallet).toEqual(n.wallet);
  expect(parseTubeTarget(tubeTarget('water-003@2',3))).toEqual({key:'water-003@2',number:3});expect(parseTubeTarget('water-003@1')).toEqual({key:'water-003@1',number:1});expect(parseTubeTarget('tube:water-003@2:4')).toBeUndefined();
