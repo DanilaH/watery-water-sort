@@ -5,15 +5,15 @@ from pathlib import Path
 OUT=Path('device-smoke');OUT.mkdir(exist_ok=True)
 PKG='com.danilah.waterywatersort'
 def adb(*args):
-    return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
+    return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT,timeout=30)
 def ui():
-    for attempt in range(4):
+    for attempt in range(2):
         try:
             adb('shell','uiautomator','dump','/sdcard/smoke.xml')
             return ET.fromstring(adb('shell','cat','/sdcard/smoke.xml'))
         except (subprocess.CalledProcessError, ET.ParseError) as error:
             print('Accessibility tree not ready:', getattr(error, 'output', str(error)), flush=True)
-            if attempt == 3:
+            if attempt == 1:
                 raise
             time.sleep(2)
 def click(label):
@@ -33,7 +33,7 @@ def shot(name):
     time.sleep(2)
     with (OUT/(name+'.png')).open('wb') as f:
         subprocess.run(['adb','exec-out','screencap','-p'],stdout=f,check=True)
-    (OUT/(name+'.xml')).write_text(ET.tostring(ui(),encoding='unicode'))
+    print('Captured: '+name, flush=True)
 def expect(label):
     tree=ui()
     assert any(label in (n.get('text','')+' '+n.get('content-desc','')) for n in tree.iter('node')),label
@@ -43,7 +43,8 @@ adb('logcat','-c')
 adb('shell','am','start','-W','-n',PKG+'/.MainActivity')
 time.sleep(4)
 shot('01-home')
-click('Играть')
+adb('shell','input','tap','540','1670')
+time.sleep(3)
 expect('Уровень 1')
 shot('02-level-1')
 # Real touchscreen input unlocks the audio context and runs the native haptic path.
@@ -79,8 +80,12 @@ expect('Уровень 2')
 shot('08-returned')
 adb('shell','am','force-stop',PKG)
 adb('shell','am','start','-W','-n',PKG+'/.MainActivity')
+time.sleep(6)
+# The animated home screen can keep UiAutomator's idle detector busy.
+# Tap its known primary-button center on this fixed Pixel 6 profile, then
+# assert the restored stage through the actual accessibility tree.
+adb('shell','input','tap','540','1670')
 time.sleep(3)
-click('Продолжить')
 expect('Уровень 2')
 shot('09-restored')
 crashes=adb('logcat','-d','-s','AndroidRuntime:E')
