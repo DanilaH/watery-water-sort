@@ -10,7 +10,7 @@ permissions:
 jobs:
   device:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -32,7 +32,7 @@ jobs:
           arch: x86_64
           profile: pixel_6
           disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -feature -Vulkan -no-snapshot -noaudio -no-boot-anim -camera-back none
           script: |
             adb install -r optimized/android/app/build/outputs/apk/release/app-release.apk
             python3 tools/release-device-smoke.py || { adb logcat -d -s AndroidRuntime:E > device-smoke/crashes.txt; exit 1; }
