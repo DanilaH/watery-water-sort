@@ -66,6 +66,7 @@ android {
             if (productionSigning) signingConfig signingConfigs.production
             minifyEnabled optimizedRelease
             shrinkResources optimizedRelease
+            testProguardFiles 'test-proguard-rules.pro'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

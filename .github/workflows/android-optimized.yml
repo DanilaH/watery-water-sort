@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    # Rebuild the signed package when the release pipeline changes.
+    # Rebuild and exercise the signed optimized package when this pipeline changes.
     paths: ['.github/workflows/android-optimized.yml']
 permissions:
   contents: read
