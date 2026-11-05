@@ -37,11 +37,26 @@ public class ReleaseSmokeInstrumentation extends android.app.Instrumentation {
         CountDownLatch done = new CountDownLatch(1);
         AtomicReference<String> result = new AtomicReference<>();
         runOnMainSync(() -> {
-            WebView web = activity.getBridge().getWebView();
+            WebView web = webView(activity.getWindow().getDecorView());
+            assertNotNull("Game WebView not found", web);
             web.evaluateJavascript(expression, value -> { result.set(value); done.countDown(); });
         });
         assertTrue("WebView did not answer", done.await(10, TimeUnit.SECONDS));
         return result.get();
+    }
+
+    // Find the real Android view without depending on Capacitor methods that
+    // R8 is allowed to inline or merge in the shipped APK.
+    private WebView webView(android.view.View view) {
+        if (view instanceof WebView) return (WebView) view;
+        if (view instanceof android.view.ViewGroup) {
+            android.view.ViewGroup group = (android.view.ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                WebView found = webView(group.getChildAt(i));
+                if (found != null) return found;
+            }
+        }
+        return null;
     }
 
     private void waitFor(MainActivity activity, String expression) throws Exception {
