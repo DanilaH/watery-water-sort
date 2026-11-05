@@ -7,8 +7,15 @@ PKG='com.danilah.waterywatersort'
 def adb(*args):
     return subprocess.check_output(['adb',*args],text=True,stderr=subprocess.STDOUT)
 def ui():
-    adb('shell','uiautomator','dump','/sdcard/smoke.xml')
-    return ET.fromstring(adb('shell','cat','/sdcard/smoke.xml'))
+    for attempt in range(4):
+        try:
+            adb('shell','uiautomator','dump','/sdcard/smoke.xml')
+            return ET.fromstring(adb('shell','cat','/sdcard/smoke.xml'))
+        except (subprocess.CalledProcessError, ET.ParseError) as error:
+            print('Accessibility tree not ready:', getattr(error, 'output', str(error)), flush=True)
+            if attempt == 3:
+                raise
+            time.sleep(2)
 def click(label):
     deadline=time.monotonic()+25
     while time.monotonic()<deadline:
