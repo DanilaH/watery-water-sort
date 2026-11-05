@@ -6,6 +6,8 @@ def releasePassword = System.getenv('ANDROID_KEYSTORE_PASSWORD') ?: ''
 def releaseAlias = System.getenv('ANDROID_KEY_ALIAS') ?: ''
 def releaseKeyPassword = System.getenv('ANDROID_KEY_PASSWORD') ?: ''
 def productionSigning = releaseStore && releasePassword && releaseAlias && releaseKeyPassword
+// Keep the control release unchanged while the smaller build is validated.
+def optimizedRelease = project.findProperty('optimizeRelease') == 'true'
 def rewardedUnit = System.getenv('YANDEX_REWARDED_AD_UNIT_ID') ?: ''
 def bannerUnit = System.getenv('YANDEX_BANNER_AD_UNIT_ID') ?: ''
 def interstitialUnit = System.getenv('YANDEX_INTERSTITIAL_AD_UNIT_ID') ?: ''
@@ -13,6 +15,7 @@ for (unit in [bannerUnit, interstitialUnit]) if (unit && !unit.matches('[A-Za-z0
 if (rewardedUnit && !rewardedUnit.matches('[A-Za-z0-9_-]+')) throw new GradleException('Invalid rewarded ad unit id')
 
 android {
+    if (optimizedRelease) testBuildType "release"
     namespace = "com.danilah.waterywatersort"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
@@ -61,8 +64,9 @@ android {
         }
         release {
             if (productionSigning) signingConfig signingConfigs.production
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled optimizedRelease
+            shrinkResources optimizedRelease
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

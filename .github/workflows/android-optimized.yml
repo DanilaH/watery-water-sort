@@ -1,0 +1,91 @@
+name: Android optimized release validation
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    # Rebuild the signed package when the release pipeline changes.
+    paths: ['.github/workflows/android-optimized.yml']
+permissions:
+  contents: read
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: npm ci
+      - run: npm test
+      - run: npm run android:sync
+      - name: Build signed release APK
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          APPMETRICA_API_KEY: ${{ secrets.APPMETRICA_API_KEY }}
+          YANDEX_BANNER_AD_UNIT_ID: ${{ secrets.YANDEX_BANNER_AD_UNIT_ID }}
+          YANDEX_INTERSTITIAL_AD_UNIT_ID: ${{ secrets.YANDEX_INTERSTITIAL_AD_UNIT_ID }}
+          YANDEX_REWARDED_AD_UNIT_ID: ${{ secrets.YANDEX_REWARDED_AD_UNIT_ID }}
+        run: |
+          set -euo pipefail
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD APPMETRICA_API_KEY YANDEX_BANNER_AD_UNIT_ID YANDEX_INTERSTITIAL_AD_UNIT_ID YANDEX_REWARDED_AD_UNIT_ID; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing GitHub Actions secret: $name"
+              exit 1
+            fi
+          done
+          umask 077
+          export ANDROID_KEYSTORE_PATH="$(mktemp "$RUNNER_TEMP/perelevy.XXXXXX.p12")"
+          trap 'rm -f "$ANDROID_KEYSTORE_PATH"' EXIT
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+          unset ANDROID_KEYSTORE_BASE64
+          chmod +x gradlew
+          ./gradlew :app:testReleaseUnitTest :app:assembleRelease :app:assembleReleaseAndroidTest -PoptimizeRelease=true -Pandroid.r8.optimizedResourceShrinking=true --no-daemon
+          apk=app/build/outputs/apk/release/app-release.apk
+          apksigner="$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -n 1)"
+          test -x "$apksigner"
+          "$apksigner" verify --print-certs "$apk"
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Exercise the optimized release on Android 15
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            adb install -r android/app/build/outputs/apk/release/app-release.apk
+            adb install -r android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
+            adb shell am instrument -w -e class com.danilah.waterywatersort.ReleaseSmokeTest com.danilah.waterywatersort.test/androidx.test.runner.AndroidJUnitRunner | tee release-smoke.txt
+            adb pull /sdcard/Android/data/com.danilah.waterywatersort/files/release-smoke ./release-smoke || true
+            adb logcat -d -s AndroidRuntime:E > release-crashes.txt || true
+            grep -F 'OK (1 test)' release-smoke.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: perelevy-optimized-validation
+          path: |
+            android/app/build/outputs/apk/release/app-release.apk
+            android/app/build/outputs/mapping/release/
+            android/app/build/test-results/testReleaseUnitTest/
+            release-smoke.txt
+            release-smoke/
+            release-crashes.txt
+          if-no-files-found: error
+          retention-days: 14

@@ -1,4 +1,8 @@
 # Add project specific ProGuard rules here.
+# Capacitor discovers plugin methods by annotation/reflection across the JS bridge.
+# Keep our four plugin entry points, including their runtime annotations.
+-keepattributes RuntimeVisibleAnnotations,AnnotationDefault
+-keep @com.getcapacitor.annotation.CapacitorPlugin class com.danilah.waterywatersort.** extends com.getcapacitor.Plugin { *; }
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.
 #
