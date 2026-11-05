@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    # Rebuild and exercise the signed optimized package when this pipeline changes.
+    # Validate the optimized APK through a platform-only instrumentation runner.
     paths: ['.github/workflows/android-optimized.yml']
 permissions:
   contents: read
@@ -72,10 +72,10 @@ jobs:
           script: |
             adb install -r android/app/build/outputs/apk/release/app-release.apk
             adb install -r android/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk
-            adb shell am instrument -w -e class com.danilah.waterywatersort.ReleaseSmokeTest com.danilah.waterywatersort.test/androidx.test.runner.AndroidJUnitRunner | tee release-smoke.txt
+            adb shell am instrument -w com.danilah.waterywatersort.test/com.danilah.waterywatersort.ReleaseSmokeInstrumentation | tee release-smoke.txt
             adb pull /sdcard/Android/data/com.danilah.waterywatersort/files/release-smoke ./release-smoke || true
             adb logcat -d -s AndroidRuntime:E > release-crashes.txt || true
-            grep -F 'OK (1 test)' release-smoke.txt
+            grep -F 'OK (release smoke)' release-smoke.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
