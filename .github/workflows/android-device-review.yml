@@ -1,0 +1,45 @@
+name: Installed optimized APK smoke
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/android-device-review.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  device:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: perelevy-optimized-validation
+          run-id: 41988374668
+          github-token: ${{ github.token }}
+          path: optimized
+      - name: Enable emulator acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Play the installed release
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            adb install -r optimized/android/app/build/outputs/apk/release/app-release.apk
+            python3 tools/release-device-smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: perelevy-installed-apk-evidence
+          path: device-smoke/
+          if-no-files-found: warn
+          retention-days: 14
