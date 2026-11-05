@@ -35,7 +35,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
             adb install -r optimized/android/app/build/outputs/apk/release/app-release.apk
-            python3 tools/release-device-smoke.py
+            python3 tools/release-device-smoke.py || { adb logcat -d -s AndroidRuntime:E > device-smoke/crashes.txt; exit 1; }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
