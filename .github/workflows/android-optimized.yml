@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    # Validate the optimized APK through a platform-only instrumentation runner.
+    # Validate the optimized APK through platform views without retaining test-only app methods.
     paths: ['.github/workflows/android-optimized.yml']
 permissions:
   contents: read
